@@ -123,6 +123,46 @@ function roles() {
   </div>`);
 }
 
+const APP = 'https://app.cohorthome.app';
+const HOUSE_KEYS = [
+  ['By invite', 'New staff are added by an administrator, never by a sign-up page.'],
+  ['Logged by · at', 'Every entry carries who made it, and when.'],
+  ['Offline-ready', 'Entries made without signal queue, are marked pending, and catch up.'],
+];
+
+/* The door: the sign-in the reader will actually meet, drawn as it is. */
+function house() {
+  return sec('house', 'house', `<div class="wrap house-g">
+    <div class="house-t">
+      ${eyebrow('Already on Cohort')}
+      ${h2('house', 'Your house is open at app.cohorthome.app.', 'The same record, on the web: set up houses and residents, invite staff, review the roll-ups, print for the licensing file. Sign in with the address your administrator invited.')}
+      <div class="ctas">
+        <a class="btn pri lg" href="${APP}" data-cta="house">Sign in to your house</a>
+        <a class="btn lg" href="#join">I don’t have one yet</a>
+      </div>
+      <ul class="house-k">${HOUSE_KEYS.map(([k, v]) => `<li><b>${esc(k)}</b><span>${esc(v)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="house-v">
+      <a class="door" href="${APP}" aria-label="Open app.cohorthome.app">
+        <span class="door-bar" aria-hidden="true"><i></i><i></i><i></i><span class="door-url">app.cohorthome.app</span></span>
+        <span class="door-body" aria-hidden="true">
+          <span class="door-card">
+            <span class="door-tile">CO</span>
+            <span class="door-name">Cohort</span>
+            <b>Sign in to continue</b>
+            <span class="door-p">Care entries are stamped with your identity per record.</span>
+            <span class="door-f">Email<span class="door-in">you@example.org</span></span>
+            <span class="door-f">Password<span class="door-in">••••••••••</span></span>
+            <span class="door-btn">Sign in</span>
+            <small>Identity is recorded with every entry. New staff are added by invite — ask an administrator to send you one.</small>
+          </span>
+          <span class="door-toast">Ready to work offline — your entries will queue.</span>
+        </span>
+      </a>
+    </div>
+  </div>`);
+}
+
 function questions(cfg) {
   return sec('questions', 'questions', `<div class="wrap q-g">
     <div class="head">${h2('questions', 'The questions we get.')}</div>
@@ -165,6 +205,7 @@ ${stops()}
 ${refuses()}
 ${record()}
 ${roles()}
+${house()}
 ${questions(cfg)}
 ${pricing(cfg, p)}
 ${join(cfg, p)}

@@ -125,6 +125,44 @@ function roles() {
   </div>`);
 }
 
+const KIT_KEYS = [
+  ['One-time credentials', 'Caregivers get a username and password from an admin; there is no public sign-up for staff.'],
+  ['Seeded on day one', 'The catalogue, the first house and the default storage zones are there before you add a single item.'],
+  ['On the phone', 'Installs on iOS and Android. Picks queue offline and are never counted twice.'],
+];
+
+/* The door: the sign-in the reader will actually meet at careshop.app, drawn as it is. */
+function kitchen(cfg) {
+  return sec('kitchen', 'kitchen', `<div class="wrap kit-g">
+    <div class="kit-v">
+      <a class="door" href="${esc(cfg.signIn.href)}" aria-label="Sign in at careshop.app">
+        <span class="door-bar" aria-hidden="true"><i></i><i></i><i></i><span class="door-url"><b>yourhouse</b>.careshop.app</span></span>
+        <span class="door-body" aria-hidden="true">
+          <span class="door-tile">C</span>
+          <span class="door-name">careshop.app</span>
+          <span class="door-sub">Inventory &amp; compliance for residential care</span>
+          <span class="door-card">
+            <span class="door-f">Username<span class="door-in is-on"></span></span>
+            <span class="door-f">Password<span class="door-in"></span></span>
+            <span class="door-btn">Sign in</span>
+          </span>
+          <span class="door-note">New caregivers receive a one-time username &amp; password from an admin.</span>
+          <span class="door-note">Starting a new organization? <b>Create one</b></span>
+        </span>
+      </a>
+    </div>
+    <div class="kit-t">
+      ${eyebrow('Already on CareShop')}
+      ${h2('kitchen', 'Your kitchen has its own address.', 'Every organisation on CareShop lives at its own subdomain. Sign in with the username your admin gave you — or create an organisation, and the catalogue, the first house and the default storage zones are seeded before you add a thing. Free plan, no card.')}
+      <div class="ctas">
+        <a class="btn pri lg" href="${esc(cfg.signIn.href)}" data-cta="kitchen">${ICON.arrow}Sign in</a>
+        <a class="btn lg" href="${esc(cfg.cta.primaryHref)}">Create your organisation</a>
+      </div>
+      <ul class="kit-k">${KIT_KEYS.map(([k, v]) => `<li><b>${esc(k)}</b><span>${esc(v)}</span></li>`).join('')}</ul>
+    </div>
+  </div>`);
+}
+
 const questions = () => sec('questions', 'questions', `<div class="wrap q-g"><div class="head">${h2('questions', 'The questions we get.')}</div>${faq(find('objections').rows)}</div>`);
 
 function pricing(cfg, p) {
@@ -156,9 +194,10 @@ ${tilesBlock()}
 ${reserve()}
 ${record()}
 ${roles()}
+${kitchen(cfg)}
 ${questions()}
 ${pricing(cfg, p)}
 ${start(cfg)}
 </main>
-${foot(cfg, p, { fine: find('foot').disclaimer, links: [['/features', 'Features'], ['/pricing', 'Pricing'], ['/contact', 'Contact']] })}`;
+${foot(cfg, p, { fine: find('foot').disclaimer, links: [['https://careshop.app/features', 'Features'], ['https://careshop.app/pricing', 'Pricing'], ['https://careshop.app/contact', 'Contact']] })}`;
 }
