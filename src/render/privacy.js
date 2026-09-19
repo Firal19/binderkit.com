@@ -9,20 +9,28 @@ import { byline } from './shared.js';
 
 const P = (t) => `<p>${esc(t)}</p>`;
 
-export function privacyPage(cfg) {
+export function privacyPage(cfg, chrome = {}) {
   const p = productOf(cfg.product);
   const spec = PAGES[p.id];
   const record = spec.sections.find((s) => s.key === 'evidence');
   const egress = ((record && record.blocks) || []).filter((b) => /^What an email|^What a push|^Analytics|^What is public|^The rest|^Printing/.test(b.label));
   const primary = cfg.cta.primaryHref || '/#join';
 
-  return `<header class="nav" id="top-bar"><div class="wrap nav-in">
+  const header = chrome.header
+    ? chrome.header(cfg, p, { page: 'privacy', title: 'Privacy' })
+    : `<header class="nav" id="top-bar"><div class="wrap nav-in">
     <a class="brand" href="/" aria-label="${esc(p.name)} — home">${mark(p.id, 28, { label: false })}<span class="brand-n">${esc(p.name)}</span></a>
     <div class="nav-r" style="margin-left:auto"><a class="btn sm" href="/">Back to ${esc(p.name)}</a></div>
-  </div></header>
+  </div></header>`;
+  const footer = chrome.footer
+    ? chrome.footer(cfg, p, { page: 'privacy' })
+    : `<footer class="foot"><div class="wrap foot-b">${byline()}<p class="foot-fine">${esc(cfg.legalLine)}</p></div></footer>`;
+
+  return `<a class="skip" href="#main">Skip to content</a>
+${header}
 <main class="page face canvas pv" id="main" data-product="${p.id}" data-mode="light">
   <section class="sec" id="privacy" aria-labelledby="h-priv"><div class="wrap pv-w">
-    <div class="head"><span class="eyebrow">Privacy</span><h2 id="h-priv">What ${esc(p.name)} holds, and what leaves it.</h2><p class="sub">Written in the same words as the product. If a sentence here and a screen in the application disagree, the screen is the bug.</p></div>
+    <div class="head"><span class="eyebrow">Privacy</span><h1 id="h-priv">What ${esc(p.name)} holds, and what leaves it.</h1><p class="sub">Written in the same words as the product. If a sentence here and a screen in the application disagree, the screen is the bug.</p></div>
 
     <div class="pv-g">${cfg.privacy.holds.map(([label, text]) => `<div class="pv-c"><span class="strip-l">${esc(label)}</span><p>${esc(text)}</p></div>`).join('')}</div>
 
@@ -52,7 +60,7 @@ export function privacyPage(cfg) {
     <div class="ctas"><a class="btn pri" href="/">Back to ${esc(p.name)}</a></div>
   </div></section>
 </main>
-<footer class="foot"><div class="wrap foot-b">${byline()}<p class="foot-fine">${esc(cfg.legalLine)}</p></div></footer>`;
+${footer}`;
 }
 
 export default privacyPage;

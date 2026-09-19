@@ -2,6 +2,7 @@ node_modules/
 dist/
 review/
 .vercel/
+convex/_generated/
 .env
 .env.local
 .DS_Store

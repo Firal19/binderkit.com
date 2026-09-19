@@ -4,18 +4,23 @@
 // Convex over the documented HTTP mutation endpoint. No SDK, no dependency,
 // no build step: a Vercel Node function and fetch.
 //
-// Configure with two environment variables on the Vercel project:
+// Configure on the Vercel project:
 //   CONVEX_URL        https://<deployment>.convex.cloud   (required)
-//   WAITLIST_FORWARD  an email address to copy rows to    (optional)
-//   RESEND_API_KEY    needed only if WAITLIST_FORWARD is set
+//   RESEND_API_KEY    lets the site write two letters      (optional)
+//   MAIL_INBOX        the one inbox every notice is copied to
 //
 // With CONVEX_URL unset the endpoint answers 503 and says so, and the page
-// tells the reader rather than pretending the row was kept.
+// tells the reader rather than pretending the row was kept. With Resend set,
+// the signer gets a receipt from hello@<domain> and the inbox gets a notice
+// whose reply-to is the signer, so answering them is an ordinary reply.
+
+import { configured, inbox, address, named, domainOf, send, letters } from '../lib/mail.js';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TRACKS = new Set(['APD', 'DD', 'OHA', 'Agency', 'Not licensed yet']);
 const HOUSES = new Set(['1', '2–3', '4–9', '10+', 'An agency', 'I’m a caregiver']);
 const PRODUCTS = new Set(['cohort', 'careshop', 'binderkit', 'aidepost']);
+const NAMES = { cohort: 'Cohort', careshop: 'CareShop', binderkit: 'Binderkit', aidepost: 'Aidepost' };
 
 const json = (res, code, body) => {
   res.status(code);
@@ -82,23 +87,16 @@ export default async function handler(req, res) {
     return json(res, 502, { ok: false, message: 'That did not save. Try again in a moment.' });
   }
 
-  // Optional: a copy in a human's inbox, so nobody has to remember to look.
-  if (process.env.WAITLIST_FORWARD && process.env.RESEND_API_KEY) {
-    try {
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'content-type': 'application/json' },
-        body: JSON.stringify({
-          from: process.env.WAITLIST_FROM || 'Waitlist <onboarding@resend.dev>',
-          to: [process.env.WAITLIST_FORWARD],
-          subject: `${product} · early access · ${email}`,
-          text: `${email}\ntrack: ${track}\nhouses: ${houses}\nproduct: ${product}\nfrom: ${row.source}`,
-        }),
-      });
-    } catch (e) {
-      console.error('waitlist: forward failed', e && e.message);   // the row is saved; this is a nicety
-    }
+  // The two letters. The row is already kept; these are the courtesy.
+  let sent = false;
+  if (configured()) {
+    const domain = domainOf(req);
+    const site = { name: NAMES[product], domain };
+    const from = named(site.name, address('hello', domain));
+    const r1 = await send({ from, to: email, replyTo: address('hello', domain), tags: [{ name: 'kind', value: 'waitlist_receipt' }], ...letters.waitlistReceipt(site, row) });
+    sent = r1.sent;
+    if (inbox()) await send({ from, to: inbox(), replyTo: email, headers: { 'X-PHO-Site': domain, 'X-PHO-Kind': 'waitlist' }, tags: [{ name: 'kind', value: 'waitlist' }, { name: 'site', value: domain.replace(/\./g, '_') }], ...letters.waitlistNotice(site, row) });
   }
 
-  return json(res, 200, { ok: true });
+  return json(res, 200, { ok: true, sent });
 }

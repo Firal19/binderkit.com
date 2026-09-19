@@ -1,143 +1,193 @@
 // cohorthome.app — the shift, hour by hour.
 //
-// The page is built around one device: a caregiver's day on the house phone.
-// A timeline runs down the left; the phone on the right changes screen as
-// the reader passes each hour. Everything else on the page — the two stops,
-// the record, the refusals — is what that day is made of.
+// The whole site is laid out on a clock. The header is a time rail with a
+// now-dot that travels the shift; the front page is one caregiver's day on
+// the house phone, with the phone following the hours; the footer is the
+// end-of-shift sheet the product composes at 18:45. Every icon carries a
+// stamp's ink dot, every entry is “Logged by · at”, and nothing is red.
 
-import { esc, nav, foot, waitlist, faq, tiers, sec, h2, eyebrow, byline, ICON } from '../shared.js';
-import { iosShell } from '../instruments.js';
-import { PAGES, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../data/page.js';
+import { esc, skip, waitlist, faq, tiers, sec, h2, eyebrow } from '../shared.js';
+import { iosShell, SURFACES } from '../instruments.js';
+import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../data/page.js';
+import { ic } from '../icons/cohort.js';
+import { header, footer } from './cohort/chrome.js';
+import { DAY, hid, tourKey, REFUSALS, NOT_STORED, HOUSE_KEYS, APP, find } from './cohort/data.js';
+import { pages } from './cohort/pages.js';
 
-const spec = PAGES.cohort;
-const find = (k) => spec.sections.find((s) => s.key === k);
+export { header, footer, pages };
 
-/* ── the day ─────────────────────────────────────────────────────────── */
-const DAY = [
-  { at: '06:55', t: 'Sign in with a staff code', d: 'On the house phone, or switch the acting person on a device already signed in. A code alone never opens a device with no valid session.', screen: 'today' },
-  { at: '07:02', t: 'Read the handoff', d: 'What the night shift left — MAR status per resident, documentation done, incidents, open issues. Reading it records a receipt. Acknowledgement is never assumed.', screen: 'handoff' },
-  { at: '08:00', t: 'The MAR pass', d: 'Scheduled → Six Rights → allergy check → PRN interval → signed. The only two things in the product that can stop you are in this step, and both are physical.', screen: 'marpass', present: 'sheet' },
-  { at: '10:30', t: 'Documentation, per resident', d: 'Entries are stamped “Logged by · at”. If the wifi drops, they queue, are marked pending, and catch up. The caregiver does not wait for the record.', screen: 'residents' },
-  { at: '13:40', t: 'An incident', d: 'Filed from where she is, with the immediate action taken. Managers are notified with a house code and nothing else. The external report is hers to make, outside the system.', screen: 'incident' },
-  { at: '18:45', t: 'Start handover', d: 'The sheet composes itself from the day. A controlled-substance count is prompted. She writes one passage for the next shift and posts.', screen: 'handoff' },
-  { at: '19:00', t: 'Sign out', d: 'Or the next caregiver switches in with her own code. Every record from the shift remains, attributed to the person who made it, for ever.', screen: 'today' },
-];
+const S = SURFACES.cohort;
+const screen = (key) => S.screens.find((s) => s.key === key);
 
-const REFUSALS = [
-  ['Any compliance score, readiness percentage, or grade', 'It measures the record rather than the care, and it invites managing the number.'],
-  ['Countdown timers on regulatory obligations', 'An obligation stated as immediate must not be rendered as a clock.'],
-  ['A third blocking check', 'Two exist because physical harm justifies them; a third erodes the principle that the product informs rather than polices.'],
-  ['Deleting anything', 'The record’s value is that it cannot be quietly changed.'],
-  ['Editing a filed incident narrative', 'Same reason. A correction is an addendum under the original.'],
-  ['Sending any resident information outside the system', 'Every message announces existence; content is read after signing in.'],
-  ['Notifying a family member or external party', 'The obligation and the judgement belong to the provider.'],
-  ['Deriving a regulatory number from operational data', 'Capacity is typed by a human.'],
-  ['Inventing a regulatory citation, threshold, or window', 'Where a source is not established, the statement is shown without one.'],
-  ['Bulk-recording care', 'Each administration, sign-off, and completion is an individual attestation.'],
-  ['Ranking houses or people', 'It turns a record into a performance instrument.'],
-];
-
-const NOT_STORED = ['staff credentials and expiry dates', 'rosters, clock events, timesheets', 'stock, menus, receipts', 'resident funds', 'documents other than plan versions', 'card numbers', 'anything about a family member beyond the contact list'];
-
-const MACHINES = find('loop').machines;
-
-/* ── blocks ──────────────────────────────────────────────────────────── */
+/* ── 06:55 · the hero ──────────────────────────────────────────────────── */
 function hero(cfg, p) {
   const strip = find('hero').strip;
+  const today = screen('today');
+  const headline = esc(p.headline.text).replace('every shift', '<em>every shift</em>');
   return `<section class="hero" id="top" aria-labelledby="h1">
     <div class="wrap hero-in">
       <div class="hero-t">
         ${eyebrow('For Oregon adult foster homes · runs on the house phone')}
-        <h1 id="h1">${esc(p.headline.text)}</h1>
+        <h1 id="h1">${headline}</h1>
         <p class="lede"><b>${esc(p.descriptor)}.</b> ${esc(p.lede)}</p>
         <div class="ctas">
-          <a class="btn pri lg" href="#join" data-cta="hero">${esc(cfg.cta.primary)}</a>
-          <a class="btn lg" href="#shift">${esc(cfg.cta.secondary)}</a>
+          <a class="btn pri lg" href="#join" data-cta="hero">${ic('stamp', 18)}${esc(cfg.cta.primary)}</a>
+          <a class="btn lg" href="#shift">${ic('clock', 18)}${esc(cfg.cta.secondary)}</a>
         </div>
+        <p class="now" data-now><span class="now-dot" aria-hidden="true"></span><span class="now-t">It is <b data-oregon>06:55</b> in Oregon.</span> <span class="now-d" data-due>The demo shift signs in at 06:55.</span></p>
         <p class="fine">Offline-safe. Two safety gates and nothing else that blocks. Every entry stamped “Logged by · at”.</p>
         <div class="strip"><span class="strip-l">${esc(strip.label)}</span><div class="strip-c">${strip.cells.map((c) => `<s>${esc(c)}</s>`).join('')}</div></div>
       </div>
-      <div class="hero-v"><div class="dev">${iosShell('cohort', { key: 'today' })}</div></div>
+      <div class="hero-v">
+        <div class="dev hero-dev">
+          ${iosShell('cohort', { key: 'today' })}
+          <span class="float f1" aria-hidden="true"><span class="stamp-a">${esc(today.rows[0].stamp)}</span><span class="float-l">every entry, stamped</span></span>
+          <span class="float f2" aria-hidden="true"><span class="st-a" data-state="due"><i></i>${esc(today.tabBadge.text)}</span><span class="float-l">a count, never a score</span></span>
+          <span class="float f3" aria-hidden="true"><span class="float-l">the night handoff</span><b>${esc(today.handoff.receipt)}</b></span>
+        </div>
+      </div>
     </div>
   </section>`;
 }
 
-function shift() {
-  const keys = [...new Set(DAY.map((d) => `${d.screen}${d.present ? '+' + d.present : ''}`))];
-  const phones = keys.map((k) => {
-    const [screen, present] = k.split('+');
-    return `<div class="tour-p" data-tour="${esc(k)}" ${k === keys[0] ? '' : 'hidden'}>${iosShell('cohort', { key: screen, present: present || 'none' })}</div>`;
-  }).join('');
-  return sec('shift', 'shift', `<div class="wrap">
-    <div class="head">${eyebrow('One shift, on one phone')}${h2('shift', 'The shift, hour by hour.', 'This is what a caregiver does with Cohort between signing in and signing out. Nothing on it is a score, and nothing on it is red.')}</div>
-    <div class="tl-g">
-      <ol class="tl">${DAY.map((d, i) => `<li class="tl-i" data-tour="${esc(`${d.screen}${d.present ? '+' + d.present : ''}`)}" ${i === 0 ? 'data-on' : ''}>
-        <span class="tl-at">${esc(d.at)}</span>
-        <span class="tl-dot" aria-hidden="true"></span>
-        <div class="tl-b"><h3>${esc(d.t)}</h3><p>${esc(d.d)}</p></div>
-      </li>`).join('')}</ol>
-      <div class="tour"><div class="tour-stick"><div class="dev">${phones}</div></div></div>
+/* ── the shift: a timeline and a phone that follows it ─────────────────── */
+const WIDGET = {
+  sim: `<div class="sim" data-sim>
+      <p class="sim-hint">${ic('pill', 16)}<span>Tap a due row on the phone. Loratadine raises the allergy gate and asks for a reason before it signs.</span></p>
+      <div class="sim-bar"><span class="sim-n" role="status" aria-live="polite">Signed 0 of 3</span><button type="button" class="sim-reset">${ic('handoff', 15)}<span>Start over</span></button></div>
+    </div>`,
+  air: `<div class="air" data-air>
+      <div class="air-row">
+        <button type="button" class="air-sw" role="switch" aria-checked="false"><span class="air-k" aria-hidden="true"></span>${ic('plane', 16)}<span>Airplane mode</span></button>
+        <button type="button" class="air-add">${ic('pen', 16)}<span>Log a care note</span></button>
+        <span class="air-out" role="status" aria-live="polite"><b>0</b> in the outbox</span>
+      </div>
+      <ol class="air-l" aria-label="Entries made in this demo"></ol>
+    </div>`,
+  compose: `<p class="tl-note" data-compose-note>${ic('count', 16)}<span>Watch the phone: the sheet composes itself line by line as this step comes into view.</span></p>`,
+};
+
+function keysDialog() {
+  const rows = [
+    ['<kbd>J</kbd><kbd>K</kbd>', 'Next and previous hour on the shift'],
+    ['<kbd>↓</kbd><kbd>↑</kbd>', 'The same, while an hour is focused'],
+    ['<kbd>⌘</kbd><kbd>K</kbd>', 'Jump to a verb, a stop or a page'],
+    ['<kbd>T</kbd>', 'Back to 06:55'],
+    ['<kbd>?</kbd>', 'This sheet'],
+    ['<kbd>Esc</kbd>', 'Close whatever is open'],
+  ];
+  return `<div class="keys" id="keys" hidden>
+    <div class="keys-in" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+      <div class="keys-h"><span class="eyebrow">Keys</span><button class="keys-x" type="button" data-close aria-label="Close the shortcuts">${ic('close', 20)}</button></div>
+      <dl class="keys-l">${rows.map(([k, d]) => `<dt>${k}</dt><dd>${esc(d)}</dd>`).join('')}</dl>
     </div>
+    <button class="keys-scrim" type="button" data-close aria-label="Close"></button>
+  </div>`;
+}
+
+function shift() {
+  const keys = [...new Set(DAY.map(tourKey))];
+  const phones = keys.map((k, i) => {
+    const [key, present] = k.split('+');
+    return `<div class="tour-p ${present === 'compose' ? 'is-compose' : ''}" data-tour="${esc(k)}" ${i ? 'hidden' : ''}>${iosShell('cohort', { key, present: present === 'sheet' ? 'sheet' : 'none' })}</div>`;
+  }).join('');
+  const steps = DAY.map((d, i) => `<li class="tl-i" id="${hid(d.at)}" data-tour="${esc(tourKey(d))}" data-at="${esc(d.at)}" ${i === 0 ? 'data-on' : ''}>
+        <a class="tl-at" href="#${hid(d.at)}" aria-label="${esc(d.at)} — ${esc(d.t)}, link to this hour"><span class="tl-ic">${ic(d.icon, 15)}</span><time>${esc(d.at)}</time></a>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-b"><h3>${esc(d.t)}</h3><p>${esc(d.d)}</p>${d.widget ? WIDGET[d.widget] : ''}</div>
+      </li>`).join('');
+  return sec('shift', 'shift', `<div class="wrap">
+    <div class="head shift-head">
+      <div>${eyebrow('One shift, on one phone')}${h2('shift', 'The shift, hour by hour.', 'This is what a caregiver does with Cohort between signing in and signing out. Nothing on it is a score, and nothing on it is red.')}</div>
+      <button class="keysb" type="button" aria-controls="keys" aria-expanded="false" data-focus=".keys-x">${ic('keyboard', 18)}<span>Keys</span><kbd>?</kbd></button>
+    </div>
+    <div class="tl-g">
+      <div class="tour"><div class="tour-stick"><div class="crop"><div class="dev">${phones}</div></div><span class="tour-cap" aria-hidden="true"><i></i><span data-tour-cap>06:55</span></span></div></div>
+      <ol class="tl">${steps}</ol>
+    </div>
+    ${keysDialog()}
   </div>`);
 }
 
+/* ── 08:00 · the two stops, as cards that turn ─────────────────────────── */
 function stops() {
   const loop = find('loop');
+  const gate = (n, title, front, back) => `<div class="gate-w"><button type="button" class="gate" aria-pressed="false" data-flip aria-label="${esc(title)} — turn the card over">
+      <span class="gate-f"><span class="gate-n">${n}</span><span class="gate-t">${esc(title)}</span><span class="gate-p">${esc(front)}</span><span class="gate-cta">${ic('handoff', 15)}What the override records</span></span>
+      <span class="gate-b"><span class="strip-l">What the override records · stop ${n}</span><span class="gate-p is-strong">Choosing Override means typing a reason of at least ten characters. The reason is recorded on the dose, written to the audit log, and the manager is told.</span><span class="gate-p">${esc(back)}</span><span class="gate-cta">${ic('handoff', 15)}Turn back</span></span>
+    </button></div>`;
   return sec('stops', 'stops', `<div class="wrap">
     <div class="head">${eyebrow('Inform, don’t police')}${h2('stops', 'Two stops. Nothing else.', 'Both were chosen because the harm of not stopping is physical. An override is recorded with a reason; then the pass proceeds. There is no third gate, and there are no countdown timers.')}</div>
     <div class="gates">
-      <div class="gate"><span class="gate-n">1</span><h3>The allergy gate</h3><p>A medication that matches a recorded allergy. The Six Rights dialog asks for a reason before it will sign, and a manager is told.</p></div>
-      <div class="gate"><span class="gate-n">2</span><h3>The PRN interval gate</h3><p>An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.</p></div>
+      ${gate(1, 'The allergy gate', 'A medication that matches a recorded allergy. The Six Rights dialog asks for a reason before it will sign, and a manager is told.', 'The stop names the allergen, its severity, its reaction and where the information came from. The limitation is stated rather than hidden: the match is by name and ingredient plus a manual flag, and it misses drug-class conflicts.')}
+      ${gate(2, 'The PRN interval gate', 'An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.', 'Two conditions, not one — before the order’s minimum interval, or beyond its maximum in twenty-four hours. The stop shows when the last dose was given and when the next one is permitted.')}
     </div>
     <p class="pull">${esc(loop.pull)}</p>
     <div class="machines"><span class="strip-l">Four state machines, and what each one refuses</span>
-      ${MACHINES.map(([n, seq]) => `<div class="machine"><b>${esc(n)}</b><span>${esc(seq)}</span></div>`).join('')}
+      ${loop.machines.map(([n, seq]) => `<div class="machine"><b>${esc(n)}</b><span>${esc(seq)}</span></div>`).join('')}
     </div>
   </div>`);
 }
 
+/* ── the manifesto, printable on its own ───────────────────────────────── */
 function refuses() {
   return sec('refuses', 'refuse', `<div class="wrap">
-    <div class="head">${eyebrow('The manifesto')}${h2('refuses', 'What Cohort will not do, and why.', 'Eleven refusals. Each one is a position, not a missing feature, and each carries its reason.')}</div>
+    <div class="head ref-head">
+      <div>${eyebrow('The manifesto')}${h2('refuses', 'What Cohort will not do, and why.', 'Eleven refusals. Each one is a position, not a missing feature, and each carries its reason.')}</div>
+      <button class="printb" type="button" data-print data-print-only="refuses">${ic('print', 18)}<span>Print the manifesto</span></button>
+    </div>
     <ol class="ref-l">${REFUSALS.map(([t, why], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b><span>${esc(why)}</span></div></li>`).join('')}</ol>
     <div class="notstored"><span class="strip-l">Not stored, by design</span><p>${NOT_STORED.map(esc).join(' · ')}.</p></div>
     <p class="boundary">Cohort keeps the residents’ record. It does not schedule staff, run the kitchen, or build binders.</p>
+    <p class="ref-print" aria-hidden="true">Cohort · The manifesto · cohorthome.app · by Providerhub Oregon</p>
   </div>`);
 }
 
+/* ── 13:40 · the record, with paper beside it ──────────────────────────── */
 function record() {
   const s = find('evidence');
+  const row = screen('marpass').rows.find((r) => r.state === 'given');
+  const ink = `<svg class="paper-ink" viewBox="0 0 340 72" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path d="M12 44c4-15 8-17 11-4s5 9 9-2 7-13 11-1 6 9 10-1 6-13 10-2 4 8 8 0" /><path d="M96 43c3-12 6-14 8-3s4 8 8-2 5-12 8-1 4 9 8-1 5-12 8-2" /><path d="M156 46c2-6 4-10 7-9s5 7 6 12M172 34c3 2 5 7 5 12M186 37l6 10 7-16" /><path d="M222 45c3-10 6-14 9-3s5 8 9-2 6-11 10 0" /><path d="M268 30l7 11c-1 4-3 6-6 7M283 33c3 9 8 12 12 6" /><path d="M300 42l5 6 10-14" stroke-width="2.4" /></svg>`;
   return sec('record', 'record', `<div class="wrap">
     <div class="head">${eyebrow('The record')}${h2('record', s.heading, s.sub)}</div>
+    <div class="cmp-w">
+      <span class="strip-l">Paper, then the record — slide the handle</span>
+      <div class="cmp" style="--x:50%">
+        <div class="cmp-a" aria-hidden="true"><span class="paper"><span class="paper-l">MAR · Sept</span>${ink}</span></div>
+        <div class="cmp-b"><span class="rec"><span class="rec-main"><span class="rec-t">${esc(row.t)}</span><span class="rec-s">${esc(row.s)}</span><span class="stamp-a">${esc(row.stamp)}</span></span><span class="st-a" data-state="given"><i></i>Given</span></span></div>
+        <input class="cmp-r" type="range" min="0" max="100" value="50" aria-label="Compare the paper MAR line with the stamped entry" aria-valuetext="Half paper, half record">
+        <span class="cmp-h" aria-hidden="true">${ic('handoff', 16)}</span>
+        <span class="cmp-l cmp-la" aria-hidden="true">Paper</span><span class="cmp-l cmp-lb" aria-hidden="true">Cohort</span>
+      </div>
+      <p class="cmp-cap">Left, a hand-written MAR line: who, when and whether, if you can read it. Right, the same dose in Cohort: a state word, a stamp, and no red.</p>
+    </div>
     <div class="ev">${s.blocks.map((b) => `<div class="ev-b"><span class="strip-l">${esc(b.label)}</span>${b.quote ? `<p class="quote">${esc(b.quote)}</p>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}</div>`).join('')}</div>
     <div class="ev-cl">${s.closingBlocks.map((b) => `<div class="note">${b.heading ? `<h3>${esc(b.heading)}</h3>` : ''}<p>${esc(b.text)}</p></div>`).join('')}</div>
   </div>`);
 }
 
+/* ── three people, and who is holding the phone now ───────────────────── */
 function roles() {
   const s = find('roles');
+  const on = { provider: ['', ''], manager: ['1', ''], caregiver: ['1', '1'] };
   return sec('roles', 'roles', `<div class="wrap">
-    <div class="head">${h2('roles', s.heading, s.sub)}</div>
-    <div class="role-g">${s.rows.map(([r, who, does, dev]) => `<div class="role"><span class="role-n">${esc(r)}</span><p class="role-w">${esc(who)}</p><p class="role-d">${esc(does)}</p><span class="role-r">${esc(dev)}</span></div>`).join('')}</div>
+    <div class="head roles-head">
+      <div>${h2('roles', s.heading, s.sub)}</div>
+      <div class="seg" role="group" aria-label="Who is holding the phone"><button type="button" data-shift="now" aria-pressed="true">Now</button><button type="button" data-shift="day" aria-pressed="false">Day <span>06:55–19:00</span></button><button type="button" data-shift="night" aria-pressed="false">Night</button></div>
+    </div>
+    <div class="role-g" data-roles>${s.rows.map(([r, who, does, dev]) => `<div class="role" data-day="${on[r][0]}" data-night="${on[r][1]}"><span class="role-n">${ic(r === 'caregiver' ? 'pill' : r === 'manager' ? 'pen' : 'house', 16)}${esc(r)}</span><span class="role-on" data-role-on></span><p class="role-w">${esc(who)}</p><p class="role-d">${esc(does)}</p><span class="role-r">${ic('clock', 14)}${esc(dev)}</span></div>`).join('')}</div>
     <p class="closing">${esc(s.closing)}</p>
   </div>`);
 }
 
-const APP = 'https://app.cohorthome.app';
-const HOUSE_KEYS = [
-  ['By invite', 'New staff are added by an administrator, never by a sign-up page.'],
-  ['Logged by · at', 'Every entry carries who made it, and when.'],
-  ['Offline-ready', 'Entries made without signal queue, are marked pending, and catch up.'],
-];
-
-/* The door: the sign-in the reader will actually meet, drawn as it is. */
+/* ── your house: the door to app.cohorthome.app ────────────────────────── */
 function house() {
   return sec('house', 'house', `<div class="wrap house-g">
     <div class="house-t">
       ${eyebrow('Already on Cohort')}
       ${h2('house', 'Your house is open at app.cohorthome.app.', 'The same record, on the web: set up houses and residents, invite staff, review the roll-ups, print for the licensing file. Sign in with the address your administrator invited.')}
       <div class="ctas">
-        <a class="btn pri lg" href="${APP}" data-cta="house">Sign in to your house</a>
+        <a class="btn pri lg" href="${APP}" data-cta="house">${ic('house', 18)}Sign in to your house</a>
         <a class="btn lg" href="#join">I don’t have one yet</a>
       </div>
       <ul class="house-k">${HOUSE_KEYS.map(([k, v]) => `<li><b>${esc(k)}</b><span>${esc(v)}</span></li>`).join('')}</ul>
@@ -163,26 +213,42 @@ function house() {
   </div>`);
 }
 
-function questions(cfg) {
+/* ── the questions, with a filter that counts ──────────────────────────── */
+function questions() {
+  const rows = find('objections').rows;
   return sec('questions', 'questions', `<div class="wrap q-g">
-    <div class="head">${h2('questions', 'The questions we get.')}</div>
-    ${faq(find('objections').rows)}
+    <div class="head">
+      ${h2('questions', 'The questions we get.')}
+      <label class="faq-f"><span class="sr-only">Filter the questions</span>${ic('search', 18)}<input class="faq-q" type="search" placeholder="Filter — wifi, export, stop…" autocomplete="off"><span class="faq-n" role="status" aria-live="polite">${rows.length} of ${rows.length}</span></label>
+    </div>
+    <div class="faq-w">${faq(rows)}<p class="faq-none" hidden>No question matches that. <a href="/contact">Ask it on the contact page.</a></p></div>
   </div>`);
+}
+
+/* ── pricing, by houses ────────────────────────────────────────────────── */
+export function houseStepper() {
+  return `<div class="hs-w"><span class="strip-l">How many houses?</span>
+    <div class="hs" role="group" aria-label="How many houses?">${['1', '2–3', '4–9', '10+'].map((h, i) => `<button type="button" data-h="${esc(h)}" aria-pressed="${i === 0}">${esc(h)}</button>`).join('')}</div>
+    <p class="hs-line" role="status" aria-live="polite">One house — Pro covers it, and every plan sees every screen.</p>
+  </div>`;
 }
 
 function pricing(cfg, p) {
   const s = find('pricing');
   return sec('pricing', 'pricing', `<div class="wrap">
-    <div class="head">${h2('pricing', s.heading, EVERY_PLAN)}</div>
+    <div class="head">${eyebrow('One price per house')}${h2('pricing', s.heading, EVERY_PLAN)}</div>
+    ${houseStepper()}
     ${tiers(p, 1)}
     <p class="fine">${esc(s.note)}</p>
     <div class="subs">
       <div class="note"><h3>${esc(SIGNUP_SIX.heading)}</h3><ol class="arrow">${SIGNUP_SIX.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol><p class="cap">${esc(SIGNUP_SIX.tail)}</p></div>
       <div class="note"><h3>${esc(BILLING_STATES.heading)}</h3><dl class="defs">${BILLING_STATES.rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></div>
     </div>
+    <p class="more"><a href="/pricing">${ic('tag', 16)}<span>Pricing in full — the trial, the six steps, the billing states</span>${ic('right', 16)}</a></p>
   </div>`);
 }
 
+/* ── 19:00 · join ──────────────────────────────────────────────────────── */
 function join(cfg, p) {
   const s = find('start');
   return sec('join', 'join', `<div class="wrap join-g">
@@ -197,7 +263,8 @@ function join(cfg, p) {
 }
 
 export function render(cfg, p) {
-  return `${nav(cfg, p)}
+  return `${skip()}
+${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="cohort" data-mode="light">
 ${hero(cfg, p)}
 ${shift()}
@@ -206,9 +273,9 @@ ${refuses()}
 ${record()}
 ${roles()}
 ${house()}
-${questions(cfg)}
+${questions()}
 ${pricing(cfg, p)}
 ${join(cfg, p)}
 </main>
-${foot(cfg, p, { fine: find('foot').disclaimer })}`;
+${footer(cfg, p, { page: 'home', fine: find('foot').disclaimer })}`;
 }
