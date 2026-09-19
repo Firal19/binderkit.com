@@ -1,4 +1,4 @@
-// The three landing pages, as data. One invariant spine, one object per
+// The four landing pages, as data. One invariant spine, one object per
 // product, no HTML anywhere in this file — so adding or dropping a section is
 // a one-line edit and a product can never quietly reorder the argument.
 //
@@ -19,7 +19,7 @@ export const SPINE = [
 ];
 
 /* ── the copy every product shares ───────────────────────────────────────
-   Written once and read by all three. This is the mechanism that makes the
+   Written once and read by all four. This is the mechanism that makes the
    family read as one maker rather than three teams: the signup, the billing
    states and the trial line are literally the same strings on every page. */
 export const TRIAL_FINE = 'Three days, card on file, everything Pro shows, one-tap cancel. Sold on the web, never through an app store.';
@@ -61,7 +61,8 @@ export const BILLING_STATES = {
 
 export const EVERY_PLAN = 'Every plan sees every screen; an action above your plan is shown with its cost, never silently blocked.';
 
-/* The waitlist. One block, one form, the same promise on all three sites. */
+/* The waitlist. One block, one form, the same promise on every site that has
+   nothing to sell yet. CareShop drops the slot: it has a signup. */
 export const JOIN = {
   eyebrow: 'Early access',
   heading: 'Be in the first houses on it.',
@@ -451,6 +452,175 @@ const binderkit = {
   ],
 };
 
+/* ── CareShop ─────────────────────────────────────────────────────────────
+   The ledger rule and the basket arc. The one product in the family that is
+   already live and already has a price, so it is the one page here with a
+   number on it and a signup rather than a list to join. It drops `join`.  */
+const careshop = {
+  id: 'careshop',
+  accentBudget: 3,
+  sections: [
+    {
+      key: 'hero', kind: 'hero', id: 'top',
+      eyebrow: 'Live at careshop.app · Oregon care homes',
+      instrument: { desktop: 'crop', mobile: 'crop' },
+      descriptorInline: true,
+      fine: TRIAL_FINE,
+    },
+    {
+      key: 'proof', kind: 'proof', id: 'why',
+      items: [
+        ['In real kitchens today', 'A caregiver scans groceries into CareShop at the store, and the shelf, the menu and the buy queue agree by the time she is home.'],
+        ['The loop closes by itself', 'A menu shortfall, an expiry, a par breach or a reserve gap files its own buy request. Nobody re-types anything.'],
+        ['A resident is a label, never a name', 'Diet tags, allergens, one texture level. Enough for a tray note and a menu check, and nothing more.'],
+      ],
+    },
+    {
+      key: 'screen', kind: 'screen', id: 'queue',
+      heading: 'One screen: the buy queue.',
+      sub: 'What the house is short, by house or all houses. Each line carries where it came from, its status, who asked, who approved, and what store it is cheapest at.',
+      instrument: { desktop: 'web', mobile: 'ios' },
+      callouts: [
+        [(s) => `“${s.rows[0].origin}”`, 'Where the line came from. There are five origins and no sixth: a menu shortfall, an expiry, a par breach, a reserve gap, or a caregiver’s request.'],
+        [(s) => `“${s.rows.find((r) => r.state === 'expiring').origin}”`, 'Dated at entry, sorted by urgency. Short and expiring are the only two states this product marks; everything else on the screen is just stock.'],
+        [(s) => `“${s.rows.find((r) => r.stage === 'Approved').stage}”`, 'The provider’s purchasing policy decided this, not a person — auto-approve under the threshold, a manager approves, or a flag-mode exception. Eight rules, enforced.'],
+        [(s) => `“${s.rows.find((r) => r.store.startsWith('Costco')).store}”`, 'The price ledger, with provenance. That number came off a receipt, at the store it came from.'],
+        [(s) => `the ${s.side.t} panel`, 'Sorted most-urgent-first, with the value at risk totalled at the foot. That total is a number the house can act on.'],
+      ],
+      caption: 'It should feel like what to buy, and nothing else. Amber is the whole product in one colour — what is short, or expiring.',
+      strip: {
+        label: 'Six front doors, one contract',
+        cells: ['The shelf', 'The scanner', 'Today', 'A workbook import', 'The catalogue', 'A shared run'],
+        foot: 'All six write the same buy request.',
+      },
+    },
+    {
+      key: 'loop', kind: 'loop', id: 'loop',
+      heading: 'The loop closes by itself.',
+      sub: 'Five stations. The house’s own data moves around them without anyone re-typing it.',
+      device: 'arc',
+      nodes: [
+        { label: 'The menu', note: 'Residents’ tags shape it: diet tags, allergens, one texture level, Fatal Four roles. A label, never a name.' },
+        { label: 'The shortfall', note: 'A menu shortfall files a buy request, alongside the par breach, the expiry and the reserve gap.', accent: true },
+        { label: 'The policy', note: 'Auto-approve under the threshold · a manager approves · a flag-mode exception. Eight rules.' },
+        { label: 'The shop', note: 'An aisle-ordered list, priced by store. In shopping mode a pick becomes Purchased, with the actual store and the actual cost. Picks queue offline.' },
+        { label: 'The receipt', note: 'Prices land in the price ledger with their provenance; stock goes up through the ledger. The next menu reads that stock.' },
+      ],
+      machines: [
+        ['Expiry', 'a perishable is dated at entry → Expiry Watch sorts by urgency and totals the value at risk → use it, replace it, or mark it discarded with a reason.'],
+        ['Reserve', 'the provider sets N days → the target is N × the licensed bed count, per reserve item → one reading function says met, gap, or not counted → the gap files into the queue → bought → the manager attests to the count → a weekly snapshot → the surveyor PDF, with its banner.'],
+        ['Cook', 'today’s prep in the house’s own time zone → Cook this → a session with local-notification timers → the allergen check → complete → stock down, idempotently.'],
+        ['Shared run', 'the approved queue → a token link → someone with no account checks off, marks missed and closes → a signed-in person reviews the three groups and confirms → purchases go through the ordinary path.'],
+      ],
+      closing: 'Every stock change is a ledger row with an actor and a reason. Deactivate, never delete. And the three axes are never conflated: category is the catalogue facet, aisle is the route through a store, zone is where it sits in the house.',
+    },
+    {
+      key: 'depth', kind: 'table', id: 'compliance',
+      heading: 'The rule that says what the house must keep.',
+      sub: 'Every citation carries a confidence — confirmed by a provider inspected on that track, or inferred from the rule chapter. You always know which you are holding.',
+      cols: ['Topic', 'What is shown', 'Where'],
+      mono: [2],
+      rows: [
+        ['Emergency reserves', 'The target — N days × the licensed bed count, per reserve item — the on-hand reading, the gap, the citation for the track and its confidence', 'Dashboard; surveyor PDF'],
+        ['OAR-mandated items', 'The item’s citation and hazard note; the confidence printed whenever it is short of confirmed', 'Item, dashboard, PDF'],
+        ['Fatal Four', 'Tags on items and residents; a coverage grade per house — never a clinical claim', 'Compliance'],
+        ['Diet, texture, allergens', 'The resident’s tags on the menu, the tray note, and the allergen check on cook; the nine standard allergens', 'Menu, cook mode'],
+        ['Food safety', 'Expiry dates and Expiry Watch. No inspection language.', 'Stock'],
+      ],
+      pull: 'The reserve target is arithmetic, not a shrug.',
+      closing: 'An unreviewed rule set shows a banner on the dashboard and on every export, including the one you hand a surveyor. We would rather hand you a banner than a tidy screen.',
+    },
+    {
+      key: 'boundary', kind: 'boundary', id: 'boundary',
+      heading: 'What CareShop does, and what it leaves to the room next door.',
+      cols: [
+        {
+          label: 'Next door', kind: 'next', items: [
+            ['Store diagnoses, medications, incidents or clinical notes', 'cohort'],
+            ['Schedule anyone', 'aidepost'],
+            ['Print the tab where a reserve record goes', 'binderkit'],
+          ],
+        },
+        {
+          label: 'Never', kind: 'never', items: [
+            ['Print a rule without its confidence.', null],
+            ['Certify compliance.', null],
+          ],
+        },
+      ],
+      pull: 'It grades a house against its counts. It never says the house is compliant.',
+    },
+    {
+      key: 'evidence', kind: 'evidence', id: 'record',
+      heading: 'A resident is a label, never a name.',
+      blocks: [
+        { label: 'The resident record', quote: 'Room 2 · A', text: 'Diet tags, Fatal Four roles, one texture level, allergens, prep preferences. Enough for a tray note and a menu check, and nothing more. The validator refuses two capitalised words. There are no clinical columns.' },
+        { label: 'Classification', text: 'One table holds protected information: residents. Memberships hold personal information. Everything else is public. A Customer BAA is accepted at signup, before the trial.' },
+        { label: 'What an email says', text: 'Eighteen family templates, each carrying a house code, a count, a date, an amount, the person’s own name and a link. The type refuses a free-text string.' },
+        { label: 'What a push says', text: 'A template key and typed parameters. The inbox renders from the record at read time; no notification row stores free text.' },
+        { label: 'The shared run', text: 'A token-addressed snapshot of items and quantities, with no read path to residents. A check asserts it, in CI, on every build.' },
+        { label: 'Tray notes', text: 'Rendered, not stored.' },
+      ],
+    },
+    {
+      key: 'roles', kind: 'roles', id: 'roles',
+      heading: 'Six people, and one of them has no account.',
+      sub: 'The person doing the shopping is often not the person with the licence. That is the whole reason for the last two rows.',
+      cols: ['Role', 'Who', 'In CareShop, they', 'Device'],
+      rows: [
+        ['provider', 'The licence holder; an agency’s Executive Director', 'Set purchasing policy, approve, see spend across houses, manage the catalogue, review the rule set, manage billing', 'Phone + laptop'],
+        ['manager', 'Resident manager; program manager, on named houses', 'Plan the week’s menu, approve requests for her own houses, attest to counts, run the wizard', 'Phone'],
+        ['caregiver', 'Direct care staff', 'Count, scan, file a buy request, cook from Today, shop from the list, read tray notes', 'Phone, at the shelf and in the store'],
+        ['buyer (a flag)', 'Whoever shops', 'Shopping mode, the receipt, the till-roll check', 'Phone, in the store'],
+        ['no account', 'A spouse doing the Costco run', 'Open a shared run, check off, close it — and a signed-in person pulls it back', 'Phone, on the web', 'wash'],
+        ['operator', 'The platform team', 'The console: provision, suspend, impersonate with a reason, repair accounts', 'Web'],
+      ],
+    },
+    {
+      key: 'objections', kind: 'qa', id: 'questions',
+      heading: 'The questions we get.',
+      rows: [
+        ['Isn’t this just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
+        ['Who checks your rules?', 'A provider who has been inspected on that track. Until she has, the citation prints inferred, and the dashboard and every export carry a banner. We print the confidence rather than a tidy screen.'],
+        ['My caregiver’s phone has no signal in the store.', 'Picks queue offline. The till roll is read on the device. Every shift write goes through the outbox with idempotency, so a pick is never counted twice.'],
+        ['Can I use it across more than one house?', 'Yes. Scale gives unlimited houses and seats, multi-house views and your own branding, at thirty-seven dollars a month.'],
+      ],
+    },
+    {
+      key: 'start', kind: 'start', id: 'start',
+      heading: 'The first ten minutes.',
+      sub: 'If the loop closes once, you trust it.',
+      steps: ['Add a zone and scan five items from the pantry.', 'Set a par on one, and watch it become a buy request.', 'Add a resident with a tree-nut allergy, and see the menu warn.', 'Open Compliance and see the reserve target computed from your bed count.'],
+    },
+    {
+      key: 'pricing', kind: 'tiers', id: 'pricing',
+      heading: 'Nineteen dollars a house.',
+      sub: EVERY_PLAN,
+      main: 1,
+      note: 'Sold on the web through Stripe Checkout; the native application never presents a purchase sheet. Three days on the trial, card on file, one-tap cancel.',
+    },
+    {
+      key: 'ladder', kind: 'map', id: 'ladder',
+      heading: 'When the kitchen becomes the whole house.',
+      sub: 'Export → import, one login.',
+      rows: [
+        ['Items, the stock ledger, pars, expiries, zones', 'M14 Inventory & Supplies tracking'],
+        ['Buy requests, trips, receipts, policies, stores, prices', 'M14 ordering and vendor'],
+        ['Meals, menus, cook sessions', 'M14 — a gap Provider Hub Oregon absorbs'],
+        ['Minimal residents', 'M02 medical'],
+        ['Rule sets, attestations, snapshots', 'M15 Quality Assurance and M06 Digital Binder'],
+      ],
+      footer: 'Lands on Professional, when purchasing is integrated with billing, vendor management arrives, or you want the full compliance programme.',
+    },
+    { key: 'family', kind: 'band', id: 'family', heading: 'One house. Four rooms. One ladder.', byline: 'by Provider Hub Oregon' },
+    {
+      key: 'foot', kind: 'foot', id: 'foot',
+      by: 'by Provider Hub Oregon',
+      disclaimer: 'The rows on any screen shown here are sample data. Prices quoted for other products are their own published figures.',
+    },
+  ],
+};
+
 /* ── Aidepost ─────────────────────────────────────────────────────────────
    The seven-cell week rule, and the page that turns over. The only product
    with a structural insert: a full-bleed dark caregiver section between
@@ -672,7 +842,7 @@ function said(rows, key) {
   return r ? `${r[0]} · ${r[1]}` : key;
 }
 
-export const PAGES = { cohort, binderkit, aidepost };
+export const PAGES = { cohort, careshop, binderkit, aidepost };
 
 /* The sibling cards under the family band: the parent first, then the three
    siblings. Computed from brand.js so a name or a descriptor cannot drift. */

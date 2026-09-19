@@ -19,6 +19,9 @@ export const CONFIGS = {
       secondary: 'See Today',
       secondaryHref: '#today',
     },
+    // The console that started as the brainstorm at mini.providerhub.us now
+    // answers on Cohort's own domain; the landing page links to it.
+    signIn: { label: 'Open the console', href: 'https://app.cohorthome.app' },
     nav: [
       { id: 'today', label: 'The screen' },
       { id: 'pass', label: 'The pass' },
@@ -36,6 +39,46 @@ export const CONFIGS = {
         ['Protected health information', 'Fourteen tables. Residents, their allergies and diagnoses, medication orders and doses, care notes, incidents and plan versions — everything a shift is run from.'],
         ['Personal information', 'Two tables: the people who sign in, and their membership of an organisation and its houses.'],
         ['Public', 'Three tables, holding nothing about any person.'],
+      ],
+      baa: true,
+    },
+  },
+
+  careshop: {
+    product: 'careshop',
+    domain: 'careshop.app',
+    description: 'Stock by zone, dated perishables, a weekly menu checked against who lives there, a buy queue under your policy, and receipts that land prices back on the shelf.',
+    preloadFonts: FONTS,
+    legalLine: LEGAL,
+    // The one product in the family that can be bought today, so its button
+    // is a signup rather than a list to join.
+    cta: {
+      primary: 'Start the 3-day trial',
+      primaryHref: '/signup',
+      nav: 'Start the trial',
+      secondary: 'See the buy queue',
+      secondaryHref: '#queue',
+    },
+    signIn: { label: 'Sign in', href: '/login' },
+    // Served by the CareShop application, not by this page.
+    appPaths: ['/signup', '/login'],
+    nav: [
+      { id: 'queue', label: 'The queue' },
+      { id: 'loop', label: 'The loop' },
+      { id: 'boundary', label: 'What it does' },
+      { id: 'pricing', label: 'Pricing' },
+    ],
+    faq: [
+      ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
+      ['Who checks the rules CareShop cites?', 'A provider who has been inspected on that track. Until she has, the citation prints inferred, and the dashboard and every export carry a banner.'],
+      ['What if the phone has no signal in the store?', 'Picks queue offline and the till roll is read on the device. Every write goes through an outbox with idempotency, so a pick is never counted twice.'],
+      ['How much does CareShop cost?', 'Nineteen dollars a house a month on Pro, thirty-seven on Scale for unlimited houses and seats. Three days on the trial, card on file, one-tap cancel.'],
+    ],
+    privacy: {
+      holds: [
+        ['Protected health information', 'One table: residents — diet tags, allergens, one texture level, Fatal Four roles and prep preferences. Enough for a tray note and a menu check. There are no clinical columns, and the validator refuses a name.'],
+        ['Personal information', 'Memberships: the people who sign in, and their membership of an organisation and its houses.'],
+        ['Public', 'Everything else — the catalogue, stores, prices, rule sets.'],
       ],
       baa: true,
     },

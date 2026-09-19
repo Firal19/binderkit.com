@@ -90,6 +90,14 @@ table { border-collapse: collapse; }
 .lp-top .lp-links a:hover { color: var(--t-ink); }
 .lp-top .lp-links a[aria-current="true"] { color: var(--t-ink); border-bottom-color: var(--t-teal); }
 .lp-nav-r { display: flex; align-items: center; gap: 10px; }
+.lp-signin {
+  font-weight: 500; font-size: 15px; color: var(--t-muted); text-decoration: none;
+  padding: 8px 4px; white-space: nowrap; transition: color 140ms ease;
+}
+.lp-signin:hover { color: var(--t-ink); }
+[data-mode="dark"] .lp-signin { color: color-mix(in srgb, var(--t-ivory) 74%, var(--t-teal-deep)); }
+[data-mode="dark"] .lp-signin:hover { color: var(--t-ivory); }
+@media (max-width: 900px) { .lp-top .lp-signin { display: none; } }
 .lp-burger {
   display: none; align-items: center; justify-content: center;
   width: 44px; height: 44px; margin-right: -10px; color: var(--t-ink);
@@ -308,10 +316,18 @@ table { border-collapse: collapse; }
 .lp-screen-v .phone { zoom: .78; }
 .lp-care-v .phone { zoom: .66; }
 .lp-hero-v .phone { --z: .62; }
+/* The cropped phone is not a preview scale: it is held close, and the crop
+   box eats the bezel. sections.css says .9; this file loads after it, so it
+   has to say .9 again at the same specificity or the hero shrinks. */
+.lp-hero-v .lp-crop .phone, .lp-screen-v .lp-crop .phone { zoom: .9; --z: .9; }
 .lp-screen-v .phone { --z: .78; }
 .lp-care-v .phone { --z: .66; }
 @container lp (max-width: 980px) {
   .lp-hero-v .phone, .lp-screen-v .phone, .lp-care-v .phone { zoom: .86; --z: .86; }
+  .lp-hero-v .lp-crop .phone, .lp-screen-v .lp-crop .phone { zoom: .8; --z: .8; }
+  .lp-crop { max-width: none; height: auto; }
+  .lp-crop .phone { margin-top: 0; }
+  .lp-crop::after { display: none; }
 }
 @container lp (max-width: 380px) {
   .lp-hero-v .phone, .lp-screen-v .phone, .lp-care-v .phone { zoom: .78; --z: .78; }

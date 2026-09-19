@@ -129,6 +129,9 @@ function instrument(which, p, ctx) {
   if (which === 'web') return panned(webShell(p.id, { mode: 'light' }));
   if (which === 'ios') return iosShell(p.id, { mode: 'light' });
   if (which === 'ios-dark') return iosShell(p.id, { mode: 'dark' });
+  // CareShop's hero is a phone held at the shelf: cropped wide to the buy
+  // queue rows, so a row is legible rather than a phone being admired.
+  if (which === 'crop') return `<div class="lp-crop">${iosShell(p.id, { mode: 'light' })}</div>`;
   if (which === 'paper') return paperHero();
   if (which === 'week') return weekHero();
   return iosShell(p.id, { mode: 'light' });
@@ -153,7 +156,7 @@ const hero = (s, ctx) => {
       <h1 id="h1">${esc(p.headline.text)}</h1>
       <p class="lp-lede">${lede}</p>
       <div class="lp-ctas">
-        <a class="lp-btn pri" href="#join" data-cta="hero">${esc(cfg.cta.primary)}</a>
+        <a class="lp-btn pri" href="${esc(cfg.cta.primaryHref || '#join')}" data-cta="hero">${esc(cfg.cta.primary)}</a>
         <a class="lp-btn" href="${esc(cfg.cta.secondaryHref)}">${esc(cfg.cta.secondary)}</a>
       </div>
       <p class="lp-fine">${esc(s.fine)}</p>
@@ -361,7 +364,7 @@ const tiers = (s, ctx) => {
       <span class="lp-tier-p ${soon ? 'is-soon' : ''}">${esc(price)}</span>
       <span class="lp-tier-d">${esc(d)}</span>
     </div>`).join('')}</div>${s.note ? `<p class="lp-fine">${esc(s.note)}</p>` : ''}${notes}
-    <div class="lp-ctas"><a class="lp-btn pri" href="#join" data-cta="pricing">${esc(ctx.cfg.cta.primary)}</a></div>`);
+    <div class="lp-ctas"><a class="lp-btn pri" href="${esc(ctx.cfg.cta.primaryHref || '#join')}" data-cta="pricing">${esc(ctx.cfg.cta.primary)}</a></div>`);
 };
 
 /* ── 13 · the ladder ───────────────────────────────────────────────────── */
@@ -390,7 +393,7 @@ const foot = (s, ctx) => {
     <div class="lp-foot-t">
       <div class="lp-foot-l">${mark(p.id, 22, { label: false })}<span>${esc(p.name)}</span><span class="lp-foot-by">${esc(s.by)}</span></div>
       <nav class="lp-foot-r" aria-label="Footer">
-        <a href="#join">Early access</a>
+        <a href="${esc(cfg.cta.primaryHref || '#join')}">${esc(cfg.cta.nav)}</a>
         <a href="/privacy">Privacy</a>
         <a href="https://providerhub.us" rel="noopener">Provider Hub Oregon</a>
       </nav>
@@ -417,15 +420,16 @@ function nav(p, cfg) {
       <a class="lp-brand" href="/" aria-label="${esc(p.name)} — home">${mark(p.id, 26, { label: false })}<span class="lp-brand-n">${esc(p.name)}</span></a>
       <nav class="lp-links" aria-label="Sections">${links}</nav>
       <div class="lp-nav-r">
+        ${cfg.signIn ? `<a class="lp-signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>` : ''}
         <button class="lp-mode" type="button" aria-pressed="false" aria-label="Switch to dark">${MOON}${SUN}</button>
-        <a class="lp-btn pri sm" href="#join" data-cta="nav">${esc(cfg.cta.nav)}</a>
+        <a class="lp-btn pri sm" href="${esc(cfg.cta.primaryHref || '#join')}" data-cta="nav">${esc(cfg.cta.nav)}</a>
         <button class="lp-burger" type="button" aria-expanded="false" aria-controls="lp-menu" aria-label="Open menu">${icon('menu', 22)}</button>
       </div>
     </div>
     <div class="lp-progress" aria-hidden="true"><i></i></div>
     <div class="lp-menu" id="lp-menu" hidden>
-      <nav aria-label="Sections, mobile">${links}</nav>
-      <a class="lp-btn pri" href="#join" data-cta="menu">${esc(cfg.cta.primary)}</a>
+      <nav aria-label="Sections, mobile">${links}${cfg.signIn ? `<a href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>` : ''}</nav>
+      <a class="lp-btn pri" href="${esc(cfg.cta.primaryHref || '#join')}" data-cta="menu">${esc(cfg.cta.primary)}</a>
     </div>
   </header>`;
 }

@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CONFIG } from '../src/config.js';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
@@ -56,6 +57,7 @@ for (const m of html.matchAll(/href="#([^"]+)"/g)) {
 for (const m of html.matchAll(/(?:href|src)="(\/[^"#?]+)"/g)) {
   const rel = m[1];
   if (rel.endsWith('/')) continue;
+  if ((CONFIG.appPaths || []).includes(rel)) continue;   // another application answers this
   if (!files.includes(rel) && !files.includes(`${rel}/index.html`) && !files.includes(`${rel}.html`)) {
     note(fail, `the page asks for ${rel}, which is not in dist/`);
   }
@@ -85,9 +87,13 @@ for (const m of html.matchAll(/<img\b[^>]*>/g)) {
 }
 
 /* 7 · the form is a form ─────────────────────────────────────────────── */
-if (!/<form[^>]+action="\/api\/waitlist"/.test(html)) note(fail, 'the waitlist form has no action — it would not work with JS off');
-if (!/<label class="lp-field/.test(html)) note(fail, 'a form field is not inside a label');
-if (!/name="company"/.test(html)) note(warn, 'the honeypot field is gone');
+if (html.includes('id="join"')) {
+  if (!/<form[^>]+action="\/api\/waitlist"/.test(html)) note(fail, 'the waitlist form has no action — it would not work with JS off');
+  if (!/<label class="lp-field/.test(html)) note(fail, 'a form field is not inside a label');
+  if (!/name="company"/.test(html)) note(fail, 'the honeypot field is gone');
+} else if (!/href="(\/signup|https?:)/.test(html)) {
+  note(fail, 'the page has neither a waitlist nor a signup — its primary button goes nowhere');
+}
 
 /* 8 · the head says who this is ──────────────────────────────────────── */
 for (const need of ['<title>', 'name="description"', 'rel="canonical"', 'property="og:image"', 'name="twitter:card"', 'application/ld+json']) {
