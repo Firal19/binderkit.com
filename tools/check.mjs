@@ -42,7 +42,7 @@ const h1 = html.match(/<h1[\s>]/g) || [];
 if (h1.length !== 1) note(fail, `the page has ${h1.length} <h1> elements; it must have exactly one`);
 // Only the page's own sections. A <section> inside an instrument sits under
 // role="img", so its subtree is presentational and naming it would be noise.
-const sections = (html.match(/<section\b[^>]*>/g) || []).filter((s) => /class="lp-/.test(s));
+const sections = (html.match(/<section\b[^>]*>/g) || []).filter((s) => /class="(sec|hero)\b/.test(s));
 for (const s of sections) {
   if (!/aria-label(ledby)?=/.test(s)) note(fail, `a <section> carries no accessible name: ${s.slice(0, 90)}`);
 }
@@ -89,7 +89,7 @@ for (const m of html.matchAll(/<img\b[^>]*>/g)) {
 /* 7 · the form is a form ─────────────────────────────────────────────── */
 if (html.includes('id="join"')) {
   if (!/<form[^>]+action="\/api\/waitlist"/.test(html)) note(fail, 'the waitlist form has no action — it would not work with JS off');
-  if (!/<label class="lp-field/.test(html)) note(fail, 'a form field is not inside a label');
+  if (!/<label class="field/.test(html)) note(fail, 'a form field is not inside a label');
   if (!/name="company"/.test(html)) note(fail, 'the honeypot field is gone');
 } else if (!/href="(\/signup|https?:)/.test(html)) {
   note(fail, 'the page has neither a waitlist nor a signup — its primary button goes nowhere');

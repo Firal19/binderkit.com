@@ -1,33 +1,25 @@
-// One entry per site. This is the only file that differs between the three
-// repositories in anything but a single import line: everything else — the
-// data, the renderer, the face package, the stylesheet — is byte-identical,
-// which is the mechanism that makes the family read as one maker.
+// One entry per site. The page itself lives in render/pages/<id>.js and its
+// look in css/pages/<id>.css; this is the small set of facts the shared
+// pieces need — the domain, the nav, the buttons, the head, the social card.
 
-const FONTS = ['561da8545041.woff2', '175f6e93d557.woff2'];   // Instrument Sans, Fraunces — latin, upright
-const LEGAL = 'Bareeda LLC, doing business as Provider Hub Oregon. Oregon, USA.';
+const LEGAL = 'Bareeda LLC, doing business as Providerhub Oregon. Oregon, USA.';
 
 export const CONFIGS = {
   cohort: {
     product: 'cohort',
     domain: 'cohorthome.app',
     description: 'The app a care home’s staff run the residents’ day on: the MAR, care notes, incidents, tasks and the shift handoff. One record, stamped and never deleted.',
-    preloadFonts: FONTS,
+    preloadFonts: ['fraunces.woff2', 'instrument-sans.woff2'],
     legalLine: LEGAL,
-    cta: {
-      primary: 'Get early access',
-      nav: 'Early access',
-      secondary: 'See Today',
-      secondaryHref: '#today',
-    },
-    // The console that started as the brainstorm at mini.providerhub.us now
-    // answers on Cohort's own domain; the landing page links to it.
+    cta: { primary: 'Get early access', nav: 'Early access', secondary: 'See a shift' },
     signIn: { label: 'Open the console', href: 'https://app.cohorthome.app' },
     nav: [
-      { id: 'today', label: 'The screen' },
-      { id: 'pass', label: 'The pass' },
-      { id: 'boundary', label: 'What it does' },
+      { id: 'shift', label: 'The shift' },
+      { id: 'stops', label: 'Two stops' },
+      { id: 'record', label: 'The record' },
       { id: 'pricing', label: 'Pricing' },
     ],
+    og: { bg: '#F9F4EC', ink: '#17201F', accent: '#E0704F', tile: '#0F5C5A', glyph: '#F9F4EC', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
     faq: [
       ['Will Cohort stop my caregiver mid-shift?', 'Twice, ever: a medication that matches a recorded allergy, and an as-needed dose given too soon after the last one. Everything else surfaces and steps aside. There are no countdown timers anywhere in the product.'],
       ['Does Cohort work when the house wifi is bad?', 'Yes. Incidents are filed offline-safe and idempotent, and every shift write goes through an outbox. The record catches up; the caregiver does not wait for it.'],
@@ -48,31 +40,23 @@ export const CONFIGS = {
     product: 'careshop',
     domain: 'careshop.app',
     description: 'Stock by zone, dated perishables, a weekly menu checked against who lives there, a buy queue under your policy, and receipts that land prices back on the shelf.',
-    preloadFonts: FONTS,
+    preloadFonts: ['fraunces.woff2', 'hanken-grotesk.woff2'],
     legalLine: LEGAL,
-    // The one product in the family that can be bought today, so its button
-    // is a signup rather than a list to join.
-    cta: {
-      primary: 'Start the 3-day trial',
-      primaryHref: '/signup',
-      nav: 'Start the trial',
-      secondary: 'See the buy queue',
-      secondaryHref: '#queue',
-    },
+    cta: { primary: 'Start free', primaryHref: '/signup', nav: 'Start free', secondary: 'See the loop' },
     signIn: { label: 'Sign in', href: '/login' },
-    // Served by the CareShop application, not by this page.
-    appPaths: ['/signup', '/login'],
+    appPaths: ['/signup', '/login', '/features', '/pricing', '/contact'],
     nav: [
-      { id: 'queue', label: 'The queue' },
       { id: 'loop', label: 'The loop' },
-      { id: 'boundary', label: 'What it does' },
+      { id: 'stock', label: 'Stock' },
+      { id: 'queue', label: 'The queue' },
       { id: 'pricing', label: 'Pricing' },
     ],
+    og: { bg: '#f6f4f0', ink: '#191713', accent: '#c25a38', tile: '#486b3d', glyph: '#ffffff', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Hanken Grotesk', bodyFile: 'hanken-grotesk.woff2', weight: 600 },
     faq: [
       ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
       ['Who checks the rules CareShop cites?', 'A provider who has been inspected on that track. Until she has, the citation prints inferred, and the dashboard and every export carry a banner.'],
       ['What if the phone has no signal in the store?', 'Picks queue offline and the till roll is read on the device. Every write goes through an outbox with idempotency, so a pick is never counted twice.'],
-      ['How much does CareShop cost?', 'Nineteen dollars a house a month on Pro, thirty-seven on Scale for unlimited houses and seats. Three days on the trial, card on file, one-tap cancel.'],
+      ['How much does CareShop cost?', 'Free to start with one house and up to three people. Nineteen dollars a house a month on Pro, thirty-seven on Scale for unlimited houses and seats.'],
     ],
     privacy: {
       holds: [
@@ -88,20 +72,16 @@ export const CONFIGS = {
     product: 'binderkit',
     domain: 'binderkit.com',
     description: 'A licence track and five answers in; printable binder plans out — tabs, a contents page with the authority beside each item, a brief and an SOP.',
-    preloadFonts: FONTS,
+    preloadFonts: ['newsreader.woff2', 'instrument-sans.woff2'],
     legalLine: LEGAL,
-    cta: {
-      primary: 'Get early access',
-      nav: 'Early access',
-      secondary: 'See a contents page',
-      secondaryHref: '#contents',
-    },
+    cta: { primary: 'Get early access', nav: 'Early access', secondary: 'See the contents page' },
     nav: [
-      { id: 'contents', label: 'The page' },
       { id: 'plan', label: 'The plan' },
+      { id: 'page', label: 'The page' },
       { id: 'library', label: 'The library' },
       { id: 'pricing', label: 'Pricing' },
     ],
+    og: { bg: '#FFFFFF', ink: '#17201F', accent: '#6E8FE8', tile: '#17201F', glyph: '#FFFFFF', display: 'Newsreader', displayFile: 'newsreader.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
     faq: [
       ['Can’t I just copy another provider’s binder?', 'A copied binder carries someone else’s licence track, someone else’s house count, and someone else’s gaps. Binderkit builds the plan from your track and your five answers.'],
       ['Will Binderkit make me compliant?', 'No. It tells you what the rule asks for, with the rule printed beside it, in order. It does not certify anything — and the words ready, compliant and audit-proof are forbidden in the product by design.'],
@@ -122,22 +102,17 @@ export const CONFIGS = {
     product: 'aidepost',
     domain: 'aidepost.com',
     description: 'Staff and credential dates, the roster, the open-shift board, clock-in and timesheets — plus job posts and a relief pool of caregivers, free to them.',
-    preloadFonts: FONTS,
+    preloadFonts: ['bricolage-grotesque.woff2', 'manrope.woff2'],
     legalLine: LEGAL,
-    cta: {
-      primary: 'Get early access',
-      nav: 'Early access',
-      secondary: 'Caregivers: find shifts',
-      secondaryHref: '#caregivers',
-    },
-    // Aidepost is the only two-sided product, so its list takes both sides.
+    cta: { primary: 'Get early access', nav: 'Early access', secondary: 'Caregivers: find shifts' },
     joinHouses: ['I’m a caregiver'],
     nav: [
-      { id: 'board', label: 'The board' },
-      { id: 'flow', label: 'How it fills' },
+      { id: 'providers', label: 'For providers' },
       { id: 'caregivers', label: 'For caregivers' },
+      { id: 'credentials', label: 'Credentials' },
       { id: 'pricing', label: 'Pricing' },
     ],
+    og: { bg: '#F7F3EC', ink: '#17201F', accent: '#D4699F', tile: '#17201F', glyph: '#F7F3EC', display: 'Bricolage Grotesque', displayFile: 'bricolage-grotesque.woff2', body: 'Manrope', bodyFile: 'manrope.woff2', weight: 700 },
     faq: [
       ['Why not just post an open shift in the Facebook group?', 'A Facebook group does not know who holds a current CPR card, cannot record that the shift was offered to your own staff first, and leaves you no timesheet at the end of the week.'],
       ['Will Aidepost stop me scheduling someone whose CPR has lapsed?', 'No. It tells you at thirty days, at seven days, and on the roster itself. Credentials are surfaced, never enforced — the decision stays yours.'],

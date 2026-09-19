@@ -80,8 +80,8 @@ for (const route of PAGES) {
         if (r.right > vw + 1.5 || r.left < -1.5) {
           const s = getComputedStyle(el);
           if (s.overflowX === 'auto' || s.overflowX === 'scroll' || s.position === 'fixed') continue;
-          if (el.closest('[class*="scrollx"], .lp-board-in, .lp-tblw, .lp-pan')) continue;
-          if (el.closest('.lp-hp, .sr-only')) continue;   // parked off-screen on purpose
+          if (el.closest('.board-w, .shell, .crop, .fan, .divs, .tour')) continue;   // scrolls or clips inside its own box
+          if (el.closest('.hp, .sr-only, .skip')) continue;   // parked off-screen on purpose
           out.push(`${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ')[0]} → ${Math.round(r.right)}`);
         }
       }

@@ -1,0 +1,42 @@
+/* instruments-extra.css — the components the new screens need, in the same
+   vocabulary as canvas.css: every gap a --g multiple, every corner a --t-r-*,
+   every colour a role. Loads after shells.css. */
+
+/* a passage of prose inside a tile — the handoff's one free-text field */
+.passage-a { font-size: calc(var(--t-body-size) + .5px); line-height: 1.5; color: var(--c-ink); }
+
+/* numbered steps — cook mode */
+.steps-a { display: flex; flex-direction: column; gap: calc(var(--g) * 2); }
+.steps-i { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: calc(var(--g) * 2.5); align-items: start; padding: calc(var(--g) * 2.5) calc(var(--g) * 3); background: var(--c-card); border: var(--t-border) solid var(--c-line); border-radius: var(--t-r-md); box-shadow: var(--c-sh1); }
+.steps-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-family: var(--t-numeral-face); font-size: calc(var(--t-body-size) - 1px); font-weight: 600; background: var(--c-wash); color: var(--c-teal-deep); }
+.steps-i[data-state="done"] .steps-n { background: var(--c-teal); color: var(--c-ground); }
+.steps-i[data-state="now"] { border-color: color-mix(in srgb, var(--t-accent) 45%, transparent); box-shadow: var(--c-sh2); }
+.steps-i[data-state="now"] .steps-n { background: var(--t-accent); color: var(--c-teal-deep); }
+.steps-t { display: block; font-weight: 600; }
+.steps-d { display: block; font-size: calc(var(--t-body-size) - 1px); color: var(--c-soft); margin-top: 2px; }
+.steps-a.is-desk { max-width: 620px; }
+
+/* aisle-ordered list — shopping mode */
+.aisles-a { display: flex; flex-direction: column; gap: calc(var(--g) * 3); }
+.aisle-a { background: var(--c-card); border: var(--t-border) solid var(--c-line); border-radius: var(--t-r-lg); overflow: hidden; box-shadow: var(--c-sh1); }
+.aisle-h { display: block; padding: calc(var(--g) * 2) calc(var(--g) * 4) calc(var(--g) * 1.5); font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1px); letter-spacing: 0.1em; text-transform: var(--t-label-transform); color: var(--c-soft); border-bottom: var(--t-border) solid var(--c-line); }
+.aisle-r { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: calc(var(--g) * 3); align-items: center; padding: calc(var(--g) * 2.5) calc(var(--g) * 4); border-bottom: var(--t-border) solid var(--c-line); }
+.aisle-r:last-child { border-bottom: 0; }
+.aisle-r[data-state="picked"] .aisle-t { color: var(--c-soft); text-decoration: line-through; text-decoration-color: var(--c-line); }
+.aisle-t { font-weight: 500; }
+.aisle-p { font-family: var(--t-numeral-face); font-variant-numeric: tabular-nums; color: var(--c-body); white-space: nowrap; }
+.aisles-a.is-desk { max-width: 640px; }
+
+/* the week as bars — timesheets */
+.bars-a { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: calc(var(--g) * 1.5); align-items: end; height: 132px; padding: calc(var(--g) * 3) calc(var(--g) * 3) calc(var(--g) * 2); background: var(--c-card); border: var(--t-border) solid var(--c-line); border-radius: var(--t-r-lg); box-shadow: var(--c-sh1); }
+.bars-c { display: grid; grid-template-rows: auto 1fr auto; gap: 4px; height: 100%; align-items: end; justify-items: center; }
+.bars-v { font-family: var(--t-numeral-face); font-size: calc(var(--t-body-size) - 2.5px); color: var(--c-body); font-variant-numeric: tabular-nums; min-height: 1em; }
+.bars-b { width: 100%; max-width: 26px; height: var(--h, 0%); min-height: 4px; align-self: end; border-radius: calc(var(--t-r-sm) - 6px) calc(var(--t-r-sm) - 6px) 3px 3px; background: var(--c-teal); }
+.bars-b[data-off="1"] { background: var(--c-line); height: 4px; }
+.bars-l { font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1.5px); letter-spacing: 0.08em; text-transform: var(--t-label-transform); color: var(--c-soft); }
+.bars-a.is-desk { max-width: 560px; height: 160px; }
+
+/* the check box the shopping list carries; canvas.css only styled the table one */
+.ck-a { display: inline-block; width: 16px; height: 16px; border-radius: 5px; border: var(--t-border) solid var(--c-line); background: var(--c-card); flex: none; }
+.ck-a.on { background: var(--c-teal); border-color: var(--c-teal); position: relative; }
+.ck-a.on::after { content: ""; position: absolute; left: 5px; top: 2px; width: 4px; height: 8px; border: solid var(--c-ground); border-width: 0 2px 2px 0; transform: rotate(45deg); }

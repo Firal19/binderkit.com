@@ -263,6 +263,32 @@ const surfaces = {
         foot: 'Corrections are addenda under the original. Un-administering is forbidden by the state machine.',
         side: { kind: 'handoff', t: 'What left the house', rows: [['Email', '“You have 2 items waiting in Cohort for WH-1.”'], ['Push', '“WH-1: medication due.”'], ['Analytics', 'Per house per day, never per resident']], receipt: 'The house short-code is product-assigned, never typed', cta: 'Print for the licensing file' },
       },
+      {
+        key: 'handoff', tab: 4, nav: 'Handoff',
+        title: 'Handoff', sub: 'WH-1 · night → day · 06:55',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Handoff'],
+        desktopTitle: 'Handoff', desktopSub: 'Composed from the MAR, documentation, incidents, tasks and open issues — then read, with a receipt.',
+        sheetRows: [['MAR', '18 of 18 signed', 'given'], ['Documentation', '9 of 9', 'given'], ['Incidents', 'None filed', 'given'], ['Tasks', '1 open · fridge 2', 'due'], ['Controlled count', 'Prompted at handover', 'due']],
+        passage: 'Room 4 slept poorly; declined breakfast twice this week. Fridge 2 still reading high — work order filed.',
+        receipt: 'Read by J. Ruiz · 07:02',
+        foot: 'Acknowledgement is never assumed. The incoming caregiver reads, and a receipt is recorded.',
+        side: { kind: 'handoff', t: 'Every shift', rows: [['Composed', 'from the record'], ['Written', 'one passage'], ['Read', 'with a receipt'], ['Printed', 'for the file']], receipt: 'Handoff history is kept per shift', cta: 'Start handover' },
+      },
+      {
+        key: 'residents', tab: 1, nav: 'Residents',
+        title: 'Residents', sub: 'WH-1 · five residents',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Residents'],
+        desktopTitle: 'Residents', desktopSub: 'Directory; a profile with Overview, Allergies, Diagnoses, Contacts, Summary Sheet, Plans and History.',
+        rows: [
+          { t: 'Room 1', s: 'No allergies recorded · plan expires Jan', state: 'given', stateText: 'Enquired', chev: true },
+          { t: 'Room 2', s: 'Allergy · loratadine', state: 'due', stateText: 'Allergy', chev: true },
+          { t: 'Room 3', s: 'Allergy · tree nut, peanut', state: 'due', stateText: 'Allergy', chev: true },
+          { t: 'Room 4', s: 'Elopement window · from the plan', state: 'held', stateText: 'Plan', chev: true },
+          { t: 'Room 5', s: 'Nobody has recorded allergies yet', state: 'held', stateText: 'Not asked', chev: true },
+        ],
+        foot: '“No allergies recorded” and “nobody has asked yet” are two different facts, and the record keeps them apart.',
+        side: { kind: 'handoff', t: 'Summary sheet', rows: [['Allergies', 'on file'], ['Diagnoses', '2'], ['Contacts', '3'], ['Plan version', 'v3 · expires Jan']], receipt: 'Printed for the licensing file', cta: 'Open the summary sheet' },
+      },
     ],
   },
 
@@ -316,6 +342,46 @@ const surfaces = {
         risk: 'Value at risk · $14.20 — use it, replace it, or discard it with a reason.',
         foot: 'Value at risk · $14.20. No inspection language anywhere on this screen — it is food safety, not a finding.',
         side: { kind: 'ladder', t: 'Reserve', rows: [['WH-1 · 5 beds', 3, 'stocked'], ['WH-2 · 4 beds', 1, 'short'], ['GH-1 · 3 beds', 3, 'stocked']], foot: 'Target = N days × licensed bed count', cta: 'File the gap' },
+      },
+      {
+        key: 'stock', tab: 1, nav: 'Stock',
+        title: 'Stock', sub: 'WH-1 · by zone · counted this morning',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Pantry'],
+        desktopTitle: 'Stock by zone', desktopSub: 'Zone is where it sits in the house. Category is the catalogue facet. Aisle is the route through a store. Never the same axis.',
+        zones: ['Pantry', 'Fridge', 'Freezer', 'Reserve'],
+        rows: [
+          { t: 'Rice · 10 lb', s: 'Par 3 · on hand 1', state: 'short', stateText: '2 below par', v: '1' },
+          { t: 'Whole milk · gal', s: 'Par 2 · opened Tue', state: 'expiring', stateText: '3 days', v: '2' },
+          { t: 'Oatmeal · 42 oz', s: 'Par 2 · on hand 3', state: 'stocked', stateText: 'Stocked', v: '3' },
+          { t: 'Applesauce · cups', s: 'Par 12 · dated 21 Sep', state: 'expiring', stateText: '2 days', v: '9' },
+          { t: 'Bottled water · 24-pk', s: 'Reserve · 3 days × 5 beds', state: 'short', stateText: 'Gap', v: '2' },
+        ],
+        foot: 'On hand is never typed. Every change is a ledger row with an actor and a reason — count, scan, cook, discard, receipt.',
+        side: { kind: 'ladder', t: 'Counted today', rows: [['Pantry', 0, 'stocked'], ['Fridge', 0, 'stocked'], ['Freezer', 4, 'expiring'], ['Reserve', 1, 'short']], foot: 'Four zones · walk order set by the house', cta: 'Scan an item' },
+      },
+      {
+        key: 'cook', tab: 3, nav: 'Menu',
+        title: 'Cook this', sub: 'Thu dinner · chicken and rice · 5 trays',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Cook mode'],
+        desktopTitle: 'Cook mode', desktopSub: 'Today’s prep in the house’s own time zone; the allergen check before you plate; stock goes down when you complete, idempotently.',
+        steps: [['1', 'Rinse and simmer the rice', '18 min', 'done'], ['2', 'Sear chicken thighs', '12 min', 'now'], ['3', 'Allergen check · 5 trays', 'before plating', 'next'], ['4', 'Complete → stock down', 'rice −2 cups · chicken −3 lb', 'next']],
+        trays: [['Room 1', 'regular'], ['Room 2', 'minced · IDDSI 5'], ['Room 3', 'no peanut · no tree nut'], ['Room 4', 'regular'], ['Room 5', 'no pork']],
+        foot: 'Tray notes are rendered from the resident’s tags, never stored. A resident is a label — “Room 2” — never a name.',
+        side: { kind: 'ladder', t: 'Allergen check', rows: [['Peanut', 0, 'stocked'], ['Tree nut', 0, 'stocked'], ['Milk', 1, 'expiring'], ['Egg', 0, 'stocked']], foot: 'Nine standard allergens · warns, never blocks', cta: 'Complete' },
+      },
+      {
+        key: 'shop', tab: 2, nav: 'Shopping',
+        title: 'Shopping', sub: 'WinCo · aisle order · 3 picks queued offline',
+        scope: ['Meadow Care', 'All houses', 'WinCo run'],
+        desktopTitle: 'Shopping list', desktopSub: 'An aisle-ordered list priced by store. In shopping mode a pick becomes Purchased with the actual store and the actual cost; picks queue offline.',
+        aisles: [
+          ['Aisle 3 · Dairy', [['Whole milk · 2 gal', '$4.98', 'picked'], ['Oat milk · 1 gal', '$4.29', 'picked']]],
+          ['Aisle 7 · Grains', [['Rice · 10 lb', '$6.49', 'picked'], ['Oatmeal · 42 oz', '$3.79', 'open']]],
+          ['Aisle 12 · Water', [['Bottled water · 24-pk × 3', '$9.99 at Costco', 'open']]],
+        ],
+        total: 'Picked $15.76 · 2 left · receipt lands prices on the shelf',
+        foot: 'Picks queue offline with an idempotency key, so a pick is never counted twice. Closing the run writes the ledger.',
+        side: { kind: 'ladder', t: 'This run', rows: [['Picked', 3, 'stocked'], ['Left', 2, 'short'], ['Queued offline', 3, 'expiring']], foot: 'Till roll read on the device', cta: 'Close the run' },
       },
     ],
   },
@@ -371,6 +437,26 @@ const surfaces = {
         foot: 'A superseded version is kept, never deleted. Notes are carried by item ID; edits are discarded on reset, notes are not.',
         side: { kind: 'binders', t: 'Control numbers', rows: [['Resident binder', 'RB-0418', 'v2'], ['Staff binder', 'SB-0418', 'v1'], ['Facility binder', 'FB-0419', 'v1'], ['Emergency binder', 'EB-0420', 'v1'], ['Policy binder', 'PB-0421', 'v1']], cta: 'Compare versions' },
       },
+      {
+        key: 'print', tab: 1, nav: 'Binders',
+        title: 'Print', sub: 'Resident binder · four artefacts',
+        scope: ['Meadow Care', 'Facility WH-1', 'Print'],
+        desktopTitle: 'Print', desktopSub: 'The contents page, the tab dividers, the brief and the procedure — each print writes a record with its control number.',
+        artefacts: [['Contents page', '1 page · RB-0418', 'verified'], ['Tab dividers', '5 tabs · common divider stock', 'verified'], ['One-page brief', 'Why this binder exists', 'verified'], ['Standard operating procedure', 'How it is kept, in order', 'derived']],
+        note: 'Printing every binder at once is permitted. Bulk editing is not.',
+        foot: 'A print that fails consumes no control number. Any past control number reproduces the identical artefact.',
+        side: { kind: 'binders', t: 'Print record', rows: [['RB-0418', 'today · 1 copy', 'v2'], ['RB-0417', '14 Sep · 3 copies', 'v1'], ['SB-0418', '02 Sep · 1 copy', 'v1']], cta: 'Print all binders' },
+      },
+      {
+        key: 'editor', tab: 0, nav: 'Plan',
+        title: 'Edit, guarded', sub: 'Resident binder · 5 tabs',
+        scope: ['Meadow Care', 'Facility WH-1', 'Editor'],
+        desktopTitle: 'The guarded editor', desktopSub: 'Add, remove or reorder a tab. Three guardrails answer in plain words: coverage, scope and access, cohesion.',
+        tabsList: [['Tab 1', 'Admission and documentation', 'OAR 411-360-0170', 'required'], ['Tab 2', 'Health and medication records', 'OAR 411-360-0140', 'required'], ['Tab 3', 'Incident and abuse reporting', 'OAR 411-360-0185', 'required'], ['Tab 4', 'Emergency information', 'OAR 411-360-0150', 'movable'], ['Tab 5', 'Service plan and goals', 'OAR 411-360-0130', 'required'], ['Tab 6', 'House visitors log', 'Your own practice', 'custom']],
+        refusal: 'This item is required by 411-360-0170; it can move but not go.',
+        foot: 'A refusal names the guardrail, the rule and the alternative. A refusal that offers no alternative is a defect.',
+        side: { kind: 'binders', t: 'Three guardrails', rows: [['Coverage', 'every required item stays', ''], ['Scope and access', 'nothing about a person', ''], ['Cohesion', 'a tab holds one subject', '']], cta: 'Save as version 3' },
+      },
     ],
   },
 
@@ -423,6 +509,27 @@ const surfaces = {
         free: 'No organisation, no card. Your credential dates are yours and travel with you.',
         foot: 'The only surface in the family a consumer has to be able to find — and the only one nobody pays for.',
         side: { kind: 'expiry', t: 'Credentials', groups: [['Current', [['CPR', 'Mar 2027'], ['Medication-certified', 'Jan 2027']], 'covered'], ['Expiring', [['First Aid', 'Fri']], 'open']], cta: 'Add a credential date' },
+      },
+      {
+        key: 'hours', tab: 1, nav: 'Timesheets',
+        title: 'Hours', sub: 'M. Okafor · week of 14 Sep',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Timesheets'],
+        desktopTitle: 'Timesheets', desktopSub: 'Clock in at the house, clock out, a daily total, a weekly total, the overtime flag at forty hours. Approved, then exported. Never computed into pay.',
+        days: [['Mon', 8], ['Tue', 8.5], ['Wed', 0], ['Thu', 8], ['Fri', 9], ['Sat', 8.5], ['Sun', 0]],
+        total: '42 h', over: 'Over forty by 2 h · weekly flag, never daily',
+        rows: [{ t: 'Week of 14 Sep', s: '42 h · submitted Sunday', state: 'pending', stateText: 'To approve' }, { t: 'Week of 7 Sep', s: '38 h · approved by M. Kebede', state: 'covered', stateText: 'Approved' }, { t: 'Week of 31 Aug', s: '40 h · exported', state: 'covered', stateText: 'Exported' }],
+        foot: 'Hours are exported, never calculated into pay. A correction is an addendum with a reason; the original stays.',
+        side: { kind: 'expiry', t: 'This week', groups: [['To approve', [['3 timesheets', 'Sunday close']], 'pending'], ['Flagged', [['M. Okafor', '42 h']], 'open'], ['Exported', [['Week of 31 Aug', 'CSV']], 'covered']], cta: 'Approve and export' },
+      },
+      {
+        key: 'hire', tab: 3, nav: 'Posts',
+        title: 'Posts', sub: 'Awake overnight · WH-1 · live',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Posts'],
+        desktopTitle: 'Postings and hiring', desktopSub: 'A post is drafted, paid, published. An application arrives with self-attested credentials. Screened → offered → accepted → hired → a staff row, onboarding open.',
+        post: { t: 'Awake overnight · Sat & Sun', s: 'Willow House · $22/h · CPR, medication-certified', state: 'covered', stateText: 'Live · 6 days' },
+        pipeline: [['R. Alvarez', 'Applied Tue · CPR self-attested', 'pending', 'Screened'], ['D. Park', 'Applied Wed · medication-certified', 'open', 'Offered'], ['S. Lee', 'Applied Thu', 'pending', 'Received']],
+        foot: 'A posting describes work, not a person. “One-to-one for a resident who…” raises a warning and is rewritten before it goes live.',
+        side: { kind: 'expiry', t: 'On hire', groups: [['Created', [['Staff row', 'membership attached']], 'covered'], ['Copied', [['Credentials', 'as self-attested']], 'covered'], ['Opened', [['Onboarding', 'the track’s checklist']], 'pending']], cta: 'Publish a post' },
       },
     ],
   },
@@ -495,6 +602,10 @@ const clampScreen = (pid, n) => {
 };
 function screenFor(productId, opts = {}) {
   const pid = (productOf(productId) || {}).id || 'pho';
+  if (opts.key) {
+    const byKey = (surfaces[pid] ? surfaces[pid].screens : []).find((s) => s.key === opts.key);
+    if (byKey) return byKey;
+  }
   if (pid === 'aidepost' && opts.lane === 'caregiver') return clampScreen(pid, 2);
   const n = opts.screen != null ? opts.screen : view().shellScreen;
   return clampScreen(pid, n == null ? 0 : n);
@@ -571,6 +682,45 @@ function bodyIos(p, s, fill) {
     return listA(s.apps.map(([n, host, who, what, state_]) => ({ t: n, code: host, s: `${who} · ${what}`, state: state_ })), p.id);
   }
   if (k === 'module') return `${listA(s.rows, p.id)}${gradLegend()}`;
+
+  /* ── the screens added for the landing pages ─────────────────────── */
+  if (k === 'handoff') {
+    return `${tile('The sheet', 'Composed at 06:55 from the record', `<div class="kv-a">${s.sheetRows.map(([a, b, st_]) => `<span>${E(a)}</span><b>${st(p.id, st_, b)}</b>`).join('')}</div>`)}
+      ${tile('From the night shift', '', `<p class="passage-a">${E(s.passage)}</p><p class="receipt-a">${E(s.receipt)}</p>`)}
+      <div class="btn-row">${btn('Post handoff', 'is-primary')}${btn('Print')}</div>`;
+  }
+  if (k === 'residents') return listA(s.rows, p.id);
+  if (k === 'stock') {
+    return `<div class="q-track">${segA(s.zones, s.zones[0])}</div>
+      ${listA(s.rows, p.id)}`;
+  }
+  if (k === 'cook') {
+    return `<ol class="steps-a">${s.steps.map(([n, t, d, state_]) => `<li class="steps-i" data-state="${E(state_)}"><span class="steps-n">${E(n)}</span><div><span class="steps-t">${E(t)}</span><span class="steps-d">${E(d)}</span></div></li>`).join('')}</ol>
+      ${tile('Trays', '', `<div class="chip-row">${s.trays.map(([r, t]) => `<span class="tg">${E(r)} · ${E(t)}</span>`).join('')}</div>`)}`;
+  }
+  if (k === 'shop') {
+    return `<div class="aisles-a">${s.aisles.map(([a, items]) => `<div class="aisle-a"><span class="aisle-h">${E(a)}</span>${items.map(([t, price, state_]) => `<div class="aisle-r" data-state="${E(state_)}"><span class="ck-a ${state_ === 'picked' ? 'on' : ''}" aria-hidden="true"></span><span class="aisle-t">${E(t)}</span><span class="aisle-p">${E(price)}</span></div>`).join('')}</div>`).join('')}</div>
+      <p class="receipt-a">${E(s.total)}</p>`;
+  }
+  if (k === 'print') {
+    return `${listA(s.artefacts.map(([t, d, ev]) => ({ t, s: d, state: ev, chev: true })), p.id)}
+      <p class="receipt-a">${E(s.note)}</p>
+      <div class="btn-row">${btn('Print all', 'is-primary', 'printer')}</div>`;
+  }
+  if (k === 'editor') {
+    return `${listA(s.tabsList.map(([n, t, auth, kind]) => ({ t, code: n, s: auth, state: kind === 'required' ? 'verified' : kind === 'custom' ? 'open' : 'derived', stateText: kind })), p.id)}
+      ${notice(s.refusal, 'Refused')}`;
+  }
+  if (k === 'hours') {
+    const max = Math.max(...s.days.map(([, h]) => h), 1);
+    return `<div class="bars-a" role="img" aria-label="Hours worked this week, ${E(s.total)}">${s.days.map(([d, h]) => `<div class="bars-c"><span class="bars-v">${h ? E(String(h)) : ''}</span><span class="bars-b" style="--h:${Math.round((h / max) * 100)}%" data-off="${h ? '' : '1'}"></span><span class="bars-l">${E(d)}</span></div>`).join('')}</div>
+      ${tile(s.total, s.over, '', 'is-accent')}
+      ${listA(s.rows, p.id)}`;
+  }
+  if (k === 'hire') {
+    return `${listA([s.post], p.id)}
+      ${tile('Applicants', '3 received', `<div class="list-a">${s.pipeline.map(([who, when, state_, stage]) => `<div class="row-a"><div class="row-a-main"><span class="row-a-t">${E(who)}</span><span class="row-a-s">${E(when)}</span></div><span class="row-a-r">${st(p.id, state_, stage)}</span></div>`).join('')}</div>`)}`;
+  }
   return emptyA(p.id);
 }
 
@@ -706,6 +856,43 @@ function bodyWeb(p, s, fill) {
     return `${tblA(['Surface', 'Module', 'What it does', 'State'], s.rows.map((r) => [
       r.t, { mono: r.code }, r.s, { st: r.state, text: r.stateText },
     ]), p.id, { sort: 1 })}${gradLegend()}`;
+  }
+
+  /* ── the screens added for the landing pages ─────────────────────── */
+  if (k === 'handoff') {
+    return `${tblA(['Section', 'What the night shift left', 'State'], s.sheetRows.map(([a, b, st_]) => [a, b, { st: st_ }]), p.id)}
+      ${tile('From the night shift', '', `<p class="passage-a">${E(s.passage)}</p><p class="receipt-a">${E(s.receipt)}</p>`)}`;
+  }
+  if (k === 'residents') {
+    return tblA(['Resident', 'Allergies', 'State'], s.rows.map((r) => [r.t, r.s, { st: r.state, text: r.stateText }]), p.id, { sort: 0 });
+  }
+  if (k === 'stock') {
+    return `<div class="q-track">${segA(s.zones, s.zones[0])}</div>
+      ${tblA(['Item', 'Par and count', 'On hand', 'State'], s.rows.map((r) => [r.t, r.s, r.v, { st: r.state, text: r.stateText }]), p.id, { sort: 3 })}`;
+  }
+  if (k === 'cook') {
+    return `<ol class="steps-a is-desk">${s.steps.map(([n, t, d, state_]) => `<li class="steps-i" data-state="${E(state_)}"><span class="steps-n">${E(n)}</span><div><span class="steps-t">${E(t)}</span><span class="steps-d">${E(d)}</span></div></li>`).join('')}</ol>
+      ${tblA(['Tray', 'Note, rendered'], s.trays, p.id)}`;
+  }
+  if (k === 'shop') {
+    return `<div class="aisles-a is-desk">${s.aisles.map(([a, items]) => `<div class="aisle-a"><span class="aisle-h">${E(a)}</span>${items.map(([t, price, state_]) => `<div class="aisle-r" data-state="${E(state_)}"><span class="ck-a ${state_ === 'picked' ? 'on' : ''}" aria-hidden="true"></span><span class="aisle-t">${E(t)}</span><span class="aisle-p">${E(price)}</span></div>`).join('')}</div>`).join('')}</div>
+      <p class="receipt-a">${E(s.total)}</p>`;
+  }
+  if (k === 'print') {
+    return tblA(['Artefact', 'What prints', 'Evidence'], s.artefacts.map(([t, d, ev]) => [t, d, { st: ev }]), p.id);
+  }
+  if (k === 'editor') {
+    return `${tblA(['Tab', 'Item', 'Authority', 'Guard'], s.tabsList.map(([n, t, auth, kind]) => [{ mono: n }, t, { mono: auth }, { tg: kind, kind: kind === 'required' ? 'is-teal' : '' }]), p.id)}
+      ${notice(s.refusal, 'Refused')}`;
+  }
+  if (k === 'hours') {
+    const max = Math.max(...s.days.map(([, h]) => h), 1);
+    return `<div class="bars-a is-desk" role="img" aria-label="Hours worked this week, ${E(s.total)}">${s.days.map(([d, h]) => `<div class="bars-c"><span class="bars-v">${h ? E(String(h)) : ''}</span><span class="bars-b" style="--h:${Math.round((h / max) * 100)}%" data-off="${h ? '' : '1'}"></span><span class="bars-l">${E(d)}</span></div>`).join('')}</div>
+      ${tblA(['Week', 'Hours', 'State'], s.rows.map((r) => [r.t, r.s, { st: r.state, text: r.stateText }]), p.id)}`;
+  }
+  if (k === 'hire') {
+    return `${tblA(['Applicant', 'Application', 'Stage'], s.pipeline.map(([who, when, state_, stage]) => [who, when, { st: state_, text: stage }]), p.id)}
+      ${tile(s.post.t, s.post.s, `<p class="receipt-a">${E(s.foot)}</p>`, 'is-lift')}`;
   }
   return emptyA(p.id);
 }
