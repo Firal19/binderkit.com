@@ -231,6 +231,6 @@ h3 { font-weight: 700; letter-spacing: -0.015em; font-size: 20px; line-height: 1
   .fan { height: 520px; }
   .fan-p.is-l, .fan-p.is-r { display: none; }
   .fan-p .phone { zoom: .7; }
-  .role { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .role { grid-template-columns: minmax(0, 1fr); gap: 4px; } .role-r { grid-column: auto; }
   .foot-in, .foot-b { flex-direction: column; align-items: flex-start; }
 }
