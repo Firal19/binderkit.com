@@ -1,0 +1,423 @@
+/* site.css — what a shipped page needs that the design board did not.
+   sections.css draws the page; this file gives it a document to live in: the
+   reset, the sticky header, the two blocks the board has no equivalent for
+   (the three reasons and the waitlist), the single-DOM table strategy, the
+   motion, and the container tiers the board used to get by rendering a
+   separate mobile page. Nothing here names a colour that is not a face
+   variable, and nothing here is product-specific. */
+
+/* ── the document ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;   /* the header, and nothing more */
+  background: var(--t-ivory);
+}
+body {
+  min-height: 100dvh;
+  background: var(--t-ivory);
+  color: var(--t-ink);
+  font-family: var(--t-body-font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+img, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+a { color: inherit; }
+h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; text-wrap: balance; }
+p { text-wrap: pretty; }
+ul, ol { list-style: none; padding: 0; }
+table { border-collapse: collapse; }
+
+:root { --lp-top-h: 68px; }
+
+/* One focus ring, everywhere, in the family's own teal. */
+:where(a, button, input, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--c-teal, #0F5C5A);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+::selection { background: var(--t-accent-soft, #E3EEEC); color: var(--t-ink, #17201F); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.lp-skip {
+  position: fixed; top: 10px; left: 10px; z-index: 60;
+  transform: translateY(-200%);
+  padding: 12px 18px; border-radius: 999px;
+  background: var(--t-teal); color: var(--t-ivory);
+  font-weight: 600; font-size: 15px; text-decoration: none;
+  transition: transform 140ms cubic-bezier(.25, 1, .5, 1);
+}
+.lp-skip:focus-visible { transform: none; }
+
+/* ── the header ────────────────────────────────────────────────────────
+   It sticks, it thickens once you have left the hero, and it carries a
+   reading-progress hairline rather than a scroll-spy chip nobody reads. */
+.lp-top {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--t-ivory) 82%, transparent);
+  backdrop-filter: saturate(150%) blur(14px);
+  -webkit-backdrop-filter: saturate(150%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+.lp-top[data-stuck] {
+  border-bottom-color: color-mix(in srgb, var(--t-ink) 10%, transparent);
+  background: color-mix(in srgb, var(--t-ivory) 92%, transparent);
+}
+.lp-top .lp-nav {
+  display: flex; align-items: center; gap: 24px;
+  height: var(--lp-top-h);
+  max-width: calc(1120px + 2 * clamp(20px, 4.4vw, 56px));
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.4vw, 56px);
+}
+.lp-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex: none; }
+.lp-brand-n { font-weight: var(--t-name-weight, 600); letter-spacing: -0.015em; font-size: 18px; color: var(--t-ink); }
+.lp-top .lp-links { display: flex; gap: 26px; margin-left: auto; }
+.lp-top .lp-links a {
+  font-weight: 500; font-size: 15px; color: var(--t-muted); text-decoration: none;
+  padding: 6px 0; border-bottom: 2px solid transparent;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+.lp-top .lp-links a:hover { color: var(--t-ink); }
+.lp-top .lp-links a[aria-current="true"] { color: var(--t-ink); border-bottom-color: var(--t-teal); }
+.lp-nav-r { display: flex; align-items: center; gap: 10px; }
+.lp-burger {
+  display: none; align-items: center; justify-content: center;
+  width: 44px; height: 44px; margin-right: -10px; color: var(--t-ink);
+  border-radius: 10px;
+}
+.lp-burger:hover { background: color-mix(in srgb, var(--t-ink) 6%, transparent); }
+.lp-progress { height: 2px; background: transparent; }
+.lp-progress i { display: block; height: 2px; width: var(--p, 0%); background: var(--t-teal); transition: width 90ms linear; }
+
+.lp-menu {
+  display: grid; gap: 4px;
+  padding: 10px clamp(20px, 4.4vw, 56px) 22px;
+  border-top: 1px solid color-mix(in srgb, var(--t-ink) 8%, transparent);
+}
+.lp-menu[hidden] { display: none; }
+.lp-menu nav { display: grid; }
+.lp-menu a:not(.lp-btn) {
+  padding: 14px 2px; font-size: 17px; font-weight: 500; text-decoration: none; color: var(--t-ink);
+  border-bottom: 1px solid color-mix(in srgb, var(--t-ink) 7%, transparent);
+}
+.lp-menu .lp-btn { margin-top: 14px; }
+
+/* ── the page body ─────────────────────────────────────────────────────
+   sections.css sizes everything against .lp's own inline size, so the one
+   thing left is to let it be the page rather than a preview inside a frame. */
+.lp { font-size: 16px; }
+.lp-hero { padding-top: clamp(36px, 6vw, 72px); }
+/* Four phrases beside a phone are a 2 x 2, not a 3 + 1 with a hole in it. */
+.lp-hero .lp-strip-c { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* ── the three reasons ─────────────────────────────────────────────────
+   The band under the hero. Three facts about the mechanism, because there is
+   no customer logo strip and there is not going to be one. */
+.lp-proof { padding-top: 0; }
+.lp-proof::before { display: none; }
+.lp-proofs {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: var(--t-border, 1px) solid var(--c-line);
+  border-bottom: var(--t-border, 1px) solid var(--c-line);
+}
+.lp-proofs li {
+  display: grid; align-content: start; gap: 8px;
+  padding: 26px 28px 26px 0;
+}
+.lp-proofs li + li { border-left: var(--t-border, 1px) solid var(--c-line); padding-left: 28px; }
+.lp-proofs b { font-weight: var(--t-name-weight, 600); font-size: 16.5px; letter-spacing: -0.01em; color: var(--c-ink); }
+.lp-proofs span { font-size: 14.5px; line-height: 1.55; color: var(--c-body); }
+
+/* ── the questions, as a real disclosure ──────────────────────────────── */
+.lp-qa-r { display: block; padding: 0; }
+.lp-qa-r + .lp-qa-r { background-position: left top; }
+.lp-qa-r summary {
+  display: grid; grid-template-columns: minmax(0, 1fr) 24px; gap: 20px; align-items: center;
+  padding: 24px 0; cursor: pointer; list-style: none;
+}
+.lp-qa-r summary::-webkit-details-marker { display: none; }
+.lp-qa-r h3 {
+  font-family: var(--t-display); font-weight: var(--t-display-weight);
+  font-size: clamp(21px, 2.2cqi, 26px); letter-spacing: var(--t-display-tracking);
+  line-height: 1.18; max-width: 26ch;
+}
+.lp-qa-i { position: relative; width: 24px; height: 24px; justify-self: end; }
+.lp-qa-i::before, .lp-qa-i::after {
+  content: ""; position: absolute; left: 50%; top: 50%; background: var(--c-teal);
+  transform: translate(-50%, -50%);
+}
+.lp-qa-i::before { width: 13px; height: 1.5px; }
+.lp-qa-i::after { width: 1.5px; height: 13px; transition: transform 180ms cubic-bezier(.25, 1, .5, 1); }
+.lp-qa-r[open] .lp-qa-i::after { transform: translate(-50%, -50%) scaleY(0); }
+.lp-qa-a { padding: 0 0 26px; max-width: 74ch; }
+.lp-qa-a p { font-size: var(--t-lede-size); color: var(--c-body); line-height: 1.6; }
+.lp-qa-r[open] .lp-qa-a { animation: lp-open 260ms cubic-bezier(.25, 1, .5, 1); }
+@keyframes lp-open { from { opacity: 0; transform: translateY(-4px); } }
+
+/* ── the waitlist ─────────────────────────────────────────────────────── */
+.lp-join-g {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px;
+  align-items: start;
+  padding: clamp(28px, 3.4vw, 44px);
+  background: var(--c-wash); border-radius: var(--t-r-xl, 28px);
+}
+.lp-join h2 {
+  font-family: var(--t-display); font-weight: var(--t-display-weight);
+  font-size: clamp(28px, 3.4cqi, 40px); letter-spacing: var(--t-display-tracking); line-height: 1.06;
+}
+.lp-join .lp-sub { max-width: 46ch; }
+.lp-join .lp-fine { margin-top: 18px; }
+.lp-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
+.lp-field { display: grid; gap: 7px; min-width: 0; }
+.lp-field.is-wide { grid-column: 1 / -1; }
+.lp-field > span {
+  font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking);
+  text-transform: var(--t-label-transform, uppercase); color: var(--c-soft); font-weight: 500;
+}
+.lp-field input, .lp-field select {
+  width: 100%; min-height: 50px; padding: 0 14px;
+  font-size: 16px;                              /* never below 16: iOS zooms */
+  background: var(--c-card); color: var(--c-ink);
+  border: var(--t-border, 1px) solid var(--c-line);
+  border-radius: var(--t-r-sm, 12px);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.lp-field select {
+  appearance: none; padding-right: 38px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 19px) 22px, calc(100% - 14px) 22px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.lp-field input:hover, .lp-field select:hover { border-color: color-mix(in srgb, var(--c-teal) 45%, var(--c-line)); }
+.lp-field input:focus-visible, .lp-field select:focus-visible { outline: none; border-color: var(--c-teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-teal) 22%, transparent); }
+.lp-field input[aria-invalid="true"] { border-color: var(--t-accent); }
+.lp-form .lp-btn { grid-column: 1 / -1; width: 100%; }
+.lp-form-msg { grid-column: 1 / -1; font-size: 14.5px; line-height: 1.5; color: var(--c-body); min-height: 0; }
+.lp-form-msg:empty { display: none; }
+.lp-form-msg[data-state="ok"] { color: var(--c-teal-deep); font-weight: 600; }
+.lp-form-msg[data-state="err"] { color: var(--t-accent-text); }
+.lp-form-msg a { color: inherit; }
+.lp-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.lp-form.is-busy { opacity: .6; pointer-events: none; }
+
+/* ── controls that are controls ───────────────────────────────────────── */
+.lp-btn {
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: background 140ms var(--t-ease, ease), border-color 140ms ease, transform 140ms var(--t-ease, ease), box-shadow 140ms ease;
+}
+.lp-btn:hover { transform: translateY(-1px); box-shadow: var(--c-sh2); }
+.lp-btn:active { transform: none; box-shadow: none; }
+.lp-btn.pri:hover { background: var(--c-teal-dark); border-color: var(--c-teal-dark); }
+.lp-top .lp-btn.pri:hover { color: var(--t-ivory); }
+
+/* A tier with no number yet: the phrase, in the label voice, so the eye
+   reads the tier name rather than three identical display lines. */
+.lp-tier-p.is-soon {
+  font-family: var(--t-body-font); font-size: 17px; font-weight: 600;
+  letter-spacing: 0; color: var(--c-teal); line-height: 1.6; padding: 6px 0;
+}
+
+.lp-next { border-radius: var(--t-r-sm, 12px); transition: background 140ms ease; }
+.lp-next:hover { background: var(--c-wash); box-shadow: 0 0 0 8px var(--c-wash); }
+.lp-sib { transition: background 160ms ease, transform 160ms ease; }
+.lp-sib:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--t-ivory) 14%, var(--c-teal-deep)); }
+
+/* ── one DOM, two table shapes ─────────────────────────────────────────
+   The board rendered a second, card-shaped copy for phones. A shipped page
+   has one DOM and one source of truth for screen readers, so each cell
+   carries the column it answers to and the tier below turns the rows into
+   cards that read that label instead of a header three screens up. */
+@container lp (max-width: 720px) {
+  .lp-tblw { border: 0; background: none; overflow: visible; }
+  .lp-tbl, .lp-tbl tbody, .lp-tbl tr, .lp-tbl th, .lp-tbl td { display: block; }
+  .lp-tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .lp-tbl caption { padding: 0 0 12px; }
+  .lp-tbl tr {
+    border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-md, 16px);
+    background: var(--c-card); padding: 16px 18px; margin-bottom: 12px;
+  }
+  .lp-tbl tr.is-wash { background: var(--c-wash); }
+  .lp-tbl th[scope="row"] { padding: 0 0 8px; border: 0; font-size: 16px; }
+  .lp-tbl td { padding: 8px 0 0; border: 0; }
+  .lp-tbl td::before, .lp-tbl th[scope="row"]::before {
+    content: attr(data-col); display: block; margin-bottom: 3px;
+    font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 0.5px);
+    letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase);
+    color: var(--c-soft); font-weight: 500;
+  }
+  .lp-tbl th[scope="row"]::before { display: none; }
+  .lp-tbl tbody tr:last-child th, .lp-tbl tbody tr:last-child td { border-bottom: 0; }
+  .lp-dev { text-align: left; }
+}
+
+/* ── the tiers the board only had as a separate mobile render ─────────── */
+@container lp (max-width: 980px) {
+  .lp-hero { grid-template-columns: minmax(0, 1fr); gap: 32px; min-height: 0; padding-bottom: 40px; }
+  .lp-hero.is-wide { grid-template-columns: minmax(0, 1fr); }
+  .lp-hero-t { order: 1; }
+  .lp-hero-v { order: 2; }
+  .lp-join-g { gap: 30px; }
+  .lp-family { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .lp-family .lp-family-t { margin-left: 0; max-width: none; }
+  .lp-proofs { grid-template-columns: minmax(0, 1fr); }
+  .lp-proofs li { padding: 20px 0; }
+  .lp-proofs li + li { border-left: 0; border-top: var(--t-border, 1px) solid var(--c-line); padding-left: 0; }
+}
+@container lp (max-width: 720px) {
+  .lp { font-size: 15px; }
+  .lp-sec { padding-top: 44px; padding-bottom: 44px; }
+  .lp-sec::before { margin-bottom: 26px; }
+  .lp-hero { padding-top: 26px; padding-bottom: 32px; }
+  .lp-hero h1 { font-size: clamp(32px, 9.2cqi, 44px); }
+  .lp-head h2 { font-size: clamp(24px, 6.4cqi, 30px); }
+  .lp-ctas { flex-direction: column; align-items: stretch; }
+  .lp-ctas .lp-btn { width: 100%; }
+  .lp-join-g { grid-template-columns: minmax(0, 1fr); padding: 24px 20px; }
+  .lp-form { grid-template-columns: minmax(0, 1fr); }
+  .lp-sibs { grid-template-columns: minmax(0, 1fr); }
+  .lp-steps { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .lp-defs dl, .lp-defs-in { grid-template-columns: minmax(0, 1fr); }
+  .lp-defs dd, .lp-defs-in dd { border-top: 0; padding-top: 0; }
+  .lp-foot-t { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .lp-foot-r { gap: 10px 16px; }
+  .lp-family { padding-top: 48px; padding-bottom: 48px; }
+  .lp-caregiver { padding-top: 56px; padding-bottom: 56px; }
+  .lp-care-g { gap: 32px; }
+  .lp-perms { grid-template-columns: minmax(0, 1fr); }
+  .lp-tiers { grid-template-columns: minmax(0, 1fr); }
+  .lp-qa-r summary { padding: 18px 0; }
+}
+@container lp (max-width: 430px) {
+  .lp-strip-c { grid-template-columns: minmax(0, 1fr); }
+  .lp-struck-w { gap: 14px; }
+}
+
+/* ── the device instruments, scaled ───────────────────────────────────── */
+.lp-hero-v .phone { zoom: .62; }
+.lp-screen-v .phone { zoom: .78; }
+.lp-care-v .phone { zoom: .66; }
+.lp-hero-v .phone { --z: .62; }
+.lp-screen-v .phone { --z: .78; }
+.lp-care-v .phone { --z: .66; }
+@container lp (max-width: 980px) {
+  .lp-hero-v .phone, .lp-screen-v .phone, .lp-care-v .phone { zoom: .86; --z: .86; }
+}
+@container lp (max-width: 380px) {
+  .lp-hero-v .phone, .lp-screen-v .phone, .lp-care-v .phone { zoom: .78; --z: .78; }
+}
+/* `zoom` is the right tool — the grid has to know how tall the shrunken
+   device is, and `transform` never tells it. Where it is missing, fall back. */
+@supports not (zoom: 1) {
+  .lp-hero-v .phone, .lp-screen-v .phone, .lp-care-v .phone {
+    zoom: normal;
+    transform: scale(var(--z, 1)); transform-origin: top center;
+    margin-inline: calc((var(--dw) * var(--z, 1) - var(--dw)) / 2);
+    margin-bottom: calc(var(--dh) * var(--z, 1) - var(--dh));
+  }
+}
+.lp .lp-pan .browser { zoom: 1; --z: 1; }
+/* The sheet is paper, and paper reflows. Its authority column is nowrap at
+   reading width; below that the row breaks in two and the sheet grows down
+   the page instead of pushing the document sideways. */
+.lp-sheet .paper { min-width: 0; }
+@container lp (max-width: 980px) {
+  .lp-sheet { max-width: 520px; aspect-ratio: auto; }
+  .lp-sheet .paper.is-desk { padding: 24px 26px; }
+  .lp-sheet .paper-row { grid-template-columns: 40px minmax(0, 1fr); row-gap: 5px; }
+  .lp-sheet .paper-auth { grid-column: 2; white-space: normal; flex-wrap: wrap; row-gap: 4px; }
+  .lp-sheet .paper-auth .tg { max-width: 100%; }
+  .lp-sheet .paper-head, .lp-sheet .paper-foot { flex-wrap: wrap; gap: 4px 12px; }
+}
+
+/* A bare instrument still reads as a screen: give the sheet and the board the
+   elevation the phone gets from its bezel. */
+.lp-sheet .paper { box-shadow: var(--c-sh3), 0 2px 0 0 color-mix(in srgb, var(--t-ink) 6%, transparent); }
+.lp-board-in { border-radius: var(--t-r-lg, 22px); }
+.lp-hero .lp-board-in .tbl-a th, .lp-hero .lp-board-in .tbl-a td { padding: 15px 5px; }
+.lp-hero .lp-board-in .cell-a { padding: 11px 4px; font-size: 12.5px; }
+
+/* ── the annotated screen: the callout and the instrument, wired ───────── */
+.lp-annot li {
+  padding: 8px 10px; margin: -8px -10px;
+  border-radius: var(--t-r-sm, 12px);
+  transition: background 160ms ease;
+}
+.lp-annot li[data-on] { background: var(--c-wash); }
+.lp-annot-n { transition: background 160ms ease, color 160ms ease, border-color 160ms ease; }
+.lp-annot li[data-on] .lp-annot-n { background: var(--c-teal); border-color: var(--c-teal); color: var(--c-ground); }
+
+/* ── motion ───────────────────────────────────────────────────────────── */
+/* Hidden only when the script that reveals it is actually running: with JS
+   off, broken or blocked, every section is simply there. */
+.js [data-reveal] { opacity: 0; transform: translateY(14px); }
+.js [data-reveal].is-in { opacity: 1; transform: none; transition: opacity 620ms cubic-bezier(.22, 1, .36, 1), transform 620ms cubic-bezier(.22, 1, .36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ── dark ─────────────────────────────────────────────────────────────── */
+[data-mode="dark"] body, [data-mode="dark"] html { background: var(--t-teal-deep); color: var(--t-ivory); }
+[data-mode="dark"] .lp-top { background: color-mix(in srgb, var(--t-teal-deep) 82%, transparent); }
+[data-mode="dark"] .lp-top[data-stuck] { background: color-mix(in srgb, var(--t-teal-deep) 94%, transparent); border-bottom-color: color-mix(in srgb, var(--t-ivory) 14%, transparent); }
+[data-mode="dark"] .lp-brand-n { color: var(--t-ivory); }
+[data-mode="dark"] .lp-top .lp-links a { color: color-mix(in srgb, var(--t-ivory) 74%, var(--t-teal-deep)); }
+[data-mode="dark"] .lp-top .lp-links a:hover, [data-mode="dark"] .lp-top .lp-links a[aria-current="true"] { color: var(--t-ivory); }
+[data-mode="dark"] .lp-burger { color: var(--t-ivory); }
+[data-mode="dark"] .lp-menu a:not(.lp-btn) { color: var(--t-ivory); border-bottom-color: color-mix(in srgb, var(--t-ivory) 12%, transparent); }
+[data-mode="dark"] .lp-menu { border-top-color: color-mix(in srgb, var(--t-ivory) 12%, transparent); }
+/* The family band is deep teal on light. On dark that is the page, so it
+   lifts by a step instead, and keeps its mint byline. */
+[data-mode="dark"] .lp-family { background: color-mix(in srgb, var(--t-ivory) 6%, var(--t-teal-deep)); }
+[data-mode="dark"] .lp-sib { background: color-mix(in srgb, var(--t-ivory) 12%, var(--t-teal-deep)); }
+[data-mode="dark"] .lp-skip { background: var(--t-mint); color: var(--t-teal-deep); }
+[data-mode="dark"] .lp-top .lp-btn.pri, [data-mode="dark"] .lp-btn.pri { color: var(--t-teal-deep); }
+[data-mode="dark"] .lp-top .lp-btn.pri:hover { color: var(--t-teal-deep); }
+/* The printed page is ink on white by design, in either mode. */
+[data-mode="dark"] .paper { background: #FFFFFF; color: #17201F; }
+
+.lp-mode {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 999px; color: var(--t-muted);
+  transition: background 140ms ease, color 140ms ease;
+}
+.lp-mode:hover { background: color-mix(in srgb, var(--t-ink) 7%, transparent); color: var(--t-ink); }
+[data-mode="dark"] .lp-mode { color: color-mix(in srgb, var(--t-ivory) 72%, var(--t-teal-deep)); }
+[data-mode="dark"] .lp-mode:hover { background: color-mix(in srgb, var(--t-ivory) 10%, transparent); color: var(--t-ivory); }
+.lp-mode .ic-sun { display: none; }
+[data-mode="dark"] .lp-mode .ic-sun { display: block; }
+[data-mode="dark"] .lp-mode .ic-moon { display: none; }
+
+/* ── the phone header ─────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .lp-top .lp-links { display: none; }
+  .lp-burger { display: inline-flex; }
+  .lp-top .lp-nav { gap: 12px; }
+  .lp-nav-r { margin-left: auto; }
+}
+@media (max-width: 400px) {
+  .lp-top .lp-btn.sm { display: none; }
+  .lp-brand-n { font-size: 17px; }
+}
+body.is-locked { overflow: hidden; }
+
+/* ── print ────────────────────────────────────────────────────────────── */
+@media print {
+  .lp-top, .lp-skip, .lp-hero-v, .lp-care-v, .lp-form, .lp-progress { display: none !important; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .lp-qa-a { display: block !important; }
+  .lp-sec, .lp-tier, .lp-ev-b, .lp-note, .lp-proofs li { break-inside: avoid; }
+}

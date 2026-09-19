@@ -1,0 +1,5 @@
+node_modules
+review
+dist
+.git
+.DS_Store

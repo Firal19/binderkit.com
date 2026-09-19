@@ -1,0 +1,554 @@
+/* the landing pages. every .lp-* rule lives here, nothing else does, and
+   nothing in here names a colour, a corner or a duration: the five faces
+   differ because faceVars() hands each one its own --t-* set, not because
+   this file branches on a product. the four exceptions are the four motifs
+   and the four accent sources, and those arrive as variables too.
+
+   loads after board.css and before zz-responsive.css (build.mjs links
+   src/board/css/*.css sorted, after board.css), so the responsive tiers in
+   zz-responsive still win their container queries — which is right: the
+   width behaviour of the shared furniture belongs to one file. */
+
+/* ── the page ─────────────────────────────────────────────────────────── */
+.lp {
+  background: var(--c-ground); color: var(--c-ink);
+  font-family: var(--t-body-font); font-size: 16px; line-height: 1.55;
+  --lp-x: clamp(20px, 4.4cqi, 56px); --lp-max: 1120px;
+  container-type: inline-size; container-name: lp;
+  overflow-x: clip;                 /* the page never scrolls sideways; a wide
+                                       instrument scrolls inside its own box */
+}
+.lp.is-mobile { font-size: 15px; }  /* .lp cannot answer its own container query */
+.lp > * { padding-left: var(--lp-x); padding-right: var(--lp-x); }
+.lp b, .lp strong { font-weight: var(--t-name-weight); }   /* colour is the block's, not the tag's: a bold inside the deep-teal band must stay ivory */
+
+/* ── nav ──────────────────────────────────────────────────────────────── */
+.lp-nav { display: flex; align-items: center; justify-content: space-between; height: 72px; max-width: calc(var(--lp-max) + 2 * var(--lp-x)); margin: 0 auto; }
+.lp-brand { display: flex; align-items: center; gap: 10px; }
+.lp-brand-n { font-weight: var(--t-name-weight); letter-spacing: -0.015em; font-size: 18px; }
+.lp[data-product="pho"] .lp-brand-n, .lp[data-product="pho"] .lp-foot-l span:first-of-type { font-family: var(--t-display); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; }
+.lp-links { display: flex; gap: 28px; font-weight: 500; color: var(--c-body); font-size: 15px; }
+.lp-nav-r { display: flex; align-items: center; gap: 18px; font-weight: 500; color: var(--c-body); font-size: 15px; }
+.lp-burger { color: var(--c-ink); display: flex; align-items: center; justify-content: center; min-width: var(--t-tap); min-height: var(--t-tap); }
+
+/* controls take --t-r-control, which is the one corner that does NOT follow
+   the surface: Binderkit squares its buttons, the other four keep a pill. */
+.lp-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: var(--t-r-control, var(--t-r-sm)); border: var(--t-border, 1px) solid var(--c-line); font-weight: 600; font-size: 15px; background: var(--c-card); color: var(--c-ink); }
+.lp-btn.pri { background: var(--c-teal); border-color: var(--c-teal); color: var(--c-ground); }
+.lp-btn.sm { min-height: 38px; padding: 0 16px; font-size: 14px; }
+/* A trial button on a product with no repository and no settled price is not
+   a control, it is a specimen of one. It is drawn as the dashed outline of
+   the button the page will carry, so nobody reads it as something they can
+   buy today — and .lp-notyet underneath says, in words, why. */
+.lp-btn.is-off, .lp-btn.pri.is-off { background: var(--c-wash); border: var(--t-border, 1px) dashed var(--c-line); color: var(--c-soft); box-shadow: none; }
+.lp-notyet { margin-top: 14px; padding-left: 14px; border-left: 2px solid var(--c-teal); font-size: 14px; color: var(--c-body); line-height: 1.5; max-width: 56ch; }
+.lp-status { font-weight: 600; color: var(--c-ink); }
+.lp-status[data-kind="live"] { color: var(--c-teal); }
+.lp-status[data-kind="draft"], .lp-status[data-kind="spec"] { color: var(--c-soft); }
+
+/* ── the hero, and its four instruments ───────────────────────────────── */
+.lp-hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; max-width: calc(var(--lp-max) + 2 * var(--lp-x)); margin: 0 auto; padding-top: 48px; padding-bottom: 56px; min-height: 620px; }
+.lp-hero.is-wide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); }
+.lp[data-product="binderkit"] .lp-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); }
+.lp-hero h1 { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: clamp(40px, 5.2cqi, 64px); letter-spacing: calc(var(--t-display-tracking) - 0.01em); line-height: 1.02; text-wrap: balance; }
+.lp[data-product="pho"] .lp-hero h1 { font-size: clamp(46px, 5.9cqi, 72px); }
+.lp-eyebrow { display: block; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-teal); font-weight: 500; margin-bottom: 14px; }
+.lp-flag { display: block; margin-top: 10px; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 0.5px); letter-spacing: 0.12em; text-transform: var(--t-label-transform, uppercase); color: var(--t-accent-text); font-weight: 500; }
+.lp-flag.is-band { color: var(--t-mint); opacity: .85; }
+.lp-lede { margin-top: 22px; font-size: var(--t-lede-size); line-height: 1.5; color: var(--c-muted); max-width: 54ch; }
+.lp-lede b { color: var(--c-ink); }
+.lp-ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+.lp-fine { margin-top: 14px; font-size: 13.5px; color: var(--c-soft); max-width: 52ch; }
+.lp-hero-v { display: flex; justify-content: center; align-items: center; min-width: 0; }
+.lp-hero-v .phone { zoom: .62; }
+.lp-hero-v .browser { zoom: .42; }
+
+/* CareShop’s hero is a phone held at the shelf: cropped wide to the buy-queue
+   rows, so a row is legible rather than a phone being admired. */
+.lp-crop { position: relative; width: 100%; max-width: 331px; height: 432px; overflow: hidden; display: flex; justify-content: center; align-items: flex-start; border-radius: var(--t-r-lg); box-shadow: var(--c-sh2); background: var(--c-ground); }
+.lp-crop .phone { zoom: .9; margin-top: -104px; border-radius: 0; box-shadow: none; }
+.lp-crop::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: linear-gradient(to bottom, transparent, var(--c-ground)); }
+/* Binderkit’s hero is the only one with no device at all: a sheet at US
+   Letter, 1 : 1.294, with paper elevation and nothing else. */
+.lp-sheet { width: 100%; max-width: 460px; aspect-ratio: 1 / 1.294; display: flex; }
+.lp-sheet .paper { flex: 1; max-width: none; display: flex; flex-direction: column; }
+.lp-sheet.is-narrow { max-width: 320px; aspect-ratio: auto; }  /* the sheet grows rather than crops: the tab rows and the control number are the argument */
+.lp-sheet.is-narrow .paper { padding: 20px 22px; font-size: 12px; }
+.lp-sheet.is-narrow .paper-row { grid-template-columns: 34px minmax(0, 1fr); row-gap: 4px; }
+.lp-sheet.is-narrow .paper-auth { grid-column: 2; white-space: normal; }
+/* Aidepost’s hero is the wide week board, bare: no chrome, seven columns. */
+.lp-board { position: relative; width: 100%; min-width: 0; }
+.lp-board-in { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.lp-board-in .tbl-a { min-width: 640px; table-layout: fixed; }
+.lp-board-in .tbl-a th:first-child { width: 58px; }
+.lp-board-in .tbl-a th, .lp-board-in .tbl-a td { padding: 9px 4px; text-align: center; }
+.lp-board-in .tbl-a th[scope="row"] { text-align: left; }
+.lp-board-in .cell-a { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11.5px; padding: 7px 3px; }
+.lp-board .cell-a.is-open { box-shadow: var(--c-sh3); }
+.lp-board-c { margin-top: 12px; font-size: 13.5px; color: var(--c-soft); }
+.lp-scrollx { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+/* a desktop shell on a phone: true size, panned, and it says so. The fade is
+   local-attachment so it sits over the cut rather than travelling with the
+   content, which is what makes it read as “there is more to the right”. */
+.lp-pan { position: relative; width: 100%; min-width: 0; }
+.lp-pan .lp-scrollx { background-image: linear-gradient(to right, transparent calc(100% - 44px), color-mix(in srgb, var(--c-ground) 88%, transparent)); background-repeat: no-repeat; background-attachment: local, scroll; }
+.lp-pan .lp-scrollx:focus-visible { outline: 2px solid var(--c-teal); outline-offset: 2px; }
+.lp-pan-c { margin-top: 10px; }
+/* true size means true size: the .62 preview zoom the desktop composition
+   uses must not reach the panned copy. */
+.lp .lp-pan .browser { zoom: 1; }
+
+/* ── the accent budget, enforced by the stylesheet ────────────────────────
+   D-D is countable: an accent appears on a landing page at most three
+   times, and all three are states. An embedded instrument is a PICTURE of
+   the product and the page paints it more than once — the hero’s copy, the
+   annotated walkthrough’s, and on Aidepost the caregiver side’s — so every
+   state inside it would otherwise be paid for two or three times over.
+   The page therefore quiets the accent inside every surface it embeds and
+   grants it back to exactly ONE element, in the hero, named by data-live.
+   Teal keeps its seven jobs untouched, and a state keeps its word, its dot
+   and its weight — the hue is the only thing spent. */
+[data-name="hero"] {
+  --lp-accent: var(--t-accent); --lp-accent-text: var(--t-accent-text);
+  --lp-accent-soft: var(--t-accent-soft); --lp-accent-edge: var(--t-accent-edge-color);
+}
+/* the [data-product][data-mode] tail is not decoration: the live face sheet
+   is injected last in <head> and declares these at .face[data-product] and,
+   on dark, at [data-mode="dark"] .face[data-product], so a quieting rule has
+   to out-specify both or the caregiver side keeps its accent. */
+.lp .lp-hero-v, .lp .lp-screen-v, .lp .lp-care-v,
+.lp .lp-hero-v .face[data-product][data-mode],
+.lp .lp-screen-v .face[data-product][data-mode],
+.lp .lp-care-v .face[data-product][data-mode] {
+  --t-accent: var(--c-teal); --t-accent-text: var(--c-teal-deep); --t-accent-strong: var(--c-teal-deep);
+  --t-accent-soft: var(--c-wash); --t-accent-tint: var(--c-wash); --t-accent-edge-color: var(--c-teal);
+}
+/* the state chips inside a repeated surface lose the hue and keep the word */
+.lp .lp-screen-v .face[data-product][data-mode] .st-a[data-state],
+.lp .lp-care-v .face[data-product][data-mode] .st-a[data-state] {
+  --st-edge: var(--c-teal); --st-soft: var(--c-wash); --st-text: var(--c-ink);
+}
+/* A quieted tab badge is teal, and 9.5px ivory on teal reads at AA where
+   9.5px ivory on an accent did not (coral 2.91:1, amber 2.05:1). The one
+   badge that keeps the accent keeps the deep-teal ink that goes with it. */
+.lp .lp-hero-v .tab-b, .lp .lp-screen-v .tab-b, .lp .lp-care-v .tab-b { color: var(--c-ground); }
+.lp .lp-hero-v[data-live="badge"] .tab-b { color: var(--c-teal-deep); }
+
+/* …and the one state the page is about keeps it, in the hero and nowhere else */
+.lp .lp-hero-v[data-live="notice"] .notice-a,
+.lp .lp-hero-v[data-live="badge"] .tab-b,
+.lp .lp-hero-v[data-live="tag"] .tg.is-accent,
+.lp .lp-hero-v[data-live="open"] .cell-a.is-open {
+  --t-accent: var(--lp-accent); --t-accent-text: var(--lp-accent-text);
+  --t-accent-soft: var(--lp-accent-soft); --t-accent-edge-color: var(--lp-accent-edge);
+}
+
+/* ── the section, and the motif that divides it ───────────────────────────
+   The hairline is replaced by the product’s own device: PHO’s four-dot
+   square, Cohort’s five-dot rhythm, CareShop’s basket arc, Binderkit’s tab
+   notch, Aidepost’s seven-tick week rule. tokens.js repaints each one on
+   every token change, so the divider is live, not a picture. */
+.lp-sec { max-width: calc(var(--lp-max) + 2 * var(--lp-x)); margin: 0 auto; padding-top: 64px; padding-bottom: 64px; border-top: 0; }
+.lp-sec::before { content: ""; display: block; height: 10px; margin-bottom: 34px; background-image: var(--t-motif-rule, none); background-repeat: var(--t-motif-repeat, no-repeat); background-position: left center; }
+.lp-head h2 { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: clamp(30px, 3.6cqi, 38px); letter-spacing: var(--t-display-tracking); line-height: 1.08; max-width: 24ch; }
+.lp-sub { margin-top: 12px; font-size: var(--t-lede-size); color: var(--c-muted); max-width: 62ch; }
+.lp-sec > .lp-head + * { margin-top: 38px; }
+.lp-ctl { margin-top: 30px; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 0.5px); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-soft); text-align: right; }
+
+/* ── the shared small parts ───────────────────────────────────────────── */
+.lp-mono { font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: calc(var(--t-mono-tracking) * .4); text-transform: none; font-weight: 500; font-variant-numeric: tabular-nums; }
+.lp-strip-l, .lp-side-l { display: block; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-soft); font-weight: 500; margin-bottom: 10px; }
+.lp-pull { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: clamp(22px, 2.4cqi, 30px); line-height: 1.2; letter-spacing: var(--t-display-tracking); max-width: 30ch; margin-top: 34px; color: var(--c-ink); text-wrap: balance; }
+.lp-cap { margin-top: 16px; font-size: 13.5px; color: var(--c-soft); max-width: 72ch; line-height: 1.5; }
+.lp-closing { margin-top: 24px; font-size: var(--t-lede-size); color: var(--c-body); max-width: 68ch; }
+.lp-chips { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.lp-chip { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: var(--t-r-control, 999px); border: var(--t-border, 1px) solid var(--c-line); font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-body); }
+.lp-chip.is-open { border-color: var(--c-ink); color: var(--c-ink); font-weight: 600; }
+.lp-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.lp-list li { position: relative; padding-left: 24px; font-size: 16px; line-height: 1.5; color: var(--c-body); }
+.lp-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 12px; height: 10px; background-image: var(--t-motif-bullet, none); background-repeat: no-repeat; background-position: left center; }
+.lp-note { padding: var(--t-tile-pad) calc(var(--t-tile-pad) + 2px); background: var(--c-card); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-lg); }
+.lp-note h3 { font-size: 17px; font-weight: var(--t-name-weight); letter-spacing: -0.01em; }
+.lp-note p { margin-top: 10px; color: var(--c-body); line-height: 1.55; }
+.lp-openmark { margin-top: 26px; padding: var(--t-tile-pad); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-md); background: var(--c-ground); }
+.lp-openmark p { margin-top: 10px; color: var(--c-body); max-width: 78ch; line-height: 1.55; }
+.lp-quote { display: block; font-size: var(--t-lede-size); color: var(--c-ink); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-sm); padding: 12px 14px; line-height: 1.4; }
+
+.lp-strip { margin-top: 30px; }
+.lp-strip-c { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background: var(--c-card); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-md); overflow: hidden; }
+.lp-strip-c > span { padding: 12px 14px; border-right: var(--t-border, 1px) solid var(--c-line); border-top: var(--t-border, 1px) solid var(--c-line); font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-body); }
+/* a phrase is read, not scanned: the boundary strip keeps the body face and
+   its own capitals, because “clinical authoring — no ISP or nursing
+   assessments” in mono capitals is a shout, not a label. */
+.lp-strip.is-phrase .lp-strip-c > span { font-family: var(--t-body-font); font-size: 14.5px; letter-spacing: 0; text-transform: none; color: var(--c-body); line-height: 1.45; }
+.lp-strip.is-struck .lp-strip-c > span { text-decoration: line-through; color: var(--c-soft); text-transform: none; font-family: var(--t-body-font); font-size: 14.5px; letter-spacing: 0; }
+.lp-strip-f { margin-top: 12px; font-size: 13.5px; color: var(--c-soft); }
+
+/* ── 3 · where this actually is ───────────────────────────────────────── */
+.lp-rows { display: grid; }
+.lp-row { display: grid; grid-template-columns: 24px minmax(120px, 1fr) auto minmax(0, 2fr); gap: 16px; align-items: baseline; padding: 18px 0; border-top: var(--t-border, 1px) solid var(--c-line); }
+.lp-row:last-child { border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-row-m { align-self: center; display: flex; }
+.lp-row-n { font-weight: var(--t-name-weight); font-size: 17px; letter-spacing: -0.01em; }
+.lp-row-c { color: var(--c-soft); white-space: nowrap; }
+.lp-row-d { color: var(--c-body); font-size: 15px; line-height: 1.5; }
+
+.lp-open-p { font-size: var(--t-lede-size); color: var(--c-body); max-width: 70ch; }
+.lp-rel-g { margin-top: 26px; display: grid; gap: 28px; }
+.lp-rel-g.has-ledger { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); align-items: start; }
+.lp-disp { max-width: 380px; }
+.lp-disp-r { display: grid; grid-template-columns: 1fr auto; gap: 0 12px; }
+.lp-disp-r > span { padding: 8px 0; border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-disp-r > b { padding: 8px 0; border-bottom: var(--t-border, 1px) solid var(--c-line); text-align: right; font-family: var(--t-numeral-face, var(--t-mono)); font-variant-numeric: tabular-nums; }
+.lp-disp-f { display: flex; justify-content: space-between; gap: 12px; padding-top: 10px; font-size: 13px; color: var(--c-soft); }
+.lp-rel { display: grid; }
+.lp-rel-r { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 2fr); gap: 18px; padding: 18px 0; border-top: var(--t-border, 1px) solid var(--c-line); }
+.lp-rel-r:last-child { border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-rel-s { font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-teal); }
+.lp-rel-w { font-weight: var(--t-name-weight); font-size: 15px; }
+.lp-rel-e { font-size: var(--t-lede-size); color: var(--c-body); line-height: 1.5; }
+
+/* ── 4 · four rooms, each card carrying its own room’s character ──────── */
+.lp-rooms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.lp-room { display: flex; flex-direction: column; gap: 8px; padding: var(--t-tile-pad); background: var(--c-card); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-lg); text-decoration: none; color: inherit; box-shadow: var(--c-sh1); }
+.lp-room-n { font-weight: var(--t-name-weight); font-size: 20px; letter-spacing: -0.015em; margin-top: 8px; }
+.lp-room-d { color: var(--c-body); font-size: 15px; }
+.lp-room-o { color: var(--t-accent-text); font-weight: 600; font-size: 13px; margin-top: 6px; }
+.lp-room-h { color: var(--c-soft); font-size: 11px; }
+
+/* ── 5 · one screen, annotated ────────────────────────────────────────── */
+.lp-screen-g { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1.1fr); gap: 34px; align-items: start; }
+.lp-screen-g.is-split { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.8fr); }
+.lp-screen-v { min-width: 0; display: flex; justify-content: center; }
+.lp-screen-v .browser { zoom: .62; }
+.lp-screen-v .phone { zoom: .78; }
+.lp-annot { margin: 0; padding: 0; list-style: none; counter-reset: annot; display: grid; gap: 18px; }
+.lp-annot li { counter-increment: annot; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px; align-items: start; }
+.lp-annot-n { width: 26px; height: 26px; border-radius: 50%; border: var(--t-border, 1px) solid var(--c-line); display: grid; place-items: center; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 0.5px); color: var(--c-teal); }
+.lp-annot-n::before { content: counter(annot); }
+.lp-annot-b { font-size: 14.5px; line-height: 1.5; color: var(--c-body); }
+.lp-annot-b b { color: var(--c-ink); }
+.lp-annot-leader { display: none; }
+.lp-annot.has-leaders li { grid-template-columns: 26px minmax(0, 1fr) 28px; }
+.lp-annot.has-leaders .lp-annot-leader { display: block; height: 1px; margin-top: 12px; background: var(--c-line); }
+.lp-side { margin-top: 24px; padding: 16px 18px; background: var(--c-wash); border-radius: var(--t-r-md); }
+.lp-side p { font-size: 14px; color: var(--c-body); line-height: 1.5; }
+.lp-fig { margin-top: 34px; padding-top: 26px; border-top: var(--t-border, 1px) solid var(--c-line); }
+.lp-fig-g { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: center; }
+.lp-fig-g > * + * { border-left: var(--t-border, 1px) solid var(--c-line); padding-left: 26px; }
+.lp-fig-x { color: var(--c-soft); font-family: var(--t-mono); font-size: 14px; letter-spacing: var(--t-mono-tracking); }
+.lp-fig-k { font-size: 22px; color: var(--c-ink); font-weight: var(--t-name-weight); }
+
+/* ── 6 · the mechanism, drawn on the product’s own geometry ───────────── */
+.lp-flow { margin: 0; padding: 0; list-style: none; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; align-items: start; }
+.lp-node { position: relative; padding: 0 12px 0 0; }
+.lp-node::after { content: ""; position: absolute; left: 34px; right: 0; top: 13px; height: 1px; background: var(--c-line); }
+.lp-node:last-child::after { display: none; }
+.lp-node-g { display: block; width: 26px; height: 26px; color: var(--c-teal); }
+.lp-node-g svg { width: 26px; height: 26px; display: block; }
+.lp-node.is-accent .lp-node-g { color: var(--t-accent); }
+.lp-node.is-accent { border-left: var(--t-accent-edge, 2px) solid var(--t-accent-edge-color, var(--t-accent)); padding-left: 10px; margin-left: -12px; }
+/* a further flagged state on the same loop: the same shape, in teal — the
+   accent is a budget of three per page, not a highlighter. */
+.lp-node.is-gate { border-left: 2px solid var(--c-teal); padding-left: 10px; margin-left: -12px; }
+.lp-node.is-gate::after { left: 44px; }
+.lp-node.is-accent::after { left: 44px; }
+.lp-node-n { display: block; margin-top: 10px; color: var(--c-soft); font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 0.5px); letter-spacing: var(--t-mono-tracking); }
+.lp-node-t { display: block; margin-top: 4px; font-weight: var(--t-name-weight); font-size: 14.5px; }
+.lp-node-d { display: block; margin-top: 6px; font-size: 13px; color: var(--c-body); line-height: 1.45; padding-right: 12px; }
+.lp-node-s { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.lp-node .lp-quote { margin-top: 10px; font-size: 15px; }
+.lp-gates { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+/* The two physical-harm gates. Wash with deep-teal ink is the family's single
+   treatment for “this one” (DESIGN.md:409) and it is enough on its own; a
+   coloured tab down one edge is not in the border vocabulary (DESIGN.md:482). */
+.lp-gate { padding: 16px 18px; background: var(--c-wash); border-radius: var(--t-r-sm); font-size: 15px; color: var(--c-teal-deep); }
+.lp-gate-n { grid-column: 1 / -1; font-size: 14px; color: var(--c-body); line-height: 1.55; }
+.lp-machines { margin-top: 34px; display: grid; }
+.lp-machine { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 18px; padding: 16px 0; border-top: var(--t-border, 1px) solid var(--c-line); }
+.lp-machine:last-child { border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-machine span { color: var(--c-soft); font-size: 14.5px; line-height: 1.55; }
+.lp-openmark.is-proposal { background: var(--c-wash); border-color: transparent; }
+
+/* ── 7 · depth: a table, a chip grid, or two columns ──────────────────── */
+.lp-tblw { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-md); background: var(--c-card); }
+.lp-tbl { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.lp-tbl caption { text-align: left; padding: 14px 16px 0; font-weight: var(--t-name-weight); font-size: 15px; }
+.lp-tbl th[scope="col"] { text-align: left; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-soft); font-weight: 500; padding: 12px 16px; border-bottom: var(--t-border, 1px) solid var(--c-line); white-space: nowrap; }
+.lp-tbl th[scope="row"] { min-width: 10ch; text-align: left; font-weight: var(--t-name-weight); color: var(--c-ink); padding: 13px 16px; vertical-align: top; border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-tbl td { padding: 13px 16px; vertical-align: top; color: var(--c-body); line-height: 1.5; border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-tbl tbody tr:last-child th, .lp-tbl tbody tr:last-child td { border-bottom: 0; }
+.lp-tbl tr.is-wash th, .lp-tbl tr.is-wash td { background: var(--c-wash); }
+.lp-dev { text-align: right; color: var(--c-soft); white-space: nowrap; }
+.lp-conf { display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: var(--t-r-control, 999px); border: var(--t-border, 1px) solid var(--c-line); font-size: 13px; font-weight: 600; white-space: nowrap; color: var(--c-body); }
+.lp-conf.is-verified { background: var(--c-wash); border-color: transparent; color: var(--c-teal-deep); }
+.lp-conf.is-unverified { color: var(--c-soft); }
+.lp-conf.is-corrected { border-color: var(--c-ink); color: var(--c-ink); }
+.lp-tcards { display: grid; gap: 12px; }
+.lp-tcard { padding: 16px 18px; border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-md); background: var(--c-card); display: grid; gap: 8px; }
+.lp-tcard.is-wash { background: var(--c-wash); }
+.lp-tcard-e { font-weight: var(--t-name-weight); font-size: 15px; }
+.lp-tcard-v { display: grid; gap: 3px; font-size: 14px; color: var(--c-body); line-height: 1.45; }
+.lp-tcard-v i { font-style: normal; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 0.5px); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-soft); }
+.lp-tcard-f { font-size: 13px; color: var(--c-soft); }
+.lp-struck { margin-top: 34px; }
+.lp-struck-w { display: flex; gap: 26px; flex-wrap: wrap; }
+.lp-struck-w s { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: clamp(24px, 3cqi, 34px); color: var(--c-soft); }
+.lp-correction { margin-top: 30px; padding: var(--t-tile-pad); background: var(--c-card); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-lg); }
+.lp-correction.is-accent { border-left: var(--t-accent-edge, 2px) solid var(--t-accent-edge-color, var(--t-accent)); }
+.lp-correction p { color: var(--c-body); line-height: 1.55; max-width: 78ch; }
+
+.lp-chipgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.lp-chipbox { position: relative; padding: 12px 14px; border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-sm); display: grid; gap: 3px; background: var(--c-card); }
+.lp-chipbox-c { font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); color: var(--c-soft); }
+.lp-chipbox-n { font-weight: var(--t-name-weight); font-size: 14.5px; line-height: 1.3; }
+.lp-chipbox-k { font-size: 12px; color: var(--c-soft); }
+.lp-src { position: absolute; top: 12px; right: 12px; width: 7px; height: 7px; border-radius: 50%; background: var(--src, var(--c-teal)); }
+.lp-legend { margin-top: 20px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--c-soft); }
+.lp-legend-m { width: 16px; height: 16px; background-image: var(--t-motif-bullet, none); background-repeat: no-repeat; background-position: center; }
+.lp-legend-i { display: inline-flex; align-items: center; gap: 7px; }
+.lp-legend-i i { width: 7px; height: 7px; border-radius: 50%; background: var(--src, var(--c-teal)); }
+
+.lp-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+.lp-col + .lp-col { border-left: var(--t-border, 1px) solid var(--c-line); padding-left: 34px; }
+.lp-cols + .lp-note { margin-top: 30px; }
+
+/* ── 8 · the boundary, as a section ───────────────────────────────────── */
+.lp-bnd { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 34px; }
+.lp-bnd[data-cols="3"] { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.2fr); }
+.lp-bnd-c + .lp-bnd-c { border-left: var(--t-border, 1px) solid var(--c-line); padding-left: 34px; }
+.lp-next { display: grid; grid-template-columns: 18px minmax(0, 1fr) 16px; gap: 12px; align-items: center; min-height: var(--t-tap); text-decoration: none; color: inherit; }
+.lp-next-m { display: flex; }
+.lp-next-t { font-size: 15px; color: var(--c-body); line-height: 1.45; }
+.lp-next-d { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--src, var(--c-teal)); margin-left: 8px; vertical-align: 1px; }
+.lp-next-t em { display: block; font-style: normal; font-size: 13px; color: var(--c-soft); margin-top: 2px; }
+.lp-next-c { color: var(--c-soft); display: flex; }
+.lp-bnd .lp-list li { padding-left: 0; }
+.lp-bnd .lp-list li::before { display: none; }
+.lp-bnd-c.is-never .lp-list li, .lp-bnd-c.is-provider .lp-list li { padding-left: 24px; }
+.lp-bnd-c.is-never .lp-list li::before, .lp-bnd-c.is-provider .lp-list li::before { display: block; }
+.lp-trip { margin-top: 30px; padding: var(--t-tile-pad); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-sm); }
+.lp-trip p { color: var(--c-body); line-height: 1.55; max-width: 84ch; }
+
+/* ── 9 · evidence — there is no testimonial, so this is the testimonial ─ */
+.lp-marks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; background: var(--c-line); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-md); overflow: hidden; }
+.lp-mark { background: var(--c-wash); padding: 14px 16px; font-size: 13px; color: var(--c-body); line-height: 1.45; }
+.lp-mark .lp-strip-l { margin-bottom: 6px; }
+.lp-ev { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.lp-marks + .lp-ev { margin-top: 24px; }
+.lp-ev-b { padding: var(--t-tile-pad); background: var(--c-card); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-lg); display: grid; align-content: start; gap: 10px; }
+.lp-ev-b.is-wide { grid-column: span 2; }
+.lp-ev-b p { font-size: 14.5px; color: var(--c-body); line-height: 1.55; }
+.lp-corrs { margin-top: 30px; display: grid; gap: 2px; }
+.lp-corrs p { padding: 12px 0 12px 18px; border-left: 2px solid var(--c-teal); color: var(--c-ink); font-size: 15px; line-height: 1.5; max-width: 88ch; }
+.lp-defs { margin-top: 30px; }
+.lp-defs dl, .lp-defs-in { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 0 20px; margin: 0; }
+.lp-defs dt, .lp-defs-in dt { font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--c-soft); padding: 11px 0; border-top: var(--t-border, 1px) solid var(--c-line); }
+.lp-defs dd, .lp-defs-in dd { margin: 0; padding: 11px 0; border-top: var(--t-border, 1px) solid var(--c-line); font-size: 14.5px; color: var(--c-body); line-height: 1.5; }
+.lp-ev-cl { margin-top: 26px; display: grid; gap: 12px; }
+.lp-packages { margin-top: 30px; text-align: center; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); color: var(--c-soft); line-height: 1.8; }
+
+/* ── the caregiver side — the page that turns over ────────────────────── */
+.lp-caregiver { max-width: none; background: var(--c-ground); color: var(--c-ink); padding-top: 88px; padding-bottom: 88px; margin-top: 20px; }
+.lp-caregiver::before { display: none; }
+.lp-care-g { max-width: var(--lp-max); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: 48px; align-items: center; }
+.lp-caregiver h2 { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: clamp(32px, 4cqi, 44px); letter-spacing: var(--t-display-tracking); line-height: 1.06; }
+.lp-caregiver .lp-list { margin-top: 26px; }
+.lp-promise { margin-top: 26px; font-size: 19px; line-height: 1.45; color: var(--c-ink); max-width: 46ch; }
+.lp-care-v { display: flex; justify-content: center; }
+.lp-care-v .phone { zoom: .66; }
+.lp-mono-f { margin-top: 18px; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--t-mint); }
+
+/* ── 10 · roles, 11 · objections, 12 · the first ten minutes ──────────── */
+.lp-perms { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.lp-perm { padding: 14px 16px; border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-sm); display: grid; gap: 4px; font-size: 14px; }
+.lp-perm span { color: var(--c-soft); line-height: 1.45; }
+.lp-perms.is-leaders .lp-perm { border: 0; border-bottom: var(--t-border, 1px) dotted var(--c-line); border-radius: 0; padding: 10px 0; }
+
+.lp-qa { display: grid; }
+.lp-qa-r { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: 34px; padding: 26px 0; }
+.lp-qa-r + .lp-qa-r { background-image: var(--t-motif-rule, none); background-repeat: var(--t-motif-repeat, no-repeat); background-position: left top; }
+.lp-qa-r h3 { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: 26px; letter-spacing: var(--t-display-tracking); line-height: 1.15; max-width: 20ch; }
+.lp-qa-r p { font-size: var(--t-lede-size); color: var(--c-body); line-height: 1.55; }
+
+.lp-steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.lp-steps li { display: flex; gap: 14px; align-items: flex-start; font-size: 15.5px; line-height: 1.5; color: var(--c-body); }
+.lp-n { font-family: var(--t-display); font-size: 30px; line-height: 1; color: var(--c-teal); flex: none; }
+.lp-two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lp-two-c { padding: var(--t-tile-pad); border-radius: var(--t-r-lg); border: var(--t-border, 1px) solid var(--c-line); }
+.lp-two-c.is-wash { background: var(--c-wash); border-color: transparent; }
+.lp-two-c .lp-steps { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.lp-subs { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+.lp-arrow { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 4px; font-size: 14px; color: var(--c-body); }
+.lp-arrow li + li::before { content: "→ "; color: var(--c-soft); }
+.lp-defs-in { grid-template-columns: 110px minmax(0, 1fr); margin-top: 12px; }
+
+/* ── 13 · pricing ─────────────────────────────────────────────────────── */
+.lp-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.lp-tier { padding: var(--t-tile-pad); background: var(--c-card); border: var(--t-border, 1px) solid var(--c-line); border-radius: var(--t-r-lg); display: flex; flex-direction: column; gap: 6px; }
+.lp-tier.is-main { border-color: var(--c-teal); box-shadow: var(--c-sh2); }
+.lp-tier-n { font-weight: 600; font-size: 15px; }
+.lp-tier-p { font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: 32px; letter-spacing: var(--t-display-tracking); line-height: 1.1; }
+.lp-tier-d { color: var(--c-body); font-size: 14.5px; }
+.lp-lines { margin-top: 18px; display: grid; gap: 6px; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); color: var(--c-soft); line-height: 1.7; }
+.lp-pricing .lp-fine { margin-top: 18px; max-width: 86ch; }
+
+/* ── 14 · the ladder ──────────────────────────────────────────────────── */
+.lp-map { display: grid; }
+.lp-map-r { display: grid; grid-template-columns: minmax(0, 1.4fr) 28px minmax(0, 1fr); gap: 14px; align-items: baseline; padding: 13px 0; border-top: var(--t-border, 1px) solid var(--c-line); }
+.lp-map-r:last-child { border-bottom: var(--t-border, 1px) solid var(--c-line); }
+.lp-map.is-leaders .lp-map-r { border-top: 0; border-bottom: var(--t-border, 1px) dotted var(--c-line); }
+.lp-map-a { font-size: 15px; color: var(--c-ink); }
+.lp-map-x { color: var(--c-soft); text-align: center; }
+.lp-map-b { text-align: right; color: var(--c-body); }
+.lp-lads { display: grid; }
+.lp-lad { display: grid; grid-template-columns: 76px minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; padding: 26px 0; border-top: var(--t-border, 1px) solid var(--c-line); align-items: start; }
+.lp-lad.is-proposed { background: var(--c-wash); padding-inline: var(--lp-x); margin-inline: calc(var(--lp-x) * -1); border-radius: var(--t-r-md); }
+.lp-lad-n { font-family: var(--t-display); font-size: 56px; line-height: .9; color: var(--c-teal); }
+.lp-lad-t h3 { font-size: 22px; font-weight: var(--t-name-weight); letter-spacing: -0.015em; }
+.lp-lad-t p { margin-top: 8px; color: var(--c-body); line-height: 1.55; }
+.lp-lad-p p { font-size: 14.5px; color: var(--c-body); line-height: 1.5; }
+.lp-lads + .lp-tblw { margin-top: 34px; }
+
+/* ── 15 · the family band, and the foot ──────────────────────────────── */
+.lp-family { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 40px; align-items: center; background: var(--c-teal-deep); color: var(--t-ivory); border-top: 0; margin-top: 20px; max-width: none; padding-top: 72px; padding-bottom: 72px; }
+.lp-family::before { display: none; }
+.lp-family.is-second { border-top: 1px solid var(--t-mint); }
+.lp-family .lp-family-t { max-width: calc(var(--lp-max) / 2); margin-left: auto; }
+.lp-family h2 { color: var(--t-ivory); font-family: var(--t-display); font-weight: var(--t-display-weight); font-size: clamp(32px, 4.5cqi, 44px); letter-spacing: var(--t-display-tracking); line-height: 1.06; }
+.lp-family p { margin-top: 14px; color: color-mix(in srgb, var(--t-ivory) 78%, var(--c-teal-deep)); font-size: var(--t-lede-size); max-width: 46ch; }
+.lp-motif { display: block; height: 10px; width: 120px; margin-bottom: 18px; background-image: var(--t-motif-rule, none); background-repeat: var(--t-motif-repeat, no-repeat); background-position: left center; filter: brightness(0) invert(1); opacity: .7; }
+.lp-byline { display: block; font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform, uppercase); color: var(--t-mint); margin-bottom: 14px; font-weight: 500; }
+.lp-sibs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 560px; }
+.lp-sib { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; padding: 16px 18px; border-radius: var(--t-r-md); background: color-mix(in srgb, var(--t-ivory) 8%, var(--c-teal-deep)); color: var(--t-ivory); --c-tile: var(--t-ivory); --c-glyph: var(--t-teal); text-decoration: none; }
+.lp-sib .mk { grid-row: span 2; }
+.lp-sib b { font-weight: var(--t-name-weight); font-size: 16px; }
+.lp-sib span { font-size: 13px; color: color-mix(in srgb, var(--t-ivory) 70%, var(--c-teal-deep)); }
+
+.lp-foot { display: block; padding-top: 26px; padding-bottom: 34px; font-size: 14px; color: var(--c-soft); max-width: calc(var(--lp-max) + 2 * var(--lp-x)); margin: 0 auto; }
+.lp-foot-t { display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; }
+.lp-foot-l { display: flex; align-items: center; gap: 10px; color: var(--c-ink); font-weight: 600; }
+.lp-foot-by { color: var(--c-soft); font-weight: 400; }
+.lp-foot-r { display: flex; gap: 18px; flex-wrap: wrap; }
+.lp-foot-d { margin-top: 20px; font-size: 12px; color: var(--c-soft); line-height: 1.6; max-width: 96ch; }
+
+/* ── the phone composition ────────────────────────────────────────────────
+   Not the desktop page squeezed: the renderer already swapped the hero
+   instrument, put the copy first and turned every table into cards. What is
+   left for CSS is the rhythm, the reach and the one rule that matters most —
+   a control is never smaller than the tap target. `.lp.is-mobile` is set on
+   the element the frame renders, and the container tiers below carry the
+   same composition to every width in between. */
+.lp.is-mobile { --lp-x: 20px; }
+.lp.is-mobile .lp-sec { padding-top: 40px; padding-bottom: 40px; }
+.lp.is-mobile .lp-sec::before { margin-bottom: 24px; }
+.lp.is-mobile .lp-hero { grid-template-columns: minmax(0, 1fr); gap: 26px; min-height: 0; padding-top: 24px; padding-bottom: 30px; }
+.lp.is-mobile .lp-hero h1 { font-size: 40px; }
+.lp.is-mobile .lp-hero-t { order: 1; }
+.lp.is-mobile .lp-hero-v { order: 2; }
+.lp.is-mobile .lp-ctas { flex-direction: column; align-items: stretch; }
+.lp.is-mobile .lp-ctas .lp-btn { flex: 1 1 100%; min-height: 48px; }
+.lp.is-mobile .lp-nav { height: 60px; }
+.lp.is-mobile .lp-head h2 { font-size: 26px; }
+.lp.is-mobile .lp-sub, .lp.is-mobile .lp-closing { font-size: 16px; }
+.lp.is-mobile .lp-pull { font-size: 22px; margin-top: 26px; }
+
+/* A phone shell on a phone page is shown just under true size — never far
+   under it. The smallest glyph inside a shell is 9.5px, so the floor is
+   8 / 9.5 = .842 if no text is to render below 8px effective; .86 clears it
+   and still fits 390 inside the 350 the gutters leave. There is deliberately
+   NO `.browser` rule here: a 1280 desktop canvas is not shrunk to fit a
+   phone, it is panned at true size by .lp-pan. */
+.lp.is-mobile .lp-hero-v .phone { zoom: .86; }
+.lp.is-mobile .lp-screen-v .phone { zoom: .86; }
+.lp.is-mobile .lp-care-v .phone { zoom: .86; }
+.lp.is-mobile .lp-crop { max-width: none; height: auto; }
+.lp.is-mobile .lp-crop .phone { margin: 0; zoom: .74; }
+/* a week with fewer than seven days is not a week: the board keeps its seven
+   columns on a phone and scrolls inside its own box, with a fade at the cut so
+   the scroll is visible. A truncated name would defeat the section's claim. */
+.lp.is-mobile .lp-board-in .tbl-a { min-width: 620px; }
+.lp.is-mobile .lp-board::after { content: ""; position: absolute; top: 0; right: 0; bottom: 34px; width: 20px; background: linear-gradient(to right, transparent, var(--c-ground)); pointer-events: none; }
+
+.lp.is-mobile .lp-rooms, .lp.is-mobile .lp-steps, .lp.is-mobile .lp-cols,
+.lp.is-mobile .lp-bnd, .lp.is-mobile .lp-ev, .lp.is-mobile .lp-sibs,
+.lp.is-mobile .lp-subs, .lp.is-mobile .lp-two, .lp.is-mobile .lp-gates,
+.lp.is-mobile .lp-family, .lp.is-mobile .lp-care-g, .lp.is-mobile .lp-rel-g.has-ledger,
+.lp.is-mobile .lp-screen-g, .lp.is-mobile .lp-qa-r, .lp.is-mobile .lp-fig-g
+  { grid-template-columns: minmax(0, 1fr); }
+.lp.is-mobile .lp-col + .lp-col, .lp.is-mobile .lp-bnd-c + .lp-bnd-c,
+.lp.is-mobile .lp-fig-g > * + * { border-left: 0; padding-left: 0; border-top: var(--t-border, 1px) solid var(--c-line); padding-top: 22px; }
+.lp.is-mobile .lp-marks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lp.is-mobile .lp-chipgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lp.is-mobile .lp-ev-b.is-wide { grid-column: auto; }
+.lp.is-mobile .lp-strip-c { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lp.is-mobile .lp-family { padding-top: 48px; padding-bottom: 48px; }
+.lp.is-mobile .lp-family .lp-family-t { margin-left: 0; max-width: none; }
+.lp.is-mobile .lp-caregiver { padding-top: 64px; padding-bottom: 64px; }
+.lp.is-mobile .lp-annot.has-leaders li { grid-template-columns: 26px minmax(0, 1fr); }
+.lp.is-mobile .lp-annot-leader { display: none; }
+.lp.is-mobile .lp-foot-t { flex-direction: column; align-items: flex-start; gap: 14px; }
+.lp.is-mobile .lp-foot-r { gap: 10px 16px; }
+.lp.is-mobile .lp-defs dl, .lp.is-mobile .lp-defs-in { grid-template-columns: minmax(0, 1fr); }
+.lp.is-mobile .lp-defs dd, .lp.is-mobile .lp-defs-in dd { border-top: 0; padding-top: 0; }
+.lp.is-mobile .lp-rel-r, .lp.is-mobile .lp-row, .lp.is-mobile .lp-machine,
+.lp.is-mobile .lp-map-r, .lp.is-mobile .lp-lad { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.lp.is-mobile .lp-row-m { grid-row: 1; }
+.lp.is-mobile .lp-map-x { text-align: left; }
+.lp.is-mobile .lp-map-b { text-align: left; }
+.lp.is-mobile .lp-lad-n { font-size: 34px; }
+.lp.is-mobile .lp-lad-p { border-left: 2px solid var(--c-teal); padding-left: 14px; margin-top: 10px; }
+.lp.is-mobile .lp-dev { text-align: left; }
+.lp.is-mobile .lp-qa-r p { border-left: 2px solid var(--c-teal); padding-left: 14px; }
+.lp.is-mobile .lp-packages { text-align: left; }
+
+/* The one diagram rule: the spine turns from a row into a column, with the
+   nodes down a 20px gutter. A five-station arc read sideways on a 390px
+   phone is not a diagram, it is a smear. */
+.lp.is-mobile .lp-flow { grid-auto-flow: row; grid-auto-columns: auto; gap: 0; }
+.lp.is-mobile .lp-node { padding: 0 0 20px 40px; }
+.lp.is-mobile .lp-node-g { position: absolute; left: 0; top: 0; }
+.lp.is-mobile .lp-node::after { left: 13px; right: auto; top: 26px; bottom: 0; height: auto; width: 1px; }
+.lp.is-mobile .lp-node.is-accent, .lp.is-mobile .lp-node.is-gate { border-left: 0; padding-left: 40px; margin-left: 0; }
+.lp.is-mobile .lp-node.is-accent .lp-node-t { color: var(--t-accent-text); }
+.lp.is-mobile .lp-node-n { margin-top: 0; }
+
+/* ── the tiers in between ─────────────────────────────────────────────────
+   The same composition, keyed to .lp’s own box rather than the reviewer’s
+   screen, so a 768px tablet and a 430px phone are both provable in the
+   preview. `cqi` resolves against .lp, which is what makes it honest. */
+@container lp (max-width: 980px) {
+  .lp-screen-g, .lp-screen-g.is-split { grid-template-columns: minmax(0, 1fr); }
+  .lp-annot.has-leaders li { grid-template-columns: 26px minmax(0, 1fr); }
+  .lp-annot-leader { display: none; }
+  .lp-marks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lp-ev { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lp-lad { grid-template-columns: 56px minmax(0, 1fr); }
+  .lp-lad-p { grid-column: 2; border-left: 2px solid var(--c-teal); padding-left: 14px; }
+  .lp-machine { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .lp-flow { grid-auto-flow: row; }
+  .lp-node { padding: 0 0 20px 40px; }
+  .lp-node-g { position: absolute; left: 0; top: 0; }
+  .lp-node::after { left: 13px; right: auto; top: 26px; bottom: 0; height: auto; width: 1px; }
+  .lp-node.is-accent, .lp-node.is-gate { border-left: 0; padding-left: 40px; margin-left: 0; }
+  .lp-node-n { margin-top: 0; }
+}
+@container lp (max-width: 720px) {
+  .lp-rooms, .lp-cols, .lp-bnd, .lp-bnd[data-cols="3"], .lp-ev, .lp-subs,
+  .lp-two, .lp-gates, .lp-qa-r, .lp-care-g, .lp-fig-g, .lp-rel-g.has-ledger { grid-template-columns: minmax(0, 1fr); }
+  .lp-col + .lp-col, .lp-bnd-c + .lp-bnd-c, .lp-fig-g > * + * { border-left: 0; padding-left: 0; border-top: var(--t-border, 1px) solid var(--c-line); padding-top: 22px; }
+  .lp-marks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lp-rel-r, .lp-row, .lp-map-r, .lp-lad { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .lp-lad-p { grid-column: auto; }
+  .lp-map-x, .lp-map-b, .lp-dev { text-align: left; }
+  .lp-strip-c { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lp-ev-b.is-wide { grid-column: auto; }
+  .lp-chipgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lp-packages { text-align: left; }
+}
+
+/* ── print: the page a provider prints is the argument, not the furniture ─ */
+@media print {
+  .lp-nav, .lp-hero-v, .lp-care-v { display: none; }
+  .lp-sec, .lp-tier, .lp-ev-b, .lp-note { break-inside: avoid; }
+}

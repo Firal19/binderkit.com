@@ -1,0 +1,356 @@
+/* shells.css — the shell rules, added or overridden. Loaded after board.css,
+   so a selector here of the same specificity wins; most are scoped to
+   `.phone`, `.browser` or `.face` so they win on specificity too and no
+   other agent's sheet can take them by accident. Two laws hold everywhere
+   below: no literal colour or radius inside a canvas, and no literal spacing
+   that --t-unit × --t-density ought to be carrying. The one exception is the
+   printed page, which is ink on white by design. */
+
+/* ── fallbacks, for a canvas no face block reaches ────────────────────── */
+/* They live in board.css (the `.canvas, .face` block, ~line 295) and nowhere
+   else. This file used to declare the same thirteen names at the same
+   specificity and, loading later, won all thirteen — so editing the copy in
+   board.css changed nothing. That copy is the one with the explanation
+   beside it, so it is the one that stayed. */
+
+/* ── L2 · rhythm: the chrome joins the grid ───────────────────────────── */
+.phone .navbar { padding: calc(var(--g) * 1.5) calc(var(--g) * 4) calc(var(--g) * 1.5); gap: calc(var(--g) * 2); }
+.phone .content { padding: var(--g) calc(var(--g) * 4.5) calc(var(--g) * 5); gap: calc(var(--g) * 3.5); }
+.phone .tabbar { padding: calc(var(--g) * 1.5) calc(var(--g) * 1.5) 0; }
+.browser .snav { padding: calc(var(--g) * 4) calc(var(--g) * 3); gap: calc(var(--g) * 3.5); }
+.browser .snav-item { padding: calc(var(--g) * 1.75) calc(var(--g) * 2); }
+.browser .snav-g { padding: calc(var(--g) * 1.5) calc(var(--g) * 2) var(--g); }
+.browser .topbar { height: auto; min-height: calc(var(--g) * 13); padding: 0 calc(var(--g) * 6); gap: calc(var(--g) * 4); }
+.browser .page-head { padding: calc(var(--g) * 6.5) calc(var(--g) * 7) calc(var(--g) * 4.5); }
+.browser .page-grid { gap: calc(var(--g) * 5); padding: 0 calc(var(--g) * 7) calc(var(--g) * 7); }
+.browser .page-main { gap: calc(var(--g) * 4); }
+.browser .page-side { display: flex; flex-direction: column; gap: calc(var(--g) * 3); }
+.face .tbl-a th { padding: calc(var(--g) * 2.75) calc(var(--g) * 3.5); }
+.face .tbl-a td { padding: calc(var(--g) * 3) calc(var(--g) * 3.5); }
+.face .tbl-a[data-density="compact"] td { padding: calc(var(--g) * 2) calc(var(--g) * 3); }
+.face .row-a { min-height: max(var(--t-tap), calc(var(--g) * 12)); }
+.face .btn-a { min-height: var(--t-tap); border-radius: var(--t-r-control); }
+.face .btn-a.sm { min-height: calc(var(--t-tap) * .78); }
+.face .tg { border-radius: min(var(--t-r-control), 999px); padding: 3px calc(var(--g) * 2); }
+
+/* ── L3 · rule weight: one hairline width per face ────────────────────── */
+.face .tile-a, .face .list-a, .face .tbl-a, .face .wk, .face .search-a, .face .scope,
+.face .seg-a, .face .btn-a, .face .snav, .face .topbar, .face .tabbar {
+  border-width: var(--t-border);
+}
+.face .row-a, .face .tbl-a th, .face .tbl-a td, .face .snav-foot { border-bottom-width: var(--t-border); }
+.face .snav { border-right-width: var(--t-border); }
+
+/* ── L4 · elevation: three planes, not one ────────────────────────────── */
+.face .list-a, .face .tbl-a, .face .wk { box-shadow: var(--c-sh1); }
+.face .tile-a { box-shadow: var(--c-sh1); }
+.face .tile-a.is-lift, .face .page-side .tile-a, .face .paper { box-shadow: var(--c-sh2); }
+.face .sheet-a, .face .pal-a { box-shadow: var(--c-sh3); }
+/* Aidepost spends the family's strongest shadow on exactly one element: the
+   open shift. It is the one piece of per-product CSS in the system, and it
+   assigns a derived value to a structural role rather than a literal. */
+.face[data-product="aidepost"] .tile-a { box-shadow: var(--c-sh1); }
+.face[data-product="aidepost"] .tile-a.is-lift { box-shadow: var(--c-sh3); }
+.face .tile-a.is-quiet { box-shadow: none; background: var(--c-wash); }
+
+/* ── L9 · type: the screen titles join the ramp ───────────────────────── */
+.phone .ltitle h2, .browser .page-head h2 {
+  font-family: var(--t-heading-face);
+  font-weight: var(--t-heading-weight);
+  letter-spacing: var(--t-heading-tracking);
+}
+.phone .ltitle h2 { font-size: var(--t-title-lg); }
+.browser .page-head h2 { font-size: var(--t-title-md); }
+.face .num-a, .face .kv-a b, .face .tbl-a td, .face .wk-cell, .face .paper-n, .face .lad-v {
+  font-family: var(--t-numeral-face); font-variant-numeric: tabular-nums;
+}
+.face .mono-a, .face .snav-g, .face .wk-head span, .face .tbl-a th, .face .ltitle-sub, .face .crumb {
+  text-transform: var(--t-label-transform);
+}
+
+/* ── the phone: an iOS app, not a web page shaped like one ────────────── */
+.phone .status { padding: 10px 30px 0; }
+/* Hardware, drawn to the device: 54pt status bar, a 125 × 36 island with its
+   lens, a 34pt home-indicator inset. None of it scales with density. */
+.phone .island { position: relative; width: 125px; }
+.phone .island::after { content: ""; position: absolute; right: 9px; top: 50%; width: 11px; height: 11px; border-radius: 50%; transform: translateY(-50%); background: #23282B; }
+.phone .home-ind { height: 34px; }
+
+.phone .navbar { min-height: var(--t-tap); justify-content: space-between; border-bottom: 0; }
+.phone .navbar-l { display: inline-flex; align-items: center; gap: 5px; min-height: var(--t-tap); padding-right: calc(var(--g) * 1.5); color: var(--c-teal); font-weight: 600; font-size: calc(var(--t-body-size) - .5px); min-width: 0; }
+.phone .navbar-scope { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 15ch; }
+.phone .navbar-l .ic { flex: none; }
+.phone .navbar-title { display: none; font-weight: 600; font-size: calc(var(--t-body-size) + 1.5px); letter-spacing: -0.01em; text-align: center; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.phone .navbar-r { display: inline-flex; align-items: center; gap: 2px; color: var(--c-teal); }
+.hit-a { width: var(--t-tap); height: var(--t-tap); display: inline-grid; place-items: center; flex: none; }
+.phone .navbar-r .hit-a:last-child { margin-right: calc(var(--g) * -2.5); }
+
+/* The large title collapses into the nav bar on scroll — the behaviour that
+   makes a phone screen read as an application. `data-scrolled` is the
+   still-frame of it, for a board that has to hold both states at once. */
+.phone[data-scrolled] .ltitle { display: none; }
+.phone[data-scrolled] .navbar { border-bottom: var(--t-border) solid var(--c-line); }
+.phone[data-scrolled] .navbar-title { display: block; }
+
+.phone .content { overflow: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.phone .content::-webkit-scrollbar { width: 0; height: 0; }
+/* A scroller's children keep their own height — nothing squashes to make the
+   screen fit, because on a phone the screen does not fit, it scrolls. */
+.phone .content > * { flex: none; }
+.phone .ltitle { margin-bottom: 0; }
+
+.phone .foot-a { flex: none; margin: 0; padding: calc(var(--g) * 2.5) calc(var(--g) * 4.5); border-top: var(--t-border) solid var(--c-line); background: var(--c-ground); font-size: calc(var(--t-body-size) - 2px); }
+
+.phone .tabbar { min-height: 49px; position: relative; }
+.phone .tab { position: relative; min-height: 49px; justify-content: center; padding: calc(var(--g) * 1.25) 0 calc(var(--g) * 1.5); }
+.phone .tab span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+/* The one job the accent has on the tab bar: something is waiting. */
+/* The badge carries a count — doses due, a buy queue, an uncovered shift —
+   so it is information and holds AA at 9.5px. Deep teal is the one ink that
+   clears 4.5:1 on all four accents; in dark mode --c-teal-deep resolves to
+   that face's own ground, which is the ink the dark badge already used, so
+   one declaration now serves both themes. */
+.tab-b { position: absolute; top: 0; left: 56%; background: var(--t-accent); color: var(--c-teal-deep); font-family: var(--t-mono); font-size: 9.5px; font-weight: 600; line-height: 1; letter-spacing: 0; padding: 3px 5px; border-radius: 999px; white-space: nowrap; }
+
+/* presentation: the sheet and the scrim the two gates finally have a home in */
+.scrim-a { position: absolute; inset: 0; background: color-mix(in srgb, var(--t-teal-deep) 46%, transparent); backdrop-filter: blur(3px); z-index: 2; }
+.sheet-a {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  max-height: 68%; overflow: auto; scrollbar-width: none;
+  background: var(--c-card); color: var(--c-ink);
+  border-radius: var(--t-r-xl) var(--t-r-xl) 0 0;
+  padding: calc(var(--g) * 2.5) calc(var(--g) * 5) calc(var(--g) * 9);
+  display: flex; flex-direction: column; gap: calc(var(--g) * 3);
+}
+.sheet-a::-webkit-scrollbar { width: 0; }
+.sheet-a::before { content: ""; width: 36px; height: 5px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink) 20%, transparent); align-self: center; flex: none; }
+.sheet-h { display: flex; flex-direction: column; gap: 2px; }
+.sheet-t { font-family: var(--t-heading-face); font-weight: var(--t-heading-weight); letter-spacing: var(--t-heading-tracking); font-size: calc(var(--t-body-size) + 7px); }
+.sheet-s { font-family: var(--t-mono); font-size: var(--t-mono-size); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform); color: var(--c-teal); }
+.sheet-kv { gap: calc(var(--g) * 2) calc(var(--g) * 4); }
+
+.phone .scope { min-height: var(--t-tap); padding: 0 calc(var(--g) * 3); }
+
+/* ── the desktop: a real application frame ────────────────────────────── */
+/* The browser chrome is derived rather than painted, so the dark face no
+   longer carries a paper-coloured band across its top. */
+.browser .browser-bar { background: color-mix(in srgb, var(--c-ink) 8%, var(--c-ground)); border-bottom-color: var(--c-line); }
+.browser .lights i { background: color-mix(in srgb, var(--c-ink) 18%, var(--c-ground)); }
+.browser .url { background: var(--c-ground); color: var(--c-muted); font-family: var(--t-body-font); border: var(--t-border) solid var(--c-line); }
+
+/* PHO is the only product that contains other products, and this row is how
+   you see it: four applications, four hosts, one of them open. No mini has
+   anything above its sidebar at all. */
+.appsw { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px; margin: 0 2px; border-radius: var(--t-r-md); background: var(--c-wash); }
+.appsw span { min-height: 30px; display: grid; place-items: center; text-align: center; padding: 0 calc(var(--g) * 1.5); border-radius: calc(var(--t-r-md) - 2px); font-size: calc(var(--t-mono-size) + .5px); font-weight: 600; color: var(--c-soft); }
+.appsw .on { background: var(--c-card); color: var(--c-teal-deep); box-shadow: var(--c-sh1); }
+[data-mode="dark"] .appsw .on { color: var(--c-ink); }
+
+/* The brand, the application switcher and the account stay put; only the
+   navigation scrolls. PHO's nineteen modules are the reason this matters. */
+.browser .snav { overflow: hidden; }
+.snav-scroll { flex: 1; min-height: 0; overflow: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: calc(var(--g) * 3.5); margin: 0 calc(var(--g) * -1); padding: 0 var(--g); }
+.snav-scroll::-webkit-scrollbar { width: 0; }
+.browser .snav-foot { margin-top: 0; }
+.browser .snav-item { justify-content: flex-start; gap: calc(var(--g) * 2.25); border-radius: calc(var(--t-r-sm) - 3px); }
+/* The row stays a flex box so the module code keeps its baseline, but
+   text-overflow only elides a block container's own inline content — so the
+   name gets a block of its own to elide inside. */
+.snav-l { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.snav-l b { font-weight: 500; flex: none; }
+.snav-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.browser .snav-item .gdot { margin-left: auto; }
+.snav-who { min-width: 0; }
+.snav-cl { margin-left: auto; color: var(--c-soft); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: calc(var(--t-r-sm) - 4px); }
+
+.browser .topbar { justify-content: flex-start; }
+.topbar-l { display: inline-flex; align-items: center; gap: calc(var(--g) * 2); min-width: 0; }
+.ham { display: none; width: var(--t-tap); height: var(--t-tap); place-items: center; color: var(--c-soft); margin-left: calc(var(--g) * -2); }
+.browser .topbar .scope { min-height: 32px; padding: 0 calc(var(--g) * 2.5); gap: 6px; border-radius: var(--t-r-control); }
+.browser .topbar .scope span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22ch; }
+.browser .search-a { margin-left: auto; min-height: 32px; border-radius: var(--t-r-control); padding: 0 calc(var(--g) * 3); min-width: 230px; }
+.browser .topbar-r { margin-left: calc(var(--g) * 2); }
+/* The key cap leaves the board's chrome ramp. */
+.kbd-a { margin-left: auto; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1px); letter-spacing: .04em; color: var(--c-soft); border: var(--t-border) solid var(--c-line); border-radius: calc(var(--t-r-sm) - 6px); padding: 1px 5px; line-height: 1.4; }
+
+/* Scope is the most important idea in a multi-house product; it belongs in a
+   breadcrumb, not inside a headline string. */
+.crumb { display: flex; align-items: center; gap: calc(var(--g) * 1.5); font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1px); letter-spacing: var(--t-mono-tracking); color: var(--c-soft); margin-bottom: calc(var(--g) * 1.5); }
+.crumb b { color: var(--c-teal); font-weight: 500; }
+.crumb i { width: 3px; height: 3px; border-radius: 50%; background: currentColor; flex: none; }
+
+/* Width and the collapsed rail — the responsive behaviour the section is
+   supposed to be demonstrating. */
+.browser[data-w="1024"] { --dw: 1024px; width: 1024px; }
+.browser[data-w="768"] { --dw: 768px; width: 768px; }
+.browser[data-w="1024"] .app { grid-template-columns: 64px minmax(0, 1fr); }
+.browser[data-w="1024"] .snav-l, .browser[data-w="1024"] .snav-g,
+.browser[data-w="1024"] .snav-name, .browser[data-w="1024"] .appsw span,
+.browser[data-w="1024"] .snav-who { display: none; }
+.browser[data-w="1024"] .snav-item { justify-content: center; padding: calc(var(--g) * 2.5) 0; position: relative; }
+.browser[data-w="1024"] .snav-item .gdot { position: absolute; top: 5px; right: 11px; margin: 0; }
+.browser[data-w="1024"] .appsw, .browser[data-w="1024"] .snav-cl { display: none; }
+.browser[data-w="1024"] .snav-brand { justify-content: center; padding: 0; }
+.browser[data-w="1024"] .snav-foot { justify-content: center; }
+.browser[data-w="768"] .app { grid-template-columns: minmax(0, 1fr); }
+.browser[data-w="768"] .snav { display: none; }
+.browser[data-w="768"] .ham { display: grid; }
+.browser[data-w="768"] .page-grid { grid-template-columns: minmax(0, 1fr); }
+
+/* The command palette: a list of this product's own verbs, and nobody
+   else's. It is the cheapest place a shell sounds like itself. */
+.pal-a { position: absolute; left: 50%; top: 96px; z-index: 3; transform: translateX(-50%); width: min(560px, 68%); background: var(--c-card); border: var(--t-border) solid var(--c-line); border-radius: var(--t-r-lg); overflow: hidden; }
+.pal-q { display: flex; align-items: center; gap: calc(var(--g) * 2.5); padding: calc(var(--g) * 4); font-size: calc(var(--t-body-size) + 3px); color: var(--c-soft); border-bottom: var(--t-border) solid var(--c-line); }
+.pal-l { display: flex; flex-direction: column; padding: calc(var(--g) * 1.5); }
+.pal-r { display: flex; align-items: center; gap: calc(var(--g) * 2.5); min-height: var(--t-tap); padding: 0 calc(var(--g) * 2.5); border-radius: calc(var(--t-r-sm) - 4px); color: var(--c-body); font-weight: 500; }
+.pal-r .ic { color: var(--c-soft); }
+.pal-r.on { background: var(--c-wash); color: var(--c-teal-deep); }
+[data-mode="dark"] .pal-r.on { color: var(--c-ink); }
+
+/* ── tables that behave like tables ───────────────────────────────────── */
+.face .tbl-a tbody tr:hover td { background: var(--c-wash); }
+.face .tbl-a tbody tr[aria-selected="true"] td { background: var(--t-accent-soft); }
+.face .tbl-a th[aria-sort] { color: var(--c-teal); }
+.face .tbl-a th[aria-sort="ascending"]::after { content: " ↑"; }
+.face .tbl-a .th-x, .face .tbl-a .td-x { width: 34px; padding-right: 0; }
+.ck-a { display: inline-block; width: 15px; height: 15px; border: var(--t-border) solid color-mix(in srgb, var(--c-ink) 32%, transparent); border-radius: calc(var(--t-r-sm) - 8px); vertical-align: -2px; }
+.ck-a.on { background: var(--c-teal); border-color: var(--c-teal); position: relative; }
+.ck-a.on::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid var(--c-ground); border-width: 0 1.8px 1.8px 0; transform: rotate(42deg); }
+[data-mode="dark"] .ck-a.on::after { border-color: var(--c-teal-deep); }
+.bar-a { display: inline-flex; align-items: center; gap: calc(var(--g) * 2); font-weight: 600; font-size: calc(var(--t-body-size) - .5px); color: var(--c-teal-deep); }
+[data-mode="dark"] .bar-a { color: var(--c-ink); }
+
+/* ── the canvas's own segmented control ───────────────────────────────── */
+/* `.seg` is board chrome and carries --b-* into the product canvas, where it
+   fails contrast in dark mode. This is the canvas's own. */
+.seg-a { display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--t-r-control); background: var(--c-card); border: var(--t-border) solid var(--c-line); max-width: 100%; overflow: hidden; }
+.seg-a span { min-height: 32px; display: inline-flex; align-items: center; justify-content: center; padding: 0 calc(var(--g) * 3); border-radius: var(--t-r-control); font-size: calc(var(--t-body-size) - .5px); font-weight: 600; color: var(--c-muted); white-space: nowrap; }
+.seg-a .on { background: var(--c-wash); color: var(--c-teal-deep); }
+[data-mode="dark"] .seg-a .on { color: var(--c-ink); }
+.q-track { display: flex; }
+
+/* ── the state chip, sized against the face sheet's own component ─────── */
+.face .st-a { border: var(--t-border) solid color-mix(in srgb, var(--st-edge, var(--c-teal)) 24%, transparent); min-height: 24px; padding: 0 calc(var(--g) * 2.5); letter-spacing: 0; }
+.face .row-a-r { display: inline-flex; align-items: center; gap: calc(var(--g) * 2); flex: none; }
+
+/* ── Cohort's mark: the family's only signature ───────────────────────── */
+/* Nothing else in the family signs anything. Every completed line carries
+   who, and when, in the mono voice at the quietest ink on the ramp. */
+.stamp-a { display: block; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - .5px); letter-spacing: var(--t-mono-tracking); color: var(--c-soft); margin-top: 3px; }
+.face .tbl-a .stamp-a { margin-top: 0; }
+.receipt-a { font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - .5px); letter-spacing: var(--t-mono-tracking); color: var(--c-soft); line-height: 1.5; }
+
+/* ── CareShop's mark: how sure we are, beside what we claim ───────────── */
+.conf-a { display: inline-block; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1.5px); letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border-radius: min(var(--t-r-control), 999px); vertical-align: 1px; line-height: 1.5; }
+.conf-a[data-c="confirmed"] { background: var(--c-wash); color: var(--c-teal-deep); }
+[data-mode="dark"] .conf-a[data-c="confirmed"] { color: var(--c-ink); }
+.conf-a[data-c="inferred"] { background: transparent; border: var(--t-border) dashed color-mix(in srgb, var(--c-ink) 42%, transparent); color: var(--c-muted); }
+
+/* ── Binderkit's mark: a placement stamp, and the control-number spine ── */
+/* The printed page is ink on white and deliberately outside the canvas
+   colour vocabulary, exactly as `.paper` already is in board.css. */
+.paper-place { font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 2px); letter-spacing: .08em; text-transform: uppercase; color: #5B6663; border: 1px solid rgba(23, 32, 31, .28); border-radius: 2px; padding: 1px 5px; line-height: 1.4; }
+.face .paper-foot { gap: calc(var(--g) * 3); flex-wrap: wrap; }
+/* A contents row on a 390pt page wraps its authority rather than losing it
+   off the edge — the citation and the evidence tag are the product. */
+.phone .paper-row { grid-template-columns: 38px minmax(0, 1fr); gap: 4px calc(var(--g) * 2); }
+.phone .paper-auth { grid-column: 2; white-space: normal; flex-wrap: wrap; row-gap: 4px; }
+.face .paper-foot span:nth-child(2) { margin-right: auto; }
+.face .paper-auth .st-a { font-size: calc(var(--t-mono-size) - 1.5px); min-height: 19px; padding: 0 6px; text-transform: uppercase; letter-spacing: .06em; background: transparent; border-color: rgba(23, 32, 31, .28); color: #17201F; }
+.face .paper-auth .st-a i { width: 5px; height: 5px; }
+.spines { display: flex; flex-direction: column; gap: calc(var(--g) * 2); }
+.spine { display: grid; grid-template-columns: 1fr auto; gap: 2px calc(var(--g) * 2); padding: calc(var(--g) * 2.5) calc(var(--g) * 3); background: var(--c-card); border: var(--t-border) solid var(--c-line); border-left: var(--t-accent-edge) solid color-mix(in srgb, var(--c-ink) 40%, transparent); border-radius: var(--t-r-sm); }
+.spine-n { font-weight: 600; }
+.spine-w { grid-column: 1; font-size: calc(var(--t-body-size) - 1px); color: var(--c-soft); }
+.spine-c { grid-row: 1; grid-column: 2; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1px); letter-spacing: var(--t-mono-tracking); color: var(--c-teal); }
+.spine-p { grid-row: 2; grid-column: 2; display: inline-flex; align-items: center; gap: 4px; font-size: calc(var(--t-body-size) - 1.5px); color: var(--c-muted); }
+
+/* ── Aidepost's mark: what the shift asks for, and the caregiver lane ─── */
+.need-a { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 calc(var(--g) * 2.25); border-radius: var(--t-r-control); border: var(--t-border) dashed color-mix(in srgb, var(--c-ink) 30%, transparent); font-size: calc(var(--t-body-size) - 1px); font-weight: 600; color: var(--c-body); }
+.need-a i { font-style: normal; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1.5px); letter-spacing: .06em; text-transform: uppercase; color: var(--c-soft); font-weight: 500; }
+.need-a[data-kind="a note"] { border-style: solid; border-color: color-mix(in srgb, var(--t-accent) 45%, transparent); }
+.need-a[data-kind="a note"] i { color: var(--t-accent-text); }
+.phone[data-lane="caregiver"] .navbar-l { color: var(--c-soft); }
+.phone[data-lane="caregiver"] .tabbar { background: var(--c-wash); }
+
+/* ── the week board ───────────────────────────────────────────────────── */
+.face .wk { gap: calc(var(--g) * 2); padding: calc(var(--g) * 3.5); }
+.face .wk-head, .face .wk-row { grid-template-columns: 52px repeat(7, minmax(0, 1fr)); gap: calc(var(--g) * 1.25); }
+.face .wk.is-wide .wk-head, .face .wk.is-wide .wk-row { grid-template-columns: 72px repeat(7, minmax(0, 1fr)); }
+.face .wk-cell { min-height: var(--t-tap); height: auto; border-radius: calc(var(--t-r-sm) - 4px); padding: calc(var(--g) * 1.25) 4px; }
+.face .wk-cell-t { display: block; width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: calc(var(--t-body-size) - 2.5px); }
+.face .wk-cell-i { display: none; font-family: var(--t-mono); font-size: calc(var(--t-mono-size) + .5px); letter-spacing: .04em; }
+.phone .wk-cell-t { display: none; }
+.phone .wk-cell-i { display: block; }
+.face .wk-cell[data-state="covered"] { background: var(--c-wash); color: var(--c-teal-deep); }
+[data-mode="dark"] .face .wk-cell[data-state="covered"] { color: var(--c-ink); }
+.face .wk-cell[data-state="open"] { border: var(--t-accent-edge) solid var(--t-accent-edge-color); color: var(--t-accent-text); }
+.wk-key { display: flex; flex-wrap: wrap; gap: calc(var(--g) * 2); padding-top: calc(var(--g) * 1.5); border-top: var(--t-border) solid var(--c-line); }
+
+/* ── the ladder: days remaining as a length, not an adjective ─────────── */
+.lad-a { display: flex; flex-direction: column; gap: calc(var(--g) * 3); }
+.lad-i { display: grid; grid-template-columns: 1fr auto; gap: calc(var(--g) * 1.5) calc(var(--g) * 2); }
+.lad-h { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: calc(var(--g) * 2); }
+.lad-t { font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lad-bar { grid-column: 1; height: 5px; border-radius: 999px; background: color-mix(in srgb, var(--c-ink) 10%, transparent); position: relative; align-self: center; }
+.lad-bar::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--fill, 20%); border-radius: 999px; background: var(--t-accent); }
+.lad-v { grid-column: 2; font-size: calc(var(--t-body-size) - 1px); color: var(--c-soft); }
+
+/* ── the trail: an append-only record, drawn as one ───────────────────── */
+.trail-a { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.trail-i { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: calc(var(--g) * 2.5); align-items: start; padding: calc(var(--g) * 3) 0; position: relative; }
+.trail-i + .trail-i::before { content: ""; position: absolute; left: 8px; top: calc(var(--g) * -3); bottom: 50%; width: var(--t-border); background: var(--c-line); }
+.trail-d { width: 9px; height: 9px; border-radius: 50%; background: var(--c-teal); margin: 5px 0 0 4px; flex: none; }
+.trail-t { display: block; font-weight: 600; }
+.trail-s { display: block; font-size: calc(var(--t-body-size) - 1px); color: var(--c-body); }
+.trail-a.is-desk .trail-i { padding: calc(var(--g) * 3.5) 0; }
+
+/* ── the right rail's other shapes ────────────────────────────────────── */
+.exp-g { display: flex; flex-direction: column; gap: calc(var(--g) * 1.5); padding-bottom: calc(var(--g) * 2.5); }
+.exp-g + .exp-g { border-top: var(--t-border) solid var(--c-line); padding-top: calc(var(--g) * 2.5); }
+.exp-r { display: flex; justify-content: space-between; gap: calc(var(--g) * 2); font-size: calc(var(--t-body-size) - .5px); color: var(--c-body); }
+.exp-r b { font-weight: 600; font-family: var(--t-numeral-face); white-space: nowrap; }
+.prt-r { display: grid; grid-template-columns: 1fr auto; gap: 2px calc(var(--g) * 2); padding: calc(var(--g) * 2) 0; border-bottom: var(--t-border) solid var(--c-line); }
+.prt-r:last-of-type { border-bottom: 0; }
+.prt-t { font-weight: 500; }
+.prt-v { font-weight: 600; text-align: right; }
+.prt-s { grid-column: 1 / -1; font-size: calc(var(--t-body-size) - 1.5px); color: var(--c-soft); }
+
+/* ── the graduation dot: on PHO an accent is a SOURCE, not a severity ─── */
+.face .gdot { width: 7px; height: 7px; background: var(--c-soft); }
+.face .gdot[data-from="cohort"] { background: var(--t-accent-cohort, var(--t-coral)); }
+.face .gdot[data-from="careshop"] { background: var(--t-accent-careshop, var(--t-amber)); }
+.face .gdot[data-from="binderkit"] { background: var(--t-accent-binderkit, var(--t-peri)); }
+.face .gdot[data-from="aidepost"] { background: var(--t-accent-aidepost, var(--t-orchid)); }
+.grad-key { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--g) * 1.5) calc(var(--g) * 3); padding: calc(var(--g) * 2.5) calc(var(--g) * 3); border: var(--t-border) dashed color-mix(in srgb, var(--c-ink) 18%, transparent); border-radius: var(--t-r-md); }
+.grad-key-t { font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1px); letter-spacing: var(--t-mono-tracking); text-transform: var(--t-label-transform); color: var(--c-soft); }
+.grad-key-i { display: inline-flex; align-items: center; gap: 5px; font-size: calc(var(--t-body-size) - 1px); font-weight: 500; }
+.grad-key-i .gdot { margin: 0; }
+
+/* ── empty, loading and the notice voice ──────────────────────────────── */
+/* The board claims empty states and skeletons are part of the shared bones.
+   Here they are, in each product's own sentence. */
+.empty-a { display: grid; gap: calc(var(--g) * 2); place-items: center; text-align: center; padding: calc(var(--g) * 10) calc(var(--g) * 5); border: var(--t-border) dashed color-mix(in srgb, var(--c-ink) 22%, transparent); border-radius: var(--t-r-lg); color: var(--c-muted); }
+.empty-a b { color: var(--c-ink); font-weight: 600; font-size: calc(var(--t-body-size) + 1px); }
+.empty-a-m { opacity: .4; display: block; line-height: 0; }
+.skel-wrap { display: flex; flex-direction: column; gap: calc(var(--g) * 3); padding: calc(var(--g) * 3) calc(var(--g) * 4); background: var(--c-card); border: var(--t-border) solid var(--c-line); border-radius: var(--t-r-lg); box-shadow: var(--c-sh1); }
+.skel-row { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--g) * 3); min-height: calc(var(--g) * 9); }
+.skel-a { display: block; height: 11px; border-radius: 999px; background: linear-gradient(90deg, var(--c-wash), color-mix(in srgb, var(--c-card) 55%, var(--c-wash)), var(--c-wash)); background-size: 220% 100%; animation: skel-a 1.4s var(--t-ease) infinite; }
+.skel-a.sm { width: 48px; flex: none; }
+@keyframes skel-a { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel-a { animation: none; } }
+
+/* The one thing a product says in its own voice when something is wrong, or
+   unreviewed, or gated. Never a fill, never red — a rule down the left. */
+.notice-a { border-left: var(--t-accent-edge) solid var(--t-accent-edge-color); background: var(--c-card); color: var(--c-body); padding: calc(var(--g) * 2.5) calc(var(--g) * 3.5); border-radius: 0 var(--t-r-sm) var(--t-r-sm) 0; font-size: calc(var(--t-body-size) - .5px); line-height: 1.5; }
+.notice-a b { font-family: var(--t-mono); font-size: calc(var(--t-mono-size) - 1px); letter-spacing: var(--t-mono-tracking); text-transform: uppercase; color: var(--t-accent-text); font-weight: 600; margin-right: 4px; }
+
+/* ── odds and ends ────────────────────────────────────────────────────── */
+.chip-row { display: flex; flex-wrap: wrap; gap: calc(var(--g) * 1.5); }
+.face .kv-a b { white-space: normal; }
+/* The accent marks the thing needing attention, never the frame around it.
+   A selected or detailed card is expressed by elevation instead. Nothing
+   renders `.tile-a.is-accent` today, but board.css:344 still paints an
+   accent border on it, so this correction stays as the guard over that rule
+   rather than as live styling. */
+.face .tile-a.is-accent { border-color: var(--c-line); }
