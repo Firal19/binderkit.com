@@ -54,8 +54,8 @@ export const CONFIGS = {
     og: { bg: '#f6f4f0', ink: '#191713', accent: '#c25a38', tile: '#486b3d', glyph: '#ffffff', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Hanken Grotesk', bodyFile: 'hanken-grotesk.woff2', weight: 600 },
     faq: [
       ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
-      ['Who checks the rules CareShop cites?', 'A provider who has been inspected on that track. Until she has, the citation prints inferred, and the dashboard and every export carry a banner.'],
-      ['What if the phone has no signal in the store?', 'Picks queue offline and the till roll is read on the device. Every write goes through an outbox with idempotency, so a pick is never counted twice.'],
+      ['Who checks the rules CareShop cites?', 'A provider who has been inspected on that track — and none has yet. The confidence on a citation and the banner on an unreviewed rule set are specified and not yet built; what runs today is ten Oregon citations explained in one line each, and the bare rule text on every other catalogue row.'],
+      ['What if the phone has no signal in the store?', 'Picks queue offline. Every write goes through an outbox with idempotency, so a pick is never counted twice. Reading the till roll on the device is specified and not yet built.'],
       ['How much does CareShop cost?', 'Free to start with one house and up to three people. Nineteen dollars a house a month on Pro, thirty-seven on Scale for unlimited houses and seats.'],
     ],
     privacy: {
