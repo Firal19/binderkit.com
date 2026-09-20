@@ -174,3 +174,51 @@
 .tbl-a th[scope="row"] { font-family: inherit; text-transform: none; letter-spacing: 0; font-size: inherit; font-weight: 600; color: var(--c-ink); border-bottom: var(--t-border) solid var(--c-line); }
 .list-a.is-desk .row-a { min-height: max(var(--t-tap), calc(var(--g) * 14)); }
 
+
+/* ── THE MOCKUP SCALING CONTRACT ──────────────────────────────────────
+   A mockup is a picture of an app drawn at its true design width. On a
+   phone it scales AS ONE UNIT through a single inherited multiplier, so
+   its internal proportions, its hairlines and its type relationships all
+   survive. Nothing outside a mock ever reaches inside one.
+
+   How to use it — this is the whole contract:
+
+     --mock-z    the multiplier. Set it on the MOCK or its IMMEDIATE
+                 HOLDER, never on :root and never on body: it inherits,
+                 and one value on :root would reach all 33 mocks at once.
+                 Unset means `normal` — no scaling, no behaviour change.
+     --mock-room the width the mock is allowed to occupy. Default 118vw:
+                 the mock reads as a picture at a glance and the last
+                 fifth is a swipe away inside its existing strip.
+                 data-mock-fit="whole" fits it inside the gutters instead.
+     --mock-fit  the multiplier that makes --dw fit --mock-room, never
+                 above 1. Point --mock-z at it to auto-fit; responsive.css
+                 does exactly that for .browser below 900px.
+
+   `zoom`, not `transform`. zoom re-runs layout, so --dw/--dh stay the
+   intrinsic size, a grid parent still measures the real box, and the
+   strip's scrollWidth shrinks with the mock. transform would leave a
+   1280px hole behind a 460px picture. The @supports fallback is for an
+   engine without zoom; keep transform-origin at top left or the mock
+   drifts out of its holder.
+
+   The one exception: keep a hand-written `transform: scale()` for a mock
+   that contains a position:sticky or position:fixed descendant — zoom
+   breaks sticky inside a scaled subtree.
+
+   :where() keeps all of this at ZERO specificity, so every existing
+   `zoom:` declaration in a page sheet still wins and migrating to
+   --mock-z is a per-site choice, not a flag day. */
+:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, [data-mock]) {
+  --mock-room: 118vw;
+  --mock-fit: min(1, tan(atan2(var(--mock-room), var(--dw, 100vw))));
+  zoom: var(--mock-z, normal);
+}
+:where([data-mock-fit="whole"]) { --mock-room: calc(100vw - 2 * var(--gutter)); }
+@supports not (zoom: 1) {
+  :where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, [data-mock]) {
+    zoom: normal;
+    transform: scale(var(--mock-z, 1));
+    transform-origin: top left;
+  }
+}

@@ -23,8 +23,14 @@ const reg = (k) => `<span class="reg"><b>${esc(REG[k])}</b></span>`;
 
 const phone = (key) => `<div class="ph" data-phone="${esc(key)}">${iosShell('careshop', { key })}</div>`;
 
+/* Seven stations at 1,300px each is nine phone screens of walking before the
+   record at the foot. `opts.gist` folds a station below 640: the sticky
+   .rail above is already this page's index, every one of its pills is a
+   hash link, and the shared folds() opens a target before it scrolls to it.
+   Station 1 stays open — a page whose first station is shut has not
+   started. */
 function station(i, id, title, body, visual, opts = {}) {
-  return sec(`s-${id}`, `station ${opts.rev ? 'is-rev' : ''}`, `<div class="wrap st-g">
+  const s = sec(`s-${id}`, `station ${opts.rev ? 'is-rev' : ''}`, `<div class="wrap st-g">
     <div class="st-t">
       <span class="st-no"><b>${i}</b><span>of 7</span></span>
       ${h2(`s-${id}`, title)}
@@ -32,6 +38,9 @@ function station(i, id, title, body, visual, opts = {}) {
     </div>
     <div class="st-v">${visual}</div>
   </div>`);
+  return opts.gist
+    ? s.replace('<section class="sec ', `<section data-phone="fold" data-gist="${esc(opts.gist)}" class="sec `)
+    : s;
 }
 
 export function loopPage(cfg, p) {
@@ -46,12 +55,12 @@ export function loopPage(cfg, p) {
   const inner = `${pageHead('Aisle 1 · the loop', s.heading, s.sub, `<div class="ctas"><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="loop"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><a class="btn lg" href="#s-count">${ic('down', 18)}Start at the count</a></div>`)}
 ${rail}
 ${station(1, 'count', node('The count').label + '.', `${reg('count')}${reg('scan')}${para(node('The count').note)}${para(find('proof').items[0][1])}<div class="shows">${showMe('Rice · 10 lb', 'The row that is short')}${showMe('Bottled water', 'The reserve gap')}</div>`, phone('stock'))}
-${station(2, 'queue', 'The queue.', `${reg('queue')}${para(q.sub)}${para(node('The shortfall').note)}<div class="shows">${buy.rows.slice(0, 4).map((r) => showMe(r.item, r.origin.split(' · ')[0])).join('')}</div>`, phone('buy'), { rev: true })}
-${station(3, 'approve', node('The policy').label + '.', `${para(node('The policy').note)}<p class="st-p"><b>${esc(q.side.label)}.</b> ${esc(q.side.text)}</p>`, approveDemo())}
-${station(4, 'shop', node('The shop').label + '.', `${reg('shop')}${para(node('The shop').note)}${para(find('objections').rows[2][1])}<div class="shows">${showMe('Oatmeal', 'Still to pick')}${showMe('Bottled water', 'Cheaper at Costco')}</div>`, phone('shop'), { rev: true })}
-${station(5, 'receipt', node('The receipt').label + '.', `${para(node('The receipt').note)}<p class="st-p"><b>The shared run.</b> ${esc(machine('Shared run'))}</p>`, receiptInstrument())}
-${station(6, 'stock', 'Back on the shelf.', `${reg('reserve')}<p class="st-p"><b>Expiry.</b> ${esc(machine('Expiry'))}</p><p class="st-p"><b>Reserve.</b> ${esc(machine('Reserve'))}</p><div class="shows">${showMe('Applesauce', 'Two days')}${showMe('Frozen peas', 'Over — a note, not an alarm')}</div><a class="more" href="/stock">${ic('arrow', 16)}Stock in depth</a>`, phone('expiry'), { rev: true })}
-${station(7, 'cook', node('The menu').label + ', and the cook.', `${reg('cook')}${para(node('The menu').note)}<p class="st-p"><b>Cook.</b> ${esc(machine('Cook'))}</p><div class="shows">${showMe('Allergen check', 'Before plating')}${showMe('Complete', 'Stock down, once')}</div>`, `<div class="ph-pair" data-scrollx>${phone('cook')}${phone('menu')}</div>`)}
+${station(2, 'queue', 'The queue.', `${reg('queue')}${para(q.sub)}${para(node('The shortfall').note)}<div class="shows">${buy.rows.slice(0, 4).map((r) => showMe(r.item, r.origin.split(' · ')[0])).join('')}</div>`, phone('buy'), { rev: true, gist: 'What to buy and nothing else, each line with its origin.' })}
+${station(3, 'approve', node('The policy').label + '.', `${para(node('The policy').note)}<p class="st-p"><b>${esc(q.side.label)}.</b> ${esc(q.side.text)}</p>`, approveDemo(), { gist: 'Auto under the threshold, a manager above — and recorded.' })}
+${station(4, 'shop', node('The shop').label + '.', `${reg('shop')}${para(node('The shop').note)}${para(find('objections').rows[2][1])}<div class="shows">${showMe('Oatmeal', 'Still to pick')}${showMe('Bottled water', 'Cheaper at Costco')}</div>`, phone('shop'), { rev: true, gist: 'Aisle order at that shop. It works with no signal.' })}
+${station(5, 'receipt', node('The receipt').label + '.', `${para(node('The receipt').note)}<p class="st-p"><b>The shared run.</b> ${esc(machine('Shared run'))}</p>`, receiptInstrument(), { gist: 'Closing the run is the only moment stock rises.' })}
+${station(6, 'stock', 'Back on the shelf.', `${reg('reserve')}<p class="st-p"><b>Expiry.</b> ${esc(machine('Expiry'))}</p><p class="st-p"><b>Reserve.</b> ${esc(machine('Reserve'))}</p><div class="shows">${showMe('Applesauce', 'Two days')}${showMe('Frozen peas', 'Over — a note, not an alarm')}</div><a class="more" href="/stock">${ic('arrow', 16)}Stock in depth</a>`, phone('expiry'), { rev: true, gist: 'Expiry and the reserve, back on the shelf.' })}
+${station(7, 'cook', node('The menu').label + ', and the cook.', `${reg('cook')}${para(node('The menu').note)}<p class="st-p"><b>Cook.</b> ${esc(machine('Cook'))}</p><div class="shows">${showMe('Allergen check', 'Before plating')}${showMe('Complete', 'Stock down, once')}</div>`, `<div class="ph-pair" data-scrollx>${phone('cook')}${phone('menu')}</div>`, { gist: 'The menu, the allergen check, complete — once.' })}
 ${sec('ledger', 'ledger', `<div class="wrap ledger-in">
   ${sticker('receipt', 'The record')}
   <p class="pull">${esc(s.pull)}</p>

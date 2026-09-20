@@ -10,6 +10,15 @@ import { PAGES } from '../../../data/page.js';
 import { ic } from '../../icons/careshop.js';
 import { page, pageHead, sticker, screen, showMe } from './parts.js';
 
+/* ── the fold: below 640 a long aisle opens as an index ────────────────
+   sec() lives in render/shared.js and takes no attribute bag, so the two
+   attributes the shared folds() controller reads are stamped onto the
+   section it returns. Nothing leaves the HTML: with scripting off, on a
+   printer, or above 640px every section is open and whole. */
+const fold = (html, gist) =>
+  html.replace('<section class="sec ', `<section data-phone="fold" data-gist="${esc(gist)}" class="sec `);
+
+
 const spec = PAGES.careshop;
 const find = (k) => spec.sections.find((s) => s.key === k);
 
@@ -66,12 +75,12 @@ ${sec('banner', 'banner-s', `<div class="wrap aisle-g">
   <div class="aisle-ph"><div class="crop"><div class="ph" data-phone="buy">${iosShell('careshop', { key: 'buy' })}</div></div></div>
   <div class="aisle-d">${sticker('tag', 'The banner')}${h2('banner', 'Until a provider has reviewed the set, every screen says so.', buy.banner)}<p class="st-p">${esc(who[1])}</p><div class="shows">${showMe('Bottled water', 'An inferred citation')}${showMe('Applesauce', 'A confirmed one')}</div></div>
 </div>`)}
-${sec('posture', 'posture', `<div class="wrap">
+${fold(sec('posture', 'posture', `<div class="wrap">
   <div class="head">${sticker('scale', 'How sure we are')}${h2('posture', 'A citation is an explanation, never a finding.', depth.sub)}</div>
   <p class="closing">${esc(depth.closing)}</p>
   <div class="res-l is-page">${depth.rows.map(([t, w, where]) => `<div class="res-r"><span class="res-k">${ic('tag', 16)}<b>${esc(t)}</b></span><span>${esc(w)}</span><em>${esc(where)}</em></div>`).join('')}</div>
-</div>`)}
-${sec('removed', 'removed', `<div class="wrap">
+</div>`), 'A citation explains a rule. It is never a finding about a house.')}
+${fold(sec('removed', 'removed', `<div class="wrap">
   <div class="head">${sticker('x', 'Removed, and never')}${h2('removed', 'What came out, and what will not go in.', 'A compliance layer was built, shipped, used by nobody, and taken out. What came back is a confidence mark on every citation — an explanation of a rule, never a finding about a house.')}</div>
   <div class="void">
     <span class="rc-h">VOID</span>
@@ -82,6 +91,6 @@ ${sec('removed', 'removed', `<div class="wrap">
     <div class="never"><span class="strip-l">Never, module by module</span><ul>${NEVER_MODULE.map(([m, n]) => `<li>${ic('x', 16)}<span><b>${esc(m)} ·</b> ${esc(n)}</span></li>`).join('')}</ul></div>
   </div>
   <div class="ctas"><a class="btn lg" href="/write">${ic('mail', 18)}Ask us about a rule</a><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="rules"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a></div>
-</div>`)}`;
+</div>`), 'A compliance layer was built, shipped, used by nobody, removed.')}`;
   return page(cfg, p, 'rules', inner);
 }

@@ -13,6 +13,20 @@ import { header, footer } from './chrome.js';
 
 export { esc, skip, sec, h2, eyebrow, waitlist, faq, iosShell, webShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN };
 
+/* A section that folds on a phone. Two attributes, and site.js folds() does
+   the rest: below 640 the section collapses to a 64px summary carrying its
+   own heading and this gist, the same gist fills the sheet's page index, a
+   hash link opens the target before scrolling, print opens everything, and
+   with scripting off nothing folds at all.
+
+   Only sections that are CLOSED on arrival are marked. A section that is
+   open on arrival would carry its own heading twice — once in the summary
+   row, once at display size two lines below — so the three that stay open
+   (the hero, the section carrying the claim, the closing call) are simply
+   not folds, and the sheet's split menu carries their destinations. */
+export const fold = (gist, html) =>
+  html.replace('<section ', `<section data-phone="fold" data-gist="${esc(gist)}" `);
+
 export const spec = PAGES.aidepost;
 export const find = (k) => spec.sections.find((s) => s.key === k);
 export const S = SURFACES.aidepost;
@@ -243,6 +257,7 @@ export function annotatedBoard() {
   const s = find('screen');
   const on = (fn) => (typeof fn === 'function' ? fn(S) : fn);
   return `<div class="shell" tabindex="0" role="group" aria-label="The desktop board, at true size — scroll sideways for the rest" data-shell>${webShell('aidepost', { key: 'board' })}</div>
+  <span class="shell-cap">Drag sideways — the board goes on past the edge.</span>
   <ol class="annot" data-annot data-scrollx>${s.callouts.map(([t, d], i) => `<li><button class="an-b" type="button" data-spot="${i + 1}" aria-pressed="false"><span class="an-n">${i + 1}</span><b>${esc(on(t))}</b></button><span class="an-d">${esc(d)}</span></li>`).join('')}</ol>`;
 }
 

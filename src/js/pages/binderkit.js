@@ -316,8 +316,75 @@
     });
   };
 
+  /* ── the fold's bulk switch, in the contents sheet ──────────────────
+     site.js folds() listens for pho:openall; pageIndex() would install this
+     listener too, but only for a site that asks it to build an index, and
+     this one already has a designed contents list with leader dots and
+     control numbers. A chapter with nothing to fold loses the button
+     rather than offering a control that does nothing. */
+  const openAll = () => {
+    const btns = $$('[data-open-all]');
+    if (!btns.length) return;
+    if (!$('[data-phone="fold"]')) { btns.forEach((b) => b.remove()); return; }
+    btns.forEach((b) => {
+      b.hidden = false;
+      b.addEventListener('click', () => document.dispatchEvent(new CustomEvent('pho:openall')));
+    });
+  };
+
+  /* ── the fold summary, dressed as an index row ─────────────────────
+     site.js owns the fold: it builds the button, it hides the body, it
+     tears both down above 640. This only re-letters what it built, so it
+     has to run again every time site.js rebuilds. A MutationObserver on
+     each section is the only ordering-proof way to know that: two
+     matchMedia listeners on two different query lists fire in creation
+     order, which is an implementation detail, and a page that quietly
+     grows a second summary row on a rotate is worse than a long one.
+
+     What it changes: the <h2>'s claim gives way to the section's short
+     name, the control number hangs on the right behind the same dotted
+     leader the contents page and the footer sheet use, and the claim's
+     job passes to the gist that was always there. Four lines of text per
+     row become two, and seven identical blocks become a list. */
+  const foldRows = () => {
+    const secs = $$('.page [data-phone="fold"][data-fold-n]');
+    if (!secs.length) return;
+    const dress = (s) => {
+      const b = s.querySelector(':scope > .fold-s');
+      if (!b || b.dataset.bkRow) return;
+      const t = b.querySelector('.fold-h');
+      if (!t) return;
+      b.dataset.bkRow = '1';
+      t.textContent = s.getAttribute('data-fold-n');
+      const row = document.createElement('span');
+      row.className = 'fold-r';
+      t.replaceWith(row);
+      row.appendChild(t);
+      row.insertAdjacentHTML('beforeend',
+        '<span class="fold-l" aria-hidden="true"></span>' +
+        `<span class="fold-no">${esc(s.getAttribute('data-ctl') || '')}</span>`);
+    };
+    secs.forEach((s) => {
+      dress(s);
+      new MutationObserver(() => dress(s)).observe(s, { childList: true });
+    });
+    /* the head of the run: what these rows are, how many there are, and
+       the same bulk switch the sheet offers. Injected rather than
+       rendered, because it exists only when something is folded — with
+       scripting off nothing folds and no control appears that does
+       nothing. */
+    const first = secs[0];
+    if (!first || $('.fold-lead')) return;
+    const lead = document.createElement('div');
+    lead.className = 'fold-lead';
+    lead.innerHTML = `<span class="strip-l">${secs.length} section${secs.length === 1 ? '' : 's'} folded</span>` +
+      '<button class="toc-all" type="button" data-open-all hidden>' +
+      '<span>Open all</span></button>';
+    first.parentNode.insertBefore(lead, first);
+  };
+
   const boot = () => {
-    run();
+    run(); foldRows(); openAll();
     const links = tabs();
     lens();
     const openKeys = keysCard();

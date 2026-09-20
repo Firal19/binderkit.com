@@ -16,7 +16,12 @@
   --danger: #B24A2C; --focus: var(--teal);
   --btn: var(--teal); --btn-ink: var(--bg); --btn-hover: #0B3F3E;
   --r: 16px; --r-btn: 999px; --max: 1600px; --gutter: clamp(20px, 5vw, 80px);
-  --hdr: 72px; --tabs: 64px; --dock: 64px; --scroll-pad: 80px;
+  /* --hdr is the desktop time rail; responsive.css takes it to 56px at <=900.
+     --tabs is the height of the phone tab bar and is paid for by --dock, which
+     is declared in the 640 tier below and nowhere else: base.css defaults it to
+     0px, and a value here would have reserved 64px of desktop page for a bar
+     that desktop never shows. */
+  --hdr: 72px; --tabs: 64px; --scroll-pad: 80px;
   --sh-1: 0 1px 2px rgba(14, 31, 30, .06);
   --sh-2: 0 12px 32px -18px rgba(14, 31, 30, .4);
   --sh-3: 0 40px 80px -40px rgba(14, 31, 30, .5);
@@ -193,7 +198,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .strip-c s:nth-child(-n+2) { border-top: 0; } .strip-c s:nth-child(2n) { border-right: 0; }
 .hero-v { display: flex; justify-content: center; align-items: center; min-width: 0; }
 .hero-dev { position: relative; }
-.hero-dev .phone { zoom: .66; }
+.hero-dev .phone { --mock-z: .66; }
 .hero-dev .phone, .tour .phone { box-shadow: 0 40px 80px -40px rgba(14, 31, 30, .55), 0 12px 24px -16px rgba(14, 31, 30, .3), inset 0 0 0 2px #2A3130; }
 .float { position: absolute; z-index: 2; display: grid; gap: 3px; padding: 10px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--sh-2); font-size: 12.5px; color: var(--muted); animation: float 6s ease-in-out infinite; max-width: 200px; }
 .float .stamp-a { color: var(--teal); }
@@ -205,20 +210,20 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 /* ── the shift: a timeline and a phone that follows it ────────────────── */
 .shift { border-top: 1px solid var(--line); }
 .shift-head, .ref-head, .roles-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
-.keysb, .printb { display: inline-flex; align-items: center; gap: 7px; height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); font-size: 13.5px; font-weight: 600; flex: none; background: var(--card); transition: color 160ms, border-color 160ms; }
+.keysb, .printb { display: inline-flex; align-items: center; gap: 7px; min-height: var(--tap); padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); font-size: 13.5px; font-weight: 600; flex: none; background: var(--card); transition: color 160ms, border-color 160ms; }
 .keysb:hover, .printb:hover { color: var(--teal); border-color: var(--teal); }
 .tl-g { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: clamp(32px, 5vw, 80px); align-items: start; }
 .tour { order: 2; min-width: 0; }
 .tour-stick { position: sticky; top: 92px; display: grid; justify-items: center; gap: 14px; }
 .crop { display: flex; justify-content: center; }
 .tour-p[hidden] { display: none; }
-.tour .phone { zoom: .64; }
+.tour .phone { --mock-z: .64; }
 .tour-cap { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--soft); }
 .tour-cap i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
 .tl { position: relative; display: grid; }
 .tl::before { content: ""; position: absolute; left: 95px; top: 24px; bottom: 24px; width: 1px; background: var(--line); }
 .tl-i { display: grid; grid-template-columns: 78px 36px minmax(0, 1fr); padding: 20px 0; align-items: start; scroll-margin-top: 100px; }
-.tl-at { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 8px 0 4px; margin-left: -4px; text-decoration: none; color: var(--soft); font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; font-variant-numeric: tabular-nums; border-radius: 8px; transition: color 160ms, background 160ms; }
+.tl-at { display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 8px 0 4px; margin-left: -4px; text-decoration: none; color: var(--soft); font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; font-variant-numeric: tabular-nums; border-radius: 8px; transition: color 160ms, background 160ms; }
 .tl-ic { color: var(--teal); display: inline-flex; }
 .tl-at:hover { color: var(--teal); background: var(--wash); }
 .tl-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--teal); margin: 14px 0 0 11px; transition: background 200ms, box-shadow 200ms; }
@@ -233,10 +238,10 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .tl-note { margin-top: 12px; max-width: 52ch; }
 .sim-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .sim-n, .air-out { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--teal); }
-.sim-reset, .air-add { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 13.5px; font-weight: 600; transition: color 160ms, border-color 160ms; }
+.sim-reset, .air-add { display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 13.5px; font-weight: 600; transition: color 160ms, border-color 160ms; }
 .sim-reset:hover, .air-add:hover { border-color: var(--teal); color: var(--teal); }
 .air-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
-.air-sw { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px 0 4px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 13.5px; font-weight: 600; transition: color 160ms, border-color 160ms; }
+.air-sw { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 12px 0 4px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 13.5px; font-weight: 600; transition: color 160ms, border-color 160ms; }
 .air-k { position: relative; width: 36px; height: 22px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 16%, transparent); transition: background 200ms; flex: none; }
 .air-k::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--card); box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
 .air-sw[aria-checked="true"] { color: var(--teal); border-color: var(--teal); }
@@ -365,7 +370,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 /* ── roles ────────────────────────────────────────────────────────────── */
 .roles-head { flex-wrap: wrap; }
 .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 6%, transparent); border: 1px solid var(--line); flex: none; }
-.seg button { min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--muted); transition: background 160ms, color 160ms; }
+.seg button { min-height: var(--tap); padding: 0 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--muted); transition: background 160ms, color 160ms; }
 .seg button span { font-family: var(--font-mono); font-weight: 500; font-size: 11px; letter-spacing: .04em; margin-left: 4px; color: var(--soft); }
 .seg button[aria-pressed="true"] { background: var(--card); color: var(--teal); box-shadow: var(--sh-1); }
 .role-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -436,7 +441,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .pricing { border-top: 1px solid var(--line); }
 .hs-w { margin-bottom: 26px; display: grid; gap: 8px; }
 .hs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); width: fit-content; }
-.hs button { min-width: 56px; min-height: 42px; padding: 0 14px; border-radius: 10px; font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--muted); transition: background 160ms, color 160ms; }
+.hs button { min-width: 56px; min-height: var(--tap); padding: 0 14px; border-radius: 10px; font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--muted); transition: background 160ms, color 160ms; }
 .hs button[aria-pressed="true"] { background: var(--teal); color: var(--bg); }
 .hs-line { font-size: 1rem; color: var(--muted); max-width: 60ch; }
 .tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -523,7 +528,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 /* back to 06:55, and the slim early-access bar on phones */
 .totop { position: fixed; right: 18px; bottom: 18px; z-index: 44; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px 0 12px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; box-shadow: var(--sh-2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 250ms, transform 250ms; }
 .totop.is-on, .no-js .totop { opacity: 1; transform: none; pointer-events: auto; }
-.mcta { display: none; }
 
 /* headings that copy their own link */
 .h-link { position: absolute; left: -44px; top: 50%; margin-top: -20px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; color: var(--soft); opacity: 0; transition: opacity 150ms, color 150ms; }
@@ -534,10 +538,10 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
 .phead { padding: clamp(40px, 6vw, 80px) 0 clamp(28px, 4vw, 48px); border-bottom: 1px solid var(--line); }
 .phead-in { display: flex; flex-wrap: wrap; align-items: flex-end; gap: clamp(24px, 3vw, 64px); }
 .phead-t { flex: 1 1 520px; }
-.phead h1 { font-size: clamp(56px, 7.2vw, 128px); max-width: 18ch; }
+.phead h1 { font-size: var(--fs-display); max-width: 18ch; }
 .phead .sub { flex: 1 1 380px; max-width: 56ch; margin: 0; }
 .fstage { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); flex-wrap: wrap; }
-.fstage button { min-height: 40px; padding: 0 14px; border-radius: 10px; font-size: 13.5px; font-weight: 600; color: var(--muted); transition: background 160ms, color 160ms; }
+.fstage button { min-height: var(--tap); padding: 0 14px; border-radius: 10px; font-size: 13.5px; font-weight: 600; color: var(--muted); transition: background 160ms, color 160ms; }
 .fstage button[aria-pressed="true"] { background: var(--teal); color: var(--bg); }
 .fs-n { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--soft); padding: 0 10px; }
 .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
@@ -547,7 +551,7 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
 .fmod-no { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); }
 .fmod-h h3 { font-size: 1.1rem; flex: 1; }
 .fmod-n { font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
-.frow { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 6px 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.frow { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 6px 12px; padding: 12px 0; border-top: 1px solid var(--line); align-items: start; }
 .frow[hidden] { display: none; }
 .frow-id { font-family: var(--font-mono); font-size: 11.5px; color: var(--teal); padding-top: 3px; }
 .frow-b b { display: block; font-size: .95rem; }
@@ -618,12 +622,27 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
 .contact-alt a { color: var(--teal); }
 
 /* the privacy page and the 404, in this face */
-.pv h1 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.028em; font-variation-settings: 'opsz' 144; font-size: clamp(56px, 7.2vw, 128px); }
+.pv h1 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.028em; font-variation-settings: 'opsz' 144; font-size: var(--fs-display); }
 .pv h3 { font-family: var(--font-display); font-weight: 500; font-size: 26px; letter-spacing: -0.015em; }
 .pv .fine { max-width: none; }
 .pv-dl dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); font-weight: 500; }
 
+/* ── /security: the incident, on the phone and on the desktop ───────────
+   The desktop pan is the section's argument above 900px and stays exactly
+   as it was. Below 900 the same incident leads on the phone shell, at a
+   size where the trail can actually be read, and the desktop becomes a
+   labelled second look. The caption only appears where its sentence is
+   true: there is nothing to drag at 1440, where a 1024px mock sits inside
+   a 1296px wrap. */
+.left-ph { display: none; }
+.left-w > .strip-l { display: none; }
+.left-cap { display: none; margin-top: 12px; }
+.left-cap-p { display: none; }
+
 /* ── narrower ─────────────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .left-cap { display: block; }
+}
 @media (max-width: 1240px) {
   .h-link { position: static; display: inline-grid; vertical-align: middle; margin: -6px 0 0 8px; opacity: .55; }
 }
@@ -639,25 +658,27 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .eos-g { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 900px) {
-  :root { --scroll-pad: 72px; }
+  /* --scroll-pad and --hdr are derived at <=900 by responsive.css; the
+     four hand-typed offsets that all meant "below the header" now read it. */
+  html[data-scrolled] .tr-in { height: var(--hdr-scrolled); }
+  .tl-i { scroll-margin-top: var(--scroll-pad); }
   .rail, .tr-tools, .tr-rule, .signin { display: none; }
   .tr-menu { display: grid; }
   .tr-r { margin-left: auto; gap: 8px; }
   .tr-in { gap: 16px; }
-  .tabs { display: grid; }
   .hero { padding-top: 22px; }
   .hero-in { grid-template-columns: minmax(0, 1fr); gap: 30px; }
   .hero-v { order: 2; }
-  .hero-dev .phone { zoom: .82; }
+  .hero-dev .phone { --mock-room: calc(100vw - 2 * var(--gutter)); --mock-z: min(.82, var(--mock-fit)); }
   .float { display: none; }
   .ctas { flex-direction: column; } .ctas .btn { width: 100%; }
   .shift-head, .ref-head, .roles-head { flex-direction: column; align-items: flex-start; }
   .tl-g { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .tour { order: 0; position: sticky; top: 56px; z-index: 5; margin: 0 calc(-1 * var(--gutter)); }
+  .tour { order: 0; position: sticky; top: var(--hdr); z-index: 5; margin: 0 calc(-1 * var(--gutter)); }
   .tour-stick { position: static; display: block; justify-items: normal; }
   .crop { position: relative; height: 240px; overflow: hidden; background: var(--bg); }
   .tour { box-shadow: 0 18px 24px -22px rgba(14, 31, 30, .5); background: var(--bg); }
-  .tour .phone { zoom: .92; padding: 0 11px; background: transparent; box-shadow: none; border-radius: 0; margin-top: -96px; }
+  .tour .phone { --mock-room: 100vw; --mock-z: min(.92, var(--mock-fit)); padding: 0 11px; background: transparent; box-shadow: none; border-radius: 0; margin-top: -96px; }
   .tour .phone-screen { border-radius: 0 0 46px 46px; }
   .crop .sheet-a { top: 96px; bottom: auto; max-height: 260px; border-radius: 0 0 var(--t-r-xl) var(--t-r-xl); }
   .tour-cap { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 var(--gutter); background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
@@ -667,12 +688,14 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .tl-dot { margin-left: 8px; }
   .ref-l, .ev-cl, .subs, .q-g, .join-g, .house-g, .fm-g, .fn-g, .fg2, .c-g { grid-template-columns: minmax(0, 1fr); }
   .role-g, .tiers, .pv-g { grid-template-columns: minmax(0, 1fr); }
-  .machine, .lad, .notnow .defs { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .lad dd { padding-top: 0; border-top: 0; }
+  /* .defs was collapsing only under .notnow; the same list inside a .note
+     card on / and /pricing kept its 140px label column, so "Full access
+     while we retry" came down a ten-line ribbon. Measured at 390 and 320. */
+  .machine, .lad, .defs, .notnow .defs { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .lad dd, .defs dd { padding-top: 0; border-top: 0; }
   .q-g .head { margin-bottom: 8px; }
   .company-by { justify-self: start; }
   .gates, .rooms, .ev, .fgrid, .company, .eos-head, .eos-g { grid-template-columns: 1fr 1fr; }
-  .eos { padding-bottom: calc(var(--tabs) + 56px + env(safe-area-inset-bottom)); }
   .eos-g { gap: 0 20px; }
   .eos-d { border-top: 1px solid var(--line); padding: 0; }
   .eos-d summary { pointer-events: auto; cursor: pointer; min-height: 54px; }
@@ -684,30 +707,130 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .eos-sign { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: 28px; }
   .eos-by { justify-items: center; text-align: center; }
   .eos-act { justify-content: center; }
-  .totop { bottom: calc(var(--tabs) + env(safe-area-inset-bottom) + 12px); right: 12px; width: 44px; padding: 0; justify-content: center; }
+  /* the shortcut clears the dock the body now reserves, and stands down
+     while a sideways strip is on screen (js/pages/cohort.js totop()). */
+  .totop { bottom: calc(var(--dock) + env(safe-area-inset-bottom) + 12px); right: 12px; width: 44px; padding: 0; justify-content: center; }
+  body.is-locked .totop, .totop.is-away { opacity: 0; pointer-events: none; }
   .totop span { display: none; }
-  .mcta { position: fixed; left: 12px; right: 66px; bottom: calc(var(--tabs) + env(safe-area-inset-bottom) + 12px); z-index: 44; display: flex; align-items: center; gap: 10px; padding: 5px 5px 5px 14px; border-radius: 999px; background: color-mix(in srgb, var(--card) 94%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--line); box-shadow: var(--sh-2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 250ms, transform 250ms; }
-  html[data-scrolled] .mcta { opacity: 1; transform: none; pointer-events: auto; }
-  html[data-section="join"] .mcta, body.is-locked .mcta, body.is-locked .totop { opacity: 0; pointer-events: none; }
-  .mcta .btn { min-height: 44px; padding: 0 16px; font-size: 14.5px; margin-left: auto; }
-  .mcta-t { font-size: 13px; color: var(--muted); white-space: nowrap; }
-  .mcta-t b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
   .pal { padding-top: max(16px, env(safe-area-inset-top)); }
   .pal-r { grid-template-columns: 22px minmax(0, 1fr); }
   .pal-s { grid-column: 2; text-align: left; }
-  .h-link { opacity: .6; }
+  /* the heading deep link. Above 1240 it is an absolutely-positioned mouse
+     target that only exists on hover; from 1240 down it sits in the heading
+     and is always visible, which makes it a control a thumb presses — so at
+     <=900 it is sized like one. 40x40 was 4px short on every h2 of every
+     route and the gate could not see a single one of them. */
+  .h-link { opacity: .6; width: var(--tap); height: var(--tap); margin: -9px 0 0 4px; border-radius: 12px; }
+
+  /* ── /security: the phone leads, the desktop becomes a second look ─── */
+  .left-ph { display: flex; justify-content: center; margin-bottom: var(--sp-6); }
+  .left-ph .phone { --mock-room: calc(100vw - 2 * var(--gutter)); --mock-z: var(--mock-fit); }
+  .left-w > .strip-l { display: block; }
+  .left-cap-w { display: none; }
+  .left-cap-p { display: block; }
+
+  /* ── "In this page": the counterweight to the fold ───────────────────
+     js/site.js pageIndex() fills the holder with one --tap-row row per
+     foldable section — its heading and the same data-gist the fold reads —
+     plus one button that opens every one of them; on a page with no folds
+     the holder removes itself. responsive.css gives .msheet-r its shape;
+     this is the shift sheet's own paint. */
+  .ssheet-ix { gap: 0; margin-bottom: 0; }
+  .ssheet-k { display: block; font-family: var(--font-mono); color: var(--teal); opacity: 1; }
+  .ssheet-ix .msheet-r { margin-inline: 0; padding-inline: 0; border-radius: 0; border-bottom: 1px solid var(--line-2); }
+  .ssheet-ix .msheet-r:last-child { border-bottom: 0; }
+  .ssheet-ix .msheet-r b { font-family: var(--font-display); font-weight: 500; font-size: 17px; letter-spacing: -0.012em; color: var(--ink); }
+  .ssheet-ix .msheet-r small { font-family: var(--font-body); letter-spacing: 0; text-transform: none; color: var(--soft); opacity: 1; }
+  .ssheet-ix button.msheet-r { justify-content: flex-start; color: var(--teal); font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; }
+
+  /* ── THE TWO FLOORS, applied to this page's own measured offenders ────
+     gate.mjs carries .face in its own mock list and every page here mounts
+     <main class="page face canvas">, so the gate cannot see one character
+     of the body — every failure it reports is in the header or the footer.
+     Measured by hand instead, at 390px: 225 sub-floor text nodes in 23
+     buckets inside <main>. The floors are the gate's own — 15px for
+     anything inside p/li/dd/blockquote, 12px for a standalone label — and
+     the label voice lands on 13px, two points of headroom, with the
+     tracking coming down in the same breath so a bigger mono label does
+     not wrap worse for being bigger.
+
+     Every selector below is a cohort name. The mock-safety audit
+     (grep against canvas/shells/faces/instruments-extra) returns nothing
+     for any of them except .tg, which canvas.css owns — which is why the
+     only form of it written here is .frow-m .tg. */
+  .eyebrow { align-items: flex-start; }
+  .eyebrow::before { flex: none; margin-top: 5px; }
+  .eyebrow, .fmod-no, .fmod-n, .frow-id, .defs dt, .pv-dl dt,
+  .faq-n, .fs-n, .pal-s, .ssheet-f, .tour-cap, .shiftb,
+  .sim-n, .air-out, .seg > button > span, .frow-m .tg, .rec .stamp-a
+  { font-size: var(--fs-label); letter-spacing: var(--track-label); }
+
+  .cap, .now, .arrow, .dot-l, .ev-b p, .defs dd, .pv-dl dd, .pv-c p,
+  .frow-d, .mv-l li, .mv-l span, .ref-l span:not(.ref-n), .machine span,
+  .house-k li, .cmp-cap, .sim-hint, .tl-note, .pal-none, .company-l,
+  .sim-reset, .air-add, .air-sw, .tl-at
+  { font-size: var(--fs-read); }
+  .company-l, .tl-at { letter-spacing: .02em; }
 }
 @media (max-width: 640px) {
-  h1 { font-size: clamp(34px, 10vw, 42px); }
-  h2 { font-size: clamp(26px, 7vw, 34px); }
   .ev, .strip-c, .rooms, .gates, .fgrid, .company, .eos-head, .eos-g { grid-template-columns: minmax(0, 1fr); }
+
+  /* ── THE RHYTHM ────────────────────────────────────────────────────────
+     The air BETWEEN two cards has to beat the air INSIDE one, or the eye
+     cannot group and a run of cards reads as one striped field. Measured at
+     390 before this block, every long run on this site had it backwards:
+     #record ran six .ev-b cards 14px apart with 24px of padding inside each
+     and read as one 4.3-screen block; /features ran seventeen .fmod cards
+     18px apart with 18px inside and read as one 6.7-screen field. That is
+     the owner.s sentence -- uniform spacing that separates nothing.
+
+     The fix is the RATIO, not the absolute. A column gap designed to
+     separate two cards side by side becomes the row gap the moment the grid
+     stacks, so the row gap is declared on its own at --sp-6 (28px at 390)
+     and the card padding comes down to meet it. Every run now separates at
+     about 1.6:1 and the page does not get one pixel longer for it. */
+  .ev, .ev-cl, .tiers, .pv-g, .rooms, .gates, .fg2, .fn-g, .q-g, .ref-l,
+  .subs, .join-g, .house-g, .c-g, .role-g, .company, .fgrid, .machines
+  { row-gap: var(--sp-6); }
+  .ev-b, .note, .pv-c, .room { padding: 18px 20px; }
+  .tier { padding: 20px 22px; }
+
+  /* the run needs a first among equals. "Append-only" is the standing rule
+     the whole section argues from, so it carries the ground and the larger
+     line and the other five are its evidence. Both runs of .ev on the site
+     open on it -- / #record and /security #mechanism. */
+  .ev > .ev-b:first-child { background: var(--wash); border-color: color-mix(in srgb, var(--teal) 42%, var(--line)); }
+  .ev > .ev-b:first-child p { font-size: var(--fs-lede); line-height: 1.5; color: var(--ink); }
+  .ev > .ev-b:first-child .strip-l { color: var(--teal); }
+
+  /* ── WHERE A SECTION ENDS ──────────────────────────────────────────────
+     One signal, on every boundary, on every route. Before this rule the
+     hairline appeared only where a section happened to fold, the ground
+     changed only on #record, #stops and #join, and /security -- five
+     sections and 10.3 screens with no folds at all -- carried nothing: a
+     reader who learned the hairline on / crossed that page with no boundary
+     signal of any kind. .record and .join are the exception because they
+     already change the ground, which is the same signal said louder. */
+  .sec + .sec, .phead + .sec, [data-phone="fold"] { border-top: 1px solid var(--line); }
+  .phead { border-bottom: 0; }
+  .sec + .record, .sec + .join, .stops { border-bottom: 0; border-top: 0; }
+  .sec + .stops, [data-phone="fold"].stops { border-top: 1px solid var(--line); }
   .strip-c s { border-right: 0; border-top: 1px solid var(--line); } .strip-c s:first-child { border-top: 0; }
   .tl::before { display: none; }
   .tl-i { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 18px 0; border-top: 1px solid var(--line); }
   .tl-dot { display: none; }
   .tl-b h3 { padding-top: 0; }
-  .hero-dev .phone { zoom: .8; }
-  .tour .phone { zoom: .86; }
+  /* The hero phone kept a literal .8 at every width below 640, so at 320 it
+     rendered 312px inside a 280px wrap — 32px over its own container, 4px
+     from each screen edge with its bezel still on, while every other element
+     sat at 20px. It tripped no gate rule (312 < 320 is not a bleed, 312 < 400
+     is not an oversized mock) and it is exactly the class of defect the
+     --mock-z contract exists to end. min() keeps today.s number wherever
+     there is room for it and takes the fitted one where there is not:
+     390 -> .8 (312px, unchanged) - 360 -> .8 (312px) - 320 -> .718 (280px,
+     flush with the card above it). */
+  .hero-dev .phone { --mock-z: min(.8, var(--mock-fit)); }
+  .tour .phone { --mock-z: min(.86, var(--mock-fit)); }
   .house-k li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .door-toast { position: static; margin: 16px auto 0; width: fit-content; max-width: 100%; white-space: normal; }
   .door-body { padding-bottom: clamp(24px, 4vw, 44px); }
@@ -722,26 +845,91 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .keys-l { grid-template-columns: minmax(0, 1fr); gap: 4px 0; }
   .keys-l dd { margin-bottom: 10px; }
   .phead-in { align-items: flex-start; }
+
+  /* ── the dock ─────────────────────────────────────────────────────────
+     The tab bar moves here from 900 so that an iPad in portrait and a
+     900px desktop window stop wearing an iOS tab bar over a two-column
+     body, and the page finally pays for it: at 390 it used to occupy the
+     last 64px of the viewport while <body> reserved nothing, so the last
+     card of every section sat underneath it.
+     base.css pays for a dock through body:has(.dock). This bar cannot take
+     that class — tools/check.mjs greps the built bytes for the literal
+     class="tabs", and class="tabs dock" is not that string — so the same
+     rule is written against cohort's own dock, by name. */
+  :root { --dock: var(--tabs); }
+  .tabs { display: grid; }
+  body:has(.tabs) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
+
+  /* ── the fold, in cohort's voice ──────────────────────────────────────
+     base.css gives the summary row its shape and js/site.js builds it.
+     Closed, a section reads as an entry on the shift sheet: the display
+     face, one line of gist, a teal chevron. Open, the row shrinks to a
+     mono marker, so the section's own heading is the only headline on the
+     screen and the way back out is still under the thumb. */
+  /* MEASURED, and it is not cohort's own bug: the fold closes a section by
+     putting the hidden attribute on its children, but [hidden] is a
+     USER-AGENT rule, and a user-agent rule loses to every author rule
+     whatever the specificity. So a section whose wrap carries an author
+     display — .house-g, .q-g, .fm-g here — did not close at all: three of
+     the nine folds on this site measured full height with the attribute
+     set. One selector at (0,2,0) puts the attribute back in charge. The
+     shared fix belongs in responsive.css; see the handoff. */
+  [data-phone="fold"] > [hidden] { display: none; }
+  /* the summary is a child of the <section>, not of the .wrap inside it,
+     so it has to carry the measure itself or it runs edge to edge. */
+  .fold-s { width: var(--wrap-w); margin-inline: auto; }
+  .fold-s .fold-h { font-family: var(--font-display); font-weight: 500; font-size: 22px; line-height: 1.16; letter-spacing: -0.018em; color: var(--ink); }
+  .fold-s .fold-g { font-size: var(--fs-read); color: var(--soft); opacity: 1; }
+  .fold-s .fold-c { color: var(--teal); }
+  [data-open] > .fold-s { min-height: var(--tap); margin-bottom: var(--sp-4); }
+  [data-open] > .fold-s .fold-h { font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--teal); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  [data-open] > .fold-s .fold-g { display: none; }
+
+  /* ── /features: the capability row, stacked ───────────────────────────
+     Three parts on one column — the code, the name and its detail, then
+     the stage, plan and data tags. The 64px code column is a desktop
+     decision about alignment and it has nothing to align to here. */
+  .frow { grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 14px 0; }
+  .frow-id { padding-top: 0; }
+  /* the ladder inside a module card: 20 / 17 / 15 / 13. The capability NAME
+     is what a reader scans for, and at .95rem it was 15.2px against a 15px
+     description — two sizes 0.2px apart, told apart only by weight. */
+  .frow-b b { font-size: var(--fs-lede); line-height: 1.3; }
+  .frow-m { grid-column: 1; margin-top: 2px; }
+  .fmod { padding: 14px 16px 16px; }
+  .fmod-h { gap: 8px; margin-bottom: 6px; }
+  /* the module heading carried 17.6px between a 15.2px capability name and a
+     15px description: four sizes inside a 4.6px band on a 390px screen, which
+     is a texture, not a hierarchy. On --fs-h3 the card reads 20 / 17 / 15 / 13
+     and the eye has somewhere to land every time a card begins. */
+  .fmod-h h3 { font-size: var(--fs-h3); line-height: 1.16; letter-spacing: -0.012em; }
+
+  /* ── the footer, on a phone ────────────────────────────────────────────
+     1,337px -- 1.6 screens -- on all seven routes, which is 47% of /about.
+     Two thirds of the excess is spacing written for a three-column desktop
+     sign-off: 40px under the head and 80px of lead-in above the signature.
+     The rest is js/pages/cohort.js, which left the first disclosure open. */
+  .eos-head { margin-bottom: var(--sp-5); }
+  .eos-sign { margin-top: var(--sp-5); padding-top: var(--sp-5); gap: var(--sp-5); }
 }
 @media (max-width: 400px) {
   .stampb { padding: 0 12px; font-size: 13px; }
-  .tab-s { font-size: 10px; }
-  .mcta-t { display: none; }
-  .tour .phone { zoom: .76; }
+  .tour .phone { --mock-z: min(.76, var(--mock-fit)); }
   .hs button { min-width: 48px; padding: 0 10px; }
 }
-@media (max-width: 340px) {
-  .stampb { display: none; }
-}
 @media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
-  .tabs { height: 48px; padding-bottom: env(safe-area-inset-bottom); }
-  .mcta { display: none; }
+  /* a phone turned sideways is 844x390: too wide for the 640 tier, but it is
+     still a phone and it still wants the tab bar. Short and shallow, so the
+     bar is 48px and the page reserves exactly that. */
+  :root { --dock: 48px; }
+  .tabs { display: grid; height: 48px; padding-bottom: env(safe-area-inset-bottom); }
+  body:has(.tabs) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
   .tour { position: static; }
 }
 
 /* ── print: the whole page, or the manifesto alone ────────────────────── */
 @media print {
-  .tr, .eos, .tabs, .mcta, .totop, .pal, .keys, .ssheet, .h-link, .keysb, .printb, .now, .float { display: none !important; }
+  .tr, .eos, .tabs, .totop, .pal, .keys, .ssheet, .h-link, .keysb, .printb, .now, .float, .fold-s { display: none !important; }
   .page { color: #000; }
   .stops, .join, .record { background: none; color: #000; }
   html[data-print="manifesto"] #main > *:not(#refuses) { display: none !important; }

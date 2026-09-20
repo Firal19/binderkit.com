@@ -2,7 +2,7 @@
 // Each is a full body in the same chrome as the front page.
 
 import { esc, skip, sec, h2, eyebrow, tiers, contact, CONTACT, byline, hello, mailto, social } from '../../shared.js';
-import { webShell } from '../../instruments.js';
+import { webShell, iosShell } from '../../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../data/page.js';
 import { PRODUCTS, MINIS } from '../../../data/brand.js';
 import { ic } from '../../icons/cohort.js';
@@ -18,6 +18,14 @@ ${footer(cfg, p, { page })}`;
 
 const phead = (eye, h1, sub, extra = '') => `<section class="phead" aria-labelledby="h1"><div class="wrap phead-in"><div class="phead-t">${eyebrow(eye)}<h1 id="h1">${h1}</h1></div>${sub ? `<p class="sub">${esc(sub)}</p>` : ''}${extra}</div></section>`;
 
+/* The phone fold, spliced onto a section shared.js's sec() already built —
+   see the note in render/pages/cohort.js. The page head and the closing
+   call stay open; everything between them folds. */
+const fold = (gist, html) => html.replace(
+  '<section class="sec',
+  `<section data-phone="fold" data-gist="${esc(gist)}" class="sec`,
+);
+
 const MOD_ICON = { '01': 'gate', '02': 'house', '03': 'bed', '04': 'pill', '05': 'note', '06': 'flag', '07': 'clock', '08': 'check', '09': 'record', 10: 'wave', 11: 'info', 12: 'count', 13: 'tag', 14: 'mail', 15: 'people', 16: 'shield', '—': 'link' };
 const stageKey = (s) => (/^v1/.test(s) ? 'v1' : /^v2/.test(s) ? 'v2' : 'later');
 const STAGE_LABEL = { v1: 'First release', 'v1 min': 'First release', v2: 'Next', 'v2 min': 'Next', later: 'Later' };
@@ -29,24 +37,32 @@ function features(cfg, p) {
       ${[['all', 'All'], ['v1', 'First release'], ['v2', 'Next'], ['later', 'Later']].map(([k, l], i) => `<button type="button" data-stage="${k}" aria-pressed="${i === 0}">${l}</button>`).join('')}
       <span class="fs-n" role="status" aria-live="polite">${total} of ${total}</span>
     </div>`;
+  /* `.frow` is a three-part row — the capability's own code in a 64px mono
+     column, then the name and its detail, then the stage/plan/data tags
+     under them. The code was never emitted, so every name was squeezed into
+     that 64px column one word per line and the tags stretched to match: a
+     29-row list ran 7,583px on a phone and 12 screens on a 1440px desktop
+     for 297 words. The row below is the layout `.frow` was written for.
+     `.fmod-no` is the module NUMBER — it was printing the module name, so
+     every card carried its own title twice, at both widths. */
   const groups = MODULES.map(([no, name, rows]) => `<div class="fmod" data-mod="${esc(no)}">
-      <div class="fmod-h"><span class="fmod-no">${ic(MOD_ICON[no] || 'now', 18)}<span>${esc(no === '—' ? 'Across the product' : name)}</span></span><h3>${esc(no === '—' ? 'Across the product' : name)}</h3><span class="fmod-n">${rows.length}</span></div>
-      <ul class="frows">${rows.map(([, t, d, stage, tier, phi]) => `<li class="frow" data-stage="${stageKey(stage)}"><div class="frow-b"><b>${esc(t)}</b>${d ? `<span class="frow-d">${esc(d)}</span>` : ''}</div><span class="frow-m"><span class="tg is-stage" data-s="${stageKey(stage)}">${esc(STAGE_LABEL[stage] || stage)}</span>${tier !== '—' ? `<span class="tg">${esc(tier)}</span>` : ''}${phi !== '—' ? `<span class="tg">${esc(phi)}</span>` : ''}</span></li>`).join('')}</ul>
+      <div class="fmod-h"><span class="fmod-no">${ic(MOD_ICON[no] || 'now', 18)}<span>${esc(no === '—' ? 'Across' : `Module ${no}`)}</span></span><h3>${esc(no === '—' ? 'Across the product' : name)}</h3><span class="fmod-n">${rows.length}</span></div>
+      <ul class="frows">${rows.map(([id, t, d, stage, tier, phi]) => `<li class="frow" data-stage="${stageKey(stage)}"><span class="frow-id">${esc(id)}</span><div class="frow-b"><b>${esc(t)}</b>${d ? `<span class="frow-d">${esc(d)}</span>` : ''}</div><span class="frow-m"><span class="tg is-stage" data-s="${stageKey(stage)}">${esc(STAGE_LABEL[stage] || stage)}</span>${tier !== '—' ? `<span class="tg">${esc(tier)}</span>` : ''}${phi !== '—' ? `<span class="tg">${esc(phi)}</span>` : ''}</span></li>`).join('')}</ul>
     </div>`).join('');
   const moved = (rows) => `<ul class="mv-l">${rows.map(([, t, , why]) => `<li><div><b>${esc(t)}</b><span>${esc(why)}</span></div></li>`).join('')}</ul>`;
   return shell(cfg, p, 'features', `
     ${phead('Features', 'Everything Cohort does.', `Grouped the way the product is built — ${total} capabilities. Beside each: whether it is in the first release, what plan it sits on, and whether it touches care data.`, filter)}
     ${sec('modules', 'fmods', `<div class="wrap"><div class="fgrid">${groups}</div><p class="fs-none" hidden>Nothing at that stage. Every group has something in the first release.</p></div>`, { label: 'Features by group' })}
-    ${sec('gates', 'fgates', `<div class="wrap">
+    ${fold('Allergy, and the PRN interval', sec('gates', 'fgates', `<div class="wrap">
       <div class="head">${h2('gates', 'Two of those can stop a caregiver. The rest inform.', 'The allergy gate and the PRN interval gate — both in the MAR, both chosen because the harm of not stopping is physical.')}</div>
       <div class="fg2">${find('loop').gates.map((g, i) => `<div class="note"><span class="gate-n">${i + 1}</span><p>${esc(g)}</p></div>`).join('')}</div>
       <p class="more"><a href="/#stops">${ic('gate', 16)}<span>See the two stops on the front page</span>${ic('right', 16)}</a></p>
-    </div>`)}
-    ${sec('moved', 'fmoved', `<div class="wrap fm-g">
+    </div>`))}
+    ${fold('And what came out on purpose', sec('moved', 'fmoved', `<div class="wrap fm-g">
       <div><div class="head">${h2('moved', 'Not in this product.', 'Cohort keeps the residents’ record. Scheduling, the kitchen, and binders live elsewhere.')}</div>${moved(MOVED)}</div>
       <div><div class="head">${h2('removed', 'Taken out on purpose.', 'One of them would have been a third hard gate. The product stops a caregiver twice, and no more.')}</div>${moved(REMOVED)}</div>
-    </div>`)}
-    ${sec('never', 'fnever', `<div class="wrap">
+    </div>`))}
+    ${fold('Eleven refusals, with reasons', sec('never', 'fnever', `<div class="wrap">
       <div class="head">${h2('never', 'Refused on principle.', 'Eleven refusals, each with the reason given for it. The same list prints from the front page.')}</div>
       <ol class="ref-l">${REFUSALS.map(([t, why], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b><span>${esc(why)}</span></div></li>`).join('')}</ol>
       <div class="fn-g">
@@ -54,6 +70,9 @@ function features(cfg, p) {
         <div class="note"><h3>Not stored, by design</h3><p>${NOT_STORED.map(esc).join(' · ')}.</p></div>
       </div>
       <div class="notnow"><span class="strip-l">Not in this version — and what would change that</span><dl class="defs">${NOT_NOW.map(([t, c]) => `<dt>${esc(t)}</dt><dd>${esc(c)}</dd>`).join('')}</dl></div>
+    </div>`))}
+    ${sec('fjoin', 'fjoin', `<div class="wrap">
+      <div class="head">${eyebrow('Early access')}${h2('fjoin', 'That is the whole product.', `${total} capabilities, two stops, eleven refusals. Ask for the list in writing, or come and see it run a shift.`)}</div>
       <div class="ctas"><a class="btn pri lg" href="/#join">${ic('stamp', 18)}${esc(cfg.cta.primary)}</a><a class="btn lg" href="/security">${ic('shield', 18)}What it holds</a></div>
     </div>`)}`);
 }
@@ -89,19 +108,24 @@ function security(cfg, p) {
   const loop = find('loop');
   return shell(cfg, p, 'security', `
     ${phead('Security and privacy', esc(ev.heading), ev.sub)}
-    ${sec('holds', 'sholds', `<div class="wrap">
+    ${fold('Nineteen tables, three kinds', sec('holds', 'sholds', `<div class="wrap">
       <div class="head">${h2('holds', 'What it holds.', 'Three kinds of record, in the same words as the product.')}</div>
       <div class="pv-g">${cfg.privacy.holds.map(([label, text]) => `<div class="pv-c"><span class="strip-l">${esc(label)}</span><p>${esc(text)}</p></div>`).join('')}</div>
-    </div>`)}
+    </div>`))}
     ${sec('mechanism', 'smech', `<div class="wrap">
       <div class="head">${eyebrow('The mechanism')}${h2('mechanism', 'How the record is held up.', 'The protection is mechanism, not adjectives.')}</div>
       <div class="ev">${ev.blocks.map((b) => `<div class="ev-b"><span class="strip-l">${esc(b.label)}</span>${b.quote ? `<p class="quote">${esc(b.quote)}</p>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}</div>`).join('')}</div>
       <div class="ev-cl">${ev.closingBlocks.map((b) => `<div class="note">${b.heading ? `<h3>${esc(b.heading)}</h3>` : '<h3>Where it lives, and the agreement</h3>'}<p>${esc(b.text)}</p></div>`).join('')}</div>
     </div>`)}
-    ${sec('left', 'sleft', `<div class="wrap">
-      <div class="head">${eyebrow('What left the house')}${h2('left', 'An incident, and everything that left the house because of it.', 'The desktop app, shown at true size: filed, notified with a house code and nothing else, reviewed, signed off, locked — and the email, the push and the analytics beside it.')}</div>
-      <div class="shell-w" data-scrollx><div class="shell">${webShell('cohort', { key: 'incident', width: 1024 })}</div></div>
-    </div>`)}
+    ${fold('One incident, and what left', sec('left', 'sleft', `<div class="wrap">
+      <div class="head">${eyebrow('What left the house')}${h2('left', 'An incident, and everything that left the house because of it.', 'Filed, notified with a house code and nothing else, reviewed, signed off, locked — and the email, the push and the analytics beside it.')}</div>
+      <div class="left-ph" aria-hidden="true">${iosShell('cohort', { key: 'incident' })}</div>
+      <div class="left-w">
+        <span class="strip-l">The same incident, on the desktop</span>
+        <div class="shell-w" data-scrollx tabindex="0" role="group" aria-label="The incident on the desktop app — scroll sideways for the rest of the screen"><div class="shell">${webShell('cohort', { key: 'incident', width: 1024 })}</div></div>
+        <p class="cap left-cap"><span class="left-cap-w">Shown at true size. Drag sideways for the rest — it is not shrunk to fit, because a shrunk screen cannot be read.</span><span class="left-cap-p">The app at its own narrow layout: the navigation rail is behind the ☰ and the trail reads top to bottom. Drag sideways for the panel beside it.</span></p>
+      </div>
+    </div>`))}
     ${sec('sgates', 'sgates', `<div class="wrap">
       <div class="head">${eyebrow('The two stops')}${h2('sgates', 'Exactly two actions may stop a caregiver.', loop.gateNote)}</div>
       <div class="fg2">${loop.gates.map((g, i) => `<div class="note"><span class="gate-n">${i + 1}</span><p>${esc(g)}</p></div>`).join('')}</div>

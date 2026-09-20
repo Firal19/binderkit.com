@@ -11,12 +11,23 @@ export const pricingPage = {
   path: 'pricing',
   title: 'Pricing',
   description: 'Providers pay: a subscription per house plus one charge per job post, on every plan including the trial. Caregivers never pay — a documented exception.',
+  /* #post CARRIES TWO HEADS, BECAUSE AT 390 THE TIER CARD IS 425px ABOVE IT.
+     The card reads "Job post / One charge per post / Publishes the listing
+     when paid"; the wide head reads both of those lines back. At desktop the
+     card is one of five in a horizontal rank two grid contexts away, and the
+     echo lands as a callback. Stacked at 390 the two sit inside one 844px
+     viewport and read as a duplication bug — the reader's first thought is
+     that the page repeated itself. The phone head says the thing the card did
+     not: why a post is priced outside the subscription, which is what the
+     paragraph under it actually argues. Only one span is ever displayed, so
+     only one is ever in the accessibility tree; the swap is CSS, needs no JS,
+     and /pricing carries no folds to read both strings into a summary. */
   render(cfg, p) {
     const s = find('pricing');
     return shell(cfg, p, { page: 'pricing', ids: new Set(['top', 'pricing', 'post', 'signup', 'billing', 'questions', 'join']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Pricing')}<h1 id="h1">${esc(s.heading)}</h1><p class="lede">${esc(EVERY_PLAN)}</p></div></section>
 ${sec('pricing', 'pricing', `<div class="wrap">${tierBlock(p)}<p class="fine">${esc(s.note)}</p></div>`)}
 ${sec('post', 'post', `<div class="wrap post-g">
-  <div>${eyebrow('Job post')}${h2('post', 'One charge per post. It publishes when it is paid.', 'A subscription is per house. A post is per post — on every tier, including the trial, because a home that needs to hire should not have to upgrade to do it.')}</div>
+  <div>${eyebrow('Job post')}<h2 id="h-post"><span class="ap-wide">One charge per post. It publishes when it is paid.</span><span class="ap-phone">Why a post is not in the subscription.</span></h2><p class="sub">A subscription is per house. A post is per post — on every tier, including the trial, because a home that needs to hire should not have to upgrade to do it.</p></div>
   <ol class="flow-l">${[['Draft', 'invisible to everyone outside your organisation.'], ['Pay', 'the per-post charge — an unpaid posting stays a draft.', 'open'], ['Published', 'reachable without an account, at an opaque address that carries no organisation, house or sequence.'], ['Applications', 'arrive with her profile and her credentials as self-attested — one per person per posting, never ranked or scored.'], ['Hired', 'a staff record, onboarding open for that house’s track.', 'covered']].map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
 </div>`)}
 ${sec('signup', 'signup', `<div class="wrap subs">

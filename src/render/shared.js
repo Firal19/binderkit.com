@@ -58,6 +58,81 @@ export function nav(cfg, p, opts = {}) {
   </header>`;
 }
 
+/* ── the shared phone nav ─────────────────────────────────────────────
+   The four headers today range 56–98px tall, carry up to fifteen links,
+   and two of them clip a scroll strip mid-word at the right edge. This is
+   the one pattern they can all point at. It is SHAPE, not style: every
+   colour and face still comes from the site's own sheet, so four headers
+   built on it still read as four different designs at 390px.
+
+   The phone bar is three slots and nothing else:
+
+     [ mark + where you are ] ———— [ one 44px CTA ] [ menu 44x44 ]
+
+   and the menu opens a bottom sheet, because that is where the thumb is.
+
+     mobileNav(cfg, p, {
+       where:  'Features',                     // where you are, as plain text
+       cta:    { href: '#join', label: 'Early access' },
+       groups: [{ title: 'Pages', rows: [
+                  { href: '/plan', label: 'The plan', gist: 'Four weeks', current: true },
+                ] }],
+       index:  true,           // prepend an "In this page" group, built at
+                               // runtime from every [data-phone="fold"]
+                               // section's heading and data-gist
+       id:     'mnav',         // the sheet's id; must be unique on the page
+       label:  'Menu',
+       brand:  '<custom markup>',
+     })
+
+   Returns { bar, sheet } — two strings, and they must be placed
+   SEPARATELY:
+
+     `<header class="rule" id="top-bar">${n.bar}</header>${n.sheet}`
+
+   THE SHEET MUST NOT BE A CHILD OF THE HEADER. Every sticky header in this
+   kit paints itself with backdrop-filter, and backdrop-filter (like filter,
+   transform and will-change) makes an element a CONTAINING BLOCK for its
+   position: fixed descendants. Nested inside the header, the sheet anchors
+   its `bottom: 0` to the 56px bar instead of the viewport and renders above
+   the top of the screen — measured at top: -465px before this was split in
+   two. It is a sibling of the header, not a child.
+
+   Behaviour is js/site.js `menus()`, which already implements the whole
+   controller — any button[aria-controls] toggles its panel, Escape closes,
+   a click on a link inside closes, data-lock locks body scroll, and a
+   resize above 900px auto-closes. It needs no change; it needs markup.
+   The "In this page" group and the "Open every section" button are filled
+   by `pageIndex()` from the same data the fold reads. */
+export const sheetRow = ({ href, label, gist = '', current = false, cls = '' }) =>
+  `<a class="msheet-r ${cls}" href="${esc(href)}"${current ? ' aria-current="page"' : ''}><span><b>${esc(label)}</b>${gist ? `<small>${esc(gist)}</small>` : ''}</span></a>`;
+
+export const sheetGroup = ({ title, rows = [], index = false, openAll = 'Open every section' }) =>
+  `<div class="msheet-g"${index ? ` data-page-index data-open-all="${esc(openAll)}"` : ''}>${title ? `<p class="msheet-k">${esc(title)}</p>` : ''}${rows.map(sheetRow).join('')}</div>`;
+
+export function mobileNav(cfg, p, opts = {}) {
+  const id = opts.id || 'mnav';
+  const label = opts.label || 'Menu';
+  const brand = opts.brand || `${mark(p.id, 28, { label: false })}<span class="mbar-n">${esc(p.short || p.name)}</span>`;
+  const cta = opts.cta === null ? null : (opts.cta || { href: cfg.cta.primaryHref || '#join', label: cfg.cta.nav });
+  const groups = [
+    ...(opts.index === false ? [] : [{ title: opts.indexTitle || 'In this page', rows: [], index: true, openAll: opts.openAll }]),
+    ...(opts.groups || []),
+  ];
+  const bar = `<div class="bar-in mbar">
+    <a class="mbar-id" href="/" aria-label="${esc(p.name)} — home">${brand}${opts.where ? `<span class="mbar-where">${esc(opts.where)}</span>` : ''}</a>
+    <div class="mbar-r">
+      ${cta ? `<a class="btn pri sm" href="${esc(cta.href)}" data-cta="bar">${esc(cta.label)}</a>` : ''}
+      <button class="mbar-menu" type="button" aria-expanded="false" aria-controls="${esc(id)}" aria-label="${esc(label)}" data-label-open="${esc(label)}" data-label-close="Close menu" data-lock>${ICON.menu}</button>
+    </div>
+  </div>`;
+  const sheet = `<div class="msheet" id="${esc(id)}" hidden>
+    <span class="msheet-grab" aria-hidden="true"></span>
+    <nav aria-label="${esc(opts.navLabel || 'Menu')}">${groups.map(sheetGroup).join('')}</nav>
+  </div>`;
+  return { bar, sheet, toString: () => bar + sheet };
+}
+
 /* ── the waitlist ─────────────────────────────────────────────────────── */
 export function waitlist(cfg, p, copy = {}) {
   const opt = (v) => `<option value="${esc(v)}">${esc(v)}</option>`;

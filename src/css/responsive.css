@@ -1,0 +1,308 @@
+/* responsive.css — every width tier in the kit, and nothing else.
+   Appended LAST in build.mjs SHEETS, after css/pages/<id>.css.
+
+   That order is the whole point. It is the answer to the specificity trap
+   that has kept the phone broken: a page sheet that declares
+   `:root { --sec-y: … }` or `.phead h1 { font-size: clamp(56px, …) }` can
+   no longer shadow the phone value, because the phone value is declared
+   later at equal specificity. Nothing in here needs !important, and
+   anything that does means the port is wrong, not the sheet order.
+
+   FIVE RULES FOR THIS FILE, and they are not negotiable:
+     1. Every rule sits inside a width query at 1200px or narrower, or
+        inside a capability query (pointer / hover / orientation / print).
+        Desktop is untouched by construction, not by inspection.
+     2. No bare element selector on its own, no `*`, no attribute-substring
+        selector. A selector here is anchored on a class, an attribute with
+        a value, or an ancestor.
+     3. Nothing may reach inside .face .phone .browser .paper .wk .ph .cp
+        .divset. Those are pictures of an app; their interior type is
+        computed from --t-body-size and is correct small. Before adding a
+        name to either type list below, run:
+
+          grep -nE "<the name>" src/css/{canvas,shells,faces,instruments-extra}.css
+
+        It must come back empty. Today only `.tg` and bare `kbd` would not,
+        which is why neither is in a list.
+     4. The two type floors are absolute px literals and must stay that way.
+        The gate tests `px >= min`, so a 15px prose floor passes by exactly
+        zero margin — express it as an em or rem multiple anywhere and one
+        rounding step reopens two hundred failures.
+     5. `--t-*` and `--c-*` are the mockup's namespace. Never declare one
+        here. See the NAMESPACE note at the top of base.css.
+
+   TWO THINGS THAT WILL COST YOU AN HOUR IF NOBODY TELLS YOU:
+
+     `.face` IS NOT A MOCKUP. Every page mounts
+     `<main class="page face canvas" data-product="…">`, so a selector
+     scoped to `.face` reaches the entire document. The mock roots are
+     `.phone`, `.browser`, `.paper`, `.wk` — which carry `.face` as well.
+     Exclusion lists in this file name those and never `.face`. (gate.mjs
+     has `.face` in its own MOCK list, which is why every chrome rule it
+     reports is in a <header> or a <footer>: everything inside <main> is
+     already exempt from tap-target, tiny-text, gutter and cramped-grid.)
+
+     A DESCENDANT COMBINATOR BEFORE A COLON DOES NOT SURVIVE THE BUILD.
+     build.mjs squeeze() runs `\s*([{};:,>])\s*` -> `$1`, so `X :is(…)`
+     ships as `X:is(…)` — a compound selector that matches nothing, with a
+     green build and no warning. Write `X *:is(…)`. The `*` costs zero
+     specificity and is the only thing standing between this sheet and a
+     rule that silently does not exist.
+
+   THE LAW THIS FILE ENFORCES, in one sentence each:
+     12px is the floor for any text on any surface.
+     15px is the floor for any text inside p, li, dd or blockquote,
+     whatever its length.
+     44px is the floor for anything a thumb presses, in BOTH dimensions.
+     Mockup interiors are exempt from all three and must never be touched. */
+
+
+/* ═══ 1200 · THE WIDE TIER ═══════════════════════════════════════════════
+   Rails narrow, side columns drop. Reserved: it absorbs every 1280 / 1240 /
+   1200 / 1150 / 1140 / 1100 / 1040 / 980 block in the kit as each site
+   agent collapses their ad-hoc breakpoints onto the ladder. */
+@media (max-width: 1200px) {
+  /* deliberately empty: this is the landing place for the 1280 / 1240 /
+     1200 / 1150 / 1140 / 1100 / 1040 / 980 blocks each site still carries. */
+}
+
+
+/* ═══ 900 · THE LAP TIER ═════════════════════════════════════════════════
+   Chrome changes identity here: a bar becomes a bar plus a sheet, a
+   headline joins the phone ramp, and the two type floors come up.
+   Content does not change shape until 640. */
+@media (max-width: 900px) {
+  :root {
+    --hdr: 56px;                                /* one bar, one height */
+    --hdr-scrolled: 48px;
+    --scroll-pad: calc(var(--hdr) + var(--sp-3));
+    --fs-label: 13px;                           /* 12px is where a label stops
+                                                   being a bug; 13 is where it
+                                                   starts being readable */
+    --track-label: .06em;                       /* the tracking MUST come down
+                                                   as the size goes up, or a
+                                                   13px uppercase mono label
+                                                   wraps worse for being bigger */
+  }
+
+  /* the bar: slots, not tracks. A flex row has no dead track to leave
+     behind when a desktop rail's contents are hidden. */
+  .bar-in { justify-content: space-between; height: var(--hdr); }
+
+  /* The two header grids that fail `cramped-grid` on every route of their
+     site. Cohort's .tr-in computes tracks of 103.953px / 214.047px / 0px at
+     390: a 104px brand, an EMPTY 214px track where the desktop time rail
+     used to be — 55% of the screen — the 141px control cluster auto-placed
+     into the middle of it, and a collapsed third track. The phone tier hid
+     the rail's CONTENTS and never redefined the track. space-between has no
+     dead track to leave behind, and it hands back the 214px of width and
+     the 17px of height the bar needs to raise its CTA to 44px and keep it
+     there at 320.
+     Height is deliberately NOT set here: binderkit's first row is 48px and
+     stacking a 56px shared value under its tab strip would make its header
+     taller, not shorter. That row is its own agent's to delete.
+     .rule-in also gives up the fifth gutter curve in the kit
+     (`100% - 2 * clamp(20px, 4.4vw, 56px)`, matching none of the other
+     four) for the one exported value. At 390 both resolve to 350px. */
+  .tr-in, .rule-in { display: flex; justify-content: space-between; gap: var(--sp-4); }
+  .rule-in { width: var(--wrap-w); }
+
+  /* ── the headline cap ───────────────────────────────────────────────
+     `html[data-mode]` is (0,1,1) — build.mjs puts data-mode on <html> on
+     every page — and this sheet loads last, so it wins the tie against
+     every `.phead h1` / `.pv h1` / `.hero-p h1` in the kit without
+     !important and without a specificity puzzle. min() only ever shrinks:
+     a site that points its own h1 at var(--fs-h1) sees no step at 900.
+     8.4vw is the second leg, and it is what holds the 360px rung: the
+     gate's cap is 34px at <=360 and 40px above it. */
+  html[data-mode] h1:not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .screen, [data-mock]) *) {
+    font-size: min(var(--fs-h1), 8.4vw);
+    line-height: 1.04;
+  }
+
+  /* ── the prose floor: 15px, because the gate reads p/li/dd/blockquote as
+     reading matter whatever the string length ────────────────────────
+     Every name below is a MEASURED failure at 390/360/320, not a guess.
+     Each keeps its own natural specificity and wins on load order alone.
+     Add yours here rather than redeclaring a size in your page sheet. */
+  .eos-fine, .eos-legal,                                   /* cohort    */
+  .fine, .foot-fine, .toc-n, .toc-t small, .colo-ctl,
+  .dtab-l, .dtab.is-cta,                                   /* binderkit */
+  .ft-note, .ft-legal p, .ft-l a                           /* aidepost  */
+  { font-size: var(--fs-read); }
+
+  /* ── the label voice: one selector list replacing sixty hand-typed px */
+  .eos-k, .tab-s,                                          /* cohort    */
+  .strip-l, .run-n,                                        /* binderkit */
+  .rc-sub, .rc-meta, .tb-l                                 /* careshop  */
+  { font-size: var(--fs-label); letter-spacing: var(--track-label); }
+
+  /* ── THE MOCKUP REFRAME ─────────────────────────────────────────────
+     A desktop mock on a phone is not a small desktop; it is the product at
+     its own narrow breakpoint. shells.css has shipped `.browser[data-w="768"]`
+     — one column, no 236px navigation rail, the hamburger visible — since
+     the day it was written, and nothing has ever called it. Below 900 every
+     .browser is that build, so a phone visitor sees what the section is
+     arguing instead of the rail that is not the argument.
+
+     `.browser[data-w]` is (0,2,0), which ties with `.browser[data-w="1024"]`
+     in shells.css and wins on load order; the bare `.browser` copy catches a
+     mock rendered without the attribute. Reverting this for one section is
+     one line in that site's sheet — see FOUNDATION-HANDOFF.md. */
+  .browser, .browser[data-w] { --dw: 768px; width: var(--dw); }
+  .browser[data-w] .app,
+  .browser[data-w] .page-grid { grid-template-columns: minmax(0, 1fr); }
+  .browser[data-w] .snav { display: none; }
+  .browser[data-w] .ham { display: grid; }
+
+  /* …then scale what is left to fit, as one unit. --mock-fit is defined in
+     canvas.css and is `min(1, room / --dw)`, so it never upscales and never
+     needs a per-width number: at 390 a 768px mock renders 460px at z=.599
+     (8.1px interior — the density aidepost's .dev .phone already ships), at
+     360 it renders 425px, at 320 it renders 378px. Every one of those is
+     under the gate's vw x 1.25 ceiling with room to spare, and all three
+     come from one declaration instead of a stepped table that is wrong at
+     the width nobody tested. */
+  .browser { --mock-z: var(--mock-fit); }
+
+  /* ── the shared phone nav ───────────────────────────────────────────
+     Shape only — no colour beyond the page's own --bg/--line/--ink, no
+     typeface, no radius that is not the page's --r. Four different headers
+     must still read as four different designs at 390px.
+     Markup: shared.js mobileNav(); behaviour: site.js menus(), unchanged. */
+  .mbar { display: flex; align-items: center; justify-content: space-between;
+          gap: var(--sp-3); width: var(--wrap-w); margin-inline: auto;
+          height: var(--hdr); min-width: 0; }
+  .mbar-id { display: flex; align-items: center; gap: var(--sp-2);
+             min-width: 0; min-height: var(--tap); text-decoration: none; color: inherit; }
+  .mbar-where { min-width: 0; overflow: hidden; text-overflow: ellipsis;
+                white-space: nowrap; font-size: var(--fs-meta); opacity: .72; }
+  .mbar-r { display: flex; align-items: center; gap: var(--sp-2); flex: none; }
+  .mbar-menu { display: grid; place-items: center; width: var(--tap); height: var(--tap);
+               border-radius: var(--r, 12px); color: inherit; }
+
+  /* the sheet rises from the bottom, because that is where the thumb is,
+     and it stops short of the top so the page behind it stays visible. */
+  .msheet { position: fixed; inset: auto 0 0 0; z-index: 90;
+            max-height: 86dvh; overflow: auto; overscroll-behavior: contain;
+            padding: var(--sp-4) var(--gutter) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+            background: var(--bg); border-top: 1px solid var(--line);
+            border-radius: 18px 18px 0 0; }
+  .msheet[hidden] { display: none; }
+  .msheet-grab { width: 40px; height: 4px; border-radius: 999px; margin: 0 auto var(--sp-4);
+                 background: var(--line); }
+  .msheet-g { display: grid; gap: 2px; margin-bottom: var(--sp-5); }
+  .msheet-g:last-child { margin-bottom: 0; }
+  .msheet-k { font-size: var(--fs-label); letter-spacing: var(--track-label);
+              text-transform: uppercase; opacity: .6; margin-bottom: var(--sp-2); }
+  /* --tap is raised ON the row rather than fought over: the coarse-pointer
+     net below sets min-height: var(--tap), so an element that needs to be
+     taller than a thumb says so by redeclaring the token on itself. No
+     specificity puzzle, and it works for anything the net reaches. */
+  .msheet-r { --tap: var(--tap-row);
+              display: flex; align-items: center; gap: var(--sp-3);
+              min-height: var(--tap-row); padding-inline: var(--sp-3);
+              margin-inline: calc(var(--sp-3) * -1);
+              border-radius: var(--r, 12px); text-decoration: none; color: inherit; }
+  .msheet-r > span { min-width: 0; display: grid; gap: 1px; }
+  .msheet-r b { font-weight: 600; font-size: var(--fs-read); }
+  .msheet-r small { font-size: var(--fs-label); letter-spacing: var(--track-label); opacity: .62;
+                    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* aria-current marked by more than a colour fill: a teal ground alone is
+     invisible in greyscale, in forced-colors and to a screen reader. */
+  .msheet-r[aria-current] { box-shadow: inset 3px 0 0 currentColor; font-weight: 700; }
+  .msheet-r[aria-current]::after { content: "\2713"; margin-left: auto; flex: none; }
+
+  /* ── the two thumb utilities, for markup that is still laid out inline.
+     This is the ONLY place in the kit where the shared layer changes an
+     element's `display`, and a site asks for it by name. */
+  .tap { display: flex; align-items: center; min-height: var(--tap); min-width: var(--tap); }
+  .tap-row { --tap: var(--tap-row); display: flex; align-items: center; gap: var(--sp-3); min-height: var(--tap-row); }
+}
+
+
+/* ═══ 640 · THE PHONE TIER ═══════════════════════════════════════════════
+   Grids go to one, the fold fires, the dock is paid for. */
+@media (max-width: 640px) {
+  :root { --sec-y: 56px; }
+
+  .ctas { flex-direction: column; }
+  .ctas > .btn { width: 100%; }
+
+  /* ── the fold.
+     Below 640 a long page opens as an index: the hero, the section that
+     carries the claim and the closing call stay open; everything else is a
+     64px tappable row carrying its own heading and a one-line gist. The
+     button is injected by js/site.js, so with scripting off the page is
+     long but complete, and `beforeprint` opens everything.
+     A site's entire job is data-phone="fold" and data-gist="…". */
+  .js [data-phone="fold"] { padding-block: var(--sp-4); }
+  .js [data-phone="fold"] > .fold-s { display: flex; }
+  .js [data-phone="fold"][data-open] { padding-block: var(--sec-y); }
+
+  /* folds() closes a section by setting the `hidden` attribute on its
+     children, and `[hidden] { display: none }` is a USER-AGENT rule — which
+     loses to EVERY author rule regardless of specificity. So a child that
+     carries an author `display` (any .wrap that is grid or flex) stays fully
+     visible with the attribute correctly set, and the section simply never
+     closes: no error, green build, silent failure. All four sites hit this
+     independently and each patched it in its own sheet. It belongs here, once.
+     Keep it: removing it re-opens every fold whose wrap sets `display`. */
+  .js [data-phone="fold"] > [hidden] { display: none; }
+}
+
+
+/* ═══ 400 · THE NARROW TIER ══════════════════════════════════════════════
+   It SHORTENS. It never hides. Nothing a 390px screen can reach may be
+   taken away from a 320px one. */
+@media (max-width: 400px) {
+  :root { --sec-y: 48px; }
+  .msheet { padding-inline: var(--sp-4); }
+}
+
+
+/* ═══ CAPABILITY QUERIES · orthogonal to the ladder ══════════════════════ */
+
+/* ── a thumb is 44x44 in BOTH dimensions ──────────────────────────────
+   A capability query, not a width query: a 1600px touchscreen gets thumb
+   targets and a 900px mouse-driven window does not.
+
+   base.css already scopes a floor to (pointer: coarse); it just enumerates
+   three class names against roughly twenty-five real controls. This
+   replaces the enumeration with a rule about WHERE a control lives, so the
+   twenty-sixth control inherits the floor instead of needing a fourteenth
+   guess. Cohort alone declares control heights of 20, 32, 36, 40, 42, 44,
+   46, 48, 50, 52, 54, 62 and 64 for one job.
+
+   It deliberately sets min-height/min-width and NOTHING ELSE. Every one of
+   the 358 failing targets in the kit is already a block, flex or grid box
+   with a hand-typed height, so a floor is all they need — and forcing
+   `display: flex` on a chrome link that is genuinely inline would relayout
+   headers that are correct today. `.tap` above is the opt-in for markup
+   that really is inline.
+
+   Never use inline-flex on a list-row link: the gate skips an <a> inside
+   p/li/dd/blockquote whose computed display contains "inline", so
+   inline-flex would make the element invisible to the rule instead of
+   compliant — and the thumb would still meet a 40px target. */
+@media (pointer: coarse) {
+  .btn, .btn.sm, .soc-i, .pho, .act { min-height: var(--tap); }
+
+  :is(nav, header, footer, .menu, .sheet, .drawer, .ssheet, .toc-sheet, .toc,
+      .dock, .tabs, .footbar, .tally-bar, .eos-l, .eos-d, .ft-l,
+      .rc-lines, .tabs-l, .mbar, .msheet, .fold-s)
+  *:is(a, button, summary, [role="button"], [role="tab"]):not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, .screen, [data-mock]) *):not(:where(p, dd, blockquote) *) {
+    min-height: var(--tap);
+    min-width: var(--tap);
+  }
+}
+
+/* ── the short landscape. It lives here, after the phone tier, because it
+   redeclares --sec-y on :root and has to win: it was on `html` (0,0,1) in
+   base.css, which the tiers above would now outrank. Its deliberately
+   tight 28px is correct and stays. ─────────────────────────────────── */
+@media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
+  :root { --sec-y: 28px; --scroll-pad: 56px; }
+  .hero { padding-block: 16px; }
+  .toast { bottom: max(12px, env(safe-area-inset-bottom)); }
+}

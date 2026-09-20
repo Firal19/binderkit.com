@@ -1,7 +1,7 @@
 // /caregivers — the dark page. Shifts near you, the wallet, your hours,
 // free for ever, and the rules that protect a worker.
 
-import { esc, sec, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, walletCards, clockToy, timesheetToy, joinBlock } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, walletCards, clockToy, timesheetToy, joinBlock } from './bits.js';
 
 const PROTECT = [
   ['No background check is run on you', 'The provider runs ORCHARDS herself. Aidepost holds only a status she types — never a result, never the content.'],
@@ -42,34 +42,34 @@ function shifts() {
 }
 
 function wallet() {
-  return sec('wallet', 'care wallet-s', `<div class="wrap wallet-g">
+  return fold('Your dates in your pocket, and a notice at thirty days and at seven.', sec('wallet', 'care wallet-s', `<div class="wrap wallet-g">
     <div class="wallet-t">${eyebrow('Your wallet')}${h2('wallet', 'Your dates, in your pocket.', 'A CPR card photo and its date. A notice at thirty days and at seven — to you, by name. A manager sees a count, never your name in the message. Renew, and the old record stays as history.')}
       <ul class="care-l"><li>${esc(find('caregiver').lines[0])}</li><li>${esc(find('caregiver').lines[2])}</li></ul></div>
     ${walletCards()}
-  </div>`);
+  </div>`));
 }
 
 function hours() {
-  return sec('hours', 'care hours-c', `<div class="wrap">
+  return fold('Your schedule is the first screen, and your own weekly total accrues on it.', sec('hours', 'care hours-c', `<div class="wrap">
     <div class="head">${eyebrow('Your hours')}${h2('hours', 'Clock in, clock out, see your own weekly total.', 'Your schedule is the first screen. Your week accrues; at forty hours an indication appears — weekly, never daily. Your manager approves, and you are told.')}</div>
     <div class="hrs-toys">${clockToy()}${timesheetToy()}</div>
-  </div>`);
+  </div>`));
 }
 
 function protect() {
-  return sec('protect', 'care protect', `<div class="wrap">
+  return fold('Eight rules that protect a worker — positions, not missing features.', sec('protect', 'care protect', `<div class="wrap">
     <div class="head">${eyebrow('The rules that protect a worker')}${h2('protect', 'Positions, not missing features.')}</div>
     <ol class="prot-g">${PROTECT.map(([t, d], i) => `<li><span class="prot-n">${String(i + 1).padStart(2, '0')}</span><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
-  </div>`);
+  </div>`));
 }
 
 function free(cfg, p) {
   const s = find('caregiver');
-  return sec('free', 'care free-s', `<div class="wrap free-g">
+  return fold('No organisation, no card, nothing to cancel — and the first ten minutes.', sec('free', 'care free-s', `<div class="wrap free-g">
     <div class="free-t">${eyebrow('Free, for ever')}${h2('free', 'You are not the product.')}<p class="promise">${esc(s.promise)}</p>
       <div class="ctas"><a class="btn pri lg" href="#join">${esc(s.ctas[0][0])}</a><a class="btn lg" href="/providers">${ic('house', 18, { pin: false })}I run a house, actually</a></div></div>
     <div class="free-first"><span class="strip-l">${ic('phone', 16, { pin: 'open' })}The first ten minutes</span><ol>${find('start').columns[1].steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol><p class="cap">${esc(find('start').columns[1].foot)}</p></div>
-  </div>`);
+  </div>`));
 }
 
 export const CAREGIVERS_IDS = new Set(['top', 'caregivers', 'wallet', 'hours', 'protect', 'free', 'join']);

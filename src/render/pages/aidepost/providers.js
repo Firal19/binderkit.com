@@ -1,7 +1,7 @@
 // /providers — the provider side at depth: four screens, each doing work,
 // and the flows from the feature document told step by step.
 
-import { esc, sec, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credTimeline, timesheetToy, clockToy, joinBlock } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credTimeline, timesheetToy, clockToy, joinBlock } from './bits.js';
 
 const CHAPTERS = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['hiring', 'Hiring']];
 
@@ -32,7 +32,8 @@ function chBoard() {
   const loop = find('loop');
   return sec('board', 'ch', `<div class="wrap">
     <div class="ch-head">${eyebrow('1 · The board')}${h2('board', s.heading, s.sub)}</div>
-    <div class="shell" tabindex="0" role="group" aria-label="The desktop board, at true size — scroll sideways for the rest">${webShell('aidepost', { key: 'board' })}</div>
+    <div class="shell" tabindex="0" role="group" aria-label="The desktop board — scroll sideways for the rest">${webShell('aidepost', { key: 'board' })}</div>
+    <span class="shell-cap">Drag sideways — the board goes on past the edge.</span>
     <div class="ch-g">
       ${flow('Saturday night is open', [
     ['Friday morning', 'the board shows Saturday night open at one house.', 'open'],
@@ -54,7 +55,7 @@ function chBoard() {
 
 function chCredentials() {
   const s = screen('credentials');
-  return sec('credentials', 'ch', `<div class="wrap">
+  return fold('Entered with an expiry — then thirty days, seven, and the day itself.', sec('credentials', 'ch', `<div class="wrap">
     <div class="ch-head">${eyebrow('2 · Credentials')}${h2('credentials', 'Entered with an expiry. Then thirty days, seven, the day itself.', s.foot)}</div>
     <div class="ch-g is-phone">
       <div class="ch-dev"><div class="dev">${iosShell('aidepost', { key: 'credentials' })}</div></div>
@@ -77,12 +78,12 @@ function chCredentials() {
       </div>
     </div>
     ${credTimeline()}
-  </div>`);
+  </div>`));
 }
 
 function chHours() {
   const s = screen('hours');
-  return sec('hours', 'ch', `<div class="wrap">
+  return fold('Clock in, approve, export. The overtime flag is weekly, never daily.', sec('hours', 'ch', `<div class="wrap">
     <div class="ch-head">${eyebrow('3 · Hours')}${h2('hours', 'Clock in at the house. Approve one person at a time. Export.', s.desktopSub)}</div>
     <div class="ch-g is-phone">
       <div class="ch-dev"><div class="dev">${iosShell('aidepost', { key: 'hours' })}</div></div>
@@ -107,12 +108,12 @@ function chHours() {
     </div>
     <div class="hrs-toys">${clockToy()}${timesheetToy()}</div>
     <p class="pull">${esc(find('loop').closing)}</p>
-  </div>`);
+  </div>`));
 }
 
 function chHiring() {
   const s = screen('hire');
-  return sec('hiring', 'ch', `<div class="wrap">
+  return fold('Draft, publish, apply, screen, offer, hire — the whole thing, end to end.', sec('hiring', 'ch', `<div class="wrap">
     <div class="ch-head">${eyebrow('4 · Hiring')}${h2('hiring', 'A post is drafted, paid, published.', s.desktopSub)}</div>
     <div class="ch-g is-phone">
       <div class="ch-dev"><div class="dev">${iosShell('aidepost', { key: 'hire' })}</div></div>
@@ -136,19 +137,19 @@ function chHiring() {
   ])}
       </div>
     </div>
-  </div>`);
+  </div>`));
 }
 
 function machines() {
   const loop = find('loop');
-  return sec('machines', 'mach', `<div class="wrap">
+  return fold('The four machines: what happens, in order, every single time.', sec('machines', 'mach', `<div class="wrap">
     <div class="head">${eyebrow('Four machines')}${h2('machines', 'What happens, in order, every time.')}</div>
     <div class="mach-g">${loop.machines.map(([t, d]) => `<details class="mach-i"><summary><h3>${esc(t)}</h3><span class="faq-x" aria-hidden="true"></span></summary><p>${esc(d)}</p></details>`).join('')}</div>
-  </div>`);
+  </div>`));
 }
 
 function failed() {
-  return sec('payment', 'pay', `<div class="wrap pay-g">
+  return fold('If a payment fails your workers see nothing, and clocking continues.', sec('payment', 'pay', `<div class="wrap pay-g">
     <div>${eyebrow('If a payment fails')}${h2('payment', 'Your workers see nothing. Clocking continues.')}</div>
     <ol class="flow-l">${[
     ['Overdue', 'full access; a notice to the provider alone.'],
@@ -157,7 +158,7 @@ function failed() {
     ['Live postings', 'unaffected until cancellation; on cancellation they are withdrawn.'],
     ['Resolved', 'full access immediately.', 'covered'],
   ].map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
-  </div>`);
+  </div>`));
 }
 
 export const PROVIDERS_IDS = new Set(['top', 'board', 'credentials', 'hours', 'hiring', 'machines', 'payment', 'join']);

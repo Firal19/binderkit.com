@@ -34,6 +34,7 @@ function sheet(cfg, p, opts) {
   return `<div class="ssheet" id="sheet" hidden>
     <div class="ssheet-in">
       <div class="ssheet-h"><span class="eyebrow">Shift sheet</span><button class="ssheet-x" type="button" data-close aria-label="Close the shift sheet">${ic('close', 22)}</button></div>
+      <div class="ssheet-ix msheet-g" data-page-index data-open-all="Open every hour of this page"><span class="msheet-k ssheet-k">In this page</span></div>
       <nav aria-label="Stops, on the phone">
         <ol class="ssheet-l">
           ${STOPS.map((s) => `<li><a href="${at(opts, s.id)}"><b class="ssheet-hr">${s.hr ? esc(s.hr) : ic(s.icon, 18)}</b><span>${esc(s.label)}</span>${ic('right', 18, { cls: 'ssheet-c' })}</a></li>`).join('')}
@@ -101,7 +102,13 @@ export function header(cfg, p, opts = {}) {
 /* ── the footer: the end-of-shift sheet ──────────────────────────────────
    The shift sheet, the palette and the phone tab bar are fixed overlays;
    they render here rather than in the header because the header's
-   backdrop-filter would make it their containing block. */
+   backdrop-filter would make it their containing block.
+
+   There used to be a fourth: `.mcta`, a floating "Get early access" pill.
+   It is gone. The tab bar's fifth slot is already Join, the header already
+   carries the same words, and stacking a 56px pill on a 64px tab bar put
+   132px of fixed chrome over a body that reserved nothing for it — the pill
+   sat on the page's own headings. One action, one dock. */
 const RING_TEXT = 'LOGGED BY COHORT · COHORTHOME.APP · LOGGED BY COHORT · COHORTHOME.APP · ';
 const stampLogo = (p) => `<div class="stampl" aria-hidden="true">
   <svg class="stampl-r" viewBox="0 0 132 132" aria-hidden="true"><defs><path id="ring" d="M66 66m-49 0a49 49 0 1 1 98 0a49 49 0 1 1-98 0"/></defs><circle cx="66" cy="66" r="62" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="66" cy="66" r="57" fill="none" stroke="currentColor" stroke-width=".75" stroke-dasharray="2 3"/><circle cx="66" cy="66" r="38" fill="none" stroke="currentColor" stroke-width="1.25"/><text class="stampl-t" font-size="9.2" letter-spacing="2.1"><textPath href="#ring">${RING_TEXT}</textPath></text></svg>
@@ -143,7 +150,6 @@ export function footer(cfg, p, opts = {}) {
     ${palette(cfg, p, opts)}
     ${tabs(cfg, p, opts)}
     <a class="totop" href="${home ? '#top' : '#main'}" aria-label="${home ? 'Back to 06:55, the top of the page' : 'Back to the top'}">${ic('totop', 18)}<span>${home ? '06:55' : 'Top'}</span></a>
-    ${home ? `<div class="mcta"><a class="btn pri" href="#join" data-cta="mobile">${esc(cfg.cta.primary)}</a><span class="mcta-t"><b data-oregon-short>06:55</b> in Oregon</span></div>` : ''}
   </footer>`;
 }
 

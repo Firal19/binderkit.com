@@ -7,9 +7,9 @@ import { header, footer, section, title, sheet, planner, citesBlock, number, fin
 const SECS = number('BK-PL', [
   { id: 'top', label: 'Five answers in. A shelf of binders out.', tab: '' },
   { id: 'answers', label: 'The answers, and the plan', tab: 'Answers' },
-  { id: 'steps', label: 'From question zero to reset', tab: 'Steps' },
-  { id: 'guardrails', label: 'The three guardrails', tab: 'Guardrails' },
-  { id: 'artefacts', label: 'What prints', tab: 'Prints' },
+  { id: 'steps', label: 'From question zero to reset', tab: 'Steps', foldName: 'The steps', gist: 'What each step decides, and what it costs to change your mind.' },
+  { id: 'guardrails', label: 'The three guardrails', tab: 'Guardrails', gist: 'Coverage, scope and access, cohesion.' },
+  { id: 'artefacts', label: 'What prints', tab: 'Prints', gist: 'The contents page, the dividers, the brief and the procedure.' },
 ]);
 const [TOP, ANSWERS, STEPS, GUARDRAILS, ARTS] = SECS;
 

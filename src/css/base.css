@@ -13,9 +13,62 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--scroll-pad, 84px);
   background: var(--bg);
+}
+
+/* ═══ THE SCALE ══════════════════════════════════════════════════════════
+   One ladder, four rungs: 1200 wide · 900 lap · 640 phone · 400 narrow.
+   There are no other widths in this kit. Every curve below is solved
+   through two measured points, not guessed, and every one of them is
+   verified against a real browser at 320 / 360 / 390 / 768 / 1440.
+
+   NAMESPACE — read this before you add a token.
+   `--t-*` is RESERVED for canvas.css / faces.css: it is the token system
+   INSIDE a product mockup, written onto `.face[data-product="…"]`, which is
+   specificity (0,2,0) and therefore BEATS :root everywhere inside <main>.
+   `--t-mono` is a FONT FAMILY, not a size. Never declare a `--t-*` name
+   here; a size token named `--t-anything` silently inherits body size
+   inside every page and the build stays green. `--c-*` is reserved the
+   same way. This sheet owns `--fs-*`, `--sp-*`, `--bp-*` and the five
+   furniture names below, and nothing else. */
+:root {
+  /* documentation only — @media cannot read a custom property */
+  --bp-wide: 1200px; --bp-lap: 900px; --bp-phone: 640px; --bp-narrow: 400px;
+
+  /* ── type ────────────────────────────────────────────────────────── */
+  --fs-display: clamp(28px, 0.42rem + 6.73vw, 128px);  /* editorial hero */
+  --fs-h1:      clamp(30px, 1.11rem + 3.90vw, 74px);
+  --fs-h2:      clamp(24px, 1.18rem + 1.81vw, 48px);
+  --fs-h3:      clamp(19px, 1.13rem + 0.50vw, 26px);
+  --fs-h4:      17px;
+  --fs-lede:    clamp(16.5px, 1rem + 0.25vw, 20px);
+  --fs-body:    16px;   /* also the iOS zoom-on-focus floor. Never lower it. */
+  --fs-read:    15px;   /* THE FLOOR for any text inside p/li/dd/blockquote */
+  --fs-meta:    14px;   /* secondary chrome that is NOT inside prose */
+  --fs-label:   11.5px; /* the mono micro-label voice; 13px on a phone */
+  --track-label: .12em;
+
+  /* ── space ───────────────────────────────────────────────────────── */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px;   /* hairline gaps never scale */
+  --sp-4: clamp(16px, 0.84rem + 0.66vw, 24px);
+  --sp-5: clamp(20px, 0.93rem + 1.32vw, 36px);
+  --sp-6: clamp(26px, 1.19rem + 2.31vw, 56px);
+  --sp-7: clamp(36px, 1.69rem + 3.31vw, 80px);
+  --sp-8: clamp(52px, 2.21rem + 5.29vw, 120px);
+
+  /* ── the measure: exported as a VALUE so no bar ever types its own ── */
   --gutter: clamp(20px, 5vw, 80px);
-  --sec-y: clamp(48px, 7vw, 104px);
   --max: 1600px;
+  /* --wrap-w, not --measure: careshop.css:64 already owns --measure for the
+     62ch READING measure, which is the better claim on that name. */
+  --wrap-w: min(var(--max), calc(100% - 2 * var(--gutter) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  --sec-y: clamp(48px, 7vw, 104px);
+
+  /* ── thumbs: a finger does not change size with the viewport ─────── */
+  --tap: 44px;        /* anything a thumb presses */
+  --tap-row: 48px;    /* a destination in a list: nav, footer, sheet, index */
+
+  /* ── chrome. Desktop values stay per-site; only the phone is shared. ── */
+  --dock: 0px;        /* a page that mounts a .dock sets this at <=640 */
 }
 body {
   min-height: 100dvh;
@@ -32,8 +85,36 @@ img, svg, video { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { background: none; border: 0; cursor: pointer; padding: 0; }
 a { color: inherit; }
-h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; text-wrap: balance; }
+h1, h2, h3, h4 { font-weight: inherit; text-wrap: balance; }
 p { text-wrap: pretty; }
+
+/* The type ramp, declared once at ZERO specificity. A custom property
+   inherits, so a page rule at (0,1,1) reading var(--fs-h1) can no longer
+   out-specify the phone value — and because :where() carries no weight,
+   every heading rule that exists today still wins over these defaults.
+   These are the floor for a heading nobody has styled, nothing more. */
+:where(h1) { font-size: var(--fs-h1); }
+:where(h2) { font-size: var(--fs-h2); }
+:where(h3) { font-size: var(--fs-h3); }
+:where(h4) { font-size: var(--fs-h4); }
+:where(.lede, .sub) { font-size: var(--fs-lede); }
+
+/* A mockup is a picture of an app. Nothing outside it sets type inside it.
+   (0,1,0): heavy enough to beat the :where() ramp above, light enough that
+   every real canvas rule — all of which are (0,1,1) or heavier — still wins.
+
+   TWO TRAPS, both paid for by this one selector.
+   `.face` is NOT in the list and must never be: every page mounts
+   <main class="page face canvas">, so a rule scoped to .face reaches the
+   whole document rather than the mockups. The mock ROOTS are .phone /
+   .browser / .paper / .wk — which also carry .face. Name those.
+   And the `*` in front of :where() is load-bearing. build.mjs squeeze()
+   runs \s*([{};:,>])\s* -> $1, which eats the space in `X :where(…)` and
+   silently turns a descendant combinator into a compound selector that
+   matches nothing. Any descendant selector whose right-hand side starts
+   with a colon needs a `*` in front of it. */
+:is(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .screen, [data-mock])
+  *:where(h1, h2, h3, h4, .lede, .sub) { font-size: inherit; }
 ul, ol { list-style: none; padding: 0; }
 table { border-collapse: collapse; }
 b, strong { font-weight: 600; }
@@ -64,11 +145,22 @@ b, strong { font-weight: 600; }
    the notch, and no second max-width squeezing it from the page tokens.
    A footer may set --max on itself; it must not shrink this. */
 .wrap {
-  width: min(var(--max, 1600px), calc(100% - 2 * var(--gutter, clamp(20px, 5vw, 80px)) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  width: var(--wrap-w);
   margin-inline: auto;
   min-width: 0;
 }
-.sec { padding-block: var(--sec-y, clamp(48px, 7vw, 104px)); }
+/* The same measure, used as a bar. A header that points its inner element
+   at .bar-in can never type its own gutter clamp, and can never leave a
+   dead grid track where a desktop rail used to be. */
+.bar-in {
+  width: var(--wrap-w);
+  margin-inline: auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.sec { padding-block: var(--sec-y); }
 .wrap > *, .sec > * { min-width: 0; }
 [data-reveal] { opacity: 1; }
 .js [data-reveal] { opacity: 0; transform: translateY(16px); }
@@ -146,14 +238,17 @@ b, strong { font-weight: 600; }
 }
 .pho-tile svg { width: 15px; height: 15px; }
 .pho-by { opacity: .6; font-weight: 400; margin-right: 1px; }
-.pho-or { font-size: 11px; font-weight: 400; opacity: .6; margin-left: 2px; }
+.pho-or { font-size: var(--fs-label); font-weight: 400; opacity: .6; margin-left: 2px; }
 .pho.is-dark { color: rgba(255, 255, 255, .9); }
 .pho.is-dark .pho-tile { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .08); color: rgba(255, 255, 255, .9); }
 
 /* ── the privacy page, in whatever face the site wears ────────────────── */
 .pv-w { max-width: 760px; }
 .pv .head { margin-bottom: 32px; }
-.pv h1 { font-family: var(--font-display); font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; letter-spacing: -0.02em; }
+/* min() rather than the raw token: the privacy page's 44px ceiling is a
+   deliberate composition on a 760px column and is preserved to the pixel,
+   while the floor now comes off the shared ramp. */
+.pv h1 { font-family: var(--font-display); font-size: min(var(--fs-h1), 44px); line-height: 1.1; letter-spacing: -0.02em; }
 .pv h3 { margin-top: 40px; margin-bottom: 10px; font-size: 22px; }
 .pv p { color: var(--muted); line-height: 1.6; margin-top: 10px; }
 .pv .fine { margin-top: 40px; }
@@ -206,17 +301,29 @@ body.is-locked { overflow: hidden; }
 .toast { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 70; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; padding: 12px 18px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 14.5px; font-weight: 600; box-shadow: 0 16px 40px -20px rgba(0, 0, 0, .5); transition: opacity 180ms ease, transform 180ms cubic-bezier(.22, 1, .36, 1); }
 .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
 
-/* room for a bottom bar on phones, when a page mounts one */
-body[data-bottom-bar] { padding-bottom: calc(var(--dock, 64px) + env(safe-area-inset-bottom)); }
-@media (min-width: 901px) { body[data-bottom-bar] { padding-bottom: 0; } }
+/* Room for a bottom bar, with nothing to remember to emit: a site puts
+   class="dock" on its fixed bottom bar and this is paid, on every route,
+   automatically. --dock is 0px until a page declares it, so a site that
+   has no dock pays only the safe-area inset. */
+body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
+
+/* ── the fold: shape only — no colour, no border, no font family ──────
+   Below 640 a long page opens as an index. responsive.css decides when
+   this is visible; js/site.js builds the button; a site's only job is
+   data-phone="fold" and data-gist="…" on a <section>. */
+.fold-s { display: none; }
+.fold-s { width: 100%; min-height: 64px; padding-block: var(--sp-3);
+          text-align: left; align-items: center; gap: var(--sp-3); cursor: pointer; }
+.fold-s > .fold-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.fold-s .fold-h { font-size: var(--fs-h3); }
+.fold-s .fold-g { font-size: var(--fs-read); opacity: .72;
+                  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fold-s .fold-c { flex: none; width: 24px; height: 24px; transition: transform 200ms; }
+[data-open] > .fold-s .fold-c { transform: rotate(180deg); }
 
 /* ── the chassis every phone inherits, before a page names its metaphor ─
-   Coarse pointer, no-hover, a short landscape, a narrower first screen.
-   A page may override any of these; none of them decide how a footer looks. */
-@media (max-width: 720px) {
-  html { --sec-y: clamp(36px, 7vw, 64px); }
-  .pv-g { grid-template-columns: minmax(0, 1fr); }
-}
+   Coarse pointer, no-hover, a short landscape. The width tiers all live in
+   responsive.css, which loads last; nothing width-dependent belongs here. */
 @media (pointer: coarse) {
   .btn, .soc-i, .pho { min-height: 44px; }
   .btn.sm { min-height: 44px; padding: 0 16px; }
@@ -226,8 +333,6 @@ body[data-bottom-bar] { padding-bottom: calc(var(--dock, 64px) + env(safe-area-i
   .btn:hover { transform: none; box-shadow: none; }
   .soc-i .soc-t { position: static; opacity: 1; transform: none; pointer-events: auto; }
 }
-@media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
-  html { --sec-y: 28px; scroll-padding-top: 56px; }
-  .hero { padding-block: 16px; }
-  .toast { bottom: max(12px, env(safe-area-inset-bottom)); }
-}
+/* The short-landscape block moved to responsive.css. It is a width query
+   (<=900) and it must be declared AFTER the phone tier redeclares --sec-y
+   on :root, or its deliberately tight 28px stops winning. */

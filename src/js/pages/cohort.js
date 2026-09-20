@@ -510,11 +510,25 @@
     h.append(b);
   });
 
-  /* ── back to 06:55 ───────────────────────────────────────────────────── */
+  /* ── back to 06:55 ─────────────────────────────────────────────────────
+     It also stands down while a sideways-scrolling strip is on screen: a
+     44px disc floating at the right edge lands squarely on the part of a
+     panned desktop mock the reader has not reached yet, and covering the
+     thing you are asking someone to drag is worse than losing the shortcut
+     for one screen. */
   const totop = () => {
     const a = $('.totop');
     if (!a) return;
     const after = document.getElementById('shift');
+    const strips = $$('[data-scrollx]');
+    if (strips.length && 'IntersectionObserver' in window) {
+      const seen = new Set();
+      const io = new IntersectionObserver((es) => {
+        es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+        a.classList.toggle('is-away', seen.size > 0);
+      }, { rootMargin: '-10% 0px -20% 0px' });
+      strips.forEach((s) => io.observe(s));
+    }
     let tick = false;
     const paint = () => {
       tick = false;
@@ -525,12 +539,20 @@
     paint();
   };
 
-  /* ── the end-of-shift sheet folds into an accordion on phones ────────── */
+  /* ── the end-of-shift sheet folds into an accordion on phones ──────────
+     Every disclosure closes below 900, including the first. It used to stay
+     open, and on every route but the front page what it held was an index of
+     the FRONT PAGE's sections: 431px of it, 386px more than the closed row,
+     on all seven routes. On /about that one list was 13% of the document.
+     The page index a phone visitor actually wants is in the shift sheet,
+     built from the same data the fold reads, one tap from the header.
+     Closed, the four disclosures read as four 54px rows between the
+     sign-off and the signature, and the footer comes down from 1,337px. */
   const footer = () => {
     const ds = $$('.eos-d');
     if (!ds.length) return;
     const mq = window.matchMedia('(max-width: 900px)');
-    const apply = () => ds.forEach((d, i) => { d.open = !mq.matches || i === 0; });
+    const apply = () => ds.forEach((d) => { d.open = !mq.matches; });
     apply();
     mq.addEventListener('change', apply);
   };
@@ -550,15 +572,28 @@
     const mods = $$('.fmod');
     const n = $('.fs-n', g);
     const none = $('.fs-none');
-    btns.forEach((b) => b.addEventListener('click', () => {
-      const s = b.dataset.stage;
-      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    let touched = false;
+    const show = (s) => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.stage === s)));
       let k = 0;
       rows.forEach((r) => { const hit = s === 'all' || r.dataset.stage === s; r.hidden = !hit; if (hit) k += 1; });
       mods.forEach((m) => { m.hidden = !$$('.frow', m).some((r) => !r.hidden); });
       if (n) n.textContent = `${k} of ${rows.length}`;
       if (none) none.hidden = k > 0;
-    }));
+    };
+    btns.forEach((b) => b.addEventListener('click', () => { touched = true; show(b.dataset.stage); }));
+    /* On a phone the list opens on the first release instead of on all 29.
+       #modules is 69% of /features, and what opening on v1 holds back is the
+       three rows marked Next and the two marked Later — with the filter that
+       brings them back as the 44px row directly above the list and the count
+       beside it reading "24 of 29", so nothing is withheld without saying so.
+       Above 640 the page still opens on All, which is what the h1 promises on
+       a screen wide enough to hold it. A reader who touches the filter owns
+       it from then on, at every width. */
+    const mq = window.matchMedia('(max-width: 640px)');
+    const sync = () => { if (!touched) show(mq.matches ? 'v1' : 'all'); };
+    sync();
+    mq.addEventListener('change', sync);
   };
 
   const boot = () => {

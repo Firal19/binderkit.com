@@ -95,6 +95,116 @@
     });
   };
 
+  /* ── the fold: below 640 a page opens as an index, not a scroll ──────
+     A section marked data-phone="fold" gets a 64px summary row carrying
+     its own heading and its data-gist, and its contents are hidden behind
+     it. Nothing is deleted: the HTML still carries every word, so search,
+     in-page find after opening, and the printer all still see the whole
+     document.
+
+     `hidden`, never `display: none`. Undoing a display override needs
+     `revert`, and revert rolls back to the USER-AGENT value — so a
+     `.wrap { display: grid }` would come back as `block` and the section
+     would break silently. The hidden attribute is the UA's own mechanism
+     and removing it restores the element's real computed display exactly.
+     No author display declaration is touched anywhere in here.
+
+     Guarantees: no JS, nothing folds. Print opens everything. A hash link
+     opens its target before scrolling. Above 640 every section is open and
+     every button is removed. */
+  const FOLD = '[data-phone="fold"]';
+  const CHEV = '<svg class="fold-c" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  const folds = () => {
+    const secs = $$(FOLD);
+    if (!secs.length) return;
+    const mq = window.matchMedia('(max-width: 640px)');
+    const open = (s, on) => {
+      if (!s._fold) return;
+      s.toggleAttribute('data-open', on);
+      for (const kid of s.children) { if (kid !== s._fold) kid.toggleAttribute('hidden', !on); }
+      s._fold.setAttribute('aria-expanded', on ? 'true' : 'false');
+      if (on) $$('[data-reveal]', s).forEach((el) => el.classList.add('is-in'));
+    };
+    const build = (s) => {
+      if (s._fold) return s._fold;
+      const head = s.querySelector('h2, h3, h1');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'fold-s';
+      b.setAttribute('aria-expanded', 'false');
+      const t = document.createElement('span'); t.className = 'fold-t';
+      const h = document.createElement('span'); h.className = 'fold-h';
+      h.textContent = head ? head.textContent.trim() : (s.getAttribute('aria-label') || s.id || 'Section');
+      t.appendChild(h);
+      if (s.dataset.gist) { const g = document.createElement('span'); g.className = 'fold-g'; g.textContent = s.dataset.gist; t.appendChild(g); }
+      b.appendChild(t);
+      b.insertAdjacentHTML('beforeend', CHEV);
+      b.addEventListener('click', () => open(s, !s.hasAttribute('data-open')));
+      s.insertBefore(b, s.firstChild);
+      s.classList.add('is-in');
+      s._fold = b;
+      return b;
+    };
+    const drop = (s) => {
+      for (const kid of s.children) { if (kid !== s._fold) kid.removeAttribute('hidden'); }
+      if (s._fold) { s._fold.remove(); s._fold = null; }
+      s.removeAttribute('data-open');
+    };
+    const reveal = (el) => { const s = el && el.closest && el.closest(FOLD); if (s && s._fold) open(s, true); };
+    const sync = () => {
+      for (const s of secs) {
+        if (mq.matches) { build(s); open(s, s.hasAttribute('data-open') || s.hasAttribute('data-phone-open')); }
+        else drop(s);
+      }
+      if (mq.matches && location.hash) reveal(document.getElementById(location.hash.slice(1)));
+    };
+    window.addEventListener('hashchange', () => reveal(document.getElementById(location.hash.slice(1))));
+    document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (a) reveal(document.getElementById(a.getAttribute('href').slice(1))); }, true);
+    window.addEventListener('beforeprint', () => secs.forEach((s) => open(s, true)));
+    mq.addEventListener('change', sync);
+    document.addEventListener('pho:openall', () => secs.forEach((s) => open(s, true)));
+    sync();
+  };
+
+  /* ── the counterweight: a folded page has to be navigable ────────────
+     Any element with data-page-index is filled with one --tap-row row per
+     foldable section — its heading and its gist — plus one button that
+     opens every section at once. The data is the same data-gist the fold
+     already reads, so a site declares it once. */
+  const pageIndex = () => {
+    const holders = $$('[data-page-index]');
+    if (!holders.length) return;
+    const secs = $$(FOLD).filter((s) => s.id);
+    if (!secs.length) { holders.forEach((h) => h.remove()); return; }
+    for (const holder of holders) {
+      const frag = document.createDocumentFragment();
+      for (const s of secs) {
+        const head = s.querySelector('h2, h3, h1');
+        const a = document.createElement('a');
+        a.className = 'msheet-r';
+        a.href = `#${s.id}`;
+        const box = document.createElement('span');
+        const b = document.createElement('b');
+        b.textContent = head ? head.textContent.trim() : s.id;
+        box.appendChild(b);
+        if (s.dataset.gist) { const sm = document.createElement('small'); sm.textContent = s.dataset.gist; box.appendChild(sm); }
+        a.appendChild(box);
+        frag.appendChild(a);
+      }
+      const all = document.createElement('button');
+      all.type = 'button';
+      all.className = 'msheet-r';
+      all.dataset.openAll = '';
+      all.textContent = holder.getAttribute('data-open-all') || 'Open every section';
+      frag.appendChild(all);
+      holder.appendChild(frag);
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-open-all]')) return;
+      document.dispatchEvent(new CustomEvent('pho:openall'));
+    });
+  };
+
   /* ── light and dark: a real switch, remembered, that respects the OS ── */
   const mode = () => {
     const btns = $$('[data-mode-toggle]');
@@ -254,7 +364,7 @@
   };
 
   window.PHO = { $, $$, calm, toast, root, EMAIL };
-  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); document.dispatchEvent(new CustomEvent('pho:ready')); };
+  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); document.dispatchEvent(new CustomEvent('pho:ready')); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

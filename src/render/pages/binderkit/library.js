@@ -6,9 +6,9 @@ import { header, footer, section, title, number, find, esc, cite, ev, citesBlock
 const SECS = number('BK-LB', [
   { id: 'top', label: 'The library is the product', tab: '' },
   { id: 'libraries', label: 'Four tracks, four libraries', tab: 'Libraries' },
-  { id: 'evidence', label: 'The evidence tags, and the four rules', tab: 'Evidence' },
-  { id: 'written', label: 'What is written, and what is not', tab: 'Written' },
-  { id: 'never', label: 'Removed, and never', tab: 'Never' },
+  { id: 'evidence', label: 'The evidence tags, and the four rules', tab: 'Evidence', foldName: 'The evidence tags', gist: 'Verified, derived or open, and the four rules behind a version.' },
+  { id: 'written', label: 'What is written, and what is not', tab: 'Written', foldName: 'What is written', gist: 'The AFH-DD library counted rather than claimed.' },
+  { id: 'never', label: 'Removed, and never', tab: 'Never', gist: 'Six taken out on purpose, and six this product will never do.' },
   { id: 'words', label: 'Three words', tab: 'Words' },
 ]);
 const [TOP, LIBS, EVID, WRITTEN, NEVER, WORDS] = SECS;

@@ -29,15 +29,15 @@ export const CHAPTERS = [
 
 export const HOME = [
   { id: 'top', label: 'The title page', tab: '' },
-  { id: 'plan', label: 'The plan', tab: 'Plan' },
+  { id: 'plan', label: 'The plan', tab: 'Plan', gist: 'Question zero picks the library, and the library is everything.' },
   { id: 'page', label: 'The page', tab: 'Page' },
-  { id: 'library', label: 'The library', tab: 'Library' },
-  { id: 'editor', label: 'The editor', tab: 'Editor' },
-  { id: 'versions', label: 'Versions', tab: 'Versions' },
-  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing' },
-  { id: 'roles', label: 'Roles', tab: 'Roles' },
-  { id: 'questions', label: 'Questions', tab: 'Questions' },
-  { id: 'pricing', label: 'Pricing', tab: 'Pricing' },
+  { id: 'library', label: 'The library', tab: 'Library', gist: 'Four tracks, four libraries, an authority beside every item.' },
+  { id: 'editor', label: 'The editor', tab: 'Editor', gist: 'A refusal names the rule that caused it and offers an alternative.' },
+  { id: 'versions', label: 'Versions', tab: 'Versions', gist: 'An answer changes, the plan regenerates, and the diff is shown.' },
+  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a real person out.' },
+  { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each of them may see.' },
+  { id: 'questions', label: 'Questions', tab: 'Questions', gist: 'The seven we are actually asked, answered in full.' },
+  { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: 'Every plan sees every screen; nothing is silently blocked.' },
   { id: 'join', label: 'Join', tab: 'Join' },
 ].map((s, i) => ({ ...s, ctl: `BK-LP-${String(i + 1).padStart(2, '0')}` }));
 
@@ -53,7 +53,23 @@ export const place = (t) => (t ? `<i class="place">${esc(t)}</i>` : '');
 /** A section of the document: the control number in the margin, the body beside it. */
 export function section(s, inner, opts = {}) {
   const label = opts.label ? `aria-label="${esc(opts.label)}"` : `aria-labelledby="h-${esc(s.id)}"`;
-  return `<section class="sec ${opts.cls || ''}" id="${esc(s.id)}" ${label} data-ctl="${esc(s.ctl)}" data-reveal>
+  /* Below 640 a chapter opens as its own contents page. Three sections stay
+     open — the title page, the one that carries the claim, and the closing
+     call — and every other becomes one tappable line carrying its heading
+     and its gist. site.js folds() does the rest; nothing is deleted, so
+     print, find-in-page and the crawler still see the whole document. */
+  const gist = opts.gist || s.gist;
+  /* A fold summary is an INDEX row, and an index row carries a name, not a
+     claim. site.js folds() builds it from the section's own <h2>, which on
+     this site is the argument the section makes — "Add, remove or reorder a
+     tab. Three guardrails answer in plain words." — three lines of 21px
+     serif that have to be READ, seven of them in a row with nothing but a
+     hairline between them. data-fold-n carries the short name the contents
+     sheet and the footer already print for the same section; the control
+     number is already on the element. js/pages/binderkit.js puts the two on
+     one line and leaves the claim to the gist beneath. */
+  const fold = gist ? ` data-phone="fold" data-gist="${esc(gist)}" data-fold-n="${esc(opts.foldName || s.foldName || s.label)}"` : '';
+  return `<section class="sec ${opts.cls || ''}" id="${esc(s.id)}" ${label} data-ctl="${esc(s.ctl)}"${fold} data-reveal>
   <div class="wrap doc"><span class="ctl" aria-hidden="true">${esc(s.ctl)}</span><div class="doc-b">${inner}</div></div>
 </section>`;
 }
@@ -238,15 +254,23 @@ export function header(cfg, p, opts = {}) {
     : CHAPTERS.filter((c) => c.path !== '/privacy').map((c, i) => `<li><a class="dtab" href="${esc(c.path)}" ${c === chapter ? 'aria-current="page"' : ''}><span class="dtab-l">${esc(c.title)}</span><span class="dtab-n">${i + 1}</span></a></li>`).join('');
   const toc = `<div class="toc-sheet" id="contents" hidden>
     <div class="wrap toc-in">
-      <div class="toc-head"><span class="toc-h">Contents</span><button class="rb" type="button" data-close aria-label="Close the contents">${ic('close', 20)}</button></div>
+      <div class="toc-head"><span class="toc-h">Contents</span>
+        <div class="toc-tools">
+          <button class="rb rb-i lamp" type="button" data-mode-toggle aria-pressed="false" aria-label="Switch to the lamp" data-theme-light="#FFFFFF" data-theme-dark="#F3EBDA">${lampIcon(20)}</button>
+          <button class="rb rb-i" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}" aria-label="Share this page">${ic('share', 20)}</button>
+          <button class="rb rb-i" type="button" data-close aria-label="Close the contents">${ic('close', 20)}</button>
+        </div>
+      </div>
       <ol class="toc toc-ch">${CHAPTERS.map((c, i) => `<li><a href="${esc(c.path)}" ${c === chapter ? 'aria-current="page"' : ''}><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(c.title)}<small>${esc(c.sub)}</small></span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(c.ctl)}</span></a></li>`).join('')}</ol>
       ${tabs.length ? `<span class="strip-l">In this chapter</span><ol class="toc toc-in-ch">${tabs.map((s, i) => `<li><a href="#${esc(s.id)}"><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(s.label)}</span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(s.ctl)}</span></a></li>`).join('')}</ol>` : ''}
+      <button class="toc-all" type="button" data-open-all data-close hidden>${ic('contents', 18)}<span>Open every section</span></button>
       <a class="btn pri toc-cta" href="${primary}" data-cta="contents">${esc(cfg.cta.primary)}</a>
     </div>
   </div>`;
   return `<header class="rule" id="top-bar">
   <div class="rule-in">
     <a class="bspine" href="/" aria-label="${esc(p.name)} — home">${mark(p.id, 22, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}<span class="bspine-n">${esc(p.name)}</span></a>
+    <button class="rule-where" type="button" aria-expanded="false" aria-controls="contents" data-lock data-focus="a" aria-label="Contents — you are on ${esc(chapter.title)}"><span class="rule-where-t">${esc(chapter.title)}</span><svg class="rule-where-c" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
     <span class="run"><span class="run-l">Control</span><span class="run-n" id="run-ctl" data-run="${esc(ctl0)}">${esc(ctl0)}</span></span>
     <div class="rule-r">
       <button class="rb rb-t" type="button" aria-expanded="false" aria-controls="contents" data-lock data-focus="a" aria-label="Open the contents">${ic('contents', 20)}<span>Contents</span></button>
@@ -277,8 +301,8 @@ export function footer(cfg, p, opts = {}) {
     <div class="doc-b">
       <h2 class="foot-h">Contents</h2>
       <div class="foot-g">
-        <div><span class="strip-l">${page === 'home' ? 'This page' : `This chapter · ${esc(chapter.title)}`}</span>${sections || '<p class="fine">One section.</p>'}</div>
-        <div><span class="strip-l">Chapters</span>${chapters}</div>
+        <div class="foot-here"><span class="strip-l">${page === 'home' ? 'This page' : `This chapter · ${esc(chapter.title)}`}</span>${sections || '<p class="fine">One section.</p>'}</div>
+        <div class="foot-ch"><span class="strip-l">Chapters</span>${chapters}</div>
       </div>
       <div class="colophon">
         <span class="colo-mark">${mark(p.id, 80, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>

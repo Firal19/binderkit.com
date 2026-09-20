@@ -22,10 +22,12 @@
   --font-mono: 'Manrope', system-ui, sans-serif;
   --max: 1600px; --gutter: clamp(20px, 5vw, 80px);
   --hd-h: 104px;
-  --bar-h: 64px; --dock: 64px; --scroll-pad: calc(var(--hd-h) + 14px);
+  --bar-h: 64px;
 }
 html { scroll-padding-top: calc(var(--hd-h) + 14px); }
-html:has(main[data-page="providers"]) { scroll-padding-top: calc(var(--hd-h) + 62px); }
+/* the chapter strip stacks under the header on /providers — above 900 only.
+   Below it the strip is not mounted and --scroll-pad is derived from --hdr. */
+@media (min-width: 901px) { html:has(main[data-page="providers"]) { scroll-padding-top: calc(var(--hd-h) + 62px); } }
 .face[data-product="aidepost"] { --t-display: var(--font-display); --t-body-font: var(--font-body); --t-mono: var(--font-body); --t-label-transform: none; --c-ground: var(--bg); --c-card: var(--card); --t-accent: var(--orchid); --t-accent-text: var(--orchid-ink); --t-accent-soft: var(--orchid-soft); }
 
 /* ── tokens: the dark side (Night) ────────────────────────────────────── */
@@ -286,13 +288,16 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .step { display: grid; grid-template-rows: auto auto auto 1fr; gap: 10px; padding: 26px 26px 0; background: var(--bg); border: 1px solid var(--line); border-radius: 24px; overflow: hidden; }
 .step-n { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-weight: 700; }
 .step p { font-size: 15px; color: var(--muted); line-height: 1.55; }
-.step .crop { margin: 12px -8px 0; height: 260px; overflow: hidden; display: flex; justify-content: center; align-self: end; }
-.crop .phone { zoom: .66; border-radius: 42px 42px 0 0; box-shadow: 0 -8px 40px -20px rgba(23, 32, 31, .35); }
+.step .crop { margin: 12px -8px 0; height: 260px; overflow: hidden; display: flex; justify-content: center; align-self: end;
+               -webkit-mask-image: linear-gradient(180deg, #000 0, #000 76%, transparent 100%);
+               mask-image: linear-gradient(180deg, #000 0, #000 76%, transparent 100%); }
+.crop .phone { --mock-z: .66; border-radius: 42px 42px 0 0; box-shadow: 0 -8px 40px -20px rgba(23, 32, 31, .35); }
 
 /* ── the board, annotated, with spotlights ─────────────────────────────── */
 .boardsec .wrap { --max: 1480px; }
 .shell { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border-radius: 18px; scroll-behavior: smooth; }
 .shell .browser { box-shadow: 0 40px 80px -48px rgba(23, 32, 31, .5); }
+.shell-cap { display: none; margin-top: 10px; text-align: right; font-size: var(--fs-label); letter-spacing: var(--track-label); color: var(--soft); }
 .shell .is-spot { position: relative; outline: 3px solid var(--orchid); outline-offset: 4px; border-radius: 8px; z-index: 1; }
 .shell .is-spot::after { content: attr(data-spot-n); position: absolute; top: -14px; right: -14px; width: 26px; height: 26px; border-radius: 50%; background: var(--orchid); color: #1C1620; font-family: var(--font-display); font-weight: 800; font-size: 13px; display: grid; place-items: center; box-shadow: 0 0 0 3px var(--card); z-index: 2; }
 .annot { margin-top: 28px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
@@ -371,7 +376,7 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 .hours { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .hrs-g { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
 .hrs-v { display: flex; justify-content: center; }
-.dev .phone { zoom: .62; box-shadow: 0 30px 60px -32px rgba(23, 32, 31, .5), inset 0 0 0 2px #2A3130; }
+.dev .phone { --mock-z: .62; box-shadow: 0 30px 60px -32px rgba(23, 32, 31, .5), inset 0 0 0 2px #2A3130; }
 .facts { margin-top: 28px; display: grid; gap: 12px; }
 .facts li { padding: 14px 0; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--muted); line-height: 1.55; }
 .facts li:last-child { border-bottom: 1px solid var(--line); }
@@ -410,6 +415,12 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 
 /* ── the caregiver side, turned over ───────────────────────────────────── */
 .dark-half { background: var(--bg); color: var(--ink); }
+/* the phone's pivot label. Above 640 the three caregiver sections are open,
+   each with its own eyebrow and its own hero, and they say this far better. */
+.care-pivot { display: none; }
+/* a head that has to say something different once its neighbour is 425px away
+   instead of 1,000. Exactly one of the pair is ever displayed. */
+.ap-phone { display: none; }
 .care { padding-block: clamp(56px, 8vw, 112px); }
 .care .eyebrow { color: var(--orchid-ink); }
 .care .eyebrow::before { background: var(--orchid); }
@@ -423,7 +434,7 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 .promise { margin-top: 24px; font-family: var(--font-display); font-weight: 500; font-size: clamp(19px, 2vw, 24px); line-height: 1.35; letter-spacing: -0.015em; max-width: 44ch; }
 .care .fine { margin-top: 16px; }
 .care-v { display: flex; justify-content: center; }
-.care-v .dev .phone { zoom: .74; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .8), inset 0 0 0 2px #3A3340; }
+.care-v .dev .phone { --mock-z: .74; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .8), inset 0 0 0 2px #3A3340; }
 .dist { margin-top: 28px; padding: 22px 24px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); --p: 43.5%; }
 .dist-lab { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.02em; }
 .dist-lab output { color: var(--orchid-ink); }
@@ -581,7 +592,7 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .ft-d[data-today] .ft-tonight { display: inline-block; }
 .ft-dt { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.02em; }
 .ft-l { display: grid; }
-.ft-l a { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 0; color: var(--muted); font-weight: 600; text-decoration: none; font-size: 14px; line-height: 1.3; }
+.ft-l a { display: flex; align-items: center; gap: 8px; padding: 4px 0; color: var(--muted); font-weight: 600; text-decoration: none; line-height: 1.3; }
 .ft-l a:hover { color: var(--ink); text-decoration: underline; }
 .ft-fam a { color: var(--ink); }
 .ft-fam a > span:last-child { display: grid; }
@@ -605,6 +616,30 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .ft-keys { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 10px; font-weight: 700; font-size: 13px; color: var(--muted); }
 .ft-keys:hover { color: var(--ink); background: var(--card); }
 
+/* ── the footer a phone gets instead of the week ────────────────────────
+   Seven day-columns is a desktop metaphor; below 900 the grid used to
+   restack 2-up, keep all 21 links and all seven day labels, and destroy the
+   one thing that made them mean anything — 1,850px on every one of seven
+   routes, half of /about. chrome.js writes this as its own branch, so the
+   week above and the 901–1280 swipe strip both survive byte-for-byte.
+   Shown only at <=900; hidden here so a desktop never pays for it. */
+.ft-ph { display: none; }
+.ft-ph-id { display: grid; justify-items: start; gap: 4px; }
+.ft-ph-id .mk { --c-tile: var(--ink); --c-glyph: var(--bg); margin-bottom: 6px; }
+.ft-ph .ft-sun-d { font-size: var(--fs-read); max-width: 34ch; }
+.ft-ph .ft-w { margin-top: 22px; font-size: 17px; }
+.ft-ph-act { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 10px 0 26px; }
+.ft-ph-act .ft-note { margin: 0; }
+.ft-ph-d { border-top: 1px solid var(--line); }
+.ft-ph-d:last-of-type { border-bottom: 1px solid var(--line); }
+.ft-ph-d > summary { display: grid; grid-template-columns: minmax(0, 1fr) 24px; gap: 16px; align-items: center; min-height: 56px; cursor: pointer; list-style: none; }
+.ft-ph-d > summary::-webkit-details-marker { display: none; }
+.ft-ph-d > summary b { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.ft-ph-d[open] > summary .faq-x::after { transform: translate(-50%, -50%) scaleY(0); }
+.ft-ph-d .ft-l { padding: 2px 0 12px; }
+.ft-ph .soc { margin-top: 24px; }
+.ft-ph .pho { margin-top: 20px; }
+
 /* social pills, with the pin */
 .soc-pills { gap: 8px; }
 .soc-pills .soc-t { display: none; }
@@ -617,7 +652,7 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
 html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid); color: #1C1620; border-color: var(--orchid); }
 
 /* ── the marketing pages ───────────────────────────────────────────────── */
-.hero-p h1, .hero-c h1, .hero-s h1 { font-size: clamp(56px, 7.2vw, 128px); max-width: 18ch; }
+.hero-p h1, .hero-c h1, .hero-s h1 { font-size: var(--fs-display); max-width: 18ch; }
 .hero-pg { display: flex; flex-wrap: wrap; align-items: flex-end; gap: clamp(24px, 3vw, 64px); }
 .hero-pg .hero-t { flex: 1 1 560px; }
 .hero-pg .hero-s2 { flex: 1 1 400px; }
@@ -640,7 +675,7 @@ html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid);
 .ch-g { margin-top: clamp(28px, 3vw, 44px); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
 .ch-g.is-phone { grid-template-columns: minmax(0, .55fr) minmax(0, 1.45fr); margin-top: 0; }
 .ch-dev { display: flex; justify-content: center; position: sticky; top: calc(var(--hd-h) + 64px); }
-.ch-dev .phone { zoom: .66; }
+.ch-dev .phone { --mock-z: .66; }
 .ch-side { display: grid; gap: 22px; }
 .ch-side .pull { margin-top: 0; }
 .flow h3, .trans h3 { font-size: 20px; margin-bottom: 14px; }
@@ -670,7 +705,7 @@ html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid);
 
 /* /caregivers */
 .hero-cg { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
-.hero-c .care-v .dev .phone { zoom: .7; }
+.hero-c .care-v .dev .phone { --mock-z: .7; }
 .care-side { display: grid; gap: 16px; }
 .care-card { padding: 24px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
 .care-card h3 { font-size: 18px; margin-bottom: 10px; }
@@ -718,7 +753,7 @@ a.fam:hover { transform: translateY(-3px); }
 .contact-f { padding: clamp(20px, 3vw, 30px); background: var(--card); border: 1px solid var(--line); border-radius: 22px; }
 
 /* the privacy page and the 404, in this face */
-.pv h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.035em; line-height: 1; font-size: clamp(56px, 7.2vw, 128px); }
+.pv h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.035em; line-height: 1; font-size: var(--fs-display); }
 .pv h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; font-size: 24px; margin-top: 44px; }
 .pv-c { border-radius: 18px; }
 .pv-c .strip-l { color: var(--orchid-ink); }
@@ -746,7 +781,11 @@ a.fam:hover { transform: translateY(-3px); }
   .ft-d[data-today] { flex-basis: 200px; }
 }
 @media (max-width: 900px) {
-  :root { --hd-h: 60px; }
+  /* --fs-h1 is aidepost's own curve, solved through (390, 33px) and the
+     measured 100px at 1440, so min(var(--fs-h1), 8.4vw) in responsive.css
+     is a no-op and the 900/901 boundary does not step. 65.6px at 900 against
+     66.6px today. */
+  :root { --hd-h: 60px; --fs-h1: clamp(30px, 0.51rem + 6.38vw, 100px); }
   .hd-in { grid-template-columns: 1fr auto auto; grid-template-areas: "brand right right"; height: 60px; }
   .brand { height: 60px; }
   .brand .mk { width: 26px; height: 26px; }
@@ -781,8 +820,8 @@ a.fam:hover { transform: translateY(-3px); }
   .rule-r em, .rule-r i { display: inline; }
   .rule-r em::after { content: " · "; color: var(--soft); }
   .q-g .head { margin-bottom: 8px; }
-  .dev .phone { zoom: .74; }
-  .care-v .dev .phone, .hero-c .care-v .dev .phone { zoom: .84; }
+  .dev .phone { --mock-z: .74; }
+  .care-v .dev .phone, .hero-c .care-v .dev .phone { --mock-z: .84; }
   .deck-r { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 6px; scroll-padding: 0 16px; -webkit-overflow-scrolling: touch; }
   .deck-c { flex: 0 0 min(340px, 82%); scroll-snap-align: center; }
   .deck-nav { display: flex; }
@@ -796,11 +835,121 @@ a.fam:hover { transform: translateY(-3px); }
   .soc-pills .soc-i { width: auto; padding: 0 12px; }
   .soc-pills .soc-t { display: inline; font-size: 13px; font-weight: 600; }
   .prot-g { grid-template-columns: minmax(0, 1fr); }
+
+  /* the chapter strip IS the page index, and on a phone the page index
+     lives in the sheet, where a row has 48px and room for a gist. The strip
+     stacked 50px of permanent chrome under a 60px header — 174px, 21% of an
+     844px viewport — and clipped "4 Hiring" at the right edge with no
+     affordance that anything was there. The markup stays: above 900 it is
+     the best navigation on the page. */
+  .chap { display: none; }
+  /* below 900 the board mock is the product at its own 768 breakpoint and is
+     fitted to 118vw, so roughly a fifth of it is a swipe away inside the
+     strip it already lives in. Say so to an eye as well as to a reader. */
+  .shell-cap { display: block; }
+
+  /* the week goes; the footer written for a phone arrives */
+  .ft-wk { display: none; }
+  .ft-ph { display: block; }
+  /* there is no keyboard to shortcut */
+  .ft-keys { display: none; }
+  /* the last line has to clear the fixed split bar, which .page's own
+     reservation cannot do for it: .page ends before <footer> begins. */
+  .ft { padding-top: 32px; padding-bottom: calc(var(--bar-h) + env(safe-area-inset-bottom) + 20px); }
+
+  /* the toast belongs at the bottom of a phone. At top: 70px it landed on
+     the h1 for the first nine seconds of every first visit — and because it
+     is position: fixed it then sat on whatever you scrolled to. */
+  .ntf { top: auto; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom) + 10px);
+         transform: translate(-50%, 24px); }
+  .ntf.is-on { transform: translate(-50%, 0); }
+
+  /* the counterweight to the fold: the split sheet gains the page's own
+     sections, each with the gist the fold already reads, plus one button
+     that opens every one of them. site.js pageIndex() fills it, and removes
+     it on a route with nothing to fold. */
+  /* the sheet now carries three things, so it scrolls as one panel rather
+     than dividing 720px between a split menu, an index and a footer — which
+     clipped "Providers, at depth" in half. The two halves stay equal-height
+     grid items; the footer stays reachable by being sticky. */
+  .sheet { display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; }
+  .sheet-g, .sheet-ix, .sheet-f { flex: none; }
+  .sheet-half { overflow-y: visible; }
+  .sheet-ix { margin-bottom: 0; padding: 16px 16px 20px;
+              border-top: 1px solid var(--line); background: var(--wash); }
+  .sheet-f { position: sticky; bottom: 0; z-index: 1; flex-wrap: wrap; }
+  /* four page links, a Day|Night badge and a 44px close do not fit one 358px
+     row: the badge was shrinking under the close button. Let them wrap. */
+  .sheet-p { flex: 1 1 100%; }
+  .sheet-f .badge-t { flex: none; }
+  .sheet-ix .msheet-k { color: var(--soft); }
+  .sheet-ix .msheet-r { color: var(--ink); }
+  .sheet-ix [data-open-all] { margin-top: 8px; justify-content: center;
+                              border: 1px solid var(--line); background: var(--bg);
+                              font-weight: 700; font-size: var(--fs-read); color: var(--ink); }
+
+  /* ── the index is ten destinations, not one block ─────────────────────
+     An index row and a .fold-s row are the SAME control in two places: one
+     opens the section where it stands, the other goes to it and opens it. So
+     they are built to the same measurements — same 15px heading, same 15px
+     two-line gist, same chevron at the row end — and the only thing that
+     differs is the direction the chevron points, which is the only thing that
+     differs about what they do.
+     The rhythm the shared sheet ships is measured and wrong for ten rows:
+     1px from a heading to its OWN gist, 4px from that gist to the NEXT
+     heading, 2px between row boxes. Three distances within 3px of each other
+     bind nothing and separate nothing. Here the binding distance is 3px and
+     the separating distance is 24px of padding plus a hairline — 8:1, which
+     the eye resolves without being asked to. */
+  .sheet-ix.msheet-g { gap: 0; }
+  .sheet-ix .msheet-r { min-height: var(--tap-row); padding-block: var(--sp-3);
+                        border-radius: 0; align-items: flex-start; }
+  .sheet-ix .msheet-r + .msheet-r:not([data-open-all]) { border-top: 1px solid var(--line); }
+  .sheet-ix .msheet-r > span { flex: 1; gap: 3px; }
+  .sheet-ix .msheet-r b { line-height: 1.25; }
+  /* the gist is prose by the gate's own test — these run past 60 characters —
+     and it is the identical string the .fold-g row renders at 15px twelve
+     hundred pixels away. The same sentence cannot be legible in one place and
+     squinty in the other, least of all inside the component whose whole job is
+     to let you choose without reading the page. Two lines, clamped, exactly as
+     .fold-g is clamped, because one nowrap line cuts every one of them
+     mid-word at 312px of usable row. */
+  .sheet-ix .msheet-r small { font-size: var(--fs-read); letter-spacing: 0;
+                              opacity: 1; color: var(--soft); line-height: 1.4;
+                              white-space: normal; overflow: hidden;
+                              display: -webkit-box; -webkit-box-orient: vertical;
+                              -webkit-line-clamp: 2; line-clamp: 2; }
+  /* the affordance. .fold-c is a 24px chevron pointing down: "opens here".
+     This one points right: "goes there". Drawn rather than injected because
+     site.js builds these rows and this site does not own that file. */
+  .sheet-ix .msheet-r:not([data-open-all])::after {
+    content: ""; flex: none; align-self: center; margin-left: var(--sp-2);
+    width: 9px; height: 9px; border: 2px solid currentColor;
+    border-left: 0; border-bottom: 0; transform: rotate(45deg);
+    color: var(--orchid-ink); opacity: .8; }
+  .sheet-ix .msheet-r:active { background: color-mix(in srgb, currentColor 7%, transparent); }
+
+  /* ── the 15px reading floor, on this site's own secondary copy ───────
+     The gate cannot see any of this: its MOCK list contains .face, and
+     every page mounts <main class="page face canvas">, so tiny-text stops
+     at the <header> and the <footer>. Measured at 390px inside <main>:
+     170 sub-floor nodes in 20 buckets, all of them prose at 12.5–14.5px.
+     Every name below is a page class. Nothing here reaches inside
+     .phone/.browser/.paper/.wk — those compute their interiors from
+     --t-body-size and are a picture of an app, not reading matter. */
+  .deck-c span:not(.deck-n), .arrow, .defs dd, .tier-x li, .free-l li,
+  .gates li, .tick li, .prot-g span:not(.prot-n), .cs-w, .elig-i,
+  .side-note, .tl-n, .an-d, .an-b b, .offer-s, .offer-st, .cap, .hero-fine,
+  .contact-l small, .claim-cap, .claim-rec, .ck-t p, .board-c, .role-d,
+  .ts-f, .pal-none, .ladder li, .two-c li, .proof span, .tonight, .flow-l span
+  { font-size: var(--fs-read); }
+  /* the flip card's back has to grow with the text it now carries */
+  .flip, .flip-f, .flip-b { min-height: 216px; }
   .chap ul { justify-content: flex-start; }
 }
 @media (max-width: 640px) {
-  h1 { font-size: clamp(34px, 11vw, 46px); }
   h2 { font-size: clamp(26px, 7.4vw, 34px); }
+  h1, h2 { line-height: 1.04; letter-spacing: -0.028em; }
   .hero { padding-top: 28px; }
   .ctas { flex-direction: column; } .ctas .btn { width: 100%; }
   .board-w { border-radius: 16px; }
@@ -829,6 +978,29 @@ a.fam:hover { transform: translateY(-3px); }
   .ros-c { padding: 0; min-height: 44px; font-size: 12.5px; }
   .ros-t { display: none; }
   .ros-i { display: inline; }
+  /* ── two labels that sit under the 12px absolute floor ────────────────
+     12px is the floor for any text on any surface, and these are the only
+     two on this page that break it: the timeline rail's tick labels at 11.5
+     and the clock's house chip at 11. Neither is inside a mock — both are
+     live DOM a thumb can reach — so neither is exempt, and neither is a
+     "deliberate 12px colophon" either: they are 1px and 0.5px short of one.
+     The rail is a positioned scale where every extra pixel of label width is
+     a collision, so it takes the floor exactly; the chip has room for the
+     readable value. */
+  .tl-rail li { font-size: 12px; }
+  .ck-id { font-size: var(--fs-label); }
+
+  /* ── /privacy's two prose components, at the floor ────────────────────
+     base.css:258/260/261 set .pv-c p and .pv-dl dd to 14.5px and .pv-dl dt
+     to 14px, and the gate never sees any of them: every page mounts
+     <main class="page face canvas">, .face is in the gate's MOCK list, so
+     tiny-text stops at <header> and <footer> and never enters the document.
+     Measured at 390px on /privacy: a 157-character paragraph and a
+     281-character definition, both reading matter by any test, half a pixel
+     under this site's own floor. Half a pixel is not a design decision; it is
+     the number nobody looked at. Corrected here rather than in base.css,
+     which is shared with three sites that are not mine to change. */
+  .pv-c p, .pv-dl dd, .pv-dl dt { font-size: var(--fs-read); }
   .ck { grid-template-columns: minmax(0, 1fr); justify-items: start; }
   .ts { padding: 18px 14px; }
   .ts-w { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
@@ -838,13 +1010,62 @@ a.fam:hover { transform: translateY(-3px); }
   .wcard { grid-template-columns: minmax(0, 1fr); }
   .wcard-w { grid-column: 1; grid-row: auto; justify-self: start; }
   .tiers, .two, .fam-g, .subs { grid-template-columns: minmax(0, 1fr); }
+
+  /* ── "Signing up, in six steps" — and the layout had made six uncountable.
+     The wide fit is a deliberate inline breadcrumb reading left to right
+     across a wide card. Linearised to 390px it wrapped into five lines with
+     steps 3 and 4 sharing line 3 and step 1 carrying no arrow at all, which is
+     a run-on sentence with arrows in it, not an ordered list — and it sat
+     directly under a heading that had just promised a number. A column,
+     numbered, so the count is the first thing you can check. The marker moves
+     to a leading position on EVERY item, which is the bug the `li + li`
+     breadcrumb could never fix. Nothing above 640 moves. */
+  .ap-wide { display: none; }
+  .ap-phone { display: inline; }
+
+  .arrow { flex-direction: column; gap: var(--sp-2); counter-reset: apstep; }
+  .arrow li, .arrow li + li { display: grid; grid-template-columns: 20px minmax(0, 1fr);
+                              gap: 10px; align-items: baseline; }
+  .arrow li::before, .arrow li + li::before {
+    counter-increment: apstep; content: counter(apstep) "."; color: var(--orchid-ink);
+    font-weight: 800; font-variant-numeric: tabular-nums; }
+
+  /* ── the swipe strip tells you its edges ──────────────────────────────
+     Measured at 390px: 350px of client against 460px of scroll, so 110px —
+     24% — of the board is past the right edge, and it was cut there at the
+     exact pixel of the viewport with no fade, no snap and no peek. A caption
+     was doing the whole job on its own, which asks a reader to trust a
+     sentence over their eyes; the spec's own law about a silent 16px scroll
+     applies at 110px too. The fade lifts on the side you have already
+     reached, so it is a report on where you are, not decoration.
+     data-sx only — with scripting off there is no class and no fade, because
+     a fade drawn over a strip that does not scroll is a worse lie than none. */
+  .shell[data-sx] { --shell-fade: 44px; }
+  .shell[data-sx="start"] {
+    -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - var(--shell-fade)), transparent 100%);
+            mask-image: linear-gradient(90deg, #000 0 calc(100% - var(--shell-fade)), transparent 100%); }
+  .shell[data-sx="mid"] {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade), #000 calc(100% - var(--shell-fade)), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade), #000 calc(100% - var(--shell-fade)), transparent 100%); }
+  .shell[data-sx="end"] {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade));
+            mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade)); }
   .tier-care { padding: 26px 22px; }
-  .role-g { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .flip { min-height: 184px; }
-  .flip-f, .flip-b { min-height: 184px; padding: 16px; }
+  /* ── the roles, one up ────────────────────────────────────────────────
+     Two 170px columns gave a 138px measure to a card whose back carries up
+     to 101 characters of real prose, and the only way that ever fitted was
+     12.5px type — which this same sheet declares a floor against 150 lines
+     above, in the 15px prose list that names .role-d. A rule cannot be a
+     floor in one block and 2.5px lower in the next. One column at 640 (the
+     fit the sheet already shipped at 360, so it is a designed state, not a
+     new one) gives a 318px measure, and the paragraph reads at 15px in four
+     lines instead of nine. #roles is a folded row, so the extra height is
+     paid only by a reader who asked for it. */
+  .role-g { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .flip { min-height: 170px; }
+  .flip-f, .flip-b { min-height: 170px; padding: 16px 18px 40px; }
   .role-w { font-size: 14px; }
-  .role-d { font-size: 12.5px; }
-  .flip-hint { left: 16px; bottom: 12px; }
+  .flip-hint { left: 18px; bottom: 14px; }
   .ft-top { flex-direction: column; align-items: flex-start; }
   .ft-legal { flex-direction: column; align-items: flex-start; }
   .proof { grid-template-columns: minmax(0, 1fr); }
@@ -857,7 +1078,77 @@ a.fam:hover { transform: translateY(-3px); }
   .sheet-k { font-size: 16px; }
   .sheet-p a { padding: 0 8px; font-size: 13.5px; }
 }
-@media (max-width: 360px) { .dev .phone, .care-v .dev .phone, .hero-c .care-v .dev .phone { zoom: .74; } .brand-n { display: none; } .hd-cta { padding: 0 12px; font-size: 13.5px; } .bar-h { font-size: 13.5px; } .bar-h.is-prov { padding-right: 14px; } .bar-h.is-care { padding-left: 14px; } .role-g { grid-template-columns: minmax(0, 1fr); } }
+/* THE FOLD'S ONE HOLE, AND IT IS NOT A TASTE QUESTION.
+   site.js folds() hides a section's children with the `hidden` attribute
+   rather than a display override, and it is right to: undoing a display
+   needs `revert`, and revert rolls back to the USER-AGENT value, so a
+   `.wrap { display: grid }` would come back as `block`. But `hidden` IS a
+   user-agent rule — `[hidden] { display: none }` — and a user-agent rule
+   loses to ANY author `display` declaration, at any specificity. Five of
+   this page's sections hand their wrap a `display: grid` (.cred-g, .care-g,
+   .wallet-g, .free-g, .q-g), so five sections folded their button in and
+   kept their whole body: measured 14,741px on / where the arithmetic said
+   8,700. This restores the attribute's meaning at author origin and (0,2,0),
+   which beats every one of those class rules, and it still declares nothing
+   about what those elements' display should be when they are visible.
+   Reported to the foundation — it will bite every site with a grid wrap. */
+[data-phone="fold"] > [hidden] { display: none; }
+
+/* ── the fold, wearing aidepost ────────────────────────────────────────
+   base.css gives the shape and responsive.css decides when it is visible;
+   everything below is this site's own voice for it. A folded page is a
+   stack of rows, so each row needs a boundary you can see without reading
+   — .ch already carries its own, which is why it is excluded. */
+@media (max-width: 640px) {
+  .fold-s { width: var(--wrap-w); margin-inline: auto; gap: 14px; color: inherit; }
+  .fold-s .fold-h { font-family: var(--font-display); font-weight: 700;
+                    letter-spacing: -0.025em; line-height: 1.15; }
+  /* base.css clips the gist to one nowrap line; at 312px of usable row that
+     cuts every one of them mid-word, and the gist is the only reason a
+     folded page is navigable. Two lines, clamped — worth 22px a row. */
+  .fold-s .fold-g { color: var(--soft); opacity: 1; white-space: normal;
+                    display: -webkit-box; -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2; line-clamp: 2; }
+  .fold-s .fold-c { color: var(--orchid-ink); }
+  .fold-s { border-radius: 12px; }
+  .fold-s:active { background: color-mix(in srgb, currentColor 7%, transparent); }
+
+  /* a 120px label column against a 232px card leaves 92px for the value, so
+     "Full access while we retry" wrapped to six lines at 320. A label column
+     is a decision about the label, and on a phone the answer is one column. */
+  .defs { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .defs dd { border-top: 0; padding-top: 0; padding-bottom: 12px; }
+  .js [data-phone="fold"]:not(.ch) { border-top: 1px solid var(--line); }
+  /* :first-of-type, not :first-child — .care-pivot is now the first child and
+     it carries the boundary itself. A hairline under it would detach the label
+     from the three rows it labels. */
+  .js .dark-half > [data-phone="fold"]:first-of-type { border-top: 0; }
+
+  /* ── one hairline per boundary, and nothing else ──────────────────────
+     The alternating ground (.steps/.hours/.refuse: --card on --bg) was drawn
+     for 1,700px sections, where a change of ground marks a real chapter.
+     Applied to ten ~129px summary rows it lands on rows 3 and 8 for no reason
+     a reader can infer — and F7F3EC against FFFDF9 is eight units of RGB,
+     which is below the threshold of perception on a phone in daylight anyway.
+     So it is not structure, it is noise arguing for the wrong boundaries.
+     A closed row is a row: uniform hairline, no band. Open it and it is a
+     section again, at full height, where the band means what it always meant. */
+  .js [data-phone="fold"]:not([data-open]) { background: transparent; border-bottom: 0; }
+
+  /* the caregiver block, marked on every row rather than under all three, so
+     that scrolling past row two still tells you which product you are in.
+     A ground can be defeated by dark mode; a 3px orchid rule cannot. */
+  .js .dark-half > [data-phone="fold"]:not([data-open]) { box-shadow: inset 3px 0 0 var(--orchid); }
+  .care-pivot { display: block; width: var(--wrap-w); margin-inline: auto;
+                padding-block: var(--sp-5) var(--sp-4); }
+  .care-pivot > .eyebrow { margin-bottom: 6px; }
+  .care-pivot > b { display: block; font-size: var(--fs-read); font-weight: 600;
+                    line-height: 1.45; color: var(--ink); }
+  /* an open section keeps the site's section rhythm; a closed one is a row */
+  .js [data-phone="fold"][data-open] { padding-block: var(--sec-y); }
+}
+
+@media (max-width: 360px) { .dev .phone, .care-v .dev .phone, .hero-c .care-v .dev .phone { --mock-z: .74; } .brand-n { display: none; } .hd-cta { padding: 0 12px; font-size: 13.5px; } .bar-h { font-size: 13.5px; } .bar-h.is-prov { padding-right: 14px; } .bar-h.is-care { padding-left: 14px; } .role-g { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
   .bar { height: 48px; }
   .hd-in { height: 48px; }
@@ -886,4 +1177,19 @@ a.fam:hover { transform: translateY(-3px); }
   .ros-g { min-width: 0; }
   .ros-c { border: 1px solid #999; background: #fff !important; color: #000 !important; }
   .ros-c.is-open { border: 2px solid #000; }
+}
+
+/* ── the price switch is a thumb target, and it was 4px short ───────────
+   .pr-b measures 120x40 on / and /pricing — under a real (pointer: coarse)
+   device, not only in a narrow desktop window, because .pr-sw is not one of
+   the containers responsive.css's coarse net enumerates. It is the control
+   that decides which of the two prices you are reading, so it is not a
+   candidate for the "close enough" bucket the live instruments occupy: the
+   board, roster and timesheet cells are a seven-column week that cannot be
+   44px wide at 390px and are documented as such, and a switch is not.
+   A capability query, not a width query, exactly as the system's own floor
+   is written — so a 1600px touchscreen gets the thumb target and a narrow
+   mouse-driven window keeps the tuned 40px composition. */
+@media (pointer: coarse) {
+  .pr-b { min-height: var(--tap); }
 }

@@ -73,6 +73,29 @@ const KIT_KEYS = [
 /* a phone in a wrapper the page can scale, with a name for the reader */
 const phone = (key, cls = '', opts = {}) => `<div class="ph ${cls}" data-phone="${esc(key)}">${iosShell('careshop', { key, ...opts })}</div>`;
 
+/* ── the fold: an aisle the reader walks into rather than past ──────────
+   Below 640 the store opens as an index. `sec()` lives in render/shared.js
+   and takes no attribute bag, so the two attributes the shared folds()
+   controller reads are stamped onto the section it returns. Nothing is
+   removed from the HTML: with scripting off, or on a printer, or above
+   640px, every one of these sections is open and whole.
+
+   The gist is the sign hanging over the aisle — what is down there, in one
+   line, written short enough to read at a glance. */
+/* The third argument is the dock's name for the section — the shortest true
+   one, in the store's own words. careshop.js spies it as data-stop so the
+   "You are in" bar can name all fourteen stops instead of the six the
+   desktop sign strip happens to carry. NOT data-where: that attribute is the
+   selector for the bar's own output elements. */
+const fold = (html, gist, stop) =>
+  html.replace('<section class="sec ', `<section data-phone="fold" data-gist="${esc(gist)}"${stop ? ` data-stop="${esc(stop)}"` : ''} class="sec `);
+
+/* the same name, for a section that stays open and has no sign in the aisle
+   strip. Without it the dock reads "Checkout · Pricing" for the 2,400px that
+   run from the price tags to the foot of the store. */
+const named = (html, stop) =>
+  html.replace('<section class="sec ', `<section data-stop="${esc(stop)}" class="sec `);
+
 /* ── the hero: the headline, the fan, the scanner ─────────────────────── */
 function hero(cfg, p) {
   const fanKeys = [['today', 'is-l'], ['stock', 'is-c'], ['buy', 'is-r']];
@@ -327,24 +350,32 @@ function start(cfg) {
   </div>`);
 }
 
+/* Three things stay open on a phone, and they are the three the rule names:
+   the hero, the section that carries the claim — the loop, which is this
+   product's whole organising idea and already has a phone form, a snap
+   strip of seven cards with dots — and the closing call, which here is the
+   price and the first ten minutes. The numbers band stays open with them:
+   it is four figures, 780px, and it is the hero's evidence rather than a
+   section of its own. Everything else is an aisle, and you walk into an
+   aisle on purpose. */
 export function render(cfg, p) {
   return `${skip()}
 ${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="careshop" data-mode="light">
 ${hero(cfg, p)}
-${stats()}
+${named(stats(), 'The store in numbers')}
 ${loop()}
-${today()}
-${stock()}
-${queue()}
-${cook()}
-${reserve()}
-${record()}
-${roles()}
-${kitchen(cfg)}
-${questions()}
+${fold(today(), 'The first screen after sign-in — a shift, or every house.', 'Home · Today')}
+${fold(stock(), 'Pantry, fridge, freezer, reserve — in the house’s walk order.', 'Aisle 2 · Stock')}
+${fold(queue(), 'What to buy and nothing else, each line carrying its origin.', 'Aisle 3 · The queue')}
+${fold(cook(), 'Today’s prep, timers in the steps, the allergen check.', 'Cook mode')}
+${fold(reserve(), 'Days × beds × the quantity per bed, and the rule behind it.', 'Reserves')}
+${fold(record(), 'Diet tags, allergens, one texture level — and nine refusals.', 'Residents')}
+${fold(roles(), 'Who is in the store, what they do, on what device.', 'Who is in the store')}
+${fold(kitchen(cfg), 'Sign in at careshop.app, or create an organisation.', 'Front desk · Your kitchen')}
+${fold(questions(), 'Asked at the till, and answered.', 'Questions')}
 ${pricing(cfg, p)}
-${start(cfg)}
+${named(start(cfg), 'The first ten minutes')}
 ${printList(cfg)}
 </main>
 ${footer(cfg, p, { page: 'home', fine: find('foot').disclaimer })}`;

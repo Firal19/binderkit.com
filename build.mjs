@@ -41,8 +41,79 @@ const { render } = mod;
 const extraPages = Array.isArray(mod.pages) ? mod.pages : [];
 const chrome = { header: typeof mod.header === 'function' ? mod.header : null, footer: typeof mod.footer === 'function' ? mod.footer : null };
 
-/* ── the stylesheet: the shared ground, the instruments, then the page ── */
-const SHEETS = ['css/base.css', 'css/canvas.css', 'css/shells.css', 'css/faces.css', 'css/instruments-extra.css', `css/pages/${p.id}.css`];
+/* ── the stylesheet: the shared ground, the instruments, then the page,
+   then every width tier in the kit ──────────────────────────────────────
+   css/responsive.css is LAST on purpose and must stay last. It is the only
+   sheet that carries a width query, and loading it after the page sheet is
+   what lets the phone tier correct a page rule without !important: a page's
+   `:root { --sec-y: … }` can no longer shadow the phone value, because the
+   phone value is declared later at equal specificity.
+
+   Two sheets are deliberately NOT here. css/sections.css and css/site.css
+   speak an `.lp-*` component vocabulary that renders zero times in the four
+   built sites; they also declare their own `.wrap` and `.sec`. They are
+   reference material to lift ideas out of, not 73 kB of dead CSS to ship. */
+const SHEETS = ['css/base.css', 'css/canvas.css', 'css/shells.css', 'css/faces.css', 'css/instruments-extra.css', `css/pages/${p.id}.css`, 'css/responsive.css'];
+
+/* ── the token guard ────────────────────────────────────────────────────
+   Three ways a page sheet can silently break the shared layer, and all
+   three have already happened in this codebase:
+
+     1. Declaring a `--t-*` name on :root. faces.css writes every --t-* name
+        onto `.face[data-product="…"]`, which is (0,2,0) and beats :root, and
+        every page's <main> carries that class. So `font-size: var(--t-11)`
+        inside <main> is invalid-at-computed-value-time and silently inherits
+        body size. No console error, green build, wrong page.
+     2. Declaring a shared token on :root OUTSIDE a media query. It shadows
+        the phone tier at every width, which is the bug responsive.css exists
+        to make impossible.
+     3. Typing a fifth gutter curve into a width: declaration. --wrap-w is
+        exported as a value precisely so no bar ever has to.
+
+   Names the shared layer owns outright are fatal. Names a site legitimately
+   still owns at desktop (--gutter, --max, --dock, --hdr, --scroll-pad) are
+   not checked at all. --sec-y and --t-* are reported, because moving them is
+   per-site work that is still in flight. */
+function tokenGuard(sheet, css) {
+  const bare = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  /* cut out every @media block, so only top-level rules are left */
+  let top = '', depth = 0, at = false;
+  for (let i = 0; i < bare.length; i++) {
+    const c = bare[i];
+    if (!at && bare.startsWith('@media', i)) { at = true; depth = 0; }
+    if (!at) { top += c; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) at = false; }
+  }
+  const fatal = [], soft = [];
+  for (const m of top.matchAll(/(?::root|html)\s*\{([^}]*)\}/g)) {
+    for (const d of m[1].matchAll(/(--[a-z0-9-]+)\s*:/g)) {
+      const n = d[1];
+      if (/^--(fs|sp|bp|mock)-|^--(tap|tap-row|wrap-w|track-label)$/.test(n)) fatal.push(n);
+      else if (/^--t-/.test(n) || n === '--sec-y') soft.push(n);
+    }
+  }
+  for (const m of bare.matchAll(/(?:^|[;{])\s*width\s*:\s*([^;{}]*)/gm)) {
+    const v = m[1];
+    if (/100%/.test(v) && /clamp\(\s*[\d.]+px\s*,\s*[\d.]+vw/.test(v) && !/var\(--wrap-w\)/.test(v)) {
+      soft.push(`a fifth gutter curve in \`width: ${v.trim().slice(0, 72)}\``);
+    }
+  }
+  if (fatal.length) {
+    console.error(`\n  ${sheet} declares a token the shared layer owns, on :root, outside a media query:\n`);
+    [...new Set(fatal)].forEach((n) => console.error(`   ✗ ${n} — it belongs in css/base.css or css/responsive.css`));
+    process.exit(1);
+  }
+  if (soft.length) {
+    for (const n of [...new Set(soft)]) {
+      console.log(n.startsWith('--t-')
+        ? `   · ${sheet}: ${n} on :root is shadowed inside <main> by faces.css — rename it off the --t-* namespace`
+        : n === '--sec-y'
+          ? `   · ${sheet}: --sec-y on :root — move it into @media (min-width: 641px) so the phone tier can set it`
+          : `   · ${sheet}: ${n} — point it at var(--wrap-w)`);
+    }
+  }
+}
 
 function squeeze(css) {
   return css
@@ -124,6 +195,7 @@ if (faults.length) {
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
+tokenGuard(`css/pages/${p.id}.css`, read(`css/pages/${p.id}.css`));
 const cssBody = squeeze(SHEETS.map((s) => (s === 'css/faces.css' ? facesForThis : read(s))).join('\n'));
 const jsBody = squeezeJs([read('js/site.js'), has(`js/pages/${p.id}.js`) ? read(`js/pages/${p.id}.js`) : ''].join('\n'));
 const hash = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36).padStart(7, '0').slice(0, 7); };

@@ -10,7 +10,8 @@
     "check": "node tools/check.mjs",
     "icons": "node tools/icons.mjs",
     "shots": "node tools/shots.mjs",
-    "convex:deploy": "npx convex deploy -y"
+    "convex:deploy": "npx convex deploy -y",
+    "mobile": "node tools/mobile.mjs --widths 390,360,320"
   },
   "engines": {
     "node": ">=20"

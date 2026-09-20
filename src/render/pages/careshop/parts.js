@@ -52,7 +52,7 @@ export function header(cfg, p, opts = {}) {
       <a class="signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>
       <button class="cord" type="button" data-mode-toggle aria-pressed="false" aria-label="Lights" data-theme-light="${esc(cfg.og.bg)}" data-theme-dark="#1b1613">${ic('cord', 18)}<span class="cord-t">Lights</span><span class="cord-pull" aria-hidden="true"></span></button>
       <a class="btn pri tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="nav"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.nav)}</a>
-      <button class="tally" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Open the menu" data-lock data-focus=".drawer-close" data-label-open="Open the menu" data-label-close="Close the menu">${ic('receipt', 22)}<span class="tally-n" aria-hidden="true">${AISLES.length + PAGES_NAV.length}</span></button>
+      <button class="tally" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Aisles — open the menu" data-lock data-focus=".drawer-close" data-label-open="Aisles — open the menu" data-label-close="Aisles — close the menu">${ic('receipt', 22)}<span class="tally-l">Aisles</span><span class="tally-n" aria-hidden="true">${AISLES.length + PAGES_NAV.length}</span></button>
     </div>
   </div>
 </header>
@@ -69,8 +69,11 @@ function drawer(cfg, p, page) {
       <button class="drawer-close" type="button" data-close aria-label="Close the menu">${ic('close', 22)}</button>
       <div class="rc-top">${mark(p.id, 34, { label: false })}<b class="rc-store">${esc(p.name.toUpperCase())}</b><span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span><span class="rc-meta"><span data-clock="date">today</span> · <span data-clock>now</span></span></div>
       <nav class="rc-lines" aria-label="Sections">
-        <span class="rc-h">THIS PAGE</span>
-        ${AISLES.map((a) => line(`${pre}#${a.id}`, a.t.toUpperCase(), a.qty)).join('')}
+        <div class="rc-idx" data-page-index data-open-all="Open every aisle"></div>
+        <div class="rc-g-page">
+          <span class="rc-h">${page === 'home' ? 'THIS PAGE' : 'FRONT OF STORE'}</span>
+          ${AISLES.map((a) => line(`${pre}#${a.id}`, a.t.toUpperCase(), a.qty)).join('')}
+        </div>
         <span class="rc-h">AISLES</span>
         ${PAGES_NAV.map((a) => line(`/${a.path}`, a.t.toUpperCase(), a.qty, a.path === page)).join('')}
         ${line('/privacy', 'PRIVACY', '1 page', page === 'privacy')}
@@ -84,6 +87,25 @@ function drawer(cfg, p, page) {
     </div>
   </div>`;
 }
+
+/* ── the receipt's own subtotal line: a group you can total up ──────────
+   Fifteen destinations at a 44px thumb floor is 688px — 2.3 phone screens
+   of footer on all seven routes, and every one of them is already in the
+   drawer the header opens. So the lines group under two subtotal rows.
+
+   It ships `open`, and that is the contract: with scripting off, on a
+   printer, and above 640px the whole list is there. careshop.js closes them
+   below 640 only, remembers a reader who opened one, and re-opens
+   everything for `beforeprint`. Nothing is ever deleted at a width. */
+const rcGroup = (title, count, rows, cls = '') => `<details class="rc-d${cls ? ` ${cls}` : ''}" open>
+        <summary class="rc-l rc-ds"><span>${esc(title)}</span><i aria-hidden="true"></i><b>${esc(count)}</b></summary>
+        <div class="rc-dg">${rows}</div>
+      </details>`;
+
+/* how many places the store actually keeps a handle. Counted off the markup
+   the shared renderer emits rather than typed, so the subtotal on the phone
+   can never disagree with the rows behind it. */
+const socN = (id) => (social(id, { cls: 'rc-soc' }).match(/class="soc-i/g) || []).length;
 
 /* ── the footer: a till receipt ───────────────────────────────────────── */
 export function footer(cfg, p, opts = {}) {
@@ -101,12 +123,12 @@ export function footer(cfg, p, opts = {}) {
         <span class="rc-meta"><span data-clock="date">today</span> · <span data-clock>now</span> · ${esc(cfg.domain.toUpperCase())}</span>
       </div>
       <nav class="rc-lines" aria-label="Footer">
-        ${AISLES.map((a) => line(`${pre}#${a.id}`, a.t.toUpperCase(), a.qty)).join('')}
-        ${PAGES_NAV.map((a) => line(`/${a.path}`, a.t.toUpperCase(), a.qty)).join('')}
+        ${rcGroup('THIS PAGE', `${AISLES.length} AISLES`, AISLES.map((a) => line(`${pre}#${a.id}`, a.t.toUpperCase(), a.qty)).join(''))}
+        ${rcGroup('THE STORE', `${PAGES_NAV.length + 4} LINES`, `${PAGES_NAV.map((a) => line(`/${a.path}`, a.t.toUpperCase(), a.qty)).join('')}
         ${line('/privacy', 'PRIVACY', 'what it holds')}
         ${line('https://careshop.app/features', 'FEATURES', 'in the app', true)}
         ${line('https://careshop.app/pricing', 'PRICING', 'in the app', true)}
-        ${line(cfg.signIn.href, 'SIGN IN', 'careshop.app', true)}
+        ${line(cfg.signIn.href, 'SIGN IN', 'careshop.app', true)}`)}
       </nav>
       <div class="rc-tear" aria-hidden="true"></div>
       <div class="rc-sum">
@@ -117,7 +139,7 @@ export function footer(cfg, p, opts = {}) {
       </div>
       <div class="rc-block">
         <span class="rc-h">STICKERS</span>
-        ${social(p.id, { cls: 'rc-soc', size: 16, text: true, label: 'CareShop on social' })}
+        ${rcGroup('STICKERS', `${socN(p.id)} PLACES`, social(p.id, { cls: 'rc-soc', size: 16, text: true, label: 'CareShop on social' }), 'rc-d-soc')}
       </div>
       <div class="rc-mail">
         <span class="rc-h">WRITE TO A PERSON</span>

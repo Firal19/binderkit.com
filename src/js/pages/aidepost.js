@@ -325,6 +325,48 @@
     mo.observe(strip, { attributes: true, subtree: true, attributeFilter: ['aria-current'] });
   };
 
-  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); };
+  /* "Open every section" is a button, not a link, so menus() does not close
+     the sheet behind it — and a person who has just opened every section
+     wants to see the page, not the menu. */
+  const openAllCloses = () => {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-open-all]')) return;
+      const btn = document.querySelector('.hd-menu[aria-expanded="true"]');
+      if (btn) btn.click();
+    });
+  };
+
+  /* ── the swipe strip reports its own edges ──────────────────────────
+     Measured at 390px: .shell is 350px wide over 460px of content, so 110px
+     of the board is past the right edge, and it was cut there with nothing but
+     a caption underneath claiming so. CSS fades the side that still has board
+     behind it and lifts the fade on the side you have reached; this sets the
+     attribute that tells it which. Deliberately attribute-only, so that with
+     scripting off there is no fade at all — a gradient drawn over a strip that
+     does not scroll is a worse lie than no gradient. */
+  const stripEdges = () => {
+    const strips = $$('.shell');
+    if (!strips.length) return;
+    const mq = window.matchMedia('(max-width: 640px)');
+    const paint = (s) => {
+      if (!mq.matches) { s.removeAttribute('data-sx'); return; }
+      const max = s.scrollWidth - s.clientWidth;
+      s.dataset.sx = max <= 2 ? 'none' : s.scrollLeft <= 1 ? 'start' : s.scrollLeft >= max - 1 ? 'end' : 'mid';
+    };
+    const all = () => strips.forEach(paint);
+    strips.forEach((s) => s.addEventListener('scroll', () => paint(s), { passive: true }));
+    window.addEventListener('resize', all, { passive: true });
+    mq.addEventListener('change', all);
+    /* On / the board strip lives inside a folded section, so at boot it is
+       0x0 and measures as "does not scroll" — and no scroll event ever fires
+       to correct that, which left the first reader to open #board looking at
+       the one state the fade exists for, with no fade. A ResizeObserver fires
+       the moment the fold hands the strip a size. */
+    if ('ResizeObserver' in window) { const ro = new ResizeObserver(() => all()); strips.forEach((s) => ro.observe(s)); }
+    document.addEventListener('pho:openall', () => requestAnimationFrame(all));
+    all();
+  };
+
+  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); openAllCloses(); stripEdges(); };
   boot();
 })();

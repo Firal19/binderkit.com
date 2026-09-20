@@ -19,6 +19,25 @@ export { header, footer, pages };
 const S = SURFACES.cohort;
 const screen = (key) => S.screens.find((s) => s.key === key);
 
+/* ── the phone fold ─────────────────────────────────────────────────────
+   Below 640px a long page opens as an index rather than a scroll: three
+   sections stay open — the hero, the one that carries the claim, and the
+   closing call — and every other section becomes a tappable row carrying
+   its own heading and the one-line gist below. js/site.js folds() builds
+   the row; responsive.css shows it; above 640 none of it exists.
+
+   Nothing is deleted: the HTML still ships every word, so find-in-page
+   after opening, search engines and the printer all see the whole page.
+
+   shared.js's sec() takes no extra attributes and is not ours to edit, so
+   the two the fold needs are spliced onto the tag it returns — sec() always
+   opens with exactly this string. The same data-gist feeds the "In this
+   page" index inside the shift sheet. */
+const fold = (gist, html) => html.replace(
+  '<section class="sec',
+  `<section data-phone="fold" data-gist="${esc(gist)}" class="sec`,
+);
+
 /* ── 06:55 · the hero ──────────────────────────────────────────────────── */
 function hero(cfg, p) {
   const strip = find('hero').strip;
@@ -267,13 +286,13 @@ export function render(cfg, p) {
 ${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="cohort" data-mode="light">
 ${hero(cfg, p)}
-${shift()}
-${stops()}
-${refuses()}
+${fold('Seven hours on the house phone', shift())}
+${fold('Allergy, and the PRN interval', stops())}
+${fold('Eleven refusals, with reasons', refuses())}
 ${record()}
-${roles()}
-${house()}
-${questions()}
+${fold('Who is holding the phone', roles())}
+${fold('The same record, on the web', house())}
+${fold('Wi-fi, exports, the stops', questions())}
 ${pricing(cfg, p)}
 ${join(cfg, p)}
 </main>

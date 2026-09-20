@@ -21,15 +21,51 @@
   --font-display: 'Newsreader', Georgia, serif;
   --font-body: 'Instrument Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  --max: 1600px; --gutter: clamp(20px, 3.2vw, 60px); --sec-y: clamp(48px, 7vw, 96px);
-  --rule-h: 56px; --strip-h: 48px; --footbar-h: 52px; --dock: 52px; --scroll-pad: 76px;
+  --max: 1600px; --gutter: clamp(20px, 3.2vw, 60px);
+  --rule-h: 56px; --strip-h: 48px; --footbar-h: 52px; --scroll-pad: 76px;
   --glow: none;
 }
 html[data-mode="dark"] { --bg: #F3EBDA; --card: #F8F2E4; --wash: #EBE2CD; --paper: #FBF6EA; --ink: #1F1A12; --muted: #463E31; --soft: #6E6455; --line: rgba(31, 26, 18, .22); --rule: #1F1A12; --peri-soft: #E4E4EC; --btn-ink: #F3EBDA; --glow: radial-gradient(70% 45% at 50% -6%, rgba(255, 226, 150, .55), transparent 70%); }
 @media (prefers-color-scheme: dark) {
   html[data-mode="auto"] { --bg: #F3EBDA; --card: #F8F2E4; --wash: #EBE2CD; --paper: #FBF6EA; --ink: #1F1A12; --muted: #463E31; --soft: #6E6455; --line: rgba(31, 26, 18, .22); --rule: #1F1A12; --peri-soft: #E4E4EC; --btn-ink: #F3EBDA; --glow: radial-gradient(70% 45% at 50% -6%, rgba(255, 226, 150, .55), transparent 70%); }
 }
-html { scroll-padding-top: 76px; }
+/* ── THE LADDER — and it is written in BOTH tiers on purpose ─────────────
+   Two curves, each solved through this site's own measured desktop value —
+   62px for h1 and 42px for h2 at 1440 — so the binder's title page and its
+   section heads are unchanged above 900 to the pixel.
+
+   They are stated twice because build.mjs tokenGuard() refuses a --fs-* on
+   a page sheet's bare :root, and it is right to: a bare declaration shadows
+   a phone tier it cannot see. Neither of these is a shared-tier token —
+   responsive.css redeclares neither — so the honest way to say "this curve
+   is binderkit's at every width" is to say it in each tier.
+
+   Saying it in ONE tier is what was wrong before. --fs-h1 lived only at
+   >=641, so at 640 the page fell back to base's wider curve and the
+   headline STEPPED BACKWARDS across the boundary: 42.7px at 640, 39.9px at
+   641. A title that shrinks as the viewport grows reads as a fault, and it
+   meant binderkit's own headline curve governed no phone width at all.
+
+   h2 had no token: clamp(30px, 3.6vw, 42px), a floor 3.6vw does not reach
+   until an 833px viewport, so it sat at a flat 30px across the entire phone
+   range while h1 fell to 32.8 at 390 and 26.9 at 320 — a 1.01 step at 360
+   and an INVERSION at 320, against 1.48 on the desk. The token curve holds
+   1.12 to 1.32 from 320 to 1200 and is identical to the old value — 42.0 —
+   at every width from 1200 up, which is where this site is read on a desk. */
+@media (min-width: 641px) {
+  :root {
+    --sec-y: clamp(48px, 7vw, 96px);
+    --fs-h1: clamp(30px, 1.39rem + 2.76vw, 62px);
+    --fs-h2: clamp(24px, 1.09rem + 2.05vw, 42px);
+  }
+}
+@media (max-width: 640px) {
+  :root {
+    --fs-h1: clamp(30px, 1.39rem + 2.76vw, 62px);
+    --fs-h2: clamp(24px, 1.09rem + 2.05vw, 42px);
+  }
+}
+html { scroll-padding-top: var(--scroll-pad); }
 body { position: relative; }
 body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; background: var(--glow); mix-blend-mode: multiply; }
 .face[data-product="binderkit"] { --t-display: var(--font-display); --c-ground: #FAFAF8; --c-card: #fff; --t-r-control: 6px; }
@@ -39,8 +75,12 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 
 /* ── type ─────────────────────────────────────────────────────────────── */
 h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; line-height: 1.06; font-variation-settings: 'opsz' 72; }
-h1 { font-size: clamp(38px, 5vw, 62px); }
-h2 { font-size: clamp(30px, 3.6vw, 42px); max-width: 24ch; }
+h1 { font-size: var(--fs-h1); }
+/* 42px at 1440, to the pixel, as before — but the old hand-typed
+   clamp(30px, 3.6vw, 42px) never left its 30px floor below an 833px
+   viewport, so across the whole iPhone range the h2 sat within 13% of the
+   h1 and at 320 it outranked it. The token curve keeps the step. */
+h2 { font-size: var(--fs-h2); max-width: 24ch; }
 h3 { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; line-height: 1.25; }
 code, .ctl { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .02em; }
 .sub { margin-top: 14px; font-size: 17px; line-height: 1.6; color: var(--muted); max-width: 62ch; }
@@ -72,7 +112,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 
 /* ── the top rule ─────────────────────────────────────────────────────── */
 .rule { position: sticky; top: 0; z-index: 40; background: var(--bg); border-bottom: 1px solid var(--rule); }
-.rule-in { width: min(var(--max), 100% - 2 * clamp(20px, 4.4vw, 56px)); margin-inline: auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: var(--rule-h); gap: 16px; }
+.rule-in { width: var(--wrap-w); margin-inline: auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: var(--rule-h); gap: 16px; }
 .bspine { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; justify-self: start; min-height: 44px; min-width: 44px; }
 .bspine-n { font-family: var(--font-display); font-variant-caps: small-caps; font-weight: 600; font-size: 19px; letter-spacing: .06em; text-transform: lowercase; }
 .run { display: inline-flex; align-items: baseline; gap: 10px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
@@ -87,6 +127,16 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .lamp[aria-pressed="true"] { color: var(--ink); }
 .rule-cta { margin-left: 8px; }
 .btn.sm { min-height: 40px; }
+/* the phone bar's second slot: where you are, and the way into the contents.
+   One control, not two — a chapter name that opens the chapter list is both
+   a location and an affordance, and it buys back the 44px a separate burger
+   would have cost at 320. display:none here keeps the desktop grid at three
+   children, so "1fr auto 1fr" still places brand / control number / tools. */
+.rule-where { display: none; }
+.toc-tools .lamp, .toc-tools [data-share], .toc-all { display: none; }
+/* the head of the folded run — injected by js/pages/binderkit.js, and only
+   when something is actually folded, so it never exists on a desktop. */
+.fold-lead { display: none; }
 
 /* ── the index tabs: a column on the right edge, a strip on a phone ────── */
 .tabs { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 35; }
@@ -486,7 +536,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 
 /* ── the privacy page and the 404 ──────────────────────────────────────── */
 .pv .head { padding-top: clamp(20px, 4vw, 40px); }
-.pv h1 { font-family: var(--font-display); font-weight: 500; font-size: clamp(56px, 7.2vw, 128px); letter-spacing: -0.02em; line-height: 1.06; }
+.pv h1 { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-display); letter-spacing: -0.02em; line-height: 1.06; }
 .pv h3 { font-family: var(--font-display); font-weight: 500; font-size: 26px; margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--rule); }
 .pv-c { border-radius: 0; border-color: var(--rule); background: var(--card); }
 .pv-c .strip-l { margin-bottom: 8px; }
@@ -498,7 +548,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 @media print {
   @page { size: letter; margin: .5in; }
   html, body { background: #fff; color: #17201F; }
-  body::after, .rule, .tabs, .toc-sheet, .foot, .footbar, dialog, .toast, .skip, .pop { display: none !important; }
+  body::after, .rule, .tabs, .toc-sheet, .foot, .footbar, .fold-s, .fold-lead, dialog, .toast, .skip, .pop { display: none !important; }
   main[data-printing="sheet"] > :not([data-print-keep], :has(.print-zone)) { display: none !important; }
   main[data-printing="sheet"] .ctl, main[data-printing="sheet"] .doc-b > :not(.print-zone), main[data-printing="sheet"] .annot, main[data-printing="sheet"] .leaf-b, main[data-printing="sheet"] .sheet-tap, main[data-printing="sheet"] .planner, main[data-printing="sheet"] .sheet-acts, main[data-printing="sheet"] .plan-sheet .strip-l { display: none !important; }
   main[data-printing="sheet"] .sec, main[data-printing="sheet"] .hero { border: 0; padding: 0; }
@@ -526,42 +576,57 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .seg-i:nth-child(3) { border-left: 0; } .seg-i:nth-child(n+3) { border-top: 1px solid var(--line); }
 }
 @media (max-width: 900px) {
-  :root { --rule-h: 48px; --strip-h: 48px; }
-  html { scroll-padding-top: 108px; }
+  :root { --rule-h: var(--hdr); --strip-h: 48px; }
   .doc { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .ctl { padding-top: 0; }
-  .rule-in { grid-template-columns: auto 1fr auto; gap: 8px; }
-  .run { justify-self: center; gap: 0; }
-  .run-l { display: none; }
-  .run-n { min-width: 0; font-size: 11.5px; }
-  .rb span, .rule-cta { display: none; }
-  .rb { padding: 0; justify-content: center; }
-  .rule-r { gap: 0; }
-  .bspine-n { font-size: 17px; }
-  .tabs { position: static; transform: none; border-top: 1px solid var(--line); }
+  /* responsive.css already makes .rule-in a space-between flex row on
+     var(--wrap-w); (0,2,0) here beats its (0,1,0) for the tighter gap. */
+  .rule .rule-in { gap: var(--sp-2); }
+  .bspine { flex: none; gap: 0; }
+  .bspine-n, .run { display: none; }
+  .rule-r > .rb { display: none; }
+  .rule-r { flex: none; gap: 0; }
+  .rule-cta { display: inline-flex; margin-left: 0; white-space: nowrap; }
+
+  .rule-where { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;
+    min-height: var(--tap); padding: 0 6px; margin-left: -2px; border-radius: 3px;
+    color: var(--ink); text-align: left; }
+  .rule-where-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: var(--font-display); font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+  .rule-where-c { flex: none; width: 16px; height: 16px; color: var(--soft); transition: transform 200ms; }
+  .rule-where[aria-expanded="true"] { background: var(--ink); color: var(--bg); }
+  .rule-where[aria-expanded="true"] .rule-where-c { color: var(--bg); transform: rotate(180deg); }
+
+  /* the sheet is a panel now, not just a list: the two controls that left
+     the bar live in its head, beside the close. */
+  .toc-head { gap: var(--sp-3); }
+  .toc-tools { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+  .tabs { display: none; }
   .tabs-l { display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 12px; }
-  .tabs-l::-webkit-scrollbar { display: none; }
-  .tabs-l li { flex: none; scroll-snap-align: start; }
-  .dtab { grid-template-columns: auto auto; height: var(--strip-h); border: 0; border-radius: 0; padding: 0 10px; gap: 7px; background: none; color: var(--muted); overflow: visible; transition: color 160ms; }
-  .dtab-l { opacity: 1; padding: 0; font-family: var(--font-body); font-size: 14.5px; font-weight: 500; text-transform: none; letter-spacing: 0; }
-  .dtab-n { width: auto; font-size: 11px; color: var(--soft); order: -1; }
-  .dtab[aria-current="true"] { background: none; color: var(--ink); transform: none; box-shadow: inset 0 -2px 0 var(--ink); }
-  .dtab[aria-current="true"] .dtab-n { color: var(--ink); }
-  .tabs-cta { display: block; margin-left: auto; padding-left: 8px; }
-  .dtab.is-cta { grid-template-columns: auto; height: 40px; margin: 4px 0; padding: 0 14px; background: var(--ink); color: var(--bg); border-radius: 3px; font-weight: 600; font-size: 14px; }
   .toc-sheet { position: fixed; top: var(--rule-h); bottom: 0; overflow: auto; border-bottom: 0; }
-  .toc-in { padding: 16px 0 calc(40px + env(safe-area-inset-bottom)); }
+  .toc-in { padding: var(--sp-4) 0 calc(var(--sp-7) + var(--footbar-h) + env(safe-area-inset-bottom)); }
+  .toc-cta { justify-self: stretch; text-align: center; }
   .hero-in, .page-g, .join-g, .subs, .six, .phone-g { grid-template-columns: minmax(0, 1fr); }
   .hero-v { order: 2; }
   .desk { padding-right: 20px; }
+  .divs { right: 30px; }
   .sheet-tap { position: absolute; right: 8px; bottom: 8px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 3px; background: var(--bg); color: var(--ink); font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 8px 20px -12px rgba(23, 32, 31, .5); }
   .sheet-tap.is-inline { position: static; box-shadow: none; }
   .cp.is-hero, .cp.is-page { cursor: zoom-in; }
   .cp.is-hero { padding-bottom: 64px; }
   .leaf { max-width: none; }
   .tag-g, .guards, .tiers { grid-template-columns: minmax(0, 1fr); }
-  .guard + .guard, .tier + .tier { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
-  .tier.is-main { padding-left: 24px; padding-right: 24px; margin: 0; }
+  .guard + .guard { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
+  /* Three prices are three choices. Stacked, they were one continuous
+     block: 0px between the cards inside 24px of padding, the frame lines
+     of a desktop table still drawn across them, and only .is-main with a
+     left padding — so the three prices sat on two different left margins
+     and read as a rendering fault rather than as emphasis. One geometry
+     for all three, a real gap between them, and the tint left to carry
+     the recommendation on its own. */
+  .tiers { row-gap: var(--sp-3); border-top: 0; border-bottom: 0; }
+  .tier, .tier + .tier { padding: var(--sp-4); border: 1px solid var(--line); border-radius: var(--r); }
+  .tier.is-main { background: var(--wash); border-color: var(--rule); margin: 0; }
   .lib, .lib tbody, .lib tr, .lib th, .lib td { display: block; }
   .lib thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .lib tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
@@ -572,8 +637,39 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .perms, .cite-r, .ledger div { grid-template-columns: minmax(0, 1fr); } .perms dd { border-top: 0; padding-top: 0; }
   .cite-r { gap: 4px; }
   .shell-hint { display: flex; }
+  /* ── the footer, edited rather than linearised ───────────────────────
+     It was 1,976px at 390 and it GREW as the screen narrowed — 2,159px at
+     320 — and 1,030px of that was a contents list whose seventeen of
+     eighteen destinations are already in the sheet that the sticky header
+     opens from any scroll position. A phone reader had to pass eight
+     thousand pixels of document to reach a table of contents that was one
+     tap away the whole time; on /about that list was nearly half the page.
+     So the page's own section list goes and the chapter list — the site
+     map, the only thing here that is not a second copy of page navigation
+     — stays, with its leader dots and its control numbers intact.
+     Gated on .js because with scripting off the sheet never opens and this
+     footer is the only navigation a phone has. */
+  .js .foot-here { display: none; }
+  .foot .ctl { display: none; }
   .foot-g { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .foot .toc-l { display: block; }
+  /* the footer heading was clamp(34px, 4vw, 52px) — 34px on a phone, above
+     every section heading on the page it closes. It joins the ladder. */
+  .foot-h { font-size: var(--fs-h2); margin-bottom: var(--sp-4); }
+  .colophon { margin-top: var(--sp-6); padding: var(--sp-5) 0; gap: var(--sp-3); }
+  .colo-mark svg { width: 56px; height: 56px; }
+  /* The stamps and the social handles stay a wrapping flex row. Two fixed
+     tracks look tidier in a mock and burst at 320: "@binderkit" in a 13px
+     mono pill wants 186px and a half of a 320px wrap is 136. A grid cannot
+     pack by content; flex-wrap can, and these are pills of four different
+     lengths. Measured: 148px and 200px, and both fit. */
+  .stamps-row { margin-top: var(--sp-4); }
+  /* Share and Print are the third copy of themselves down here: Print is in
+     the footbar that is fixed to the bottom of the screen right now, Share
+     is in the head of the contents sheet. What the stamps row is FOR on a
+     phone is the address and the one button that copies it. */
+  .foot .stamps-row [data-share], .foot .stamps-row [data-print] { display: none; }
+  .foot-b { margin-top: var(--sp-5); }
   .footbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 38; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: calc(var(--footbar-h) + env(safe-area-inset-bottom)); padding: 0 12px env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--rule); }
   .fb-b { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; border-radius: 3px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); text-decoration: none; justify-self: start; }
   .fb-b.is-pri { justify-self: end; background: var(--ink); color: var(--bg); }
@@ -581,22 +677,180 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .fb-p::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 0; height: 1px; background: var(--line); }
   .fb-p::before { content: ""; position: absolute; left: 6px; bottom: 0; height: 2px; width: calc((100% - 12px) * var(--p, 0)); background: var(--ink); z-index: 1; }
   .fb-sep { color: var(--soft); }
-  .page { padding-bottom: calc(var(--footbar-h) + 12px + env(safe-area-inset-bottom)); }
-  .foot { padding-bottom: calc(var(--footbar-h) + 40px + env(safe-area-inset-bottom)); }
+  /* the bottom bar's own reservation. body:has(.dock) in base.css would do
+     this, but class="footbar" is a literal tools/check.mjs greps, so the
+     attribute cannot take a second class name. Same result, paid here. */
+  .page { padding-bottom: calc(var(--footbar-h) + var(--sp-3) + env(safe-area-inset-bottom)); }
+  .foot { padding-bottom: calc(var(--footbar-h) + var(--sp-6) + env(safe-area-inset-bottom)); }
   .toast { bottom: calc(var(--footbar-h) + 16px + env(safe-area-inset-bottom)); }
   .lens { width: 100vw; }
   .keys, .cmd { margin-top: 8vh; }
   .phone-z { zoom: .8; }
   .room { flex-wrap: wrap; } .room .toc-l { display: none; } .room-d { width: 100%; padding-left: 144px; }
 }
-@media (max-width: 400px) { .bspine-n { display: none; } .rb { min-width: 44px; } .phone-z { zoom: .7; } }
+@media (max-width: 900px) {
+  /* prose — anything the gate would read as reading matter */
+  .cap, .cite-ev, .pl-why, .pl-fine, .po-why, .po-t, .po-banner, .replan,
+  .perms dt, .perms dd, .defs dd, .arrow, .lib, .sell-note, .shell-hint, code
+  { font-size: var(--fs-read); }
+  .art span:not(.art-n) { font-size: var(--fs-read); }
+  /* .ctl is the control number in the section margin: a label, and it keeps
+     its own size now that `code` has left the declaration it shared. */
+  .ctl { font-size: 12.5px; }
+
+  /* labels */
+  .eyebrow, .seg-t small, .defs dt, .po-counts dt, .po-v, .tog-count,
+  .faq-link, .sheet-tap, .lib td::before
+  { font-size: var(--fs-label); letter-spacing: var(--track-label); }
+
+  /* the evidence tag is a label too. The fence is what keeps it out of the
+     contents sheet the product draws: .cp-a .ev is (0,2,0) and would win
+     anyway, but a tag added to .cp-r or .divset tomorrow would not. */
+  .ev:not(:where(.cp, .divset, .leaf, .phone, .browser, .paper, .wk, .ph) *)
+  { font-size: 12px; padding: 2px 6px; }
+
+  /* the second pass, traced to the rule that wins rather than guessed.
+     Six of these are the same shape: a <span> carrying the explanatory half
+     of a two-part row — an annotation, a guardrail, an evidence tag's
+     definition, a gate, a refusal — set at 14.5px inside an <li> or a card.
+     Half a point under the reading floor, six times over.
+
+     .pl-t span is the trap in miniature: base.css:171 declares
+     .field > span at 13px, which is (0,2,0) against this site's
+     .pl-t at (0,1,0), so every planner question renders at 13px inside an
+     18px label that was written to hold it. The fix is to say so at the
+     same specificity the base rule uses.
+
+     .pv-* belongs to base.css and is shared by all four privacy pages; the
+     shared prose list does not carry it because the gate cannot see inside
+     <main> and therefore never flagged it. Declared here, it moves this
+     site only. */
+  .annot li span, .tag-g div span, .guards .guard span, .gates li span,
+  .never li div span, .six li span, .pv-c p, .pv-dl dd
+  { font-size: var(--fs-read); }
+  .field > .pl-t { font-size: 18px; }
+  .field > span > span { font-size: inherit; }
+  .po-a, .po-a a { font-size: var(--fs-read); }
+  .pv-dl dt { font-size: var(--fs-label); letter-spacing: var(--track-label); }
+
+  /* the thumb floor, inside <main>. responsive.css's coarse-pointer net is
+     anchored on nav / header / footer / .menu / .sheet / .dock / .tabs, so
+     it deliberately never reaches a control in the body of the page — and
+     gate.mjs cannot see one either, because .face sits on <main>. Measured
+     at 390 across all seven routes: eleven 40px controls in two shapes, the
+     evidence, version and billing toggles and the Magnify button on the
+     hero sheet. Nothing else in the body is under a thumb.
+     (The twelfth, a.cite at 129x19, is an inline citation inside a table
+     cell. It is a text link, not a button; giving it 44px would break the
+     line it sits in, and it is the same shape the gate itself exempts
+     inside p / li / dd.) */
+  .tog, .sheet-tap { min-height: var(--tap); }
+
+  /* the restacked table's own column labels sit above their value, so they
+     carry the row's meaning rather than decorating it. */
+  .lib td::before { margin-bottom: 3px; opacity: .8; }
+}
+/* ── 641–900 · THE LAP BAND ───────────────────────────────────────────────
+   The fold is the only thing that edits this document down to a phone, and
+   it is bound to 640 in the shared controller, so every width from 641 to
+   900 still gets all eleven sections at once: 20,374px at 768, longer than
+   the desktop page. Shortening that band needs the shared breakpoint moved
+   (see the handoff); what the band CAN be given here is a standing index.
+   The right-edge tab rail is this binder's own navigation, it is deleted at
+   <=900 for a 390px screen that has no room for it, and it has plenty of
+   room here — ten 47px tabs are 470px against an iPad's 1024. So it comes
+   back, with the 44px of page gutter it needs, and the reader of a
+   twenty-thousand-pixel page can see where they are and jump.
+
+   min-height is the fence, and it is the reason this is not simply a
+   breakpoint move: a phone in LANDSCAPE is 667–932px wide and 375–430px
+   tall. It belongs to the phone chrome — the footbar, the sheet — and a
+   470px rail would be taller than its whole viewport. 620px of height is
+   an iPad in portrait and a small desktop window; it is never a phone. */
+@media (min-width: 641px) and (max-width: 900px) and (min-height: 620px) {
+  .page, .foot { padding-right: 44px; }
+  .tabs { display: block; }
+  .tabs-l { display: grid; gap: 3px; overflow: visible; padding: 0; }
+}
+
+@media (max-width: 400px) {
+  .rb { min-width: 44px; }
+  .phone-z { zoom: .7; }
+  .rule-where-t { font-size: 16px; }
+  .rule-where { padding-inline: 2px; gap: 4px; }
+  .rule-cta.btn.sm { padding-inline: 12px; }
+}
 @media (max-width: 900px) and (max-height: 480px) and (orientation: landscape) {
   .footbar { height: calc(44px + env(safe-area-inset-bottom)); }
   .rule-in { height: 44px; }
 }
 @media (max-width: 640px) {
-  h1 { font-size: clamp(32px, 9.5vw, 40px); }
-  .ctas { flex-direction: column; } .ctas .btn { width: 100%; }
+  /* THE HIDDEN ATTRIBUTE IS NOT ENOUGH ON ITS OWN HERE.
+     folds() hides a section's body with the hidden attribute rather than a
+     display override, because undoing a display override needs revert and
+     revert rolls back to the USER-AGENT value. But the UA's own
+     `[hidden] { display: none }` is a user-agent rule, and every section's
+     body is <div class="wrap doc"> — .doc { display: grid } is an AUTHOR
+     rule, so it wins on origin whatever its specificity, and the section
+     stays its full height with a summary button bolted on top. Measured:
+     the front page came back 24,886px with all eight sections "folded".
+     (0,3,0), scoped to the fold, restores the intent without !important. */
+  .hero .ctl { display: none; }
+  .toc-tools .lamp, .toc-tools [data-share] { display: inline-flex; }
+  .toc-all { display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: var(--tap); width: 100%; border: 1px dashed var(--line); border-radius: 3px;
+    font-family: var(--font-mono); font-size: var(--fs-label); letter-spacing: var(--track-label);
+    text-transform: uppercase; color: var(--muted); }
+  .toc-all[hidden] { display: none; }
+  .page .sec[data-phone="fold"] > [hidden] { display: none; }
+  .page .sec[data-phone="fold"] > .fold-s { width: var(--wrap-w); margin-inline: auto;
+    gap: var(--sp-4); padding-block: var(--sp-3); color: var(--ink); }
+  .fold-h { font-family: var(--font-display); font-weight: 500; font-size: 21px;
+    letter-spacing: -0.01em; line-height: 1.22; }
+
+  /* ── the folded row, as an index line ────────────────────────────────
+     Eight of these run down the page with nothing but a hairline between
+     them. Built from the section's <h2> they were four lines of text each
+     — a two-to-three-line 21px claim over a two-line gist, 127 to 175px a
+     row, 1,112px on the front page — uniform, unnumbered and impossible to
+     scan, while the two copies of the same list a reader has to go looking
+     for are both numbered and coded. So the row is now the name, the
+     dotted leader this site draws on every other index, and the control
+     number, on one line; the claim is the gist beneath it. Two lines, and
+     the run reads in one pass. */
+  .fold-r { display: flex; align-items: baseline; gap: var(--sp-2); min-width: 0; }
+  .fold-r .fold-h { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fold-l { flex: 1; min-width: 16px; align-self: flex-end; height: 3px; margin-bottom: 7px;
+    background-image: radial-gradient(circle, var(--soft) .8px, transparent 1px);
+    background-size: 6px 3px; background-repeat: repeat-x; background-position: 0 100%; }
+  .fold-no { flex: none; font-family: var(--font-mono); font-size: var(--fs-label);
+    letter-spacing: .04em; color: var(--muted); }
+  /* a closed row is a line in a list, not a section: sp-4 of section
+     padding around sp-3 of button padding was 56px of air per row before a
+     word was read. An open one gets its section rhythm straight back. */
+  .js .page .sec[data-phone="fold"]:not([data-open]) { padding-block: var(--sp-2); }
+
+  /* the head of the run: what these rows are, how many, and the same bulk
+     switch the contents sheet offers — so the index a scrolling reader
+     actually meets can be opened without going to find the sheet. */
+  .fold-lead { display: flex; align-items: center; justify-content: space-between;
+    gap: var(--sp-3); width: var(--wrap-w); margin-inline: auto;
+    padding-block: var(--sp-3); }
+  .fold-lead .strip-l { margin-bottom: 0; }
+  .fold-lead .toc-all { width: auto; flex: none; padding-inline: var(--sp-3); }
+  .page .fold-s .fold-g { font-family: var(--font-body); color: var(--soft); opacity: 1;
+    line-height: 1.45; white-space: normal; overflow: visible; }
+  /* the chevron belongs on the line it opens, not floating in the middle
+     of a two-line row where it reads as a mark against the gist. */
+  .page .sec[data-phone="fold"]:not([data-open]) > .fold-s { align-items: flex-start; }
+  .fold-c { color: var(--soft); margin-top: 3px; }
+  .page .sec[data-phone="fold"][data-open] > .fold-s { min-height: var(--tap);
+    justify-content: flex-end; gap: var(--sp-2); padding-block: var(--sp-2); }
+  .page .sec[data-phone="fold"][data-open] > .fold-s .fold-t { position: absolute;
+    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .page .sec[data-phone="fold"][data-open] > .fold-s::before { content: "Collapse";
+    font-family: var(--font-mono); font-size: var(--fs-label);
+    letter-spacing: var(--track-label); text-transform: uppercase; color: var(--soft); }
   .stamps .soc-i { width: auto; height: 44px; padding: 0 12px 0 14px; gap: 10px; }
   .stamps .soc-t { display: inline; }
   .cp { padding: 22px 18px; }
@@ -615,10 +869,13 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .foot-in, .foot-b { flex-direction: column; align-items: flex-start; }
   .room-n { width: 100%; } .room-d { padding-left: 0; }
   .keys-l div { grid-template-columns: 90px minmax(0, 1fr); }
-  .rb-i[data-share] { display: none; }
-  .rule-in { gap: 6px; }
   .struck p { gap: 18px; }
   .faq-a { padding-left: 0; }
   .toc-n.is-text { max-width: 100%; text-align: left; } .toc.is-ladder li { flex-wrap: wrap; } .toc.is-ladder .toc-l { display: none; }
   .foot .toc-l { display: block; }
+  /* the footer's chapter list is the site map, and a site map is scanned.
+     Each chapter's descriptive line wrapped to two at 390 and made every
+     row 67px; the contents sheet prints the same line under the same title
+     and has room for it. Title, leader, control number — one line each. */
+  .foot .toc-ch .toc-t small { display: none; }
 }

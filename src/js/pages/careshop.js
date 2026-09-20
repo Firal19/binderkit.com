@@ -8,7 +8,22 @@
     const io = 'IntersectionObserver' in window;
     const fmt = (n, dec = 2) => Number(n).toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec });
 
-    /* ── where you are: the tally bar reads the lit sign; ←/→ walk the aisles ── */
+    /* ── where you are: the tally bar reads the lit sign; ←/→ walk the aisles ──
+       MEASURED BUG, fixed here. The dock is the only persistent wayfinding on
+       a phone, and it used to spy #aisles alone — the desktop sign strip,
+       which is display:none below 900 and carries signs for six of this
+       page's fourteen sections. With the fold on, the nine folded sections
+       compress to about 128px of scroll each, so the label flickered through
+       four names in one thumb flick and then stuck: `cook`, `reserve`,
+       `record`, `roles` and `questions` could never be named at all, and the
+       last 2,235px of the page — the whole receipt included — still read
+       "Checkout · Pricing".
+
+       It now walks every stop the page has: the signs where there are signs
+       (they carry the aisle number, which is the store's own numbering), the
+       folded sections by the short name the renderer wrote as data-stop, and
+       the receipt at the foot. data-stop, NOT data-where — [data-where] is
+       the selector for the OUTPUT elements three lines up. */
     const where = () => {
       const bar = $('#top-bar');
       const out = $$('[data-where]');
@@ -16,20 +31,56 @@
       if (!bar) return;
       const fallback = bar.getAttribute('data-here') || '';
       const railLinks = $$('.rail a[href^="#"]');
+      const railBox = $('.rail');
+      const foot = $('#foot');
+      const top = (el) => el.getBoundingClientRect().top + window.scrollY;
+      /* every stop in document order, each with the shortest true name.
+         offsetTop is relative to the offset parent; these sections are, but
+         a later wrapper would not be — so measure against the page. */
+      const seen = new Set();
+      const stops2 = [];
+      const addStop = (el, label) => { if (!el || !label || seen.has(el)) return; seen.add(el); stops2.push({ el, label }); };
+      signs.forEach((a) => addStop(document.getElementById(a.getAttribute('href').slice(1)), `${a.querySelector('.sign-a')?.textContent || ''} · ${a.querySelector('.sign-t')?.textContent || ''}`.replace(/^ · /, '')));
+      $$('[data-stop]').forEach((s) => addStop(s, s.dataset.stop || ''));
+      stops2.sort((a, b) => top(a.el) - top(b.el));
       const spy = (links) => {
         const line = window.scrollY + window.innerHeight * 0.32;
         let on = null;
         links.forEach((a) => { const t = document.getElementById(a.getAttribute('href').slice(1)); if (t && t.offsetTop <= line) on = a; });
         return on;
       };
-      const paint = () => {
-        const sign = spy(signs);
-        const rail = !sign && spy(railLinks);
-        const label = sign ? `${sign.querySelector('.sign-a')?.textContent || ''} · ${sign.querySelector('.sign-t')?.textContent || ''}`.replace(/^ · /, '') : rail ? `${fallback} · ${rail.textContent.replace(/^\s*\d+\s*/, '').trim()}` : fallback;
-        out.forEach((el) => { if (el.textContent !== label) el.textContent = label; });
+      /* the station rail follows the reader. It is sticky for 4,776px of
+         /loop; showing "1 Count · 2 Queue · 3 Approve" for all of it while
+         the dock underneath says Cook is leftover desktop chrome. Scrolling
+         the rail's own scroller — not scrollIntoView — keeps the page still. */
+      let followed = null;
+      const follow = () => {
+        if (!railBox) return;
+        const a = railBox.querySelector('a[aria-current]');
+        if (!a || a === followed) return;
+        followed = a;
+        const max = railBox.scrollWidth - railBox.clientWidth;
+        if (max <= 4) return;
+        const want = a.offsetLeft - (railBox.clientWidth - a.offsetWidth) / 2;
+        railBox.scrollTo({ left: Math.max(0, Math.min(max, want)), behavior: calm.matches ? 'auto' : 'smooth' });
       };
-      let t = 0;
-      window.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(paint, 80); }, { passive: true });
+      const paint = () => {
+        const line = window.scrollY + window.innerHeight * 0.32;
+        let label = fallback;
+        if (foot && top(foot) <= line) label = `${fallback} · The receipt`;
+        else {
+          const rail = railLinks.length ? spy(railLinks) : null;
+          if (rail) label = `${fallback} · ${rail.textContent.replace(/^\s*\d+\s*/, '').trim()}`;
+          else { let here = null; for (const s of stops2) { if (top(s.el) <= line) here = s; } if (here) label = here.label; }
+        }
+        out.forEach((el) => { if (el.textContent !== label) el.textContent = label; });
+        follow();
+      };
+      let tick = false;
+      window.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(() => { tick = false; paint(); }); } }, { passive: true });
+      window.addEventListener('resize', paint, { passive: true });
+      /* opening or closing an aisle moves every stop below it */
+      document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.fold-s')) requestAnimationFrame(paint); });
       paint();
       /* keyboard: ←/→ move between aisles, Home to the front */
       const stops = signs.map((a) => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
@@ -409,6 +460,30 @@
       btn.addEventListener('click', () => { if (!pal.hidden) { inp.value = ''; filter(); } });
     };
 
+    /* ── the receipt's groups: open everywhere, closed on a phone ─────────
+       The markup ships <details open>, so with scripting off, on a printer
+       and above 640px the whole fifteen-line list is present — nothing is
+       ever removed at a width. Below 640 it closes what the reader has not
+       opened themselves, which turns 688px of duplicated navigation into
+       two subtotal lines. A reader who opens one keeps it open across a
+       rotation; beforeprint opens them all and never takes that back,
+       because a printed receipt with a collapsed section is a bad receipt. */
+    const rcGroups = () => {
+      const ds = $$('.rc-d');
+      if (!ds.length) return;
+      const mq = window.matchMedia('(max-width: 640px)');
+      let printing = false;
+      const sync = () => ds.forEach((d) => { d.open = printing || !mq.matches || d.dataset.kept === '1'; });
+      ds.forEach((d) => d.addEventListener('toggle', () => {
+        if (printing || !mq.matches) return;
+        d.dataset.kept = d.open ? '1' : '';
+      }));
+      mq.addEventListener('change', sync);
+      window.addEventListener('beforeprint', () => { printing = true; sync(); });
+      window.addEventListener('afterprint', () => { printing = false; sync(); });
+      sync();
+    };
+
     /* ── the receipt prints itself as it enters view ─────────────────────── */
     const receipt = () => {
       const rc = $('[data-receipt]');
@@ -466,7 +541,7 @@
       });
     };
 
-    where(); ring(); fan(); scan(); counters(); par(); approve(); allergen(); reserve(); prices(); stores(); ladder(); cook(); palette(); receipt(); showMe(); legend(); stickers();
+    where(); ring(); fan(); scan(); counters(); par(); approve(); allergen(); reserve(); prices(); stores(); ladder(); cook(); palette(); rcGroups(); receipt(); showMe(); legend(); stickers();
   };
   if (window.PHO) init(); else document.addEventListener('pho:ready', init, { once: true });
 })();
