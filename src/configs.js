@@ -43,8 +43,8 @@ export const CONFIGS = {
     description: 'Stock by zone, dated perishables, a weekly menu checked against who lives there, a buy queue under your policy, and receipts that land prices back on the shelf.',
     preloadFonts: ['fraunces.woff2', 'hanken-grotesk.woff2'],
     legalLine: LEGAL,
-    cta: { primary: 'Start free', primaryHref: 'https://careshop.app/signup', nav: 'Start free', secondary: 'See Today' },
-    signIn: { label: 'Sign in', href: 'https://careshop.app/login' },
+    cta: { primary: 'Start free', primaryHref: 'https://app.careshop.app/signup', nav: 'Start free', secondary: 'See Today' },
+    signIn: { label: 'Sign in', href: 'https://app.careshop.app/login' },
     appPaths: ['/signup', '/login', '/features', '/pricing', '/contact'],
     nav: [
       { id: 'loop', label: 'The loop' },

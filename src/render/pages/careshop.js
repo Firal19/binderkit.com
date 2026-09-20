@@ -18,6 +18,8 @@ import { stockPage } from './careshop/stock.js';
 import { rulesPage } from './careshop/rules.js';
 import { aboutPage } from './careshop/about.js';
 import { writePage } from './careshop/write.js';
+import { featuresPage } from './careshop/features.js';
+import { pricingPage } from './careshop/pricing.js';
 
 export { header, footer };
 
@@ -349,6 +351,8 @@ ${footer(cfg, p, { page: 'home', fine: find('foot').disclaimer })}`;
 }
 
 export const pages = [
+  { path: 'features', title: 'Features', description: 'Every station on the loop, the rule layer beside them, who uses it on what device, and the list of what this product refuses to do.', render: featuresPage },
+  { path: 'pricing', title: 'Pricing', description: 'Free, Pro at nineteen a house, Scale at thirty-seven — what a plan counts, and the ladder out of the kitchen into the whole house.', render: pricingPage },
   { path: 'loop', title: 'The loop', description: 'Count, queue, approve, shop, receipt, stock, cook — seven stations, six screens, and the house’s own data moving around them without anyone re-typing it.', render: loopPage },
   { path: 'stock', title: 'Stock', description: 'Stock by zone, the par you set, Expiry Watch with the value at risk, and the reserve target — days times beds times the quantity per bed per day.', render: stockPage },
   { path: 'rules', title: 'The rules', description: 'The ten Oregon citations CareShop explains today, how sure we are about each, and what will not return.', render: rulesPage },
