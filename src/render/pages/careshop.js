@@ -38,12 +38,13 @@ export const RING = [
   ['Approve', 'queue', 'Auto under the threshold, a manager above; the rule is recorded.'],
   ['Shop', 'queue', 'Aisle order at that shop. Works with no signal.'],
   ['Receipt', 'queue', 'Closing the run is the only moment stock rises from a shop.'],
-  ['Stock', 'stock', 'On hand is never typed. It moves through the ledger.'],
+  ['Stock', 'stock', 'On hand is never typed. It moves through the record.'],
   ['Cook', 'cook', 'Complete, and stock goes down — once.'],
 ];
 
 const TILES = {
-  stock: { t: 'Stock, by zone', d: 'Pantry, fridge, freezer, reserve — in the walk order the house sets. On hand is never typed; it moves through the ledger, with an actor and a reason.', tag: 'Scan · count · par' },
+  today: { t: 'Today', d: 'The first screen after sign-in. A caregiver sees their shift; a manager sees every house. Restock, expiry, dinner — what the house needs.', tag: 'Two briefings · one day' },
+  stock: { t: 'Stock, by zone', d: 'Pantry, fridge, freezer, reserve — in the walk order the house sets. On hand is never typed; it moves through the record, with an actor and a reason.', tag: 'Scan · count · par' },
   queue: { t: 'The queue', d: 'What to buy and nothing else. Each line carries where it came from, who asked, who approved, and the cheapest store on the price ledger.', tag: 'Eight purchasing rules' },
   cook: { t: 'Cook mode', d: 'Today’s prep in the house’s own time zone, timers in the steps, the allergen check before plating. Complete, and stock goes down — once.', tag: 'Tray notes rendered, never stored' },
   shop: { t: 'Shopping mode', d: 'An aisle-ordered list, priced by store. A pick becomes Purchased with the real store and the real cost. Picks queue offline and never count twice.', tag: 'Works with no signal' },
@@ -72,7 +73,7 @@ const phone = (key, cls = '', opts = {}) => `<div class="ph ${cls}" data-phone="
 
 /* ── the hero: the headline, the fan, the scanner ─────────────────────── */
 function hero(cfg, p) {
-  const fanKeys = [['expiry', 'is-l'], ['stock', 'is-c'], ['buy', 'is-r']];
+  const fanKeys = [['today', 'is-l'], ['stock', 'is-c'], ['buy', 'is-r']];
   return `<section class="hero" id="top" aria-labelledby="h1">
     <div class="hero-wash" aria-hidden="true"></div>
     <div class="wrap hero-in">
@@ -82,7 +83,7 @@ function hero(cfg, p) {
         <p class="lede">${esc(p.lede)}</p>
         <div class="ctas">
           <a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="hero"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a>
-          <a class="btn lg" href="#loop">${ic('pot', 18)}${esc(cfg.cta.secondary)}</a>
+          <a class="btn lg" href="#today">${ic('clock', 18)}${esc(cfg.cta.secondary)}</a>
           <a class="signin-l" href="${esc(cfg.signIn.href)}">Already on CareShop? Sign in</a>
         </div>
         <p class="fine">Free to start — one house, up to three people, you included. No card to begin. Installs on iOS and Android.</p>
@@ -147,6 +148,34 @@ function loop() {
   </div>`);
 }
 
+/* ── Today · the live home ────────────────────────────────────────────── */
+function today() {
+  const t = TILES.today;
+  return sec('today', 'briefing', `<div class="wrap">
+    <div class="head">${sticker('clock', t.tag)}${h2('today', t.t + '.', t.d)}</div>
+    <div class="aisle-g is-wide">
+      <div class="aisle-ph is-pair" data-scrollx>
+        <figure>
+          <div class="crop">${phone('today')}</div>
+          <figcaption class="ph-cap">A caregiver · Willow House</figcaption>
+        </figure>
+        <figure>
+          <div class="crop">${phone('today-mgr')}</div>
+          <figcaption class="ph-cap">A manager · every house</figcaption>
+        </figure>
+      </div>
+      <div class="aisle-d">
+        <ul class="brief-roles">
+          <li><b>A caregiver sees their shift.</b><span>Cook today, what is short, what is dated — one house, in the house’s own time zone.</span></li>
+          <li><b>A manager sees every house.</b><span>The same briefing, rolled up: restock across houses, the cost of the next run, the reserve gaps.</span></li>
+          <li><b>Restock, expiry, dinner.</b><span>Open it after sign-in. Cook from it. A shortfall files into the queue from it, carrying its origin.</span></li>
+        </ul>
+        <a class="more" href="/loop">${ic('arrow', 16)}Then the loop — seven stations, six screens</a>
+      </div>
+    </div>
+  </div>`);
+}
+
 /* ── Aisle 2 · stock ──────────────────────────────────────────────────── */
 function stock() {
   const t = TILES.stock;
@@ -163,6 +192,7 @@ function stock() {
 function queue() {
   const s = find('screen');
   const t = TILES.queue;
+  const sh = screen('shop');
   return sec('queue', 'queue', `<div class="wrap">
     <div class="head">${sticker('cart', 'Aisle 3 · ' + t.tag)}${h2('queue', s.heading, s.sub)}</div>
     <div class="aisle-g is-rev">
@@ -170,10 +200,13 @@ function queue() {
       <div class="aisle-d">${approveDemo()}${priceDemo()}</div>
     </div>
     <div class="doors"><span class="strip-l">${esc(s.strip.label)}</span><div class="doors-r" data-scrollx>${s.strip.cells.map((c, i) => `<span class="door-c"><span class="door-n">${i + 1}</span>${esc(c)}</span>`).join('')}</div><p class="doors-f">${esc(s.strip.foot)}</p></div>
-    <div class="shopq">
-      <div class="shopq-t">${sticker('store', TILES.shop.tag)}<h3>${esc(TILES.shop.t)}</h3><p>${esc(TILES.shop.d)}</p>
-        <button type="button" class="btn" data-print>${ic('print', 18)}Print the list</button></div>
-      ${storeDemo()}
+    <div class="aisle-g shopq">
+      <div class="aisle-ph"><div class="crop">${phone('shop')}</div><p class="ph-cap">${esc(sh.foot)}</p></div>
+      <div class="aisle-d">
+        <div class="shopq-t">${sticker('store', TILES.shop.tag)}<h3>${esc(TILES.shop.t)}</h3><p>${esc(TILES.shop.d)}</p>
+          <button type="button" class="btn" data-print>${ic('print', 18)}Print the list</button></div>
+        ${storeDemo()}
+      </div>
     </div>
   </div>`);
 }
@@ -212,9 +245,11 @@ function reserve() {
 /* ── the record ───────────────────────────────────────────────────────── */
 function record() {
   const s = find('evidence');
+  const keep = new Set(['The resident record', 'Why initials are not a defence', 'The customer agreement', 'Tray notes']);
+  const blocks = s.blocks.filter((b) => keep.has(b.label));
   return sec('record', 'record', `<div class="wrap">
     <div class="head">${sticker('person', 'Residents')}${h2('record', s.heading, 'Diet tags, allergens, one texture level. Enough for a tray note and a menu check, and nothing more.')}</div>
-    <div class="ev">${s.blocks.slice(0, 6).map((b) => `<div class="ev-b ${b.wide ? 'is-wide' : ''}"><span class="strip-l">${esc(b.label)}</span>${b.quote ? `<p class="quote">${esc(b.quote)}</p>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}</div>`).join('')}</div>
+    <div class="ev">${blocks.map((b) => `<div class="ev-b ${b.wide ? 'is-wide' : ''}"><span class="strip-l">${esc(b.label)}</span>${b.quote ? `<p class="quote">${esc(b.quote)}</p>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}</div>`).join('')}</div>
     <div class="refused"><span class="strip-l">Nine things it refuses to do, and will not do under another name</span>
       <ul class="chips-l">${REFUSED.map(([t, why]) => `<li>${ic('x', 16)}<b>${esc(t)}</b><span>${esc(why)}</span></li>`).join('')}</ul>
     </div>
@@ -236,11 +271,11 @@ function kitchen(cfg) {
   return sec('kitchen', 'kitchen', `<div class="wrap kit-g">
     <div class="kit-v">
       <a class="door" href="${esc(cfg.signIn.href)}" aria-label="Sign in at careshop.app">
-        <span class="door-bar" aria-hidden="true"><i></i><i></i><i></i><span class="door-url"><b>yourhouse</b>.careshop.app</span></span>
+        <span class="door-bar" aria-hidden="true"><i></i><i></i><i></i><span class="door-url">careshop.app/login</span></span>
         <span class="door-body" aria-hidden="true">
           <span class="door-tile">C</span>
           <span class="door-name">careshop.app</span>
-          <span class="door-sub">Inventory &amp; compliance for residential care</span>
+          <span class="door-sub">The kitchen software for care homes</span>
           <span class="door-card">
             <span class="door-f">Username<span class="door-in is-on"></span></span>
             <span class="door-f">Password<span class="door-in"></span></span>
@@ -253,7 +288,7 @@ function kitchen(cfg) {
     </div>
     <div class="kit-t">
       ${sticker('house', 'Already on CareShop')}
-      ${h2('kitchen', 'Your kitchen has its own address.', 'Every organisation on CareShop lives at its own subdomain. Sign in with the username your admin gave you — or create an organisation, and the catalogue, the first house and the default storage zones are seeded before you add a thing. Free plan, no card.')}
+      ${h2('kitchen', 'Sign in at careshop.app.', 'One address for every house. Sign in with the username your admin gave you — or create an organisation, and the catalogue, the first house and the default storage zones are seeded before you add a thing. Free plan, no card.')}
       <div class="ctas">
         <a class="btn pri lg" href="${esc(cfg.signIn.href)}" data-cta="kitchen">${ic('house', 18)}Sign in</a>
         <a class="btn lg" href="${esc(cfg.cta.primaryHref)}">Create your organisation</a>
@@ -267,9 +302,16 @@ const questions = () => sec('questions', 'questions', `<div class="wrap q-g"><di
 
 function pricing(cfg, p) {
   const rows = [['Free', '$0', 'One house, up to three people. No card to begin.'], ...p.pricing.rows.filter(([n]) => n !== '3-day trial' && n !== 'Free')];
+  /* a tier's list is that tier's own sentence, broken where it is already a
+     list — nothing here is invented. The first line is the section's own
+     promise, which is true of every plan by definition. */
+  const lines = (d) => ['Every screen, every plan', ...d.split(/\.\s+/).flatMap((x) => {
+    const t = x.replace(/\.$/, '').trim();
+    return t.length > 40 ? t.split(/,\s+/) : [t];
+  }).filter(Boolean).map((t) => t.charAt(0).toUpperCase() + t.slice(1))];
   return sec('pricing', 'pricing', `<div class="wrap">
-    <div class="head">${sticker('tag', 'Price tags')}${h2('pricing', 'Nineteen dollars a house.', 'Every plan sees every screen; an action above your plan is shown with its cost, never silently blocked.')}</div>
-    <div class="tiers">${rows.map(([n, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-hole" aria-hidden="true"></span><span class="tier-n">${esc(n)}</span><span class="tier-p">${esc(price.replace(' / mo', ''))}<small>${price.includes('/ mo') ? ' / house / mo' : ''}</small></span><span class="tier-d">${esc(d)}</span><a class="btn ${i === 1 ? 'pri' : ''}" href="${esc(cfg.cta.primaryHref)}">${i === 0 ? 'Start free' : 'Start with ' + esc(n)}</a></div>`).join('')}</div>
+    <div class="head is-split">${sticker('tag', 'Price tags')}${h2('pricing', 'Nineteen dollars a house.', 'Every plan sees every screen; an action above your plan is shown with its cost, never silently blocked.')}</div>
+    <div class="tiers">${rows.map(([n, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}">${i === 1 ? '<span class="tier-flag">Most houses</span>' : ''}<span class="tier-n">${esc(n)}</span><span class="tier-p">${esc(price.replace(' / mo', ''))}<small>${price.includes('/ mo') ? ' / house / mo' : ''}</small></span><ul class="tier-f">${lines(d).map((t) => `<li><span class="tier-tick" aria-hidden="true"></span>${esc(t)}</li>`).join('')}</ul><a class="btn ${i === 1 ? 'pri' : ''}" href="${esc(cfg.cta.primaryHref)}">${i === 0 ? 'Start free' : 'Start with ' + esc(n)}</a></div>`).join('')}</div>
     <p class="fine">Sold on the web through Stripe Checkout; the app never presents a purchase sheet. Cancel in one tap, export any time.</p>
   </div>`);
 }
@@ -290,6 +332,7 @@ ${header(cfg, p, { page: 'home' })}
 ${hero(cfg, p)}
 ${stats()}
 ${loop()}
+${today()}
 ${stock()}
 ${queue()}
 ${cook()}
@@ -308,7 +351,7 @@ ${footer(cfg, p, { page: 'home', fine: find('foot').disclaimer })}`;
 export const pages = [
   { path: 'loop', title: 'The loop', description: 'Count, queue, approve, shop, receipt, stock, cook — seven stations, six screens, and the house’s own data moving around them without anyone re-typing it.', render: loopPage },
   { path: 'stock', title: 'Stock', description: 'Stock by zone, the par you set, Expiry Watch with the value at risk, and the reserve target — days times beds times the quantity per bed per day.', render: stockPage },
-  { path: 'rules', title: 'The rules', description: 'The ten Oregon citations CareShop explains today, how sure we are about each, what is specified and not yet built, and what was removed and will not return.', render: rulesPage },
-  { path: 'about', title: 'About', description: 'CareShop is live at careshop.app and used by real houses. It is one of four rooms in a family of software for licensed Oregon care homes, by Provider Hub Oregon.', render: aboutPage },
-  { path: 'write', title: 'Write to us', description: 'One inbox, read by the people who build CareShop. A question, a house that wants to switch, pricing, privacy — a person answers from the same address.', render: writePage },
+  { path: 'rules', title: 'The rules', description: 'The ten Oregon citations CareShop explains today, how sure we are about each, and what will not return.', render: rulesPage },
+  { path: 'about', title: 'About', description: 'CareShop is live at careshop.app and used by real houses. Kitchen software for licensed Oregon care homes, by Provider Hub Oregon.', render: aboutPage },
+  { path: 'write', title: 'Write to us', description: 'One inbox. A question, a house that wants to switch, pricing, privacy — a person answers from the same address.', render: writePage },
 ];

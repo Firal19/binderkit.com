@@ -1,7 +1,7 @@
 // /pricing, /about and /contact.
 
-import { esc, sec, h2, eyebrow, faq, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, find, shell, tierBlock, joinBlock } from './bits.js';
-import { contact, mailto, hello, byline, mark } from '../../shared.js';
+import { esc, sec, h2, eyebrow, faq, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, find, shell, tierBlock, joinBlock, BOUNDARY } from './bits.js';
+import { contact, mailto, hello, byline } from '../../shared.js';
 import { PRODUCTS } from '../../../data/brand.js';
 
 /* ── pricing ──────────────────────────────────────────────────────────── */
@@ -14,7 +14,7 @@ export const pricingPage = {
   render(cfg, p) {
     const s = find('pricing');
     return shell(cfg, p, { page: 'pricing', ids: new Set(['top', 'pricing', 'post', 'signup', 'billing', 'questions', 'join']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Pricing')}<h1 id="h1">${esc(s.heading)}</h1><p class="lede">${esc(EVERY_PLAN)}</p></div></section>
-${sec('pricing', 'pricing', `<div class="wrap">${tierBlock(p)}<p class="fine">${esc(s.note)}</p><p class="fine">${esc(p.pricing.note)}</p></div>`)}
+${sec('pricing', 'pricing', `<div class="wrap">${tierBlock(p)}<p class="fine">${esc(s.note)}</p></div>`)}
 ${sec('post', 'post', `<div class="wrap post-g">
   <div>${eyebrow('Job post')}${h2('post', 'One charge per post. It publishes when it is paid.', 'A subscription is per house. A post is per post — on every tier, including the trial, because a home that needs to hire should not have to upgrade to do it.')}</div>
   <ol class="flow-l">${[['Draft', 'invisible to everyone outside your organisation.'], ['Pay', 'the per-post charge — an unpaid posting stays a draft.', 'open'], ['Published', 'reachable without an account, at an opaque address that carries no organisation, house or sequence.'], ['Applications', 'arrive with her profile and her credentials as self-attested — one per person per posting, never ranked or scored.'], ['Hired', 'a staff record, onboarding open for that house’s track.', 'covered']].map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
@@ -32,24 +32,15 @@ ${sec('join', 'join', joinBlock(cfg, p))}`);
 export const aboutPage = {
   path: 'about',
   title: 'About',
-  description: 'Aidepost is the workforce record for Oregon care homes, one of four small products by Providerhub Oregon — and the only two-sided one.',
+  description: 'Aidepost is the workforce record for Oregon care homes: providers buy it, caregivers use it free.',
   render(cfg, p) {
     const ev = find('evidence');
     const closing = ev.closingBlocks;
-    const siblings = PRODUCTS.filter((x) => x.kind === 'mini' && x.id !== p.id);
     const umbrella = PRODUCTS.find((x) => x.id === 'pho');
-    return shell(cfg, p, { page: 'about', ids: new Set(['top', 'family', 'two', 'boundary', 'write']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('About')}<h1 id="h1">The workforce record, and nothing else.</h1><p class="lede">${esc(find('boundary').sub)}</p></div></section>
+    return shell(cfg, p, { page: 'about', ids: new Set(['top', 'two', 'boundary', 'write']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('About')}<h1 id="h1">The workforce record, and nothing else.</h1><p class="lede">${esc(p.lede)}</p></div></section>
 ${sec('two', 'two-s', `<div class="wrap two-g">${closing.map((b) => `<div class="two-b"><h2 id="${b === closing[0] ? 'h-two' : 'h-two-b'}">${esc(b.heading)}</h2><p>${esc(b.text)}</p></div>`).join('')}</div>`)}
-${sec('family', 'family', `<div class="wrap">
-  <div class="head">${eyebrow('The family')}${h2('family', find('family').heading, `${esc(umbrella.lede)}`)}</div>
-  <div class="fam-g">
-    ${siblings.map((s) => `<a class="fam" href="https://${esc(s.domain)}" rel="noopener"><span class="fam-mk">${mark(s.id, 40, { label: false })}</span><b>${esc(s.name)}</b><span class="fam-d">${esc(s.descriptor)}</span><span class="fam-o">${esc(s.owns)}</span></a>`).join('')}
-    <div class="fam is-us"><span class="fam-mk">${mark(p.id, 40, { label: false })}</span><b>${esc(p.name)}</b><span class="fam-d">${esc(p.descriptor)}</span><span class="fam-o">${esc(p.owns)} · you are here</span></div>
-  </div>
-  <div class="fam-by"><p class="fine">${esc(find('ladder').heading)} ${esc(find('ladder').sub)} ${esc(find('ladder').footer)}</p>${byline(false)}</div>
-</div>`)}
-${sec('boundary', 'bound', `<div class="wrap"><div class="head">${eyebrow('Settings → About, in the product')}${h2('boundary', 'That sentence is not a tagline.')}</div><p class="boundary">${esc(find('boundary').pull.replace(/^.*?: /, '').replace(/^“|”$/g, ''))}</p><p class="fine">It ships inside the product, at Settings → About, in these words.</p></div>`)}
-${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Write to a person.')}<p class="sub">One inbox, read by the people who build this.</p></div><div class="write-a"><a class="btn pri lg" href="/contact">${ic('mail', 18, { pin: false })}Contact</a><a class="btn lg" href="${mailto(cfg)}">${esc(hello(cfg))}</a></div></div>`)}`);
+${sec('boundary', 'bound', `<div class="wrap"><div class="head">${h2('boundary', 'What Aidepost will not do.')}</div><p class="boundary">${esc(BOUNDARY)}</p></div>`)}
+${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Made in Oregon.')}<p class="sub">${esc(umbrella.name)} — ${esc(umbrella.descriptor.toLowerCase())}. One inbox, read by a person.</p>${byline(false)}</div><div class="write-a"><a class="btn pri lg" href="/contact">${ic('mail', 18, { pin: false })}Contact</a><a class="btn lg" href="${mailto(cfg)}">${esc(hello(cfg))}</a></div></div>`)}`);
   },
 };
 
@@ -57,9 +48,9 @@ ${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Write to 
 export const contactPage = {
   path: 'contact',
   title: 'Contact',
-  description: 'Write to the people who build Aidepost. One inbox, one person answers, from the same address.',
+  description: 'Write to a person. One inbox, one person answers, from the same address.',
   render(cfg, p) {
-    return shell(cfg, p, { page: 'contact', ids: new Set(['top', 'contact']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Contact')}<h1 id="h1">Write to a person.</h1><p class="lede">Every message lands in one inbox, read by the people who build this. You get an answer from the same address, not a ticket number.</p></div></section>
+    return shell(cfg, p, { page: 'contact', ids: new Set(['top', 'contact']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Contact')}<h1 id="h1">Write to a person.</h1><p class="lede">Every message lands in one inbox. You get an answer from the same address.</p></div></section>
 ${sec('contact', 'contact-s', `<div class="wrap contact-g">
   <div class="contact-t">
     <ul class="contact-l">

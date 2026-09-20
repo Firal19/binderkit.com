@@ -98,7 +98,7 @@ function shift() {
       </li>`).join('');
   return sec('shift', 'shift', `<div class="wrap">
     <div class="head shift-head">
-      <div>${eyebrow('One shift, on one phone')}${h2('shift', 'The shift, hour by hour.', 'This is what a caregiver does with Cohort between signing in and signing out. Nothing on it is a score, and nothing on it is red.')}</div>
+      <div>${h2('shift', 'The shift, hour by hour.', 'This is what a caregiver does with Cohort between signing in and signing out. Nothing on it is a score.')}</div>
       <button class="keysb" type="button" aria-controls="keys" aria-expanded="false" data-focus=".keys-x">${ic('keyboard', 18)}<span>Keys</span><kbd>?</kbd></button>
     </div>
     <div class="tl-g">
@@ -123,7 +123,7 @@ function stops() {
       ${gate(2, 'The PRN interval gate', 'An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.', 'Two conditions, not one — before the order’s minimum interval, or beyond its maximum in twenty-four hours. The stop shows when the last dose was given and when the next one is permitted.')}
     </div>
     <p class="pull">${esc(loop.pull)}</p>
-    <div class="machines"><span class="strip-l">Four state machines, and what each one refuses</span>
+    <div class="machines"><span class="strip-l">Four records, and what each one will not do</span>
       ${loop.machines.map(([n, seq]) => `<div class="machine"><b>${esc(n)}</b><span>${esc(seq)}</span></div>`).join('')}
     </div>
   </div>`);
@@ -133,13 +133,13 @@ function stops() {
 function refuses() {
   return sec('refuses', 'refuse', `<div class="wrap">
     <div class="head ref-head">
-      <div>${eyebrow('The manifesto')}${h2('refuses', 'What Cohort will not do, and why.', 'Eleven refusals. Each one is a position, not a missing feature, and each carries its reason.')}</div>
-      <button class="printb" type="button" data-print data-print-only="refuses">${ic('print', 18)}<span>Print the manifesto</span></button>
+      <div>${h2('refuses', 'What Cohort will not do, and why.', 'Eleven refusals. Each one is a position, not a missing feature, and each carries its reason.')}</div>
+      <button class="printb" type="button" data-print data-print-only="refuses">${ic('print', 18)}<span>Print this list</span></button>
     </div>
     <ol class="ref-l">${REFUSALS.map(([t, why], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b><span>${esc(why)}</span></div></li>`).join('')}</ol>
     <div class="notstored"><span class="strip-l">Not stored, by design</span><p>${NOT_STORED.map(esc).join(' · ')}.</p></div>
     <p class="boundary">Cohort keeps the residents’ record. It does not schedule staff, run the kitchen, or build binders.</p>
-    <p class="ref-print" aria-hidden="true">Cohort · The manifesto · cohorthome.app · by Providerhub Oregon</p>
+    <p class="ref-print" aria-hidden="true">Cohort · What it will not do · cohorthome.app · by Providerhub Oregon</p>
   </div>`);
 }
 
@@ -159,7 +159,7 @@ function record() {
         <span class="cmp-h" aria-hidden="true">${ic('handoff', 16)}</span>
         <span class="cmp-l cmp-la" aria-hidden="true">Paper</span><span class="cmp-l cmp-lb" aria-hidden="true">Cohort</span>
       </div>
-      <p class="cmp-cap">Left, a hand-written MAR line: who, when and whether, if you can read it. Right, the same dose in Cohort: a state word, a stamp, and no red.</p>
+      <p class="cmp-cap">Left, a hand-written MAR line: who, when and whether, if you can read it. Right, the same dose in Cohort: a state word and a stamp.</p>
     </div>
     <div class="ev">${s.blocks.map((b) => `<div class="ev-b"><span class="strip-l">${esc(b.label)}</span>${b.quote ? `<p class="quote">${esc(b.quote)}</p>` : ''}${b.text ? `<p>${esc(b.text)}</p>` : ''}</div>`).join('')}</div>
     <div class="ev-cl">${s.closingBlocks.map((b) => `<div class="note">${b.heading ? `<h3>${esc(b.heading)}</h3>` : ''}<p>${esc(b.text)}</p></div>`).join('')}</div>
@@ -244,7 +244,7 @@ function pricing(cfg, p) {
       <div class="note"><h3>${esc(SIGNUP_SIX.heading)}</h3><ol class="arrow">${SIGNUP_SIX.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol><p class="cap">${esc(SIGNUP_SIX.tail)}</p></div>
       <div class="note"><h3>${esc(BILLING_STATES.heading)}</h3><dl class="defs">${BILLING_STATES.rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></div>
     </div>
-    <p class="more"><a href="/pricing">${ic('tag', 16)}<span>Pricing in full — the trial, the six steps, the billing states</span>${ic('right', 16)}</a></p>
+      <p class="more"><a href="/pricing">${ic('tag', 16)}<span>Pricing in full — the trial and how signup works</span>${ic('right', 16)}</a></p>
   </div>`);
 }
 

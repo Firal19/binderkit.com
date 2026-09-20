@@ -2,7 +2,6 @@
 // phone tab bar, the command palette, and the end-of-shift footer.
 
 import { esc, mark, social, byline, hello, mailto } from '../../shared.js';
-import { MINIS } from '../../../data/brand.js';
 import { ic } from '../../icons/cohort.js';
 import { APP, STOPS, PAGE_LINKS, VERBS, DAY, hid, find } from './data.js';
 
@@ -44,7 +43,7 @@ function sheet(cfg, p, opts) {
         </ul>
       </nav>
       <div class="ssheet-t">
-        <button class="shiftb" type="button" data-mode-toggle data-theme-dark="#0E1F1E" data-theme-light="#F9F4EC"><span class="shiftb-d">${ic('sun', 16)}Day shift</span><span class="shiftb-n">${ic('moon', 16)}Night shift</span></button>
+        <button class="shiftb" type="button" data-mode-toggle data-theme-dark="#0E1F1E" data-theme-light="#F9F4EC"><span class="shiftb-d">${ic('sun', 16)}<span class="shiftb-l">Day shift</span></span><span class="shiftb-n">${ic('moon', 16)}<span class="shiftb-l">Night shift</span></span></button>
         <button class="textb" type="button" data-text-toggle aria-pressed="false">${ic('text', 18)}<span>Larger text</span></button>
         <button class="textb" type="button" data-share data-share-title="Cohort — ${esc(p.descriptor)}">${ic('share', 18)}<span>Share</span></button>
       </div>
@@ -73,9 +72,11 @@ function tabs(cfg, p, opts) {
 /* ── the header: the time rail ─────────────────────────────────────────── */
 export function header(cfg, p, opts = {}) {
   const home = isHome(opts);
+  const rail = home ? STOPS.filter((s) => s.id !== 'join') : PAGE_LINKS;
+  const stop = (href, hr, label, current) => `<a class="rail-stop" href="${href}" ${current ? 'aria-current="page"' : ''}><span class="rail-hr">${hr}</span><span class="rail-tick" aria-hidden="true"></span><span class="rail-l">${esc(label)}</span></a>`;
   const stops = home
-    ? STOPS.map((s) => `<a class="rail-stop" href="#${s.id}"><span class="rail-hr">${s.hr ? esc(s.hr) : ic(s.icon, 14)}</span><span class="rail-tick" aria-hidden="true"></span><span class="rail-l">${esc(s.label)}</span></a>`).join('')
-    : PAGE_LINKS.map((l) => `<a class="rail-stop" href="/${l.path}" ${opts.page === l.path ? 'aria-current="page"' : ''}><span class="rail-hr">${ic(l.icon, 14)}</span><span class="rail-tick" aria-hidden="true"></span><span class="rail-l">${esc(l.label)}</span></a>`).join('');
+    ? rail.map((s) => stop(`#${s.id}`, s.hr ? esc(s.hr) : '', s.label, false)).join('')
+    : rail.map((l) => stop(`/${l.path}`, '', l.label, opts.page === l.path)).join('');
   return `<header class="tr" id="top-bar" data-page="${esc(opts.page || 'home')}">
     <div class="wrap tr-in">
       <a class="brand" href="/" aria-label="${esc(p.name)} — home"><span class="brand-tile">${mark(p.id, 26, { label: false })}</span><span class="brand-n">${esc(p.name)}</span></a>
@@ -84,9 +85,11 @@ export function header(cfg, p, opts = {}) {
         ${stops}
       </nav>
       <div class="tr-r">
-        <button class="tr-k" type="button" aria-controls="pal" aria-expanded="false" data-focus=".pal-in" aria-label="Jump to a verb or a page"><span class="tr-k-i">${ic('search', 17)}</span><kbd>⌘K</kbd></button>
-        <button class="tr-a" type="button" data-text-toggle aria-pressed="false" aria-label="Larger text">${ic('text', 18)}</button>
-        <button class="shiftb" type="button" data-mode-toggle data-theme-dark="#0E1F1E" data-theme-light="#F9F4EC"><span class="shiftb-d">${ic('sun', 15)}Day shift</span><span class="shiftb-n">${ic('moon', 15)}Night shift</span></button>
+        <div class="tr-tools">
+          <button class="tr-k" type="button" aria-controls="pal" aria-expanded="false" data-focus=".pal-in" aria-label="Search">${ic('search', 17)}</button>
+          <button class="shiftb" type="button" data-mode-toggle data-theme-dark="#0E1F1E" data-theme-light="#F9F4EC" aria-label="Switch to night shift"><span class="shiftb-d">${ic('sun', 15)}<span class="shiftb-l">Day</span></span><span class="shiftb-n">${ic('moon', 15)}<span class="shiftb-l">Night</span></span></button>
+        </div>
+        <span class="tr-rule" aria-hidden="true"></span>
         <a class="signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>
         <a class="stampb" href="${home ? '#join' : '/#join'}" data-cta="nav">${esc(cfg.cta.nav)}</a>
         <button class="tr-menu" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open the shift sheet" data-label-close="Close the shift sheet" data-lock data-focus=".ssheet-x">${ic('menu', 22)}</button>
@@ -102,31 +105,30 @@ export function header(cfg, p, opts = {}) {
 const RING_TEXT = 'LOGGED BY COHORT · COHORTHOME.APP · LOGGED BY COHORT · COHORTHOME.APP · ';
 const stampLogo = (p) => `<div class="stampl" aria-hidden="true">
   <svg class="stampl-r" viewBox="0 0 132 132" aria-hidden="true"><defs><path id="ring" d="M66 66m-49 0a49 49 0 1 1 98 0a49 49 0 1 1-98 0"/></defs><circle cx="66" cy="66" r="62" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="66" cy="66" r="57" fill="none" stroke="currentColor" stroke-width=".75" stroke-dasharray="2 3"/><circle cx="66" cy="66" r="38" fill="none" stroke="currentColor" stroke-width="1.25"/><text class="stampl-t" font-size="9.2" letter-spacing="2.1"><textPath href="#ring">${RING_TEXT}</textPath></text></svg>
-  <span class="stampl-m">${mark(p.id, 40, { label: false, mono: true })}</span>
+  <span class="stampl-m">${mark(p.id, 80, { label: false, mono: true })}</span>
   <span class="stampl-c" data-clock>--:--</span>
 </div>`;
 
 export function footer(cfg, p, opts = {}) {
   const home = isHome(opts);
-  const sibs = MINIS.filter((m) => m.id !== p.id);
   const col = (id, title, inner) => `<details class="eos-d" id="eos-${id}" open><summary><span class="eos-k">${esc(title)}</span>${ic('down', 18, { cls: 'eos-chev' })}</summary><div class="eos-b">${inner}</div></details>`;
   const link = (href, t, ext = false) => `<li><a href="${esc(href)}" ${ext ? 'rel="noopener"' : ''}>${esc(t)}${ext ? ic('ext', 13, { cls: 'eos-ext' }) : ''}</a></li>`;
   const disclaimer = find('foot').disclaimer;
   return `<footer class="eos" id="foot" aria-labelledby="h-foot">
     <div class="wrap">
       <div class="eos-head">
-        <div>${`<span class="eyebrow">18:45 · Composed from the day</span>`}<h2 class="eos-h" id="h-foot">End of shift.</h2></div>
-        <p class="eos-sub">The sheet a shift leaves for the next one: what this site is, where it goes, and how to reach a person.</p>
+        <div><span class="eos-when">18:45</span><h2 class="eos-h" id="h-foot">End of shift.</h2></div>
+        <p class="eos-sub">What this site is, where it goes, and how to reach a person.</p>
       </div>
       <div class="eos-g">
         ${col('product', 'Product', `<ul class="eos-l">${STOPS.map((s) => link(at(opts, s.id), s.hr ? `${s.hr} · ${s.label}` : s.label)).join('')}${link('/features', 'Everything Cohort does')}${link('/security', 'Security')}</ul>`)}
-        ${col('company', 'Company', `<ul class="eos-l">${link('/about', 'About — one house, four rooms')}${link('/contact', 'Contact')}${link('/privacy', 'Privacy')}${link('https://providerhub.us', 'providerhub.us', true)}${link(APP, 'Sign in to your house', true)}</ul>`)}
-        ${col('family', 'Family', `<ul class="eos-l eos-fam">${sibs.map((m) => `<li><a href="https://${esc(m.domain)}" rel="noopener"><span class="eos-mk">${mark(m.id, 22, { label: false })}</span><span class="eos-fn">${esc(m.name)}</span><span class="eos-fd">${esc(m.domain)} · ${esc(m.owns.toLowerCase())}</span></a></li>`).join('')}</ul>`)}
-        ${col('write', 'Write to us', `<p class="eos-mail"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy the address">${ic('copy', 16)}</button></p><p class="eos-fine">One inbox, read by the people who build this.</p>${social(p.id, { text: true, cls: 'stamps', size: 18, label: 'Cohort on social' })}`)}
+        ${col('company', 'Company', `<ul class="eos-l">${link('/about', 'About')}${link('/contact', 'Contact')}${link('/privacy', 'Privacy')}${link('https://providerhub.us', 'providerhub.us', true)}${link(APP, 'Sign in to your house', true)}</ul>`)}
+        ${col('help', 'Help', `<ul class="eos-l">${link('/features', 'Features')}${link('/security', 'Security')}${link('/pricing', 'Pricing')}${link('/contact', 'Write to a person')}</ul>`)}
+        ${col('write', 'Write to us', `<p class="eos-mail"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy the address">${ic('copy', 16)}</button></p><p class="eos-fine">One inbox. A person answers.</p>${social(p.id, { text: true, cls: 'stamps', size: 18, label: 'Cohort on social' })}`)}
       </div>
       <div class="eos-sign">
         <div class="eos-out">
-          <span class="eos-so">Signed out at <b data-clock>--:--</b></span>
+          <span class="eos-so">Oregon · <b data-clock>--:--</b></span>
           <p class="eos-fine">${esc(disclaimer)}</p>
         </div>
         ${stampLogo(p)}

@@ -14,6 +14,7 @@ export const screen = (key) => S.screens.find((s) => s.key === key);
 /* the home aisles, in walk order; the "price" is what the aisle holds */
 export const AISLES = [
   { id: 'loop', n: 'Aisle 1', t: 'The loop', qty: '7 stations' },
+  { id: 'today', n: 'Home', t: 'Today', qty: '2 briefings' },
   { id: 'stock', n: 'Aisle 2', t: 'Stock', qty: '4 zones' },
   { id: 'queue', n: 'Aisle 3', t: 'The queue', qty: '5 origins' },
   { id: 'kitchen', n: 'Front desk', t: 'Your kitchen', qty: '1 door' },
@@ -24,7 +25,7 @@ export const PAGES_NAV = [
   { path: 'loop', n: 'Aisle 1', t: 'The loop', qty: '6 screens', icon: 'pot' },
   { path: 'stock', n: 'Aisle 2', t: 'Stock', qty: '2 tools', icon: 'shelf' },
   { path: 'rules', n: 'Aisle 3', t: 'The rules', qty: '10 lines', icon: 'book' },
-  { path: 'about', n: 'The store', t: 'About', qty: '4 rooms', icon: 'store' },
+  { path: 'about', n: 'The store', t: 'About', qty: 'who we are', icon: 'store' },
   { path: 'write', n: 'The till', t: 'Write', qty: '1 inbox', icon: 'mail' },
 ];
 
@@ -47,15 +48,15 @@ export function header(cfg, p, opts = {}) {
     </a>
     <nav class="strip" id="aisles" aria-label="Aisles" ${home ? 'data-spy' : ''} data-scrollx>${signs}</nav>
     <div class="aisle-r">
-      <button class="kbtn" type="button" aria-controls="palette" aria-expanded="false" aria-label="Open the command palette" data-focus=".pal-in" data-label-open="Open the command palette" data-label-close="Close the command palette"><kbd>⌘</kbd><kbd>K</kbd></button>
+      <button class="kbtn" type="button" aria-controls="palette" aria-expanded="false" aria-label="Search" data-focus=".pal-in" data-label-open="Search" data-label-close="Close search">${ic('search', 18)}</button>
       <a class="signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>
-      <button class="cord" type="button" data-mode-toggle aria-pressed="false" aria-label="Switch to dark" data-theme-light="${esc(cfg.og.bg)}" data-theme-dark="#1b1613">${ic('cord', 18)}<span class="cord-t">Lights</span><span class="cord-pull" aria-hidden="true"></span></button>
+      <button class="cord" type="button" data-mode-toggle aria-pressed="false" aria-label="Lights" data-theme-light="${esc(cfg.og.bg)}" data-theme-dark="#1b1613">${ic('cord', 18)}<span class="cord-t">Lights</span><span class="cord-pull" aria-hidden="true"></span></button>
       <a class="btn pri tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="nav"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.nav)}</a>
       <button class="tally" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Open the menu" data-lock data-focus=".drawer-close" data-label-open="Open the menu" data-label-close="Close the menu">${ic('receipt', 22)}<span class="tally-n" aria-hidden="true">${AISLES.length + PAGES_NAV.length}</span></button>
     </div>
   </div>
-  ${drawer(cfg, p, page)}
-</header>`;
+</header>
+${drawer(cfg, p, page)}`;
 }
 
 /* the receipt drawer — the phone's menu, printed as a till slip */
@@ -94,10 +95,10 @@ export function footer(cfg, p, opts = {}) {
   <div class="wrap till-in">
     <div class="rc rc-foot" data-receipt>
       <div class="rc-top">
-        <span class="rc-logo">${mark(p.id, 44, { label: false })}</span>
+        <span class="rc-logo">${mark(p.id, 80, { label: false })}</span>
         <b class="rc-store">${esc(p.name.toUpperCase())}</b>
         <span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span>
-        <span class="rc-meta"><span data-clock="date">today</span> · <span data-clock>now</span> · REG 01 · ${esc(cfg.domain.toUpperCase())}</span>
+        <span class="rc-meta"><span data-clock="date">today</span> · <span data-clock>now</span> · ${esc(cfg.domain.toUpperCase())}</span>
       </div>
       <nav class="rc-lines" aria-label="Footer">
         ${AISLES.map((a) => line(`${pre}#${a.id}`, a.t.toUpperCase(), a.qty)).join('')}
@@ -105,7 +106,7 @@ export function footer(cfg, p, opts = {}) {
         ${line('/privacy', 'PRIVACY', 'what it holds')}
         ${line('https://careshop.app/features', 'FEATURES', 'in the app', true)}
         ${line('https://careshop.app/pricing', 'PRICING', 'in the app', true)}
-        ${line(cfg.signIn.href, 'SIGN IN', 'yourhouse', true)}
+        ${line(cfg.signIn.href, 'SIGN IN', 'careshop.app', true)}
       </nav>
       <div class="rc-tear" aria-hidden="true"></div>
       <div class="rc-sum">
@@ -116,17 +117,18 @@ export function footer(cfg, p, opts = {}) {
       </div>
       <div class="rc-block">
         <span class="rc-h">STICKERS</span>
-        ${social(p.id, { cls: 'rc-soc', size: 16, label: 'CareShop on social' })}
+        ${social(p.id, { cls: 'rc-soc', size: 16, text: true, label: 'CareShop on social' })}
       </div>
       <div class="rc-mail">
         <span class="rc-h">WRITE TO A PERSON</span>
         <a class="rc-addr" href="${mailto(cfg)}">${ic('mail', 18)}${esc(hello(cfg))}</a>
         <span class="rc-verbs"><button type="button" class="rc-b" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 16)}Copy</button><button type="button" class="rc-b" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}">${ic('share', 16)}Share</button><a class="rc-b" href="/write">${ic('receipt', 16)}Write</a></span>
       </div>
-      <p class="rc-thanks">*** THANK YOU FOR SHOPPING ***</p>
+      <p class="rc-thanks">Thank you.</p>
       <a class="rc-tearlink" href="#main"><span aria-hidden="true">– – – – – </span>tear here · back to the top<span aria-hidden="true"> – – – – –</span></a>
       <div class="rc-by">${byline()}</div>
-      <p class="rc-fine">${esc(opts.fine || 'The rows on any screen shown here are sample data. Prices quoted for other products are their own published figures.')} ${esc(cfg.legalLine)}</p>
+      <p class="rc-fine">${esc(opts.fine || 'Screens on this page use sample data.')}</p>
+      <p class="rc-fine is-legal">${esc(cfg.legalLine)}</p>
     </div>
   </div>
 </footer>
@@ -149,6 +151,7 @@ function palette(cfg, page) {
   const pre = prefix(page);
   const rows = [
     ['Scan an item', `${pre}#top`, 'barcode', 'the hero phone'],
+    ['Open Today', `${pre}#today`, 'clock', 'the first screen'],
     ['Approve the queue', `${pre}#queue`, 'check', 'Aisle 3'],
     ['Make the shopping list', `${pre}#queue`, 'cart', 'Aisle 3'],
     ['Cook this', `${pre}#cook`, 'pot', 'the kitchen'],
@@ -156,9 +159,9 @@ function palette(cfg, page) {
     ['Work out the reserve', '/stock', 'water', 'Aisle 2, in depth'],
     ['Walk the loop', '/loop', 'arrow', 'seven stations'],
     ['Read the rules', '/rules', 'book', 'ten citations, explained'],
-    ['Who makes this', '/about', 'store', 'the family'],
+    ['Who makes this', '/about', 'store', 'About CareShop'],
     ['Write to a person', '/write', 'mail', 'one inbox'],
-    ['Sign in', cfg.signIn.href, 'house', 'yourhouse.careshop.app'],
+    ['Sign in', cfg.signIn.href, 'house', 'careshop.app/login'],
     ['Start free', cfg.cta.primaryHref, 'tag', 'no card to begin'],
   ];
   return `<div class="pal" id="palette" hidden>
@@ -182,8 +185,7 @@ ${footer(cfg, p, { page: slug })}`;
 /* a page's opening: eyebrow sticker, h1, lede */
 export const pageHead = (n, title, lede, extra = '') => `<section class="hero pg-hero" id="top" aria-labelledby="h1">
   <div class="wrap pg-hero-in">
-    <span class="sticker">${ic('tag', 16)}${esc(n)}</span>
-    <h1 id="h1">${esc(title)}</h1>
+    <div class="pg-hero-t"><span class="sticker">${ic('tag', 16)}${esc(n)}</span><h1 id="h1">${esc(title)}</h1></div>
     <p class="lede">${esc(lede)}</p>
     ${extra}
   </div>
@@ -210,7 +212,7 @@ export function parDemo() {
       <ul data-par-queue><li class="mini-q-r"><b>${esc(row.t)}</b><span>Par breach · 2 below par</span></li></ul>
       <p class="mini-q-empty" hidden>Nothing from this shelf. At or above par, nothing to do.</p>
     </div>
-    <p class="demo-f">On hand is never typed — it moves through the ledger. Par is the one number you set directly, because a par is a target, not a fact.</p>
+    <p class="demo-f">On hand is never typed — it moves through the record. Par is the one number you set directly, because a par is a target, not a fact.</p>
   </div>`;
 }
 

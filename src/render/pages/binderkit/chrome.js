@@ -20,9 +20,9 @@ const intake = S.screens.find((s) => s.key === 'intake');
 export const CHAPTERS = [
   { path: '/', title: 'Binderkit', sub: 'The front page', ctl: 'BK-LP' },
   { path: '/plan', title: 'The plan', sub: 'Five answers in, a shelf of binders out', ctl: 'BK-PL' },
-  { path: '/library', title: 'The library', sub: 'Four tracks, four libraries, none written', ctl: 'BK-LB' },
-  { path: '/pricing', title: 'Pricing', sub: 'Open, and printed as open', ctl: 'BK-PR' },
-  { path: '/about', title: 'About', sub: 'One house, four rooms', ctl: 'BK-AB' },
+  { path: '/library', title: 'The library', sub: 'Four tracks, four libraries', ctl: 'BK-LB' },
+  { path: '/pricing', title: 'Pricing', sub: 'The price is open', ctl: 'BK-PR' },
+  { path: '/about', title: 'About', sub: 'Who makes Binderkit', ctl: 'BK-AB' },
   { path: '/contact', title: 'Contact', sub: 'Write to a person', ctl: 'BK-CT' },
   { path: '/privacy', title: 'Privacy', sub: 'What it holds, and what leaves it', ctl: 'BK-PV' },
 ];
@@ -281,8 +281,8 @@ export function footer(cfg, p, opts = {}) {
         <div><span class="strip-l">Chapters</span>${chapters}</div>
       </div>
       <div class="colophon">
-        <span class="colo-mark">${mark(p.id, 36, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
-        <p class="colo-t">Set in Newsreader and Instrument Sans, with IBM Plex Mono for the numbers. <span class="colo-ctl">BK-LP · v1 · ${HOME.length} sections · ${CHAPTERS.length} chapters</span> · printed <span data-clock="date">today</span>.</p>
+        <span class="colo-mark">${mark(p.id, 80, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
+        <p class="colo-t"><span class="colo-ctl">Binderkit</span> · printed <span data-clock="date">today</span>.</p>
       </div>
       <div class="stamps-row">
         <a class="stamp" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a>
@@ -290,7 +290,7 @@ export function footer(cfg, p, opts = {}) {
         <button class="stamp" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}">${ic('share', 18)}<span>Share this page</span></button>
         <button class="stamp" type="button" data-print>${ic('print', 18)}<span>Print</span></button>
       </div>
-      ${social(p.id, { size: 16, cls: 'stamps', label: 'Binderkit elsewhere' })}
+      ${social(p.id, { size: 16, cls: 'stamps', text: true, label: 'Binderkit elsewhere' })}
       <div class="foot-b">${byline()}<p class="foot-fine">${opts.fine ? `${esc(opts.fine)} ` : ''}${esc(cfg.legalLine)}</p></div>
     </div>
   </div>

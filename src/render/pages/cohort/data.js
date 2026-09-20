@@ -48,10 +48,10 @@ export const HOUSE_KEYS = [
 
 /* the rail — the stops of the front page, each with the hour it belongs to */
 export const STOPS = [
-  { id: 'shift', hr: '06:55', label: 'The shift', icon: 'clock' },
-  { id: 'stops', hr: '08:00', label: 'Two stops', icon: 'gate' },
-  { id: 'record', hr: '13:40', label: 'The record', icon: 'record' },
-  { id: 'house', hr: '', label: 'Your house', icon: 'house' },
+  { id: 'shift', hr: '06:55', label: 'Shift', icon: 'clock' },
+  { id: 'stops', hr: '08:00', label: 'Stops', icon: 'gate' },
+  { id: 'record', hr: '13:40', label: 'Record', icon: 'record' },
+  { id: 'house', hr: '', label: 'House', icon: 'house' },
   { id: 'pricing', hr: '', label: 'Pricing', icon: 'tag' },
   { id: 'join', hr: '', label: 'Join', icon: 'mail' },
 ];
@@ -61,7 +61,7 @@ export const PAGE_LINKS = [
   { path: 'features', label: 'Features', icon: 'note', title: 'Everything Cohort does' },
   { path: 'pricing', label: 'Pricing', icon: 'tag', title: 'One price per house' },
   { path: 'security', label: 'Security', icon: 'shield', title: 'What Cohort holds, and what leaves' },
-  { path: 'about', label: 'About', icon: 'house', title: 'One house. Four rooms.' },
+  { path: 'about', label: 'About', icon: 'house', title: 'Who makes Cohort' },
   { path: 'contact', label: 'Contact', icon: 'mail', title: 'Write to a person' },
 ];
 
@@ -73,7 +73,7 @@ export const VERBS = [
   { t: 'Start handover', s: '18:45 · The sheet composes itself', to: '1845', icon: 'count' },
   { t: 'Add an addendum', s: 'The record · under the original, never over it', to: 'record', icon: 'addendum' },
   { t: 'Read the handoff', s: '07:02 · Reading it records a receipt', to: '0702', icon: 'handoff' },
-  { t: 'Print the manifesto', s: 'Eleven refusals, one page', to: 'refuses', icon: 'print' },
+  { t: 'Print what it will not do', s: 'Eleven refusals, one page', to: 'refuses', icon: 'print' },
 ];
 
 /* the contact topics, set for this product */
@@ -90,24 +90,24 @@ export const MODULES = [
   ['07', 'Daily Operations', [['CH-08', 'Today and the handoff', 'composition, sheet, read receipt, count prompt, print, history', 'v1', 'Pro', 'PHI'], ['CH-07.1', '“Who’s on today” — a read-only presence list', 'thin by design', 'v1', 'Pro', 'PII']]],
   ['08', 'House Tasks', [['CH-09', 'House tasks', 'definitions, completion, work orders, resident-linked, log', 'v1', 'Pro', 'PUBLIC / PHI']]],
   ['09', 'Plans', [['CH-09.1', 'Plans', 'versions, goals, linking, expiry, elopement window', 'v2', 'Pro', 'PHI']]],
-  ['10', 'Communication', [['CH-13', 'Communication', 'announcements, care-team thread', 'v1 min', 'Pro', 'PHI'], ['CH-13.3', 'Direct messages, meeting requests, message templates', 'a stated non-goal', 'later', 'Pro', 'PHI']]],
-  ['11', 'Issues', [['CH-10', 'Issues', 'raise, assign, status — the shape not yet elicited', 'v2 min', 'Pro', 'PII / PHI'], ['CH-10.3', 'Dispute-response path', 'a register row only', 'later', '—', '—']]],
+  ['10', 'Communication', [['CH-13', 'Communication', 'announcements, care-team thread', 'v1 min', 'Pro', 'PHI'], ['CH-13.3', 'Direct messages, meeting requests, message templates', 'not planned', 'later', 'Pro', 'PHI']]],
+  ['11', 'Issues', [['CH-10', 'Issues', 'raise, assign, status', 'v2 min', 'Pro', 'PII / PHI'], ['CH-10.3', 'Dispute-response path', 'a register row only', 'later', '—', '—']]],
   ['12', 'Administration and Reporting', [['CH-11', 'Admin', 'audit view, PHI-view log, exports, roll-ups, billing view', 'v1', 'Pro / Scale', 'PHI'], ['CH-19', 'Export and offboarding', 'the export in v1; the importer later', 'v1', 'common', '—']]],
-  ['13', 'Subscription and Billing', [['CH-22', 'Family Standard signup, trial, Pro/Scale billing lifecycle', 'six steps and nine transitions', 'v1', 'common', 'PUBLIC'], ['CH-20', 'Customer business associate agreement at signup', 'a launch blocker', 'v1', '—', '—'], ['CH-18', 'Onboarding checklist', 'five first actions', 'v1', 'common', '—']]],
+  ['13', 'Subscription and Billing', [['CH-22', 'Signup, trial, and billing', 'six steps and the billing states', 'v1', 'common', 'PUBLIC'], ['CH-20', 'Customer business associate agreement at signup', 'required before real residents enter', 'v1', '—', '—'], ['CH-18', 'Onboarding checklist', 'five first actions', 'v1', 'common', '—']]],
   ['14', 'Notifications', [['CH-12', 'Notifications', 'inbox, push, email, nine event keys, preferences', 'v1', 'common', 'PUBLIC']]],
   ['15', 'Support', [['CH-16', 'Help and support', 'ticket form, replies', 'v1', 'common', 'PII']]],
-  ['16', 'Platform Operations', [['CH-03', 'Operator’s console (Cohort view)', '', 'v1 min', 'common', 'PII']]],
-  ['—', 'Cross-cutting', [['CH-21', 'The boundary line in Settings → About', 'one sentence, deliberately', 'v1', 'common', 'PUBLIC'], ['CH-23', 'The Expo client — iOS, Android and web', '', 'v1', 'common', '—']]],
+  ['16', 'Platform Operations', [['CH-03', 'The operator console', '', 'v1 min', 'common', 'PII']]],
+  ['—', 'Cross-cutting', [['CH-21', 'The boundary line', 'one sentence, on the About page', 'v1', 'common', 'PUBLIC'], ['CH-23', 'On iPhone, Android and the web', '', 'v1', 'common', '—']]],
 ];
 export const MOVED = [
-  ['CH-07', 'Shift Operations — patterns, schedule, clock-in/out, timesheets', 'Aidepost', 'Products are split by domain, not activity.'],
-  ['CH-09.2', 'House-rules acknowledgment', 'Aidepost', 'Policy acknowledgment is a workforce act.'],
-  ['CH-15', 'Credentials — expiry dates, exclusion re-screening', 'Aidepost', 'Is this about who works, when, and whether they may?'],
+  ['CH-07', 'Shift Operations — patterns, schedule, clock-in/out, timesheets', '', 'Cohort runs the shift. It does not schedule staff or track hours.'],
+  ['CH-09.2', 'House-rules acknowledgment', '', 'Policy acknowledgment is a workforce act, not a care record.'],
+  ['CH-15', 'Credentials — expiry dates, exclusion re-screening', '', 'Who may work, and whether their card is current, is not this product.'],
 ];
 export const REMOVED = [
-  ['CH-02.9', 'Resident document presence tracker', 'Binderkit', 'Only plan expiry dates stay, in Plans.'],
-  ['CH-14', 'Supplies and Spend — shopping runs, expenses, inventory, menus, dishes', 'CareShop', 'Cut; it removes the third hard gate.'],
-  ['CH-14.1', 'Resident fund light note', 'Provider Hub Oregon', 'The regulated ledger is PHO’s.'],
+  ['CH-02.9', 'Resident document presence tracker', '', 'Only plan expiry dates stay, in Plans.'],
+  ['CH-14', 'Supplies and Spend — shopping runs, expenses, inventory, menus, dishes', '', 'The kitchen is not this product.'],
+  ['CH-14.1', 'Resident fund light note', '', 'Residents’ money is not this product.'],
 ];
 export const NOT_NOW = [
   ['Languages other than English', 'A customer whose staff need another'],

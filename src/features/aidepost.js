@@ -72,7 +72,7 @@ export const FEATURES = [
     what: 'The contact page carries the kit’s form with Aidepost’s topics — Question, Early access, I’m a caregiver, Pricing, Security and privacy, Press, Something else — and the address with a copy button.',
     probe: [{ route: 'contact' }, { html: '<option value="I’m a caregiver">' }, { html: 'id="contactform"' }] },
   { id: 'ap-24', name: 'The footer is the week', kind: 'footer',
-    what: 'Seven columns, Monday to Sunday — Product, Caregivers, Company, Family with the siblings’ marks, Write with hello@ and a copy button, Social, and Sunday holding the mark and the byline. The real weekday is lit “tonight”; on phones it becomes two columns with the weekend full width.',
+    what: 'Seven columns, Monday to Sunday — Product, Caregivers, Company, Oregon, Write with hello@ and a copy button, Social, and Sunday holding the mark and the byline. The real weekday is lit “tonight”; on phones it becomes two columns with the weekend full width.',
     probe: [{ home: 'class="ft-d" data-day="Thu"' }, { home: 'data-clock="day"' }, { home: 'data-copy="hello@aidepost.com"' }, { js: "el.toggleAttribute('data-today'" }, { css: '.ft-d[data-today]' }] },
   { id: 'ap-25', name: 'Social pills, with the pin', kind: 'social',
     what: 'Eight platforms as pill-shaped glyphs, each with the badge set’s pin in the corner; on the caregiver side the whole footer turns over and the pills invert with it.',

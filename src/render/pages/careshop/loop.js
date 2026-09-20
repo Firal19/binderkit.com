@@ -10,17 +10,16 @@ import { page, pageHead, sticker, screen, approveDemo, receiptInstrument, showMe
 const spec = PAGES.careshop;
 const find = (k) => spec.sections.find((s) => s.key === k);
 
-/* the register rows each station is filed under — FEATURES_CARESHOP.md §3.1 */
 const REG = {
-  count: ['CS-02', 'Stock, zones, expiry', 'shipped · rebuild'],
-  scan: ['CS-02.1', 'Scan with Gate 0', 'shipped'],
-  queue: ['CS-03', 'Buy: the queue and purchase policy', 'shipped · rebuild'],
-  shop: ['CS-03.1', 'Shopping trips, prices, receipts', 'shipped in part · rebuild'],
-  cook: ['CS-04', 'Cook: menus, recipes, cook mode', 'shipped · rebuild'],
-  reserve: ['CS-06', 'Emergency reserves', 'shipped · rebuild'],
-  today: ['CS-01', 'Today and the daily briefing', 'shipped · rebuild'],
+  count: 'Stock, zones, expiry',
+  scan: 'Scan — a barcode and a name',
+  queue: 'The queue and the purchasing rules',
+  shop: 'Shopping trips, prices, receipts',
+  cook: 'Menus, recipes, cook mode',
+  reserve: 'Emergency reserves',
+  today: 'Today and the daily briefing',
 };
-const reg = (k) => { const [id, t, st] = REG[k]; return `<span class="reg"><b>${esc(id)}</b><span>${esc(t)}</span><em>${esc(st)}</em></span>`; };
+const reg = (k) => `<span class="reg"><b>${esc(REG[k])}</b></span>`;
 
 const phone = (key) => `<div class="ph" data-phone="${esc(key)}">${iosShell('careshop', { key })}</div>`;
 
@@ -54,10 +53,10 @@ ${station(5, 'receipt', node('The receipt').label + '.', `${para(node('The recei
 ${station(6, 'stock', 'Back on the shelf.', `${reg('reserve')}<p class="st-p"><b>Expiry.</b> ${esc(machine('Expiry'))}</p><p class="st-p"><b>Reserve.</b> ${esc(machine('Reserve'))}</p><div class="shows">${showMe('Applesauce', 'Two days')}${showMe('Frozen peas', 'Over — a note, not an alarm')}</div><a class="more" href="/stock">${ic('arrow', 16)}Stock in depth</a>`, phone('expiry'), { rev: true })}
 ${station(7, 'cook', node('The menu').label + ', and the cook.', `${reg('cook')}${para(node('The menu').note)}<p class="st-p"><b>Cook.</b> ${esc(machine('Cook'))}</p><div class="shows">${showMe('Allergen check', 'Before plating')}${showMe('Complete', 'Stock down, once')}</div>`, `<div class="ph-pair" data-scrollx>${phone('cook')}${phone('menu')}</div>`)}
 ${sec('ledger', 'ledger', `<div class="wrap ledger-in">
-  ${sticker('receipt', 'The ledger')}
+  ${sticker('receipt', 'The record')}
   <p class="pull">${esc(s.pull)}</p>
   <p class="closing">${esc(s.closing)}</p>
   <div class="ctas"><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="loop-end"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><a class="btn lg" href="/#kitchen">${ic('house', 18)}Your kitchen</a></div>
-</div>`, { label: 'The ledger' })}`;
+</div>`, { label: 'The record' })}`;
   return page(cfg, p, 'loop', inner);
 }

@@ -32,7 +32,7 @@ ${sec('zones', 'zones', `<div class="wrap aisle-g">
 </div>`)}
 ${sec('par', 'par-s', `<div class="wrap aisle-g is-rev">
   <div class="aisle-ph">${parDemo()}</div>
-  <div class="aisle-d">${sticker('scale', 'Par')}${h2('par', 'Par is the one number you set.', 'A par is a target, not a fact, so it stays direct. Everything else about on-hand moves through the ledger — count, scan, cook, discard, receipt — with an actor and a reason on every row.')}<p class="st-p">${esc(find('start').steps[1])} That is the second of the first ten minutes.</p></div>
+  <div class="aisle-d">${sticker('scale', 'Par')}${h2('par', 'Par is the one number you set.', 'A par is a target, not a fact, so it stays direct. Everything else about on-hand moves through the record — count, scan, cook, discard, receipt — with an actor and a reason on every row.')}<p class="st-p">${esc(find('start').steps[1])} That is the second of the first ten minutes.</p></div>
 </div>`)}
 ${sec('expiry', 'expiry-s', `<div class="wrap aisle-g">
   <div class="aisle-ph"><div class="crop">${phone('expiry')}</div><p class="ph-cap">${esc(ex.foot)}</p></div>
@@ -43,11 +43,11 @@ ${sec('reserves', 'reserves-s', `<div class="wrap aisle-g is-rev">
   <div class="aisle-d">${sticker('water', 'Reserves')}${h2('reserves', depth.heading, depth.pull)}<p class="st-p">${esc(machine('Reserve'))}</p><p class="st-p"><b>${esc(reserveRow[0])}.</b> ${esc(reserveRow[1])} <em class="today">${esc(reserveRow[2])}</em></p><p class="st-p">${esc(find('start').steps[3])}</p><a class="more" href="/rules">${ic('arrow', 16)}The rule, and how sure we are</a></div>
 </div>`)}
 ${sec('ledger', 'ledger', `<div class="wrap ledger-in">
-  ${sticker('receipt', 'The ledger')}
+  ${sticker('receipt', 'The record')}
   <p class="pull">Every change to on-hand is a recorded, immutable movement.</p>
   <p class="closing">${esc(loop.closing)}</p>
   <div class="ctas"><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="stock-end"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><button type="button" class="btn lg" data-print>${ic('print', 18)}Print the shopping list</button></div>
-</div>`, { label: 'The ledger' })}
+</div>`, { label: 'The record' })}
 ${printList(cfg)}`;
   return page(cfg, p, 'stock', inner);
 }

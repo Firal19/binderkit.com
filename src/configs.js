@@ -2,7 +2,7 @@
 // look in css/pages/<id>.css; this is the small set of facts the shared
 // pieces need — the domain, the nav, the buttons, the head, the social card.
 
-const LEGAL = 'Bareeda LLC, doing business as Providerhub Oregon. Oregon, USA.';
+const LEGAL = '© 2026 Bareeda LLC · Providerhub Oregon · Oregon';
 
 export const CONFIGS = {
   cohort: {
@@ -43,11 +43,12 @@ export const CONFIGS = {
     description: 'Stock by zone, dated perishables, a weekly menu checked against who lives there, a buy queue under your policy, and receipts that land prices back on the shelf.',
     preloadFonts: ['fraunces.woff2', 'hanken-grotesk.woff2'],
     legalLine: LEGAL,
-    cta: { primary: 'Start free', primaryHref: 'https://careshop.app/signup', nav: 'Start free', secondary: 'See the loop' },
+    cta: { primary: 'Start free', primaryHref: 'https://careshop.app/signup', nav: 'Start free', secondary: 'See Today' },
     signIn: { label: 'Sign in', href: 'https://careshop.app/login' },
     appPaths: ['/signup', '/login', '/features', '/pricing', '/contact'],
     nav: [
       { id: 'loop', label: 'The loop' },
+      { id: 'today', label: 'Today' },
       { id: 'stock', label: 'Stock' },
       { id: 'queue', label: 'The queue' },
       { id: 'kitchen', label: 'Your kitchen' },
@@ -56,8 +57,8 @@ export const CONFIGS = {
     og: { bg: '#f6f4f0', ink: '#191713', accent: '#c25a38', tile: '#486b3d', glyph: '#ffffff', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Hanken Grotesk', bodyFile: 'hanken-grotesk.woff2', weight: 600 },
     faq: [
       ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
-      ['Who checks the rules CareShop cites?', 'A provider who has been inspected on that track — and none has yet. The confidence on a citation and the banner on an unreviewed rule set are specified and not yet built; what runs today is ten Oregon citations explained in one line each, and the bare rule text on every other catalogue row.'],
-      ['What if the phone has no signal in the store?', 'Picks queue offline. Every write goes through an outbox with idempotency, so a pick is never counted twice. Reading the till roll on the device is specified and not yet built.'],
+      ['Who checks the rules CareShop cites?', 'Today the product explains ten Oregon citations in one line each, and shows the rule text on every other catalogue row. Until a provider inspected on that track has reviewed the full set, the product says so.'],
+      ['What if the phone has no signal in the store?', 'Picks wait on the phone. When the signal comes back they land once, and a pick is never counted twice. Reading the till roll on the device is not in the product yet.'],
       ['How much does CareShop cost?', 'Free to start with one house and up to three people. Nineteen dollars a house a month on Pro, thirty-seven on Scale for unlimited houses and seats.'],
     ],
     privacy: {

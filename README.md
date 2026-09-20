@@ -83,4 +83,4 @@ vercel --prod            # the page
 
 ---
 
-Bareeda LLC, doing business as Providerhub Oregon. Oregon, USA.
+© 2026 Bareeda LLC · Providerhub Oregon · Oregon

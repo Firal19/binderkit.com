@@ -5,7 +5,7 @@ import { header, footer, section, title, number, find, esc, ic } from './chrome.
 
 const SECS = number('BK-PR', [
   { id: 'top', label: 'The price is open', tab: '' },
-  { id: 'tiers', label: 'Three tiers, one open item', tab: 'Tiers' },
+  { id: 'tiers', label: 'Three tiers', tab: 'Tiers' },
   { id: 'signup', label: 'Signing up, in five steps', tab: 'Signing up' },
   { id: 'billing', label: 'If a payment fails', tab: 'Payment' },
   { id: 'lapse', label: 'If you stop paying', tab: 'Lapse' },
@@ -13,7 +13,7 @@ const SECS = number('BK-PR', [
 const [TOP, TIERS, SIGNUP, BILLING, LAPSE] = SECS;
 
 const sellSwitch = () => `<div class="ptog" role="group" aria-label="How it is sold"><button class="tog" type="button" data-sell="sub" aria-pressed="true">Subscription</button><button class="tog" type="button" data-sell="once" aria-pressed="false">Single purchase</button></div>
-  <p class="sell-note" data-sell-note data-sub="If it is a subscription: per facility, renewing, with the three-day trial and one-tap cancel. Whether it is a subscription at all is open item #9." data-once="If it is a single purchase: per facility, once — a product used twice a year may want that rather than a subscription. Open item #9; no price is set.">If it is a subscription: per facility, renewing, with the three-day trial and one-tap cancel. Whether it is a subscription at all is open item #9.</p>`;
+  <p class="sell-note" data-sell-note data-sub="If it is a subscription: per facility, renewing, with the three-day trial and one-tap cancel. Whether it is a subscription at all is still open." data-once="If it is a single purchase: per facility, once — a product used twice a year may want that rather than a subscription. No price is set yet.">If it is a subscription: per facility, renewing, with the three-day trial and one-tap cancel. Whether it is a subscription at all is still open.</p>`;
 
 function render(cfg, p) {
   const s = find('pricing');
@@ -23,16 +23,15 @@ function render(cfg, p) {
 ${header(cfg, p, { page: 'pricing', tabs: SECS.filter((x) => x.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">
 ${title(TOP, { eyebrow: 'Chapter · Pricing', h1: s.heading, lede: EVERY_PLAN, ctas: `<a class="btn pri lg" href="/#join" data-cta="pricing">${esc(cfg.cta.primary)}</a><a class="btn lg" href="#tiers">${ic('scale', 18)}<span>The tiers</span></a>` })}
-${section(TIERS, `<h2 id="h-tiers">Three tiers, one open item.</h2><p class="sub">${esc(p.pricing.note)}</p>
+${section(TIERS, `<h2 id="h-tiers">Three tiers.</h2><p class="sub">${esc(s.note)}</p>
   ${sellSwitch()}
-  <div class="tiers">${p.pricing.rows.map(([name, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-n">${esc(name)}</span><span class="tier-p ${/^Open/.test(price) ? 'is-soon' : ''}">${esc(soon(price))}</span><span class="tier-d">${esc(d)}</span></div>`).join('')}</div>
-  <p class="fine">${esc(s.note)}</p>`)}
+  <div class="tiers">${p.pricing.rows.map(([name, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-n">${esc(name)}</span><span class="tier-p ${/^Open/.test(price) ? 'is-soon' : ''}">${esc(soon(price))}</span><span class="tier-d">${esc(d)}</span></div>`).join('')}</div>`)}
 ${section(SIGNUP, `<h2 id="h-signup">${esc(SIGNUP_FIVE.heading)}</h2>
   <ol class="ten is-wide">${SIGNUP_FIVE.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
   <p class="closing">${esc(SIGNUP_FIVE.tail)}</p>
   <p class="fine">${esc(TRIAL_FINE)}</p>`)}
 ${section(BILLING, `<h2 id="h-billing">${esc(BILLING_STATES.heading)}</h2><p class="sub">Four billing states, and what each one lets you do.</p>
-  <dl class="defs is-wide">${BILLING_STATES.rows.map(([k, v]) => `<dt><code>${esc(k)}</code></dt><dd>${esc(v)}</dd>`).join('')}</dl>`)}
+  <dl class="defs is-wide">${BILLING_STATES.rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`)}
 ${section(LAPSE, `<h2 id="h-lapse">If you stop paying.</h2>
   <p class="closing">${esc(lapse.text)}</p>
   <p class="boundary">Withholding a reprint is not leverage, it is spite.</p>`)}

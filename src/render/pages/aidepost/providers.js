@@ -16,11 +16,12 @@ function strip() {
 function top(cfg, p) {
   const proof = find('proof');
   return `<section class="hero hero-p" id="top" aria-labelledby="h1">
-    <div class="wrap">
-      ${eyebrow('For providers · at depth')}
-      <h1 id="h1">Covered, or not — and the record that you tried.</h1>
-      <p class="lede">${esc(find('loop').sub)}</p>
-      <div class="ctas"><a class="btn pri lg" href="#join">${esc(cfg.cta.primary)}</a><a class="btn lg" href="#board">${ic('board', 18)}Start at the board</a></div>
+    <div class="wrap hero-pg">
+      <div class="hero-t">${eyebrow('For providers · at depth')}<h1 id="h1">Covered, or not — and the record that you tried.</h1></div>
+      <div class="hero-s2">
+        <p class="lede">${esc(find('loop').sub)}</p>
+        <div class="ctas"><a class="btn pri lg" href="#join">${esc(cfg.cta.primary)}</a><a class="btn lg" href="#board">${ic('board', 18)}Start at the board</a></div>
+      </div>
       <ul class="proof">${proof.items.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ul>
     </div>
   </section>`;

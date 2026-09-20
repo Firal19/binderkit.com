@@ -234,7 +234,7 @@ export function tierBlock(p) {
       <button class="pr-b is-care" type="button" data-side-set="caregiver" aria-pressed="false">Caregivers</button>
     </div>
     <div class="tiers s-prov">${rows.map(tier).join('')}</div>
-    <div class="tier-care s-care"><span class="tier-n">${ic('free', 18, { pin: 'open' })}Caregiver</span><span class="tier-p">$0, for ever</span><span class="tier-d">${esc(p.pricing.note)} No organisation, no card. Your credential dates are yours and travel with you.</span></div>
+    <div class="tier-care s-care"><span class="tier-n">${ic('free', 18, { pin: 'open' })}Caregiver</span><span class="tier-p">$0, for ever</span><span class="tier-d">No organisation, no card. Your credential dates are yours and travel with you.</span></div>
   </div>`;
 }
 

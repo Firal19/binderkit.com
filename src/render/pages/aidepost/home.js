@@ -109,7 +109,7 @@ function rules() {
 }
 
 const refuses = () => sec('refuses', 'refuse', `<div class="wrap">
-  <div class="head">${eyebrow('The line')}${h2('refuses', 'What Aidepost will not do.', 'Each is a position, not a missing feature.')}</div>
+  <div class="head">${h2('refuses', 'What Aidepost will not do.', 'Each is a position, not a missing feature.')}</div>
   ${deck()}
   <p class="boundary">${esc(BOUNDARY)}</p>
 </div>`);

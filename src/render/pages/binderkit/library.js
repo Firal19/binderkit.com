@@ -17,8 +17,8 @@ const NEVER_ROWS = [
   ['BK-90', 'A quarterly review cycle with frozen records', 'It would reintroduce protected data via findings — records of what was missing, when, and whose fault. Reviews stay on paper.'],
   ['BK-91', 'Findings — free text about a person', 'A record about a person.'],
   ['BK-92', 'A readiness dashboard or score', 'Surface, never police. A claim about a home, derived from records the product would then need — a claim the product cannot support.'],
-  ['BK-93', 'Electronic signature', 'A record of a named person’s assent. The signature half lives in Aidepost.'],
-  ['BK-94', 'Document storage or upload', 'Binderkit prints tabs; documents live on paper or in Provider Hub Oregon. A store implies retention, deletion and access obligations for content the product cannot inspect.'],
+  ['BK-93', 'Electronic signature', 'A record of a named person’s assent. Binderkit does not collect one.'],
+  ['BK-94', 'Document storage or upload', 'Binderkit prints tabs. Documents stay on paper, or in whatever system you already file them. A store implies retention, deletion and access obligations for content the product cannot inspect.'],
   ['BK-95', 'Tracking whether a document is actually filed', 'This is the review cycle, and it requires findings, which are records about people.'],
 ];
 const REFUSED = [
@@ -32,12 +32,12 @@ const REFUSED = [
   'A refusal that offers no alternative — a refusal without an alternative is a defect.',
 ];
 const STATE = [
-  ['Libraries', 'Four, one per licence track — none written.'],
-  ['Discovery pages', 'Four, one per track — they cannot be written until a library exists.'],
-  ['Items', 'Thirty-two observed and ninety-four derived; the items are not yet in the vault, only counts and provenance notes about them.'],
-  ['The reading', 'Thirty to forty hours per library, each needing a provider inspected on that track or a consultant who has surveyed all four. The content owner is unassigned, and that is the critical path.'],
+  ['Libraries', 'Four, one per licence track — none written yet.'],
+  ['Discovery pages', 'Four, one per track — they wait until a library exists.'],
+  ['Items', 'Thirty-two observed and ninety-four derived. The items themselves are still being collected; what we have today are counts and notes about where they came from.'],
+  ['The reading', 'Thirty to forty hours per library, each needing a provider inspected on that track or a consultant who has surveyed all four.'],
   ['The five questions', 'The exact set per track is established with a provider inspected on that track before that library is offered.'],
-  ['Until then', 'Every plan and the first page of every print carries a banner saying the library has not been reviewed by a provider on your licence. The blocker is content rather than code.'],
+  ['Until then', 'Every plan and the first page of every print carries a banner saying the library has not been reviewed by a provider on your licence.'],
 ];
 
 function render(cfg, p) {
@@ -55,11 +55,11 @@ ${section(EVID, `<h2 id="h-evidence">Every item prints its evidence tag.</h2><p 
   <div class="tag-g"><div>${ev('verified')}<span>Someone inspected on this track read the primary source.</span></div><div>${ev('derived')}<span>Inferred from the rule chapter; prints that way, visibly, until confirmed.</span></div><div>${ev('open')}<span>No authority yet — marked as such, never hidden.</span></div></div>
   ${citesBlock()}
   <div class="banner-note"><span class="strip-l">${esc(screen.side.label)}</span><p>${esc(screen.side.text)}</p></div>`)}
-${section(WRITTEN, `<h2 id="h-written">What is written, and what is not.</h2><p class="sub">The mechanism is specified in full. The content is the product, and the content is not yet verified.</p>
+${section(WRITTEN, `<h2 id="h-written">What is written, and what is not.</h2><p class="sub">The planner and the print are ready. The libraries themselves are still being read against the rule.</p>
   <dl class="ledger">${STATE.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
   <p class="boundary">We would rather hand you a banner than a tidy page.</p>`)}
-${section(NEVER, `<h2 id="h-never">Removed, and never.</h2><p class="sub">A feature marked never must not be built. A removed feature keeps its number, so nobody can quietly add it back.</p>
-  <ol class="never">${NEVER_ROWS.map(([id, t, why]) => `<li><code>${esc(id)}</code><div><b><s>${esc(t)}</s></b><span>${esc(why)}</span></div></li>`).join('')}</ol>
+${section(NEVER, `<h2 id="h-never">Removed, and never.</h2><p class="sub">These stay out. Each one would have required a record about a person, or a claim the product cannot support.</p>
+  <ol class="never">${NEVER_ROWS.map(([, t, why]) => `<li><div><b><s>${esc(t)}</s></b><span>${esc(why)}</span></div></li>`).join('')}</ol>
   <span class="strip-l">Refused on principle</span>
   <ol class="refused">${REFUSED.map((r) => `<li>${esc(r)}</li>`).join('')}</ol>`)}
 ${section(WORDS, `<h2 id="h-words">${esc(s.struck.heading)}</h2>

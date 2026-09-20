@@ -25,7 +25,7 @@ export const SPINE = [
 export const TRIAL_FINE = 'Three days, card on file, everything Pro shows, one-tap cancel. Sold on the web, never through an app store.';
 
 export const SIGNUP_SIX = {
-  heading: 'Signing up, in six steps — the same in every product in this family',
+  heading: 'Signing up, in six steps',
   steps: [
     'email and password',
     'licence track — APD, DD, OHA or Agency',
@@ -38,7 +38,7 @@ export const SIGNUP_SIX = {
 };
 
 export const SIGNUP_FIVE = {
-  heading: 'Signing up, in five steps — the one variant in the family',
+  heading: 'Signing up, in five steps',
   steps: [
     'email and password',
     'licence track — APD, DD, OHA or Agency',
@@ -52,10 +52,10 @@ export const SIGNUP_FIVE = {
 export const BILLING_STATES = {
   heading: 'If a payment fails',
   rows: [
-    ['trialing / active', 'Full access.'],
-    ['past_due', 'Full access; you are warned, not punished, during the retries — emails on day 0, day 7 and day 14.'],
-    ['read_only', 'Reads, export, and the product’s preserved core doing.'],
-    ['cancelled', 'You can still sign in to export, until purge. Export first, then hard delete. The audit log is retained.'],
+    ['On a plan', 'Full access.'],
+    ['If a payment fails', 'Full access while we retry — we write on day 0, day 7 and day 14.'],
+    ['If it stays unpaid', 'You can still read and export. The work the product is required to keep still works.'],
+    ['If you cancel', 'You can still sign in to export, until the account is deleted. Export first.'],
   ],
 };
 
@@ -268,7 +268,7 @@ const cohort = {
       heading: 'One price per house. Nothing hidden behind a plan.',
       sub: EVERY_PLAN,
       main: 1,
-      note: 'The formula is one price per house; the numbers are not set yet, and we will not guess at them on this page. Selling is on the web through Stripe Checkout — the family standard, adopted here rather than decided here — and where the card step happens on a phone is still open.',
+      note: 'One price per house. The numbers are not set yet, and we will not guess at them here. Selling is on the web — never through an app store.',
     },
     {
       key: 'ladder', kind: 'map', id: 'ladder',
@@ -290,7 +290,7 @@ const cohort = {
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
-      disclaimer: 'WH-1, Meadow Care and the names on any screen shown here are sample data, not real people or real houses.',
+      disclaimer: 'Screens on this page use sample data.',
     },
   ],
 };
@@ -310,7 +310,7 @@ const binderkit = {
       instrument: { desktop: 'paper', mobile: 'paper' },
       live: 'tag',
       descriptorInline: true,
-      fine: 'Binderkit is not built yet: there is no repository, and whether it is sold by subscription or as a single purchase is not decided. It prints on day one, on the black-and-white printer you already own.',
+      fine: 'It prints on day one, on the black-and-white printer you already own. Whether it is sold by subscription or as a single purchase is not decided yet.',
     },
     {
       key: 'proof', kind: 'proof', id: 'why',
@@ -392,7 +392,7 @@ const binderkit = {
         words: ['ready', 'compliant', 'audit-proof'],
         foot: 'Not in the name, not in the descriptor, not in the interface, and not in the marketing either. Binderkit provides information about record-keeping requirements; it does not give legal or compliance advice, and it does not certify that any home meets any requirement. The Terms say it, and so does the footer of the brief you print.',
       },
-      closing: 'That last column is the honest one, and it is the reason the banner exists. The libraries are fully specified and not yet written: thirty to forty hours of reading apiece, each needing a provider inspected on that track or a consultant who has surveyed all four. Until that has happened your plan carries a banner saying so, on screen and on paper. We would rather hand you a banner than a tidy page.',
+      closing: 'That last column is the honest one, and it is the reason the banner exists. Each library still needs a provider inspected on that track — thirty to forty hours of reading apiece. Until that has happened your plan carries a banner saying so, on screen and on paper. We would rather hand you a banner than a tidy page.',
     },
     {
       key: 'boundary', kind: 'boundary', id: 'boundary',
@@ -433,10 +433,10 @@ const binderkit = {
         { label: 'The key', text: 'A plan is keyed by your facility code — made from the facility name’s initials and a number when you create it, never changed, and never containing a person’s name. It is in the footer of every artefact and in every notification, and nowhere else, because every printed page needs an identifier that is not somebody’s name and not your address.' },
         { label: 'What a notification says', quote: 'WH-1: your plan has a new version.', text: 'One of four, and there is no fifth: your plan has a new version, the library has been updated, your trial ends tomorrow, your export is ready. The content is a facility code, a track name, a version number, an amount, or a link. There is no push notification at all — nothing in this product is urgent enough to interrupt you.' },
         { label: 'Printing', text: 'Generated as a PDF inside the product and then downloaded or shared, never handed to the browser’s print dialog. The identity line prints blank and you complete it by hand.' },
-        { label: 'If you stop paying', wide: true, text: 'Printing, viewing and export keep working; answering, editing, re-planning, resetting and adding facilities do not. Somebody whose subscription has lapsed can still reprint a worn table of contents, because withholding a reprint is not leverage, it is spite. It is the one place this product departs from how the rest of the family handles a lapsed subscription, and it is written into the tests.' },
+        { label: 'If you stop paying', wide: true, text: 'Printing, viewing and export keep working; answering, editing, re-planning, resetting and adding facilities do not. Somebody whose subscription has lapsed can still reprint a worn table of contents — withholding a reprint is not leverage.' },
         { label: 'What support asks for', text: 'The form already knows your organisation, your facility, your track and your library version. Its guidance reads “Tell us the facility code, not the resident’s name.” There is no warning about protected information on it, because there is none here to warn about.' },
         { label: 'The record we keep', text: 'An append-only log of every answer change, every generation, every edit accepted or refused — with the guardrail that refused it — every note, reset, print, facility change and library adoption. There is no logging of who looked at what, because there is nothing about a person to look at.' },
-        { label: 'One exception, declared', text: 'When something goes wrong, the error report may carry the full contents of the request, where every other product in this family strips them first. That is deliberate, it is written down with its condition attached, and it holds only while this product holds no record about any person.' },
+        { label: 'One exception, declared', text: 'When something goes wrong, the error report may carry the full contents of the request. That is deliberate, and it holds only while this product holds no record about any person.' },
       ],
       closingBlocks: [
         { heading: 'What the absence buys you', text: 'Five steps at signup instead of six, and no agreement to sign before you can try it. Support that can read your plan directly and answer, rather than asking you to describe it. A materially smaller amount of your business held by us at all. And deletion that no retention law delays — you ask to leave, you take the export, a holding period runs because we chose one commercially rather than because a rule requires it, and then the record is hard-deleted and the deletion confirmed.' },
@@ -470,7 +470,7 @@ const binderkit = {
         ['Can’t I just copy another provider’s binder?', 'That is what most people do, and it is what the licensing letter is usually about. A copied binder carries someone else’s track, someone else’s house count, and someone else’s gaps.'],
         ['Will this make me compliant?', 'No. It tells you what the rule asks for, with the rule printed beside it, in order. It does not certify anything, and the words ready, compliant and audit-proof are forbidden in this product by design.'],
         ['What if a citation is wrong?', 'It tells you before you print it. Every item carries one of three evidence tags — verified, when a provider inspected on that track has read the primary source; derived, when it comes from the rule chapter; open, when no source is established at all. Today none is verified: none of the thirty-two adult-foster-home items and none of the ninety-nine agency citations. So the plan carries a banner saying so, and you can filter it down to the unconfirmed items, which is the list you would take to an adviser.'],
-        ['Is a subscription right for something I use twice a year?', 'A fair question, and it is open — the ninth open item in the family register, in those words: a product used twice a year may want a single purchase rather than a subscription. No price in this product is set, the facility allowance on the middle tier is undecided, and nothing here promises you a choice we have not yet decided to offer.'],
+        ['Is a subscription right for something I use twice a year?', 'A fair question, and it is still open. A product used twice a year may want a single purchase rather than a subscription. No price is set yet, and nothing here promises a choice we have not decided to offer.'],
       ],
     },
     {
@@ -504,7 +504,7 @@ const binderkit = {
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
-      disclaimer: 'The contents page shown here is rendered from the product’s own templates with illustrative rows. It describes no real facility and no real person.',
+      disclaimer: 'Screens on this page use sample data.',
     },
   ],
 };
@@ -522,13 +522,13 @@ const careshop = {
       eyebrow: 'Live at careshop.app · Oregon care homes',
       instrument: { desktop: 'crop', mobile: 'crop' },
       descriptorInline: true,
-      fine: `${TRIAL_FINE} That is the family standard and this product is moving to it; the tiers running today are Free, Pro and Scale.`,
+      fine: `${TRIAL_FINE} The tiers running today are Free, Pro and Scale.`,
     },
     {
       key: 'proof', kind: 'proof', id: 'why',
       items: [
         ['In real kitchens today', 'A caregiver scans an unknown barcode at the shelf and the item exists: the barcode and a typed name, and nothing else required — no category, no unit, no zone, no threshold. On the one house we have watched, it is the most-used capability in the product.'],
-        ['The loop closes by itself', 'A menu shortfall, an expiry, a par breach or a reserve gap files its own buy request, carrying its origin, and nobody re-types anything. Stock rising on a receipt and falling on a cook is a switch that ships off by default and only on the paid tiers; the rebuild puts it on every plan and on by default, because a house whose loop does not visibly close has not seen the product.'],
+        ['The loop closes by itself', 'A menu shortfall, an expiry, a par breach or a reserve gap files its own buy request, carrying its origin, and nobody re-types anything. Stock rising on a receipt and falling on a cook is a switch that ships off by default and only on the paid tiers, because a house whose loop does not visibly close has not seen the product.'],
         ['A resident is a label, never a name', 'Initials or a room number, diet tags, one texture level, allergens — enough for a tray note and a menu check, and nothing more. Initials are a display convention, not a de-identification method, and the product’s obligations are unchanged by them.'],
       ],
     },
@@ -538,11 +538,11 @@ const careshop = {
       sub: 'Grouped by house, then by origin, and within each, most urgent first. Each line carries the item, the quantity, where it came from, who raised it, its status, and the last known price at the cheapest shop. An empty queue says the house is stocked rather than showing nothing.',
       instrument: { desktop: 'web', mobile: 'ios' },
       callouts: [
-        [(s) => `“${s.rows[0].origin}”`, 'Where the line came from. Five origins and no sixth — a menu shortfall, an expiry, a par breach, a reserve gap, or a person’s request — and every request carries exactly one, preserved through to purchase. Without the origin the queue is a list; with it, the queue is diagnosable. Origin is recorded on every request today, and putting it on the row, as here, is part of the rebuild.'],
+        [(s) => `“${s.rows[0].origin}”`, 'Where the line came from. Five origins and no sixth — a menu shortfall, an expiry, a par breach, a reserve gap, or a person’s request — and every request carries exactly one, preserved through to purchase. Without the origin the queue is a list; with it, the queue is diagnosable. Origin is recorded on every request today.'],
         [(s) => `“${s.rows.find((r) => r.state === 'expiring').origin}”`, 'Dated at entry, most urgent first. Short and expiring are the only two states this product marks, and only an item tracked with dates can be either of them — an item tracked by count alone carries no date and never appears here.'],
-        [(s) => `“${s.rows.find((r) => r.stage === 'Approved').stage}”`, 'The provider’s purchasing rules decided this, not a person: auto-approve under the threshold, a manager approves, or a flag-mode exception. Where the rule decided, the rule is recorded in place of an approver, so the queue never shows a decision nobody made. Eight rules are specified and three are enforced today; the receipt requirement, the trip cap, the substitution mode and price-at-pickup are written down and not yet applied.'],
-        [(s) => `“${s.rows.find((r) => r.store.startsWith('Costco')).store}”`, 'The price ledger. Every purchase records a price for that item at that shop on that date, prices accumulate and are never overwritten, and an item with no history shows no price rather than a guess — the total then says it is incomplete. The three store columns a new tenant starts with are modelled from a base price rather than observed, and the provenance field that would say so on the screen is specified and not yet built.'],
-        [(s) => `the ${s.side.t} panel`, 'Sorted most urgent first, with the value at risk totalled at the foot in money. Three actions, each one step from the list: use it, replace it — which files a request carrying the expiry origin — or discard it, which writes a waste movement with the note the rebuild makes mandatory. The daily notice is one message with a count, never one per item, because a fridge clear-out produces a dozen at once.'],
+        [(s) => `“${s.rows.find((r) => r.stage === 'Approved').stage}”`, 'The provider’s purchasing rules decided this, not a person: auto-approve under the threshold, a manager approves, or a flag-mode exception. Where the rule decided, the rule is recorded in place of an approver, so the queue never shows a decision nobody made. Three of the eight purchasing rules run today. The receipt requirement, the trip cap, the substitution mode and price-at-pickup are not applied yet.'],
+        [(s) => `“${s.rows.find((r) => r.store.startsWith('Costco')).store}”`, 'The price ledger. Every purchase records a price for that item at that shop on that date, prices accumulate and are never overwritten, and an item with no history shows no price rather than a guess — the total then says it is incomplete. The three store columns a new tenant starts with are modelled from a base price rather than observed, and the screen does not yet say so.'],
+        [(s) => `the ${s.side.t} panel`, 'Sorted most urgent first, with the value at risk totalled at the foot in money. Three actions, each one step from the list: use it, replace it — which files a request carrying the expiry origin — or discard it, which writes a waste movement with a note. The daily notice is one message with a count, never one per item, because a fridge clear-out produces a dozen at once.'],
       ],
       side: {
         label: 'Bulk approval, and where it stops',
@@ -570,33 +570,33 @@ const careshop = {
       ],
       machines: [
         ['Expiry', 'a perishable is dated at entry → Expiry Watch sorts by urgency and totals the value at risk in money → use it, replace it with a request carrying the expiry origin, or discard it as waste with a note.'],
-        ['Reserve', 'the provider sets a number of days → the target is that number of days, times the licensed bed count, times the quantity per bed per day for that item → an item flagged as a reserve item with no quantity recorded is excluded and named on the screen rather than counted as zero → the gap files into the queue → bought → the next count reads it back. One reading function with ten callers, held by a check in the build, is what the rebuild adds; the live product has six readers that disagree.'],
+        ['Reserve', 'the provider sets a number of days → the target is that number of days, times the licensed bed count, times the quantity per bed per day for that item → an item flagged as a reserve item with no quantity recorded is excluded and named on the screen rather than counted as zero → the gap files into the queue → bought → the next count reads it back.'],
         ['Cook', 'today’s prep in the house’s own time zone → Cook this → the allergen check, which names the resident’s initials and the ingredient and warns rather than prevents → complete → stock down exactly once, however many times completion is attempted.'],
-        ['Shared run', 'the approved queue → a token link → someone with no account ticks, marks unavailable and closes → a signed-in person reviews and confirms, and the ledger is written on that confirmation rather than on the shopper’s action, because an account-less person cannot be held accountable for a financial record and the product does not pretend otherwise. Until then the run stays open and says who it is waiting on. The screen that pulls it back is specified and not yet built.'],
+        ['Shared run', 'the approved queue → a token link → someone with no account ticks, marks unavailable and closes → a signed-in person reviews and confirms, and the ledger is written on that confirmation rather than on the shopper’s action, because an account-less person cannot be held accountable for a financial record and the product does not pretend otherwise. Until then the run stays open and says who it is waiting on.'],
       ],
       pull: 'A feature that does not participate in the loop must justify itself against it.',
-      closing: 'Every change to on-hand is a recorded, immutable movement carrying the item, the house, the delta, a reason from a fixed set, the actor, the time, and a key that ensures it is recorded exactly once. On-hand is never typed, and a correction is a further movement rather than an edit. Two paths still bypass that rule in the live product: an item’s starting count, which the rebuild ledgers as a movement, and par, which stays direct because a par is a target and not a fact. And the three axes are never conflated — category is the catalogue facet, aisle is the route through a store, zone is where it sits in the house.',
+      closing: 'Every change to on-hand is a recorded, immutable movement carrying the item, the house, the delta, a reason from a fixed set, the actor, the time, and a key that ensures it is recorded exactly once. On-hand is never typed, and a correction is a further movement rather than an edit. Par stays direct because a par is a target and not a fact. And the three axes are never conflated — category is the catalogue facet, aisle is the route through a store, zone is where it sits in the house.',
     },
     {
       key: 'depth', kind: 'table', id: 'compliance',
       heading: 'The rule that says what the house must keep.',
-      sub: 'This layer was nearly cut in September 2026 because its citations were unverified. A CareShop decision of 2026-09-14 kept it and answered the objection with a confidence on every citation — which is the part that is specified and not yet built. The third column says which is which.',
+      sub: 'The reserve target is computed from the bed count. Ten Oregon citations are explained in the product today. A banner stays on the plan until a provider on that track has reviewed the rule set.',
       cols: ['Topic', 'What is shown, and where', 'Today'],
       mono: [2],
       rows: [
-        ['Emergency reserves', 'The target is the reserve period in days, times the licensed bed count, times the quantity per bed per day for that item — then the on-hand reading and the gap, on the dashboard and on the surveyor PDF. An item flagged as a reserve item with no quantity recorded is excluded from the arithmetic and named on the screen rather than counted as zero. The rebuild makes this one reading function with ten callers, held by a check in the build; the live product has six readers that disagree.', 'shipped · defect open'],
-        ['The rule citations', 'Ten Oregon citations are explained inside the product today — 411-050-0715(5), (8)(j), (9)(c), (10)(d) and (10)(f); 411-050-0720(12) and (15); 411-050-0725; 411-050-0730(8); and 309-040-0385. Every other catalogue row carries the bare rule text and no explanation at all.', 'shipped'],
-        ['The confidence on a citation', 'A citation appears only with its confidence: those ten seed confirmed, every other row seeds inferred, and a rule set no provider has reviewed carries a banner on the dashboard and on every export, including the one you hand a surveyor. Until a provider inspected on that track has reviewed a set, every tenant on that track sees the banner — which is the product working as designed, and this page saying so.', 'specified · not built'],
-        ['Fatal Four', 'Eight closed tags, shipped on items; on residents the tags are carried and the closed enum at write is the rebuild — aspiration risk and its mitigator, constipation risk and its mitigator, dehydration risk and its rescue, the seizure mitigator, the med-pass vehicle — and a coverage reading per house. Never a clinical claim about a person.', 'shipped on items · rebuild on residents'],
-        ['Diet, texture, allergens', 'The resident’s tags on the menu, the tray note rendered per resident, and the allergen check on cook. Eighteen diet tags, IDDSI-0 through IDDSI-7 among them, and a match is exact rather than textual because both sides draw on one closed vocabulary — which the rebuild enforces at write with a typed refusal. Today the tags are stored as semicolon-separated text on items, on residents and on the house diet profile, and a misspelling passes silently. One library defect sits behind that: the allergen field is populated on every catalogue row, and on the non-food rows it holds cleaning chemistry rather than anything a resident is allergic to.', 'shipped · defect open'],
-        ['Food safety', 'Expiry dates and Expiry Watch, on every item tracked with dates; an item tracked by count alone carries no date and no expiry surfacing. Whether a narrow inspection model comes back — one due date per item and house — is not settled: the library already carries an interval column, and twelve rows carry an interval that nothing in the product can act on.', 'open'],
+        ['Emergency reserves', 'The target is the reserve period in days, times the licensed bed count, times the quantity per bed per day for that item — then the on-hand reading and the gap, on the dashboard and on the surveyor PDF. An item flagged as a reserve item with no quantity recorded is excluded from the arithmetic and named on the screen rather than counted as zero.', 'in the product'],
+        ['The rule citations', 'Ten Oregon citations are explained inside the product today — 411-050-0715(5), (8)(j), (9)(c), (10)(d) and (10)(f); 411-050-0720(12) and (15); 411-050-0725; 411-050-0730(8); and 309-040-0385. Every other catalogue row carries the bare rule text and no explanation at all.', 'in the product'],
+        ['The confidence on a citation', 'A citation appears only with its confidence: those ten seed confirmed, every other row seeds inferred, and a rule set no provider has reviewed carries a banner on the dashboard and on every export, including the one you hand a surveyor. Until a provider inspected on that track has reviewed a set, every tenant on that track sees the banner.', 'coming'],
+        ['Fatal Four', 'Eight closed tags, on items today; on residents the tags are carried — aspiration risk and its mitigator, constipation risk and its mitigator, dehydration risk and its rescue, the seizure mitigator, the med-pass vehicle — and a coverage reading per house. Never a clinical claim about a person.', 'on items today'],
+        ['Diet, texture, allergens', 'The resident’s tags on the menu, the tray note rendered per resident, and the allergen check on cook. Eighteen diet tags, IDDSI-0 through IDDSI-7 among them. A match is exact rather than textual because both sides draw on one closed vocabulary.', 'in the product'],
+        ['Food safety', 'Expiry dates and Expiry Watch, on every item tracked with dates; an item tracked by count alone carries no date and no expiry surfacing.', 'dates today'],
       ],
       pull: 'The reserve target is arithmetic, not a shrug.',
-      closing: 'Two postures are on record and one of them has to be chosen. The specification says the screen states no rule, cites no source and shows no grade — reserves are a par level with a different basis, and if a provider asks which rule requires it, the answer is not in CareShop. The decision of 2026-09-14 reverses that: the citation stays, with a confidence on each one, a banner wherever a rule set is unreviewed, and a named reviewer on a versioned library that is never edited in place. The mechanism that would make the second posture honest — the rule set, the confidence field, the review record — is specified and not yet built, and choosing between the two is the largest question still open on this product.',
+      closing: 'CareShop reads a house against its own counts. It never ranks one house against another, and it never says a house is compliant. Ten citations are explained in one line each; every other catalogue row carries the bare rule text. A rule set no provider has reviewed carries a banner on the dashboard and on every export.',
     },
     {
       key: 'boundary', kind: 'boundary', id: 'boundary',
-      heading: 'What CareShop does, and what it leaves to the room next door.',
+      heading: 'What CareShop does, and what it will not do.',
       cols: [
         {
           label: 'Next door', kind: 'next', items: [
@@ -632,12 +632,12 @@ const careshop = {
       blocks: [
         { label: 'The resident record', quote: 'Room 2 · A', text: 'A display name or initials, the house, diet tags, one texture level, allergens drawn from the same closed vocabulary the catalogue uses, and preferences. Nothing else: no diagnosis, no medication, no incident, no clinical note, and no free-text field about the person. The schema says outright that it never holds a full name. Any proposal to add a field is a boundary change rather than a feature request.' },
         { label: 'Why initials are not a defence', text: 'Initials are a display convention, not a de-identification method. In a house with five residents, “M.C. — pureed, no nuts” identifies one person to anyone who knows the house. They are a matter of ordinary decency, and the product’s obligations are unchanged by them.' },
-        { label: 'The label validator', text: 'Specified, and not yet built. The rebuild refuses a label that reads as a person’s name and refuses an import carrying a clinical-notes column; today the rule holds as a convention rather than as enforcement, and the live deployment still carries a clinical-notes column with content in it. Purging that content, with the deletion recorded, is the first item of work on the list — protected information is purged, not hidden.' },
+        { label: 'The label validator', text: 'A resident label that reads as a person’s name is refused, and so is an import with a clinical-notes column. Protected information is purged, not hidden.' },
         { label: 'Classification', text: 'One table holds protected information — residents — and the audit log with it, because its snapshots can contain resident rows. Memberships hold personal information. Everything else is public. Every change to a resident is recorded, and so is every reading: printing a diet card counts as a reading.' },
-        { label: 'The customer agreement', text: 'Open, and not yet drafted. CareShop is the one product in this family that holds protected information, so the family’s rule is that it carries a customer business associate agreement — and the live deployment holds residents’ diet information today without one. It is the first blocker on our own list, and it is not an engineering task. We are telling you because you would find out.' },
-        { label: 'What leaves the house', wide: true, text: 'Eighteen family templates and four of CareShop’s own, each carrying a house short code, a count, a date, an amount, the person’s own name and a link. There is no free-text body parameter anywhere in the system: the send function accepts a template key and typed parameters, and nothing else. A push carries the same, and the inbox renders from the record at read time, so no notification row stores free text. Expiry notices are batched into one message with a count, never one per item, because a fridge clear-out produces a dozen at once. The live deployment sends two of the twenty-two templates.' },
+        { label: 'The customer agreement', text: 'CareShop holds residents’ diet tags, texture and allergens — enough for a tray note and a menu check. A customer business associate agreement belongs with that, and it is not in place yet. We are telling you because you would find out.' },
+        { label: 'What leaves the house', wide: true, text: 'Eighteen shared templates and four of CareShop’s own, each carrying a house short code, a count, a date, an amount, the person’s own name and a link. There is no free-text body parameter anywhere in the system: the send function accepts a template key and typed parameters, and nothing else. A push carries the same, and the inbox renders from the record at read time, so no notification row stores free text. Expiry notices are batched into one message with a count, never one per item, because a fridge clear-out produces a dozen at once. Two of the twenty-two templates send today.' },
         { label: 'The house short code', text: 'A house is named in an email or a push by its generated short code — WH-1 — and by nothing else. The code is immutable, and it is checked so that no code equals or contains any resident’s display name or initials anywhere in the organisation.' },
-        { label: 'The shared run', text: 'A token addresses a snapshot of one run’s items and quantities. It grants ticking, marking unavailable and closing, and grants no session and no route into anything else; it is revocable at any moment and it expires. The snapshot is produced by a source that cannot read the resident table, so it cannot carry a tray note even by error — the structural check that asserts that on every build is what the rebuild adds. The email that carries the link carries the link, the house short code and a count of items, and never an item name: an item name in an email is how “pureed chicken” reaches an inbox.' },
+        { label: 'The shared run', text: 'A token addresses a snapshot of one run’s items and quantities. It grants ticking, marking unavailable and closing, and grants no session and no route into anything else; it is revocable at any moment and it expires. The snapshot is produced by a source that cannot read the resident table, so it cannot carry a tray note even by error. The email that carries the link carries the link, the house short code and a count of items, and never an item name: an item name in an email is how “pureed chicken” reaches an inbox.' },
         { label: 'Tray notes', text: 'Rendered at the moment of viewing, never stored. A menu record holds a recipe reference and no resident field at all, which is why an archived resident stops appearing on tray notes while historical menus are unaffected: they never contained resident information in the first place.' },
       ],
       closingBlocks: [
@@ -654,7 +654,7 @@ const careshop = {
         ['provider', 'The licence holder; an agency’s Executive Director', 'Set purchasing policy, approve, see spend across houses, manage the catalogue, review the rule set, manage billing', 'Phone + laptop'],
         ['manager', 'Resident manager; program manager — scoped to named houses in the specification, organisation-wide in the live product', 'Plan the week’s menu, approve requests, attest to counts, run the wizard', 'Phone'],
         ['caregiver', 'Direct care staff', 'Count, scan, file a buy request, cook from Today, shop from the list, read tray notes', 'Phone, at the shelf and in the store'],
-        ['buyer (a flag)', 'Whoever shops', 'Shopping mode and the receipt; the till-roll check is specified and not yet built', 'Phone, in the store'],
+        ['buyer (a flag)', 'Whoever shops', 'Shopping mode and the receipt. Reading the till roll on the device is not in the product yet', 'Phone, in the store'],
         ['no account', 'A spouse doing the Costco run', 'Open a shared run, tick, mark unavailable and close it — and a signed-in person confirms before anything reaches the ledger', 'Phone, on the web', 'wash'],
         ['operator', 'The platform team', 'The console: provision, suspend, impersonate with a reason, repair accounts', 'Web'],
       ],
@@ -664,8 +664,8 @@ const careshop = {
       heading: 'The questions we get.',
       rows: [
         ['Isn’t this just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
-        ['Who checks your rules?', 'A provider inspected on that track — and none has yet, which is the honest answer. The confidence on a citation, the banner on an unreviewed rule set and the review record itself are specified and not yet built. What is in the product today is ten Oregon citations explained in one line each; every other catalogue row carries the bare rule text and no explanation. We would rather tell you that than show you a tidy screen.'],
-        ['My caregiver’s phone has no signal in the store.', 'Picks queue offline. Every shift write goes through the outbox with idempotency, so a pick is never counted twice.'],
+        ['Who checks your rules?', 'A provider inspected on that track — and none has yet, which is the honest answer. What is in the product today is ten Oregon citations explained in one line each; every other catalogue row carries the bare rule text and no explanation. A banner stays until a provider on that track has reviewed the set. We would rather tell you that than show you a tidy screen.'],
+        ['My caregiver’s phone has no signal in the store.', 'Picks wait on the phone. When the signal comes back they land once, and a pick is never counted twice.'],
         ['Can I use it across more than one house?', 'Yes. Scale is thirty-seven dollars a month, for unlimited houses and seats and the multi-house views. It does not give you your own branding: branding is frozen, and if it comes back it will be a decision taken then rather than something inherited.'],
       ],
     },
@@ -673,14 +673,14 @@ const careshop = {
       key: 'start', kind: 'start', id: 'start',
       heading: 'The first ten minutes.',
       sub: 'If the loop closes once, you trust it.',
-      steps: ['Add a zone and scan five items from the pantry.', 'Set a par on one, and watch it become a buy request.', 'Add a resident with a tree-nut allergy, and see the menu warn.', 'Open Compliance and see the reserve target computed from your bed count and the quantity per bed per day.'],
+      steps: ['Add a zone and scan five items from the pantry.', 'Set a par on one, and watch it become a buy request.', 'Add a resident with a tree-nut allergy, and see the menu warn.', 'Open Today and see what the house needs — restock, expiry, dinner.'],
     },
     {
       key: 'pricing', kind: 'tiers', id: 'pricing',
       heading: 'Nineteen dollars a house.',
       sub: EVERY_PLAN,
       main: 1,
-      note: 'Sold on the web through Stripe Checkout; the native application never presents a purchase sheet — the family standard, adopted here rather than decided here. The three-day trial is the family standard and is not in the live code yet: the tiers running today are Free at nothing, Pro at nineteen and Scale at thirty-seven, and retiring Free is the outstanding half of that. The house allowance on Pro is itself open — the family line says up to three, the live quota is five.',
+      note: 'Sold on the web through Stripe Checkout; the app never presents a purchase sheet. The tiers running today are Free, Pro at nineteen a house, and Scale at thirty-seven. The three-day trial is not live yet.',
     },
     {
       key: 'ladder', kind: 'map', id: 'ladder',
@@ -699,7 +699,7 @@ const careshop = {
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
-      disclaimer: 'The rows on any screen shown here are sample data. Prices quoted for other products are their own published figures.',
+      disclaimer: 'Screens on this page use sample data.',
     },
   ],
 };
@@ -805,7 +805,7 @@ const aidepost = {
     {
       key: 'boundary', kind: 'boundary', id: 'boundary',
       heading: 'What Aidepost refuses to do, and who does it instead.',
-      sub: 'Aidepost holds no thin copy of a neighbour’s feature — every one of its features lives here at full depth, and it is the only product in this family of which that is true. So this section is short on hand-offs and long on refusals.',
+      sub: 'Aidepost holds no thin copy of another product’s feature. Every one of its features lives here at full depth. So this section is short on hand-offs and long on refusals.',
       cols: [
         {
           label: 'Next door', kind: 'next', items: [
@@ -835,7 +835,7 @@ const aidepost = {
         kind: 'phrase', label: 'Does not',
         cells: ['keep residents’ records', 'run the kitchen', 'build binders', 'process payroll', 'run background checks'],
       },
-      pull: 'That sentence is not a tagline. It ships inside the product, at Settings → About, in these words: “Aidepost is the workforce record. It does not keep residents’ records, run the kitchen, build binders, process payroll, or run background checks.”',
+      pull: 'That sentence is the product. It ships on the About page, in these words: “Aidepost is the workforce record. It does not keep residents’ records, run the kitchen, build binders, process payroll, or run background checks.”',
     },
     {
       key: 'evidence', kind: 'evidence', id: 'record',
@@ -855,7 +855,7 @@ const aidepost = {
         { label: 'The law that applies to your staff', text: 'Caregiver data is governed by state privacy and employment law, not by the federal health rule. The customer agreement we ask you to accept is drafted for products capable of holding protected information — which, for Aidepost, turns entirely on the one optional field above.' },
       ],
       closingBlocks: [
-        { heading: 'What is here, and what is not yet', text: 'The internal toolkit is the first release: staff, credentials, the roster and the open-shift board, filling from your own staff, onboarding, clocking and the timesheet export, and the caregiver side free. Public job posts, applications and hiring, and policy signatures come with the marketplace. Cross-employer relief work — posting outward, claiming, confirming, attendance facts — ships last, because a two-sided market with one side empty is worse than no marketplace at all. Nothing on this page is a screenshot of software you can buy today.' },
+        { heading: 'What is here, and what is coming', text: 'The first release is the house toolkit: staff, credentials, the roster and the open-shift board, filling from your own staff, onboarding, clocking and the timesheet export, and the caregiver side free. Public job posts, applications and hiring, and policy signatures come with the marketplace. Cross-employer relief work — posting outward, claiming, confirming, attendance facts — ships last, because a two-sided market with one side empty is worse than no marketplace at all. Nothing on this page is a screenshot of software you can buy today.' },
         { heading: 'Two audiences, one design', text: 'The employer’s side is dense and administrative; the caregiver’s side is sparse and single-column, for a phone held in one hand on a bus. They share every component; they differ in density and in the first screen. You are asked which side you are on once, in plain language, and never again.' },
       ],
     },
@@ -919,7 +919,7 @@ const aidepost = {
         { label: 'Provider', steps: ['Add six staff and their CPR dates.', 'See the one that expires Friday take the accent.', 'Build next week’s roster.', 'See Saturday night open — offer it to your own staff, then post outward.'] },
         { label: 'Caregiver', wash: true, steps: ['Create a profile.', 'Add a CPR card photo and its date.', 'See three open shifts within twenty-five miles.'], foot: 'No organisation. No card. Nothing to cancel.' },
       ],
-      signupHeading: 'Signing up, in six steps — the provider side, the same in every product in this family',
+      signupHeading: 'Signing up, in six steps — the provider side',
     },
     { key: 'join', kind: 'join', id: 'join' },
     {
@@ -946,7 +946,7 @@ const aidepost = {
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
-      disclaimer: 'The roster shown here is sample data; M. Okafor, J. Ruiz and T. Nguyen are not real people.',
+      disclaimer: 'Screens on this page use sample data.',
     },
   ],
 };

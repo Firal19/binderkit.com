@@ -26,4 +26,4 @@ ${section(ELSE, `<h2 id="h-elsewhere">Elsewhere.</h2><p class="sub">The same add
 ${footer(cfg, p, { page: 'contact', tabs: SECS })}`;
 }
 
-export const contactPage = { path: 'contact', title: 'Contact', description: 'Write to a person: one inbox, read by the people who build Binderkit, answered from the same address. Tell us the facility code, never a resident’s name.', render };
+export const contactPage = { path: 'contact', title: 'Contact', description: 'Write to a person: one inbox, answered from the same address. Tell us the facility code, never a resident’s name.', render };

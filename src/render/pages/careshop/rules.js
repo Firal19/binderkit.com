@@ -1,5 +1,5 @@
 // /rules — the ten Oregon citations the product explains today, how sure we
-// are about each, what is specified and not yet built, and what was removed.
+// are about each, and what was removed.
 // Every line is read from the specification (data/page.js) or
 // FEATURES_CARESHOP.md; explaining a rule is never a claim that a house
 // meets it, and this page says so in its first breath.
@@ -25,16 +25,15 @@ const LEGEND = [
 
 /* §7.1 Removed, and not returning — as the document tables it */
 const REMOVED = [
-  ['Rule citations on items', 'never verified, jurisdiction unsettled — the largest unsupported claim in the product', 'reversed by D47: kept, with a confidence on each'],
-  ['A coverage grade across clinical risks', '“measured catalogue coverage and called it readiness”', 'reversed by D47'],
-  ['Attestations and weekly compliance snapshots', '“compliance theatre once the citations are gone”', 'reversed by D47'],
-  ['An evidence package for an inspector', '“the same, in a binder”', 'reversed by D47: surveyor PDFs, with a banner'],
-  ['Resident clinical notes', 'protected information with no kitchen purpose', 'removed, stays removed — the live column is purged in the migration'],
-  ['Equipment and its inspection model', '“an extinguisher is not stock”', 'vault: never; a narrow yes is open in the repo'],
+  ['Rule citations on items', 'never verified, jurisdiction unsettled — the largest unsupported claim in the product', 'kept, with a confidence on each'],
+  ['A coverage grade across clinical risks', '“measured catalogue coverage and called it readiness”', 'not coming back'],
+  ['Attestations and weekly compliance snapshots', '“compliance theatre once the citations are gone”', 'not coming back'],
+  ['An evidence package for an inspector', '“the same, in a binder”', 'surveyor PDFs, with a banner'],
+  ['Resident clinical notes', 'protected information with no kitchen purpose', 'removed, and stays removed'],
+  ['Equipment and its inspection model', '“an extinguisher is not stock”', 'not coming back; a narrow inspection model is still open'],
   ['Per-tenant subdomains', '“the complexity buys nothing for a phone application”', 'removed; existing addresses redirect'],
 ];
-/* §7.7 Never, per the release plan · §7.8 module-level nevers */
-const NEVER = ['Careshop Pay', 'QR shelf labels', 'Any inspection model', 'Resident clinical notes', 'The per-tenant subdomain layer', 'In-app purchase', 'A free tier — still priced and still sold today; retiring it is the outstanding half of that decision'];
+const NEVER = ['Careshop Pay', 'QR shelf labels', 'Any inspection model', 'Resident clinical notes', 'The per-tenant subdomain layer', 'In-app purchase'];
 const NEVER_MODULE = [
   ['Stock', 'Edit on-hand directly. Let a scan fail because a field is missing.'],
   ['Shop', 'Let an unapproved line be purchased under strict mode. Put a resident on a shopping list or a shared link.'],
@@ -68,18 +67,18 @@ ${sec('banner', 'banner-s', `<div class="wrap aisle-g">
   <div class="aisle-d">${sticker('tag', 'The banner')}${h2('banner', 'Until a provider has reviewed the set, every screen says so.', buy.banner)}<p class="st-p">${esc(who[1])}</p><div class="shows">${showMe('Bottled water', 'An inferred citation')}${showMe('Applesauce', 'A confirmed one')}</div></div>
 </div>`)}
 ${sec('posture', 'posture', `<div class="wrap">
-  <div class="head">${sticker('scale', 'Two postures on record')}${h2('posture', 'One of them has to be chosen.', depth.sub)}</div>
+  <div class="head">${sticker('scale', 'How sure we are')}${h2('posture', 'A citation is an explanation, never a finding.', depth.sub)}</div>
   <p class="closing">${esc(depth.closing)}</p>
   <div class="res-l is-page">${depth.rows.map(([t, w, where]) => `<div class="res-r"><span class="res-k">${ic('tag', 16)}<b>${esc(t)}</b></span><span>${esc(w)}</span><em>${esc(where)}</em></div>`).join('')}</div>
 </div>`)}
 ${sec('removed', 'removed', `<div class="wrap">
-  <div class="head">${sticker('x', 'Removed, and never')}${h2('removed', 'What came out, and what will not go in.', 'The product the family learned from: a compliance layer was built, shipped, used by nobody, and taken out — then part of it came back under a decision that puts a confidence on every citation. This is the record, in the document’s own words.')}</div>
+  <div class="head">${sticker('x', 'Removed, and never')}${h2('removed', 'What came out, and what will not go in.', 'A compliance layer was built, shipped, used by nobody, and taken out. What came back is a confidence mark on every citation — an explanation of a rule, never a finding about a house.')}</div>
   <div class="void">
     <span class="rc-h">VOID</span>
     ${REMOVED.map(([t, why, now]) => `<div class="void-r"><b>${esc(t)}</b><span>${esc(why)}</span><em>${esc(now)}</em></div>`).join('')}
   </div>
   <div class="never-g">
-    <div class="never"><span class="strip-l">Never, per the release plan</span><ul>${NEVER.map((n) => `<li>${ic('x', 16)}<span>${esc(n)}</span></li>`).join('')}</ul></div>
+    <div class="never"><span class="strip-l">Never</span><ul>${NEVER.map((n) => `<li>${ic('x', 16)}<span>${esc(n)}</span></li>`).join('')}</ul></div>
     <div class="never"><span class="strip-l">Never, module by module</span><ul>${NEVER_MODULE.map(([m, n]) => `<li>${ic('x', 16)}<span><b>${esc(m)} ·</b> ${esc(n)}</span></li>`).join('')}</ul></div>
   </div>
   <div class="ctas"><a class="btn lg" href="/write">${ic('mail', 18)}Ask us about a rule</a><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="rules"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a></div>

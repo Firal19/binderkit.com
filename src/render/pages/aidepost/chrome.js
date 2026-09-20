@@ -7,11 +7,10 @@
 // footer is the week: seven columns, Monday to Sunday, today lit "tonight".
 
 import { esc, mark, social, byline, hello, mailto } from '../../shared.js';
-import { PRODUCTS } from '../../../data/brand.js';
 import { ic } from '../../icons/aidepost.js';
 
-export const PROVIDER_NAV = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['pricing', 'Pricing'], ['join', 'Join']];
-export const CAREGIVER_NAV = [['caregivers', 'Shifts near you'], ['wallet', 'Your wallet'], ['free', 'Free, for ever'], ['join', 'Join']];
+export const PROVIDER_NAV = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['pricing', 'Pricing']];
+export const CAREGIVER_NAV = [['caregivers', 'Shifts near you'], ['wallet', 'Your wallet'], ['free', 'Free, for ever']];
 export const PAGE_LINKS = [['/providers', 'Providers'], ['/caregivers', 'Caregivers'], ['/pricing', 'Pricing'], ['/about', 'About'], ['/contact', 'Contact']];
 
 /* Where a section link points depends on the page it sits on: in-page when
@@ -77,7 +76,7 @@ export function header(cfg, p, opts = {}) {
       </div>
       <nav class="hd-nav" aria-label="Sections" data-spy>${set(PROVIDER_NAV, 'provider')}${set(CAREGIVER_NAV, 'caregiver')}</nav>
       <div class="hd-r">
-        <button class="hd-k" type="button" aria-controls="pal" aria-expanded="false" aria-label="Open the command palette" data-focus=".pal-in"><kbd>⌘K</kbd></button>
+        <button class="hd-k" type="button" aria-controls="pal" aria-expanded="false" aria-label="Search" data-focus=".pal-in">${ic('search', 18, { pin: false })}</button>
         <a class="btn pri sm hd-cta" href="${at('join')}" data-cta="nav"><span class="s-prov"><span class="l-long">${esc(cfg.cta.primary)}</span><span class="l-short">${esc(cfg.cta.nav)}</span></span><span class="s-care"><span class="l-long">${esc(cfg.cta.secondary)}</span><span class="l-short">Find shifts</span></span></a>
         ${modeBadge()}
         <button class="hd-menu" type="button" aria-controls="sheet" aria-expanded="false" aria-label="Open menu" data-label-close="Close menu" data-lock data-focus=".sheet-x">${ic('menu', 22, { pin: false })}<span class="hd-menu-l" aria-hidden="true">Menu</span></button>
@@ -115,16 +114,15 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function footer(cfg, p, opts = {}) {
   const at = linker(opts.ids);
-  const siblings = PRODUCTS.filter((x) => x.kind === 'mini' && x.id !== p.id);
   const li = (rows) => `<ul class="ft-l">${rows.map(([h, t]) => `<li><a href="${esc(h)}">${esc(t)}</a></li>`).join('')}</ul>`;
   const cols = [
     ['Product', li([['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/pricing', 'Pricing']])],
     ['Caregivers', li([['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])],
     ['Company', li([['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['https://providerhub.us', 'providerhub.us']])],
-    ['Family', `<ul class="ft-l ft-fam">${siblings.map((s) => `<li><a href="https://${esc(s.domain)}" rel="noopener"><span class="ft-mk">${mark(s.id, 22, { label: false })}</span><span><b>${esc(s.name)}</b><small>${esc(s.owns)}</small></span></a></li>`).join('')}</ul>`],
-    ['Write', `<p class="ft-w"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a></p><button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button><p class="ft-note">One inbox, read by the people who build this.</p>`],
-    ['Social', social(p.id, { cls: 'soc-pills', size: 16 })],
-    ['', `<div class="ft-sun">${mark(p.id, 44, { label: false })}<span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span>${byline(true)}</div>`],
+    ['Oregon', li([['/about', 'About Aidepost'], ['/privacy', 'Privacy'], ['/contact', 'Write to a person'], ['https://providerhub.us', 'providerhub.us']])],
+    ['Write', `<p class="ft-w"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a></p><button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button><p class="ft-note">One inbox. A person answers.</p>`],
+    ['Social', social(p.id, { cls: 'soc-pills', size: 16, text: true, label: 'Aidepost on social' })],
+    ['', `<div class="ft-sun">${mark(p.id, 80, { label: false })}<span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span>${byline(true)}</div>`],
   ];
   return `<footer class="ft" id="foot">
     <div class="wrap">

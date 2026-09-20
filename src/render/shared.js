@@ -77,12 +77,12 @@ export function waitlist(cfg, p, copy = {}) {
 export const TOPICS = ['Question', 'Early access', 'Pricing', 'Security and privacy', 'Press', 'Something else'];
 export const CONTACT = {
   heading: 'Write to a person.',
-  sub: 'Every message lands in one inbox, read by the people who build this. You get an answer from the same address, not a ticket number.',
+  sub: 'Every message lands in one inbox. You get an answer from the same address.',
   fields: { name: 'Your name', email: 'Your email', topic: 'What is it about?', message: 'Your message' },
   button: 'Send it',
   busy: 'Sending…',
   done: 'Sent. A receipt is on its way to you, and a person will answer from the same address.',
-  fine: 'No ticket, no bot, no newsletter. One person reads it and answers.',
+  fine: 'One person reads it and answers.',
 };
 export function contact(cfg, p, copy = {}) {
   const opt = (v) => `<option value="${esc(v)}">${esc(v)}</option>`;

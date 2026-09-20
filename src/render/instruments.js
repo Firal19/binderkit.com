@@ -61,7 +61,7 @@ export const icon = (name, size = 18) => {
 const TAB_ICONS = {
   pho: ['home', 'people', 'badge', 'binder', 'more'],
   cohort: ['home', 'people', 'pill', 'note', 'more'],
-  careshop: ['home', 'box', 'cart', 'menu', 'more'],
+  careshop: ['box', 'cart', 'home', 'menu', 'shield'],
   binderkit: ['plan', 'binder', 'clock', 'note', 'more'],
   aidepost: ['shifts', 'people', 'badge', 'post', 'more'],
 };
@@ -71,7 +71,7 @@ const NAV_ICONS = {
   Today: 'home', Dashboard: 'home', Residents: 'people', 'Resident Management': 'people',
   MAR: 'pill', Documentation: 'doc', Incidents: 'note', Notes: 'note', Tasks: 'check',
   'People & access': 'people', Settings: 'gear', 'Settings & Admin': 'gear',
-  Stock: 'box', 'Buy queue': 'cart', Shopping: 'cart', Menu: 'menu', Compliance: 'shield',
+  Stock: 'box', Shop: 'cart', 'Buy queue': 'cart', Shopping: 'cart', Menu: 'menu', Cook: 'menu', Compliance: 'shield', Comply: 'shield',
   Reserves: 'box', Analytics: 'chart',
   Houses: 'home', Plan: 'plan', Binders: 'binder', Versions: 'clock', Facilities: 'home',
   Shifts: 'shifts', Staff: 'people', 'Staff & Workforce': 'people', Credentials: 'badge',
@@ -296,10 +296,11 @@ const surfaces = {
   careshop: {
     screens: [
       {
-        key: 'buy', tab: 2, nav: 'Buy queue', badge: '2 pending', tabBadge: { tab: 2, text: '4' },
+        key: 'buy', tab: 1, nav: 'Shop', badge: '2 pending', tabBadge: { tab: 1, text: '4' },
         title: 'Buy queue', sub: 'All houses · 2 pending · 3 approved',
         scope: ['Meadow Care', 'All houses', 'This week'],
-        desktopTitle: 'Buy queue', desktopSub: 'What the house is short, who asked, who approved, and the cheapest store on the ledger.',
+        desktopTitle: 'Buy queue', desktopSub: 'What the house is short, who asked, who approved, and the cheapest store on the price list.',
+        rail: ['Buy queue', 'Shopping list'], railOn: 0,
         banner: 'This rule set has not been reviewed. Every export carries this line.',
         rows: [
           { item: 'Whole milk · 2 gal', origin: 'Menu shortfall · Thu dinner', conf: '', state: 'short', stage: 'Pending', asked: 'K. Silva', approved: '—', store: 'WinCo · $4.98', house: 'WH-1' },
@@ -308,14 +309,15 @@ const surfaces = {
           { item: 'Rice · 10 lb', origin: 'Par breach · 2 below par', conf: '', state: 'short', stage: 'Pending', asked: 'Shelf scan', approved: 'Auto · under $15', store: 'WinCo · $6.49', house: 'WH-1' },
           { item: 'Oat milk · 1 gal', origin: 'Diet tag · Room 3', conf: 'confirmed', state: 'stocked', stage: 'In cart', asked: 'K. Silva', approved: 'M. Kebede', store: 'WinCo · $4.29', house: 'WH-1' },
         ],
-        foot: 'Pending → Approved → In cart → Bought → On the shelf. Every stock change is a ledger row with an actor and a reason.',
+        foot: 'Pending → Approved → In cart → Bought → On the shelf. Each change names who did it, and why.',
         side: { kind: 'ladder', t: 'Expiry Watch', rows: [['Applesauce cups', 2, 'expiring'], ['Whole milk · open', 3, 'expiring'], ['Yoghurt · 6', 5, 'expiring'], ['Sliced turkey', 9, 'stocked']], foot: 'Value at risk · $14.20', cta: 'Make the shopping list' },
       },
       {
-        key: 'menu', tab: 3, nav: 'Menu',
+        key: 'menu', tab: 3, nav: 'Cook',
         title: 'Menu · this week', sub: 'WH-1 · checked against who lives here',
         scope: ['Meadow Care', 'WH-1 · Willow House', 'Week of 14 Sep'],
-        desktopTitle: 'Menu week', desktopSub: 'Residents’ tags shape the menu; the menu’s shortfall files into the queue.',
+        desktopTitle: 'Weekly meal plan', desktopSub: 'Residents’ tags shape the menu; the menu’s shortfall files into the queue.',
+        rail: ['Today’s prep', 'Weekly meal plan', 'Recipes'], railOn: 1,
         warn: 'Thursday · peanut sauce contains peanut. Room 3 carries a peanut allergen tag. Change the dish or record a substitution.',
         menu: [
           ['Mon', 'Chicken and rice', 'stocked', 'Minced for Room 2', 'confirmed'],
@@ -325,14 +327,15 @@ const surfaces = {
           ['Fri', 'Fish tacos', 'stocked', 'Minced for Room 2', 'confirmed'],
         ],
         tags: [['Room 2', 'minced · IDDSI 5'], ['Room 3', 'peanut · tree nut'], ['Room 5', 'no pork']],
-        foot: 'A resident is a label — “Room 2 · A” — never a name. The validator refuses two capitalised words.',
+        foot: 'A resident is a label — “Room 2 · A” — never a name. The menu holds a recipe, not a person.',
         side: { kind: 'ladder', t: 'Allergen check', rows: [['Peanut', 1, 'expiring'], ['Tree nut', 1, 'expiring'], ['Milk', 0, 'stocked'], ['Egg', 0, 'stocked']], foot: 'The nine standard allergens · checked on cook', cta: 'Cook this' },
       },
       {
-        key: 'expiry', tab: 1, nav: 'Stock',
+        key: 'expiry', tab: 0, nav: 'Stock',
         title: 'Expiry Watch', sub: 'All houses · most urgent first',
         scope: ['Meadow Care', 'All houses', 'Dated stock'],
         desktopTitle: 'Expiry Watch', desktopSub: 'Dated at entry, sorted by urgency, totalled as value at risk — use it, replace it, or discard it with a reason.',
+        rail: ['Zones', 'All items', 'Expiry watch'], railOn: 2,
         ladder: [
           ['Applesauce cups · WH-2', 2, '$3.29', 'expiring'],
           ['Whole milk · open · WH-1', 3, '$4.98', 'expiring'],
@@ -341,14 +344,15 @@ const surfaces = {
           ['Frozen peas · GH-1', 40, '—', 'over'],
         ],
         risk: 'Value at risk · $14.20 — use it, replace it, or discard it with a reason.',
-        foot: 'Value at risk · $14.20. No inspection language anywhere on this screen — it is food safety, not a finding.',
+        foot: 'Value at risk · $14.20. Use it, replace it, or discard it — food safety, not a finding.',
         side: { kind: 'ladder', t: 'Reserve', rows: [['WH-1 · 5 beds', 3, 'stocked'], ['WH-2 · 4 beds', 1, 'short'], ['GH-1 · 3 beds', 3, 'stocked']], foot: 'Target = N days × licensed bed count', cta: 'File the gap' },
       },
       {
-        key: 'stock', tab: 1, nav: 'Stock',
-        title: 'Stock', sub: 'WH-1 · by zone · counted this morning',
+        key: 'stock', tab: 0, nav: 'Stock',
+        title: 'Zones', sub: 'WH-1 · counted this morning',
         scope: ['Meadow Care', 'WH-1 · Willow House', 'Pantry'],
-        desktopTitle: 'Stock by zone', desktopSub: 'Zone is where it sits in the house. Category is the catalogue facet. Aisle is the route through a store. Never the same axis.',
+        desktopTitle: 'Zones', desktopSub: 'Where it sits in the house — pantry, fridge, freezer, reserve. The walk order is the house’s own.',
+        rail: ['Zones', 'All items', 'Expiry watch'], railOn: 0,
         zones: ['Pantry', 'Fridge', 'Freezer', 'Reserve'],
         rows: [
           { t: 'Rice · 10 lb', s: 'Par 3 · on hand 1', state: 'short', stateText: '2 below par', v: '1' },
@@ -357,32 +361,72 @@ const surfaces = {
           { t: 'Applesauce · cups', s: 'Par 12 · dated 21 Sep', state: 'expiring', stateText: '2 days', v: '9' },
           { t: 'Bottled water · 24-pk', s: 'Reserve · 3 days × 5 beds', state: 'short', stateText: 'Gap', v: '2' },
         ],
-        foot: 'On hand is never typed. Every change is a ledger row with an actor and a reason — count, scan, cook, discard, receipt.',
+        foot: 'On hand is never typed. Count, scan, cook, discard, or close a receipt — each one moves the number.',
         side: { kind: 'ladder', t: 'Counted today', rows: [['Pantry', 0, 'stocked'], ['Fridge', 0, 'stocked'], ['Freezer', 4, 'expiring'], ['Reserve', 1, 'short']], foot: 'Four zones · walk order set by the house', cta: 'Scan an item' },
       },
       {
-        key: 'cook', tab: 3, nav: 'Menu',
+        key: 'cook', tab: 3, nav: 'Cook',
         title: 'Cook this', sub: 'Thu dinner · chicken and rice · 5 trays',
         scope: ['Meadow Care', 'WH-1 · Willow House', 'Cook mode'],
-        desktopTitle: 'Cook mode', desktopSub: 'Today’s prep in the house’s own time zone; the allergen check before you plate; stock goes down when you complete, idempotently.',
+        desktopTitle: 'Today’s prep', desktopSub: 'Today’s prep in the house’s own time zone; the allergen check before you plate; stock goes down when you complete — once.',
+        rail: ['Today’s prep', 'Weekly meal plan', 'Recipes'], railOn: 0,
         steps: [['1', 'Rinse and simmer the rice', '18 min', 'done'], ['2', 'Sear chicken thighs', '12 min', 'now'], ['3', 'Allergen check · 5 trays', 'before plating', 'next'], ['4', 'Complete → stock down', 'rice −2 cups · chicken −3 lb', 'next']],
         trays: [['Room 1', 'regular'], ['Room 2', 'minced · IDDSI 5'], ['Room 3', 'no peanut · no tree nut'], ['Room 4', 'regular'], ['Room 5', 'no pork']],
-        foot: 'Tray notes are rendered from the resident’s tags, never stored. A resident is a label — “Room 2” — never a name.',
+        foot: 'Tray notes are drawn from the tags at the moment you look. A resident is a label — “Room 2” — never a name.',
         side: { kind: 'ladder', t: 'Allergen check', rows: [['Peanut', 0, 'stocked'], ['Tree nut', 0, 'stocked'], ['Milk', 1, 'expiring'], ['Egg', 0, 'stocked']], foot: 'Nine standard allergens · warns, never blocks', cta: 'Complete' },
       },
       {
-        key: 'shop', tab: 2, nav: 'Shopping',
+        key: 'shop', tab: 1, nav: 'Shop',
         title: 'Shopping', sub: 'WinCo · aisle order · 3 picks queued offline',
         scope: ['Meadow Care', 'All houses', 'WinCo run'],
-        desktopTitle: 'Shopping list', desktopSub: 'An aisle-ordered list priced by store. In shopping mode a pick becomes Purchased with the actual store and the actual cost; picks queue offline.',
+        desktopTitle: 'Shopping list', desktopSub: 'An aisle-ordered list priced by store. In the store a pick becomes Purchased with the real shop and the real cost; picks wait on the phone if there is no signal.',
+        rail: ['Buy queue', 'Shopping list'], railOn: 1,
         aisles: [
           ['Aisle 3 · Dairy', [['Whole milk · 2 gal', '$4.98', 'picked'], ['Oat milk · 1 gal', '$4.29', 'picked']]],
           ['Aisle 7 · Grains', [['Rice · 10 lb', '$6.49', 'picked'], ['Oatmeal · 42 oz', '$3.79', 'open']]],
           ['Aisle 12 · Water', [['Bottled water · 24-pk × 3', '$9.99 at Costco', 'open']]],
         ],
-        total: 'Picked $15.76 · 2 left · receipt lands prices on the shelf',
-        foot: 'Picks queue offline with an idempotency key, so a pick is never counted twice. Closing the run writes the ledger.',
+        total: 'Picked $15.76 · 2 left · the receipt lands prices on the shelf',
+        foot: 'Picks wait on the phone if there is no signal, and a pick is never counted twice. Closing the run puts the food back on the shelf.',
         side: { kind: 'ladder', t: 'This run', rows: [['Picked', 3, 'stocked'], ['Left', 2, 'short'], ['Queued offline', 3, 'expiring']], foot: 'Till roll read on the device', cta: 'Close the run' },
+      },
+      {
+        key: 'today', tab: 2, nav: 'Today', tabBadge: { tab: 1, text: '4' },
+        title: 'Today', sub: 'Willow House · what needs you',
+        scope: ['Meadow Care', 'WH-1 · Willow House', 'Today'],
+        desktopTitle: 'Today', desktopSub: 'What needs you — restock, expiry, dinner. A caregiver sees their shift; a manager sees every house.',
+        houses: ['All houses', 'WH-1', 'WH-2'],
+        houseOn: 'WH-1',
+        cta: 'Cook this',
+        triage: [['4', 'to restock', 'short'], ['3', 'expiring', 'expiring'], ['2', 'in the queue', 'stocked']],
+        cook: { t: 'Cook today', s: 'Thu dinner · chicken and rice · 5 trays' },
+        restock: [
+          { t: 'Rice · 10 lb', s: '2 below par · pantry', state: 'short', stateText: 'Short' },
+          { t: 'Bottled water · 24-pk', s: 'Reserve gap · 3 days × 5 beds', state: 'short', stateText: 'Gap' },
+          { t: 'Applesauce cups', s: 'Expires in 2 days · fridge', state: 'expiring', stateText: '2 days' },
+        ],
+        expiry: 'Expiry Watch · $14.20 at risk on the shelf.',
+        foot: 'A caregiver sees their shift. A manager sees every house. Same day, two briefings.',
+        side: { kind: 'ladder', t: 'This house', rows: [['To restock', 4, 'short'], ['Expiring', 3, 'expiring'], ['Approved to buy', 2, 'stocked']], foot: 'What needs you today', cta: 'Scan an item' },
+      },
+      {
+        key: 'today-mgr', tab: 2, nav: 'Today', tabBadge: { tab: 1, text: '4' },
+        title: 'Today', sub: 'All houses · what needs you',
+        scope: ['Meadow Care', 'All houses', 'Today'],
+        desktopTitle: 'Today', desktopSub: 'A manager sees every house — restock, expiry, the cost of the next run.',
+        houses: ['All houses', 'WH-1', 'WH-2'],
+        houseOn: 'All houses',
+        cta: 'See the queue',
+        triage: [['6', 'to restock', 'short'], ['5', 'expiring', 'expiring'], ['4', 'in the queue', 'stocked']],
+        cook: { t: 'Cost of next run', s: '$38.47 · 2 unpriced' },
+        restock: [
+          { t: 'Rice · 10 lb · WH-1', s: '2 below par · pantry', state: 'short', stateText: 'Short' },
+          { t: 'Bottled water · WH-2', s: 'Reserve gap · 3 days × 5 beds', state: 'short', stateText: 'Gap' },
+          { t: 'Applesauce cups · WH-1', s: 'Expires in 2 days · fridge', state: 'expiring', stateText: '2 days' },
+        ],
+        expiry: 'Expiry Watch · $14.20 at risk across houses.',
+        foot: 'A manager sees every house. Same day, the same briefing, rolled up.',
+        side: { kind: 'ladder', t: 'All houses', rows: [['To restock', 6, 'short'], ['Expiring', 5, 'expiring'], ['Approved to buy', 4, 'stocked']], foot: 'What needs the organisation today', cta: 'See the queue' },
       },
     ],
   },
@@ -508,7 +552,7 @@ const surfaces = {
           { t: 'Substitute caregiver · Mon', s: 'Willow House · 4.2 miles · 15:00 – 23:00', state: 'pending', stateText: 'Applied', chev: true },
         ],
         free: 'No organisation, no card. Your credential dates are yours and travel with you.',
-        foot: 'The only surface in the family a consumer has to be able to find — and the only one nobody pays for.',
+        foot: 'Free for caregivers. Always.',
         side: { kind: 'expiry', t: 'Credentials', groups: [['Current', [['CPR', 'Mar 2027'], ['Medication-certified', 'Jan 2027']], 'covered'], ['Expiring', [['First Aid', 'Fri']], 'open']], cta: 'Add a credential date' },
       },
       {
@@ -588,7 +632,7 @@ const surfaces = {
 const PALETTE = {
   pho: ['Switch house', 'Open a portal window', 'Export for the licensing file', 'Compare two houses'],
   cohort: ['Sign a dose', 'File an incident', 'Start handover', 'Add an addendum'],
-  careshop: ['Scan an item', 'Approve the queue', 'Make the shopping list', 'Cook this'],
+  careshop: ['Scan an item', 'Open Today', 'Approve the queue', 'Cook this'],
   binderkit: ['Re-plan', 'Print the contents page', 'Add a note', 'Compare versions'],
   aidepost: ['Offer to own staff', 'Post outward', 'Add a credential date', 'Export timesheets'],
 };
@@ -621,6 +665,29 @@ const presentOf = (s, opts) => {
   return p || s.present || '';
 };
 
+/* CareShop’s Today: a shift briefing, not a list of residents. Drawn from
+   the live /today caregiver plate — houses, a triage strip, cook today,
+   then what is short or dated. */
+function briefIos(p, s) {
+  const houseOn = s.houseOn || (s.houses ? s.houses[0] : '');
+  const primary = s.cta || 'Cook this';
+  const triage = `<div class="brief-tri">${(s.triage || []).map(([n, l, state_]) => `<div class="brief-c">${st(p.id, state_, n)}<span class="brief-l">${E(l)}</span></div>`).join('')}</div>`;
+  return `${s.houses ? `<div class="q-track">${segA(s.houses, houseOn)}</div>` : ''}
+    ${triage}
+    ${s.cook ? tile(s.cook.t, s.cook.s, `<div class="btn-row">${btn(primary, 'is-primary')}${btn('Scan')}</div>`, 'is-lift') : ''}
+    ${listA(s.restock, p.id)}
+    ${s.expiry ? `<p class="receipt-a">${E(s.expiry)}</p>` : ''}`;
+}
+function briefWeb(p, s) {
+  const houseOn = s.houseOn || (s.houses ? s.houses[0] : '');
+  const primary = s.cta || 'Cook this';
+  return `${s.houses ? `<div class="q-track">${segA(s.houses, houseOn)}</div>` : ''}
+    <div class="brief-tri is-desk">${(s.triage || []).map(([n, l, state_]) => `<div class="brief-c">${st(p.id, state_, n)}<span class="brief-l">${E(l)}</span></div>`).join('')}</div>
+    ${s.cook ? tile(s.cook.t, s.cook.s, `<div class="btn-row">${btn(primary, 'is-primary')}${btn('Scan an item')}</div>`, 'is-lift') : ''}
+    ${tblA(['Item', 'Why it is here', 'State'], s.restock.map((r) => [r.t, r.s, { st: r.state, text: r.stateText }]), p.id, { sort: 2 })}
+    ${s.expiry ? `<p class="receipt-a">${E(s.expiry)}</p>` : ''}`;
+}
+
 /* ── the phone ─────────────────────────────────────────────────────────── */
 
 function bodyIos(p, s, fill) {
@@ -628,6 +695,7 @@ function bodyIos(p, s, fill) {
   if (fill === 'loading') return skelA(4);
   const k = s.key;
 
+  if (p.id === 'careshop' && (k === 'today' || k === 'today-mgr')) return briefIos(p, s);
   if (k === 'today') {
     return `${notice(s.gate, 'Surfaced')}
       ${listA(s.rows, p.id)}
@@ -639,7 +707,7 @@ function bodyIos(p, s, fill) {
   }
   if (k === 'buy') {
     return `${notice(s.banner, 'Unreviewed')}
-      ${listA(s.rows.map((r) => ({ t: r.item, s: `${r.origin} · asked by ${r.asked}`, conf: r.conf, state: r.state, stamp: `${r.approved === '—' ? 'Not approved yet' : `Approved by ${r.approved}`} · ${r.store}` })), p.id)}`;
+      ${listA(s.rows.map((r) => ({ t: r.item, s: `${r.origin} · ${r.store}`, conf: r.conf, state: r.state, stateText: r.stage, stamp: r.asked === 'Rule set' ? 'The rule decided' : `Asked by ${r.asked}` })), p.id)}`;
   }
   if (k === 'menu') {
     return `${notice(s.warn, 'Allergen')}
@@ -754,6 +822,9 @@ export function iosShell(productId, opts = {}) {
   const lane = s.lane === 'caregiver' ? 'caregiver' : 'provider';
   const tabs = (s.tabs || p.tabs).map((t, i) => `<span class="tab ${i === s.tab ? 'on' : ''}">${icon(TAB_ICONS[p.id][i], 22)}<span>${E(t)}</span>${s.tabBadge && s.tabBadge.tab === i && fill === 'filled' ? `<span class="tab-b">${E(s.tabBadge.text)}</span>` : ''}</span>`).join('');
   const scopeLabel = (s.scope && s.scope[1]) || p.short;
+  const rail = Array.isArray(s.rail) && s.rail.length
+    ? `<div class="subrail" aria-hidden="true">${s.rail.map((t, i) => `<span class="${i === (s.railOn || 0) ? 'on' : ''}">${E(t)}</span>`).join('')}</div>`
+    : '';
 
   return `<div class="phone face canvas" data-product="${p.id}" data-mode="${mode}" data-lane="${lane}" data-screen="${E(s.key)}" role="img" aria-label="${E(p.name)} on iPhone: ${E(s.title)}">
     <div class="phone-screen">
@@ -763,6 +834,7 @@ export function iosShell(productId, opts = {}) {
         <span class="navbar-title">${E(s.title)}</span>
         <span class="navbar-r">${hit(icon('search', 17))}${hit(icon('bell', 17))}</span>
       </div>
+      ${rail}
       <div class="content">
         <div class="ltitle"><h2>${E(s.title)}</h2><span class="ltitle-sub">${E(s.sub)}</span></div>
         ${bodyIos(p, s, fill)}
@@ -782,6 +854,7 @@ function bodyWeb(p, s, fill) {
   if (fill === 'loading') return skelA(6);
   const k = s.key;
 
+  if (p.id === 'careshop' && (k === 'today' || k === 'today-mgr')) return briefWeb(p, s);
   if (k === 'today') {
     return `${notice(s.gate, 'Surfaced')}
       ${tblA(['Resident', 'Medications', 'Documentation', 'Incidents', 'Last entry'], s.rows.map((r) => [
