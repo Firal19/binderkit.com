@@ -42,7 +42,11 @@ const SITE_DIRS = {
   'binderkit.com': 'binderkit.com',
   'aidepost.com': 'aidepost.com',
 };
-const DOMAINS = [...Object.keys(SITE_DIRS), 'providerhub.us'];
+/* providerhub.us is the family's parent domain, not one of the four sites, and
+   putting an inbound MX on a root that already receives mail elsewhere is the
+   one genuinely destructive thing in this script — Resend's own note says so.
+   So it is opt-in: pass --with-parent to include it. */
+const DOMAINS = [...Object.keys(SITE_DIRS), ...(flag('--with-parent') ? ['providerhub.us'] : [])];
 
 if (!KEY) { console.error('  RESEND_API_KEY is not set. Create a full-access key at https://resend.com/api-keys and run again.'); process.exit(1); }
 if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(INBOX)) { console.error('  --inbox <address> is required: the one inbox every message is copied to.'); process.exit(1); }
