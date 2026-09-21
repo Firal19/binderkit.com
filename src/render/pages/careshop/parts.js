@@ -25,11 +25,81 @@ export const PAGES_NAV = [
   { path: 'loop', n: 'Aisle 1', t: 'The loop', qty: '6 screens', icon: 'pot' },
   { path: 'stock', n: 'Aisle 2', t: 'Stock', qty: '2 tools', icon: 'shelf' },
   { path: 'rules', n: 'Aisle 3', t: 'The rules', qty: '10 lines', icon: 'book' },
+  { path: 'shelf', n: 'Aisle 4', t: 'The shelf', qty: '8 screens', icon: 'shelf' },
   { path: 'about', n: 'The store', t: 'About', qty: 'who we are', icon: 'store' },
   { path: 'write', n: 'The till', t: 'Write', qty: '1 inbox', icon: 'mail' },
 ];
 
+/* ── the walk: the order a reader is offered the store in ──────────────
+   Nine rooms in the order the store is laid out, so "next" always means
+   one step further in, and the last step is the till. The pager at the
+   foot of every page is built from this and nothing else, which is why it
+   can never disagree with the drawer or the receipt. */
+export const WALK = [
+  ['/', 'Front of store', 'The whole store in one page'],
+  ['/loop', 'Aisle 1 · The loop', 'Seven stations, six screens'],
+  ['/stock', 'Aisle 2 · Stock', 'Zones, par, expiry, reserves'],
+  ['/rules', 'Aisle 3 · The rules', 'Ten citations, and how sure we are'],
+  ['/shelf', 'Aisle 4 · The shelf', 'All eight screens, full size'],
+  ['/features', 'The aisles', 'Everything CareShop does'],
+  ['/pricing', 'Checkout', 'Free, $19, $37'],
+  ['/about', 'The store', 'Who makes this, and what is live'],
+  ['/write', 'The till', 'Write to a person'],
+  ['/privacy', 'Privacy', 'What the store holds'],
+];
+
+/* ── walk on: the previous and the next room, on every page ────────────
+   Two anchors and no script. A page that is not in the walk prints
+   nothing rather than guessing; all ten routes are in WALK today. Nine
+   reach this through page() below. /privacy is rendered by the shared
+   kit page and is attached in footer() instead — see the note there. */
+export function walkOn(here) {
+  const path = here === 'home' ? '/' : `/${here}`;
+  const i = WALK.findIndex(([p]) => p === path);
+  if (i < 0) return '';
+  const cell = (n, dir) => {
+    const w = WALK[n];
+    if (!w) return '<span class="wo-c is-end"></span>';
+    return `<a class="wo-c" href="${esc(w[0])}" rel="${dir === 'back' ? 'prev' : 'next'}"><span class="wo-d">${dir === 'back' ? 'Back one aisle' : 'Walk on'}</span><b>${esc(w[1])}</b><span class="wo-s">${esc(w[2])}</span></a>`;
+  };
+  return `<nav class="walkon" aria-label="Previous and next aisle"><div class="wrap wo-g">${cell(i - 1, 'back')}${cell(i + 1, 'on')}</div></nav>`;
+}
+
+/* ── the aisle directory: what is on this page, and where you are ──────
+   The store's own entrance board. Every stop on the page as a shelf
+   ticket, in walk order, with the number the aisle strip uses. It is real
+   anchors, so it works with no script; careshop.js marks the one you are
+   standing in as you scroll, which is the whole reason it is here and not
+   just in the drawer. */
+export function directory(stops, opts = {}) {
+  if (!stops || !stops.length) return '';
+  return `<nav class="dir" aria-label="${esc(opts.label || 'What is on this page')}" data-dir data-scrollx>
+    <span class="dir-l">${esc(opts.title || 'On this page')}</span>
+    <ol class="dir-l-o">${stops.map(([id, name, qty], i) => `<li><a class="dir-i" href="#${esc(id)}"><span class="dir-n">${String(i + 1).padStart(2, '0')}</span><b>${esc(name)}</b>${qty ? `<span class="dir-q">${esc(qty)}</span>` : ''}</a></li>`).join('')}</ol>
+  </nav>`;
+}
+
 const prefix = (page) => (page === 'home' ? '' : '/');
+
+/* ── THE EIGHT SCREENS, NAMED ONCE ─────────────────────────────────────
+   surfaces.careshop carries `nav` for each screen — the tab it lives
+   under — and on this product that is Shop, Cook, Stock, Stock, Cook,
+   Shop, Today, Today: eight screens wearing four names, twice each. A
+   strip labelled that way is a strip you cannot navigate. These are the
+   names the screens actually have, and they are written here, once, so
+   the film strip, the palette and the drawer can never drift apart.
+   [key, the name, what it is for] — every word of it read from the
+   screen's own title and sub in render/instruments.js. */
+export const SHELF_TABS = [
+  ['buy', 'Buy queue', 'what the house is short, and who approved it'],
+  ['menu', 'The week’s menu', 'checked against who lives here'],
+  ['expiry', 'Expiry Watch', 'most urgent first, money at the foot'],
+  ['stock', 'Zones', 'pantry, fridge, freezer, reserve'],
+  ['cook', 'Cook mode', 'today’s prep, and the allergen check'],
+  ['shop', 'In the shop', 'aisle order, priced by store'],
+  ['today', 'Today · a caregiver', 'one house, one shift'],
+  ['today-mgr', 'Today · a manager', 'every house, rolled up'],
+];
 
 /* ── the header: the aisle strip ──────────────────────────────────────── */
 export function header(cfg, p, opts = {}) {
@@ -111,9 +181,17 @@ const socN = (id) => (social(id, { cls: 'rc-soc' }).match(/class="soc-i/g) || []
 export function footer(cfg, p, opts = {}) {
   const page = opts.page || 'home';
   const pre = prefix(page);
+  /* /privacy is rendered by the shared kit page, which never calls page()
+     above and so never reached walkOn — it was the one route of the ten
+     with no previous/next pair, while the manifest claimed all ten had
+     one. The shared renderer is not ours to change, but it does take this
+     footer as its chrome, so the walk gets attached here instead. Emitted
+     before <footer> so it lands where every other route puts it: after the
+     page body, above the till. */
+  const walk = page === 'privacy' ? walkOn('privacy') : '';
   const rows = p.pricing.rows.map(([n, price]) => `${n} ${price.replace(' / mo', '')}`).join(' · ');
   const line = (href, t, qty, ext = false) => `<a class="rc-l" href="${esc(href)}" ${ext ? 'rel="noopener"' : ''}><span>${esc(t)}</span><i aria-hidden="true"></i><b>${esc(qty)}</b></a>`;
-  return `<footer class="till" id="foot">
+  return `${walk}<footer class="till" id="foot">
   <div class="wrap till-in">
     <div class="rc rc-foot" data-receipt>
       <div class="rc-top">
@@ -161,9 +239,17 @@ ${palette(cfg, page)}`;
 /* ── the bottom tally bar, phones only ────────────────────────────────── */
 function tallyBar(cfg, p, page) {
   const where = page === 'home' ? 'Front of store' : (PAGES_NAV.find((a) => a.path === page) || { t: page === 'privacy' ? 'Privacy' : 'Aisle' }).t;
+  /* THE DOCK IS THE ONLY PERSISTENT WAYFINDING ON A PHONE, so the thing it
+     names is also the thing you can hand to somebody. "You are in" is a
+     button now: press it and the address of the aisle you are standing in
+     is on the clipboard — the page, the hash, the lot. careshop.js keeps
+     data-copy in step with the label as you scroll, and the shared
+     [data-copy] verb reads the attribute at the moment of the press, so
+     the two can never disagree. With no script it is still a button and
+     still copies: the page's own URL, which is the honest fallback. */
   return `<div class="tally-bar" id="tally-bar" role="region" aria-label="Where you are">
   <a class="tb-store" href="/" aria-label="${esc(p.name)} — home">${mark(p.id, 30, { label: false })}</a>
-  <span class="tb-where"><span class="tb-l">You are in</span><b class="tb-a" data-where aria-live="polite">${esc(where)}</b></span>
+  <button type="button" class="tb-where" data-here-copy data-copy="https://${esc(cfg.domain)}${page === 'home' ? '' : `/${esc(page)}`}" data-copied="Link to this aisle copied"><span class="tb-l">You are in${ic('copy', 13)}</span><b class="tb-a" data-where aria-live="polite">${esc(where)}</b></button>
   <a class="btn pri sm tb-cta" href="${esc(cfg.cta.primaryHref)}" data-cta="tally">${esc(cfg.cta.nav)}</a>
 </div>`;
 }
@@ -186,11 +272,27 @@ function palette(cfg, page) {
     ['Sign in', cfg.signIn.href, 'house', 'careshop.app/login'],
     ['Start free', cfg.cta.primaryHref, 'tag', 'no card to begin'],
   ];
+  /* THE VERBS GET YOU WORKING; THE AISLES GET YOU AROUND. The palette used
+     to hold thirteen things CareShop does and no way to reach the nine
+     rooms it does them in, so a reader who knew the name of a page still
+     had to close it and hunt the receipt. Every room in the walk is a row
+     now, and every screen on the shelf is a row under it — one field,
+     three kinds of destination, filtered by the same typing. */
+  /* NO GLYPH ON THESE TWENTY-SIX ROWS, and the reason is bytes. A CareShop
+     icon is a solid label with an even-odd cut-out — about 480 bytes of
+     path each, inline, on every one of the ten routes. Thirteen verbs
+     carry one because a verb is a thing you do and the sticker says which
+     tool. A room and a screen are destinations in a list, and a list of
+     destinations is read by its names: they take a dot in the store's
+     mono, which is 34 bytes and is also the mark the receipt uses. */
+  const rooms = WALK.filter(([href]) => href !== (page === 'home' ? '/' : `/${page}`))
+    .map(([href, name, note]) => [name, href, '', note]);
+  const screens = SHELF_TABS.map(([key, name, note]) => [name, `/shelf#shelf-${key}`, '', note]);
   return `<div class="pal" id="palette" hidden>
   <div class="pal-scrim" data-close aria-hidden="true"></div>
   <div class="pal-box" role="dialog" aria-label="Command palette">
     <label class="pal-q"><span class="sr-only">Type a verb</span>${ic('search', 20)}<input class="pal-in" type="text" placeholder="Type a verb — scan, approve, cook…" autocomplete="off" spellcheck="false"><kbd>esc</kbd></label>
-    <ul class="pal-l" role="list">${rows.map(([t, href, icon, note]) => `<li><a class="pal-r" href="${esc(href)}" data-verb="${esc(t.toLowerCase())}">${ic(icon, 18)}<span class="pal-t">${esc(t)}</span><span class="pal-n">${esc(note)}</span></a></li>`).join('')}</ul>
+    <ul class="pal-l" role="list">${[['VERBS', rows], ['AISLES', rooms], ['SCREENS', screens]].map(([h, set]) => `<li class="pal-h" aria-hidden="true">${esc(h)}</li>${set.map(([t, href, icon, note]) => `<li><a class="pal-r" href="${esc(href)}" data-verb="${esc(t.toLowerCase())}">${icon ? ic(icon, 18) : '<span class="pal-b" aria-hidden="true">&middot;</span>'}<span class="pal-t">${esc(t)}</span><span class="pal-n">${esc(note)}</span></a></li>`).join('')}`).join('')}</ul>
     <p class="pal-empty" hidden>No verb by that name. The receipt at the foot lists every aisle.</p>
   </div>
 </div>`;
@@ -201,6 +303,7 @@ export const page = (cfg, p, slug, inner) => `${skip()}
 ${header(cfg, p, { page: slug })}
 <main id="main" class="page face canvas pg pg-${esc(slug)}" data-product="careshop" data-mode="light">
 ${inner}
+${walkOn(slug)}
 </main>
 ${footer(cfg, p, { page: slug })}`;
 

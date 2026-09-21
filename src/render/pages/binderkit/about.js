@@ -3,23 +3,20 @@
 import { byline } from '../../shared.js';
 import { PRODUCTS } from '../../../data/brand.js';
 import { SIGNUP_FIVE } from '../../../data/page.js';
-import { header, footer, section, title, number, find, esc, ic } from './chrome.js';
+import { header, footer, section, title, BOOK, atChapter, onThisPage, find, esc, ic } from './chrome.js';
 
-const SECS = number('BK-AB', [
-  { id: 'top', label: 'Binder setup for care homes', tab: '' },
-  { id: 'first', label: 'Why it holds nothing about anyone', tab: 'Nothing' },
-  { id: 'maker', label: 'Who makes it', tab: 'Maker' },
-]);
+const SECS = BOOK['/about'];
 const [TOP, FIRST, MAKER] = SECS;
 
 function render(cfg, p) {
+  atChapter('/about');
   const pho = PRODUCTS.find((x) => x.id === 'pho');
   const noBaa = find('evidence').blocks.find((b) => b.label === 'No business associate agreement');
   const hero = find('hero');
   return `<a class="skip" href="#main">Skip to content</a>
 ${header(cfg, p, { page: 'about', tabs: SECS.filter((x) => x.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">
-${title(TOP, { eyebrow: 'Chapter · About', h1: 'Binder setup for Oregon care homes.', lede: p.lede, ctas: `<a class="btn pri lg" href="/#join">${ic('page', 18)}<span>Get early access</span></a><a class="btn lg" href="/contact">Write to a person</a>` })}
+${title(TOP, { eyebrow: 'Chapter · About', h1: 'Binder setup for Oregon care homes.', lede: p.lede, ctas: `<a class="btn pri lg" href="/#join">${ic('page', 18)}<span>Get early access</span></a><a class="btn lg" href="/contact">Write to a person</a>`, index: onThisPage(SECS) })}
 ${section(FIRST, `<h2 id="h-first">It holds nothing about anyone.</h2><p class="sub">${esc(p.proof[0])}</p>
   <p class="closing">${esc(noBaa.text)}</p>
   <p class="closing">${esc(SIGNUP_FIVE.tail)}</p>

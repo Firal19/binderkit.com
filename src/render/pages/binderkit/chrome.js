@@ -19,6 +19,7 @@ const intake = S.screens.find((s) => s.key === 'intake');
 /* ── the book: chapters, and the sections of the front page ───────────── */
 export const CHAPTERS = [
   { path: '/', title: 'Binderkit', sub: 'The front page', ctl: 'BK-LP' },
+  { path: '/screens', title: 'The screens', sub: 'Five plates, at the size they ship', ctl: 'BK-SC' },
   { path: '/plan', title: 'The plan', sub: 'Five answers in, a shelf of binders out', ctl: 'BK-PL' },
   { path: '/library', title: 'The library', sub: 'Four tracks, four libraries', ctl: 'BK-LB' },
   { path: '/pricing', title: 'Pricing', sub: 'Priced in the open', ctl: 'BK-PR' },
@@ -27,22 +28,87 @@ export const CHAPTERS = [
   { path: '/privacy', title: 'Privacy', sub: 'What it holds, and what leaves it', ctl: 'BK-PV' },
 ];
 
-export const HOME = [
+/** A numbered section list for a chapter: [{id,label,tab}] → with control numbers. */
+export const number = (prefix, list) => list.map((s, i) => ({ ...s, ctl: `${prefix}-${String(i + 1).padStart(2, '0')}` }));
+
+export const HOME = number('BK-LP', [
   { id: 'top', label: 'The title page', tab: '' },
+  { id: 'why', label: 'Why this one can ship first', tab: 'Proof', foldName: 'Why it ships first', gist: 'It holds nothing about anyone, and the same answers always make the same plan.' },
+  { id: 'screens', label: 'Every surface', tab: 'Screens', foldName: 'Every surface', gist: 'Plan, binders, versions — switched by their own index tab, with nothing moving.' },
   { id: 'plan', label: 'The plan', tab: 'Plan', gist: 'Question zero picks the library, and the library is everything.' },
   { id: 'page', label: 'The page', tab: 'Page' },
   { id: 'library', label: 'The library', tab: 'Library', gist: 'Four tracks, four libraries, an authority beside every item.' },
   { id: 'editor', label: 'The editor', tab: 'Editor', gist: 'A refusal names the rule that caused it and offers an alternative.' },
   { id: 'versions', label: 'Versions', tab: 'Versions', gist: 'An answer changes, the plan regenerates, and the diff is shown.' },
-  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a real person out.' },
+  { id: 'plates', label: 'Two plates', tab: 'Plates', foldName: 'Two plates', gist: 'Print and the guarded editor, at the size they ship.' },
+  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a person out, and the boundary they draw.' },
+  { id: 'state', label: 'The state of the work', tab: 'State', foldName: 'The state of the work', gist: 'What is written, what is not, and what is not decided.' },
   { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each of them may see.' },
-  { id: 'questions', label: 'Questions', tab: 'Questions', gist: 'The seven we are actually asked, answered in full.' },
+  { id: 'questions', label: 'Questions', tab: 'Questions', gist: 'The four we are actually asked, answered in full.' },
   { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: 'Every plan sees every screen; nothing is silently blocked.' },
+  { id: 'family', label: 'One house, four rooms', tab: 'Family', foldName: 'The family', gist: 'The other three products, and the platform a mini graduates into.' },
   { id: 'join', label: 'Join', tab: 'Join' },
-].map((s, i) => ({ ...s, ctl: `BK-LP-${String(i + 1).padStart(2, '0')}` }));
+]);
 
-/** A numbered section list for a chapter: [{id,label,tab}] → with control numbers. */
-export const number = (prefix, list) => list.map((s, i) => ({ ...s, ctl: `${prefix}-${String(i + 1).padStart(2, '0')}` }));
+/* ── THE BOOK, in one place ───────────────────────────────────────────
+   Every chapter's sections, numbered. It was one array per chapter file,
+   which was fine while nothing needed to see across chapters; the palette,
+   the chapter pager and the site-wide section index all do. One source, so
+   a section cannot exist in the header and be missing from the palette. */
+export const BOOK = {
+  '/': HOME,
+  '/screens': number('BK-SC', [
+    { id: 'top', label: 'The plates', tab: '' },
+    { id: 'five-plates', hid: 'plates', label: 'Five plates', tab: 'Plates' },
+    { id: 'annotated', label: 'The guarded editor, annotated', tab: 'Annotated', foldName: 'Annotated', gist: 'Four numbered callouts, each lighting the thing it quotes.' },
+    { id: 'sample', label: 'What is real on these plates', tab: 'Sample', foldName: 'What is real', gist: 'Sample data throughout, and the reason it is safe to publish.' },
+  ]),
+  '/plan': number('BK-PL', [
+    { id: 'top', label: 'Five answers in. A shelf of binders out.', tab: '' },
+    { id: 'answers', label: 'The answers, and the plan', tab: 'Answers' },
+    { id: 'steps', label: 'From question zero to reset', tab: 'Steps', foldName: 'The steps', gist: 'What each step decides, and what it costs to change your mind.' },
+    { id: 'guardrails', label: 'The three guardrails', tab: 'Guardrails', gist: 'Coverage, scope and access, cohesion.' },
+    { id: 'artefacts', label: 'What prints', tab: 'Prints', gist: 'The contents page, the dividers, the brief and the procedure.' },
+  ]),
+  '/library': number('BK-LB', [
+    { id: 'top', label: 'The library is the product', tab: '' },
+    { id: 'libraries', label: 'Four tracks, four libraries', tab: 'Libraries' },
+    { id: 'evidence', label: 'The evidence tags, and the four rules', tab: 'Evidence', foldName: 'The evidence tags', gist: 'Verified, derived or open, and the four rules behind a version.' },
+    { id: 'written', label: 'What is written, and what is not', tab: 'Written', foldName: 'What is written', gist: 'The AFH-DD library counted rather than claimed.' },
+    { id: 'never', label: 'Removed, and never', tab: 'Never', gist: 'Six taken out on purpose, and six this product will never do.' },
+    { id: 'words', label: 'Three words', tab: 'Words' },
+  ]),
+  '/pricing': number('BK-PR', [
+    { id: 'top', label: 'Priced in the open', tab: '' },
+    { id: 'tiers', label: 'Three tiers', tab: 'Tiers' },
+    { id: 'signup', label: 'Signing up, in five steps', tab: 'Signing up' },
+    { id: 'billing', label: 'If a payment fails', tab: 'Payment' },
+    { id: 'lapse', label: 'If you stop paying', tab: 'Lapse' },
+  ]),
+  '/about': number('BK-AB', [
+    { id: 'top', label: 'Binder setup for care homes', tab: '' },
+    { id: 'first', label: 'Why it holds nothing about anyone', tab: 'Nothing' },
+    { id: 'maker', label: 'Who makes it', tab: 'Maker' },
+  ]),
+  '/contact': number('BK-CT', [
+    { id: 'top', label: 'Write to a person', tab: '' },
+    { id: 'write', label: 'The message', tab: 'Write' },
+    { id: 'elsewhere', label: 'Elsewhere', tab: 'Elsewhere' },
+  ]),
+};
+
+/* ── where we are, for the addresses this chapter prints ──────────────
+   A control number IS an address in a binder, so on this site it is also
+   the address of the section: every one is a button that copies the deep
+   link. Building that link needs the chapter's own path, and `section()`
+   is called from six modules that each render one chapter at a time —
+   build.mjs walks `pages` sequentially and awaits nothing between them, so
+   one module-level cursor is enough and is cheaper than threading a path
+   through every call. `chapter('/plan')` is the first line of a render. */
+const ORIGIN = 'https://binderkit.com';
+let CUR = '/';
+export const atChapter = (path) => { CUR = path || '/'; return ''; };
+export const addr = (id) => `${ORIGIN}${CUR === '/' ? '/' : CUR}#${id}`;
 
 /* ── small pieces ─────────────────────────────────────────────────────── */
 export const eyebrow = (t) => `<span class="eyebrow">${esc(t)}</span>`;
@@ -52,12 +118,31 @@ export const place = (t) => (t ? `<i class="place">${esc(t)}</i>` : '');
 
 /** A section of the document: the control number in the margin, the body beside it. */
 export function section(s, inner, opts = {}) {
-  const label = opts.label ? `aria-label="${esc(opts.label)}"` : `aria-labelledby="h-${esc(s.id)}"`;
-  /* Below 640 a chapter opens as its own contents page. Three sections stay
-     open — the title page, the one that carries the claim, and the closing
-     call — and every other becomes one tappable line carrying its heading
-     and its gist. site.js folds() does the rest; nothing is deleted, so
-     print, find-in-page and the crawler still see the whole document. */
+  /* `hid` when the section's own id is not the heading's: /screens carries
+     a film strip that instruments.js emits as <div id="plates">, so the
+     section around it is #five-plates while its <h2> is still h-plates.
+     Two elements with one id is invalid HTML and the five href="#plates"
+     links on that page resolved to whichever came first. */
+  const label = opts.label ? `aria-label="${esc(opts.label)}"` : `aria-labelledby="h-${esc(s.hid || s.id)}"`;
+  /* Below 640 a chapter opens as its own contents page: a section with a
+     gist becomes one tappable line carrying its heading and its gist, and
+     site.js folds() does the rest. Nothing is deleted, so print,
+     find-in-page and the crawler still see the whole document.
+
+     A gist is not free — it costs the reader a tap — so a chapter only
+     earns one where folding actually shortens the chapter. Measured at
+     390 in WebKit against the same page with every fold opened,
+     /pricing was +0.4%, /about +0.2% and /contact +2.7%: three routes
+     paying a tap for nothing, and on /pricing the three folded sections
+     were the signup, billing and lapse answers, which is the content a
+     chapter called "Priced in the open" exists to show. Six gists came
+     off — maker, elsewhere, words, signup, billing, lapse — and with
+     them /about and /contact stop folding at all, which is right for a
+     three-section chapter: an index of one line is not an index.
+
+     The home page keeps its thirteen (+34.1% with every fold opened),
+     /plan its three (-10.2%) and /library its three (-5.4%), because
+     there the fold discloses a page that is genuinely long. */
   const gist = opts.gist || s.gist;
   /* A fold summary is an INDEX row, and an index row carries a name, not a
      claim. site.js folds() builds it from the section's own <h2>, which on
@@ -69,19 +154,60 @@ export function section(s, inner, opts = {}) {
      number is already on the element. js/pages/binderkit.js puts the two on
      one line and leaves the claim to the gist beneath. */
   const fold = gist ? ` data-phone="fold" data-gist="${esc(gist)}" data-fold-n="${esc(opts.foldName || s.foldName || s.label)}"` : '';
-  return `<section class="sec ${opts.cls || ''}" id="${esc(s.id)}" ${label} data-ctl="${esc(s.ctl)}"${fold} data-reveal>
-  <div class="wrap doc"><span class="ctl" aria-hidden="true">${esc(s.ctl)}</span><div class="doc-b">${inner}</div></div>
+  return `<section class="sec ${opts.cls || ''}" id="${esc(s.id)}" ${label} data-ctl="${esc(s.ctl)}" data-name="${esc(s.label)}"${fold} data-reveal>
+  <div class="wrap doc">${ctlStamp(s)}<div class="doc-b">${inner}</div></div>
 </section>`;
 }
 
+/** The control number in the margin — and the address of the section.
+    js/site.js verbs() already owns [data-copy]; this needs no script of
+    its own, and with scripting off it is a button that does nothing
+    visible, which is why the number itself is the label rather than a
+    verb. */
+export const ctlStamp = (s) => `<button class="ctl" type="button" data-copy="${esc(addr(s.id))}" data-copied="Link to this section copied" aria-label="Copy the link to ${esc(s.label)} — control number ${esc(s.ctl)}"><span class="ctl-n">${esc(s.ctl)}</span>${ic('copy', 14, { bare: true, cls: 'ctl-c' })}</button>`;
+
+/* ── the chapter's own contents, at the head of the chapter ───────────
+   The binder's answer to "what is on this page": the same numbered list
+   with leader dots the footer and the contents sheet print, marked with
+   aria-current as you scroll — site.js header() drives any [data-spy]
+   whose links point at sections, so this costs no script.
+   It is shown from 641 up and hidden below, where the page already has
+   three copies of its own navigation: the snapping tab strip under the
+   rule, the contents sheet the header opens, and the folded index the
+   page itself becomes. A fourth would be the longest of the four. */
+export function onThisPage(list, opts = {}) {
+  const rows = list.filter((s) => s.tab !== '');
+  if (!rows.length) return '';
+  return `<nav class="here-w" aria-label="${esc(opts.label || 'What is on this page')}">
+    <span class="strip-l">${esc(opts.title || 'On this page')}</span>
+    <ol class="toc here" data-spy>${rows.map((s, i) => `<li><a href="#${esc(s.id)}"><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(s.label)}</span><span class="toc-l here-l" aria-hidden="true"></span><span class="toc-n here-n">${esc(s.ctl)}</span></a></li>`).join('')}</ol>
+  </nav>`;
+}
+
+/* ── leaf back, leaf forward ──────────────────────────────────────────
+   Two real links, no script, on every chapter: the binder is a book and a
+   book has a page before this one and a page after it. */
+export function pager(path) {
+  const list = CHAPTERS;
+  const i = list.findIndex((c) => c.path === path);
+  if (i < 0) return '';
+  const prev = list[i - 1];
+  const next = list[i + 1];
+  const side = (c, kind, rel) => (c
+    ? `<a class="pager-a is-${kind}" href="${esc(c.path)}" rel="${rel}"><span class="pager-k">${kind === 'prev' ? 'Leaf back' : 'Leaf forward'}</span><span class="pager-t">${esc(c.title)}</span><span class="pager-n">${esc(c.ctl)}</span></a>`
+    : '<span class="pager-a is-none"></span>');
+  return `<nav class="pager" aria-label="Previous and next chapter">${side(prev, 'prev', 'prev')}${side(next, 'next', 'next')}</nav>`;
+}
+
 /** The title page of a chapter. */
-export function title(s, { eyebrow: eb, h1, lede, ctas = '', fine = '', aside = '' }) {
-  return `<section class="hero" id="${esc(s.id)}" aria-labelledby="h1" data-ctl="${esc(s.ctl)}">
-  <div class="wrap doc"><span class="ctl" aria-hidden="true">${esc(s.ctl)}</span>
+export function title(s, { eyebrow: eb, h1, lede, ctas = '', fine = '', aside = '', index = '' }) {
+  return `<section class="hero" id="${esc(s.id)}" aria-labelledby="h1" data-ctl="${esc(s.ctl)}" data-name="${esc(s.label)}">
+  <div class="wrap doc">${ctlStamp(s)}
     <div class="doc-b hero-in ${aside ? 'has-aside' : ''}">
       <div class="hero-t">${eb ? eyebrow(eb) : ''}<h1 id="h1">${esc(h1)}</h1>${lede ? `<p class="lede">${esc(lede)}</p>` : ''}${ctas ? `<div class="ctas">${ctas}</div>` : ''}${fine ? `<p class="fine">${esc(fine)}</p>` : ''}</div>
       ${aside ? `<div class="hero-v">${aside}</div>` : ''}
     </div>
+    ${index}
   </div>
 </section>`;
 }
@@ -262,7 +388,7 @@ export function header(cfg, p, opts = {}) {
         </div>
       </div>
       <ol class="toc toc-ch">${CHAPTERS.map((c, i) => `<li><a href="${esc(c.path)}" ${c === chapter ? 'aria-current="page"' : ''}><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(c.title)}<small>${esc(c.sub)}</small></span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(c.ctl)}</span></a></li>`).join('')}</ol>
-      ${tabs.length ? `<span class="strip-l">In this chapter</span><ol class="toc toc-in-ch">${tabs.map((s, i) => `<li><a href="#${esc(s.id)}"><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(s.label)}</span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(s.ctl)}</span></a></li>`).join('')}</ol>` : ''}
+      ${tabs.length ? `<span class="strip-l">In this chapter</span><ol class="toc toc-in-ch" data-spy>${tabs.map((s, i) => `<li><a href="#${esc(s.id)}"><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(s.label)}</span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(s.ctl)}</span></a></li>`).join('')}</ol>` : ''}
       <button class="toc-all" type="button" data-open-all data-close hidden>${ic('contents', 18)}<span>Open every section</span></button>
       <a class="btn pri toc-cta" href="${primary}" data-cta="contents">${esc(cfg.cta.primary)}</a>
     </div>
@@ -299,6 +425,7 @@ export function footer(cfg, p, opts = {}) {
   return `<footer class="foot" id="foot">
   <div class="wrap doc"><span class="ctl" aria-hidden="true">Contents</span>
     <div class="doc-b">
+      ${pager(chapter.path)}
       <h2 class="foot-h">Contents</h2>
       <div class="foot-g">
         <div class="foot-here"><span class="strip-l">${page === 'home' ? 'This page' : `This chapter · ${esc(chapter.title)}`}</span>${sections || '<p class="fine">One section.</p>'}</div>
@@ -321,7 +448,7 @@ export function footer(cfg, p, opts = {}) {
 </footer>
 <div class="footbar" aria-label="Page controls">
   <button class="fb-b" type="button" data-print>${ic('print', 18)}<span>Print</span></button>
-  <span class="fb-p" data-progress aria-live="off"><span data-page-n>p. 1</span><span class="fb-sep">/</span><span data-page-total>${here.length || 1}</span></span>
+  <span class="fb-p" data-progress aria-live="off"><span data-page-n>p. 1</span><span class="fb-sep">/</span><span data-page-total>${here.length || 1}</span><span class="fb-w" data-page-name>${esc((here[0] || chapter).label || chapter.title)}</span></span>
   <a class="fb-b is-pri" href="/#join" data-cta="footbar">${ic('pen', 18)}<span>Join</span></a>
 </div>
 ${dialogs(cfg, p, { tabs: here.filter((s) => s.tab !== ''), page })}`;
@@ -339,7 +466,21 @@ function dialogs(cfg, p, { tabs, page }) {
   ];
   const go = tabs.map((s) => [`go:${s.id}`, `Go to ${s.label}`, s.ctl]);
   const ch = CHAPTERS.filter((c) => c.path !== '/privacy').map((c) => [`chapter:${c.path}`, `Chapter · ${c.title}`, c.ctl]);
-  const all = [...verbs, ...go, ...ch];
+  /* Every section of every OTHER chapter, by name and by control number.
+     The palette is this binder's index finger: typing "0170", "BK-LB" or
+     "guardrails" reaches the one page that has it, from any route. The
+     rows are plain buttons filtered on their own text, so the search is
+     the shared filter and costs nothing new. */
+  const here = `/${page}`.replace('/home', '/');
+  const elsewhere = [];
+  for (const c of CHAPTERS) {
+    if (c.path === here || !BOOK[c.path]) continue;
+    for (const s of BOOK[c.path]) {
+      if (!s.tab) continue;
+      elsewhere.push([`open:${c.path}#${s.id}`, `${c.title} · ${s.tab}`, s.ctl]);
+    }
+  }
+  const all = [...verbs, ...go, ...ch, ...elsewhere];
   return `<dialog class="lens" id="lens" aria-label="The contents page at true size">
   <div class="lens-bar"><span class="lens-t">${esc(S.paperTitle)} · 8.5 × 11 in</span><button class="rb" type="button" data-lens-close aria-label="Close">${ic('close', 20)}</button></div>
   <div class="lens-scroll" data-scrollx><div class="lens-page"><div class="ruler ruler-x" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => `<i>${n}</i>`).join('')}</div><div class="ruler ruler-y" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => `<i>${n}</i>`).join('')}</div><div class="lens-sheet" data-lens-sheet></div></div></div>

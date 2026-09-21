@@ -182,7 +182,7 @@ b, strong { font-weight: 600; }
   background-position: calc(100% - 19px) 22px, calc(100% - 14px) 22px;
   background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
 }
-.field input:hover, .field select:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); }
+@media (hover: hover) { .field input:hover, .field select:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); } }
 .field input:focus-visible, .field select:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .field input[aria-invalid="true"] { border-color: var(--danger, #B24A2C); }
 .form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
@@ -205,10 +205,10 @@ b, strong { font-weight: 600; }
   font-weight: 600; font-size: 15.5px; text-decoration: none; white-space: nowrap; cursor: pointer;
   transition: transform 140ms cubic-bezier(.25, 1, .5, 1), box-shadow 140ms ease, background 140ms ease, border-color 140ms ease;
 }
-.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px -14px color-mix(in srgb, var(--ink) 40%, transparent); }
+@media (hover: hover) { .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px -14px color-mix(in srgb, var(--ink) 40%, transparent); } }
 .btn:active { transform: none; box-shadow: none; }
 .btn.pri { background: var(--btn, var(--ink)); border-color: var(--btn, var(--ink)); color: var(--btn-ink, var(--bg)); }
-.btn.pri:hover { background: var(--btn-hover, color-mix(in srgb, var(--btn, var(--ink)) 88%, black)); border-color: transparent; }
+@media (hover: hover) { .btn.pri:hover { background: var(--btn-hover, color-mix(in srgb, var(--btn, var(--ink)) 88%, black)); border-color: transparent; } }
 .btn.sm { min-height: 44px; padding: 0 16px; font-size: 14.5px; }
 .btn.lg { min-height: 56px; padding: 0 28px; font-size: 17px; }
 
@@ -228,7 +228,7 @@ b, strong { font-weight: 600; }
   font-size: 14px; font-weight: 500; letter-spacing: -0.3px; line-height: 1;
   opacity: .85; transition: opacity 120ms ease;
 }
-.pho:hover { opacity: 1; }
+@media (hover: hover) { .pho:hover { opacity: 1; } }
 .pho-tile {
   width: 30px; height: 30px; border-radius: 7px; flex: none;
   display: grid; place-items: center;
@@ -294,7 +294,7 @@ body.is-locked { overflow: hidden; }
   border: 1px solid var(--line); border-radius: var(--r, 12px);
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
-.field textarea:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); }
+@media (hover: hover) { .field textarea:hover { border-color: color-mix(in srgb, var(--ink) 35%, var(--line)); } }
 .field textarea:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .field textarea[aria-invalid="true"] { border-color: var(--danger, #B24A2C); }
 .form.is-done { grid-template-columns: minmax(0, 1fr); }
@@ -303,7 +303,7 @@ body.is-locked { overflow: hidden; }
 
 .soc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .soc-i { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 0 10px; color: var(--muted); text-decoration: none; border-radius: var(--r-btn, 10px); transition: color 140ms ease, background 140ms ease, transform 140ms cubic-bezier(.25, 1, .5, 1); }
-.soc-i:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+@media (hover: hover) { .soc-i:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); } }
 .soc-i:active { transform: scale(.96); }
 .soc-g { flex: none; }
 .soc-t { font-size: 14px; }
@@ -348,7 +348,6 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
   a, button { -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 18%, transparent); }
 }
 @media (hover: none) {
-  .btn:hover { transform: none; box-shadow: none; }
   .soc-i .soc-t { position: static; opacity: 1; transform: none; pointer-events: auto; }
 }
 /* The short-landscape block moved to responsive.css. It is a width query
@@ -369,7 +368,8 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
   display: inline; padding: 0; border: 0; background: none; color: var(--accent, var(--ink));
   font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
 }
-.lk:hover, .lk:focus-visible { color: var(--ink); }
+.lk:focus-visible { color: var(--ink); }
+@media (hover: hover) { .lk:hover { color: var(--ink); } }
 
 /* “did you mean gmail.com?” — never blocks, only offers */
 .field-fix {
@@ -409,7 +409,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
   box-shadow: 0 10px 30px -14px rgba(0, 0, 0, .5);
   transition: transform 140ms cubic-bezier(.25, 1, .5, 1), box-shadow 140ms ease, opacity 180ms ease;
 }
-.fab:hover { transform: translateY(-1px); box-shadow: 0 16px 36px -16px rgba(0, 0, 0, .55); }
+@media (hover: hover) { .fab:hover { transform: translateY(-1px); box-shadow: 0 16px 36px -16px rgba(0, 0, 0, .55); } }
 .fab:active { transform: none; }
 .fab svg { flex: none; }
 /* it appears once you are past the first screen, so it never competes with
@@ -439,6 +439,15 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    tier so the tier can turn it on (equal specificity, later rule wins). */
 .ckb-p.ckb-short { display: none; }
 
+/* These two sat AFTER the phone tier below, so at equal specificity the wide
+   values won and the tier's `gap: 7px` / `min-height: 40px` never applied.
+   Measured at 320: the two answers wrapped onto two rows and the card stood
+   207px tall on a 568px screen — against its own comment, "two answers on one
+   row". Declared before the tier now, which is the convention the whole kit
+   follows and the reason responsive.css is appended last. */
+.ckb-b { display: flex; flex-wrap: wrap; gap: 8px; }
+.ckb-b .btn { flex: 1 1 auto; min-height: var(--tap, 44px); }
+
 /* On a phone the card gets SLIM, not just narrow. At 393x659 the full card was
    181px tall and still sat across the hero's own buttons — desaudit's
    tap.covered caught "Get early access" / "Start free" unpressable on all four.
@@ -457,8 +466,17 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
   .ckb-t { display: none; }
   .ckb-p { display: none; }
   .ckb-p.ckb-short { display: block; margin: 0 0 9px; font-size: 15px; }
+  /* one row, both answers. flex-wrap stays on as the escape hatch for a
+     translation that genuinely cannot fit, but min-width: 0 lets the two
+     buttons shrink to share the row instead of wrapping on first contact. */
   .ckb-b { gap: 7px; }
-  .ckb-b .btn { min-height: 40px; padding: 0 12px; font-size: 14px; }
+  .ckb-b .btn { min-width: 0; flex: 1 1 0; }
+  /* 40px was here and it is under the 44px floor. It only ever LOOKED fine
+     because the unscoped rule below out-ordered this whole tier and handed
+     the buttons var(--tap); now that the order is fixed, this value would
+     really ship. The card's height win comes from the single row, not from
+     shrinking what a thumb has to hit. */
+  .ckb-b .btn { min-height: calc(var(--tap) + 1px); padding: 0 12px; font-size: 14px; }
 }
 .ckb-in {
   padding: 16px 18px; border: 1px solid var(--line);
@@ -473,8 +491,6 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    2.78:1. Underline it and use the body ink, which every face keeps readable
    on its own card. */
 .ckb-p a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
-.ckb-b { display: flex; flex-wrap: wrap; gap: 8px; }
-.ckb-b .btn { flex: 1 1 auto; min-height: var(--tap, 44px); }
 @media (prefers-reduced-motion: reduce) { .ckb { transition: none; } }
 
 /* While the cookie card is up it is the only decision on screen. The floating

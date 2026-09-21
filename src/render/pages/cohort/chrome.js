@@ -3,9 +3,17 @@
 
 import { esc, mark, social, byline, hello, mailto } from '../../shared.js';
 import { ic } from '../../icons/cohort.js';
-import { APP, STOPS, PAGE_LINKS, VERBS, DAY, hid, find } from './data.js';
+import { APP, STOPS, PAGE_LINKS, VERBS, DAY, hid, find, SCREEN_ORDER, SCREEN_NOTES, screenHref, ROUTES } from './data.js';
+import { screensOf } from '../../instruments.js';
 
 const isHome = (opts) => !opts.page || opts.page === 'home';
+
+/* The five real screens, in vault order, each with the tab word it owns.
+   screensOf() is the shared reader; SCREEN_NOTES only names them. */
+export const SCREENS = screensOf('cohort')
+  .slice()
+  .sort((a, b) => SCREEN_ORDER.indexOf(a.key) - SCREEN_ORDER.indexOf(b.key))
+  .map((s) => ({ ...s, note: SCREEN_NOTES[s.key] || { tab: s.title, proves: '' } }));
 /* an in-page target from anywhere: on the front page a hash, elsewhere a route */
 export const at = (opts, id) => (isHome(opts) ? `#${id}` : `/#${id}`);
 
@@ -17,6 +25,7 @@ function palette(cfg, p, opts) {
       <label class="pal-q">${ic('search', 18)}<span class="sr-only">Type a verb, a stop or a page</span><input class="pal-in" type="search" placeholder="Sign a dose, pricing, the record…" autocomplete="off" spellcheck="false"><kbd>esc</kbd></label>
       <ul class="pal-l">
         ${VERBS.map((v) => row(at(opts, v.to), v.icon, v.t, v.s, 'verb')).join('')}
+        ${SCREENS.map((sc, i) => `<li><a class="pal-r is-screen" href="${screenHref(sc.key)}" data-kind="screen"><span class="pal-no">${String(i + 1).padStart(2, '0')}</span><span class="pal-t">${esc(sc.note.tab)} — the screen</span><span class="pal-s">${esc(sc.title)}</span></a></li>`).join('')}
         ${STOPS.map((s) => row(at(opts, s.id), s.icon, s.label, s.hr ? `${s.hr} · a stop on the front page` : 'A stop on the front page', 'stop')).join('')}
         ${PAGE_LINKS.map((l) => row(`/${l.path}`, l.icon, l.label, l.title, 'page')).join('')}
         ${row('/privacy', 'shield', 'Privacy', 'What Cohort holds, and what leaves it', 'page')}
@@ -35,6 +44,10 @@ function sheet(cfg, p, opts) {
     <div class="ssheet-in">
       <div class="ssheet-h"><span class="eyebrow">Shift sheet</span><button class="ssheet-x" type="button" data-close aria-label="Close the shift sheet">${ic('close', 22)}</button></div>
       <div class="ssheet-ix msheet-g" data-page-index data-open-all="Open every hour of this page"><span class="msheet-k ssheet-k">In this page</span></div>
+      <div class="ssheet-sc">
+        <span class="msheet-k ssheet-k">The five screens</span>
+        <div class="ssheet-scr">${SCREENS.map((sc, i) => `<a href="${screenHref(sc.key)}"><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(sc.note.tab)}</span></a>`).join('')}</div>
+      </div>
       <nav aria-label="Stops, on the phone">
         <ol class="ssheet-l">
           ${STOPS.map((s) => `<li><a href="${at(opts, s.id)}"><b class="ssheet-hr">${s.hr ? esc(s.hr) : ic(s.icon, 18)}</b><span>${esc(s.label)}</span>${ic('right', 18, { cls: 'ssheet-c' })}</a></li>`).join('')}
@@ -116,6 +129,19 @@ const stampLogo = (p) => `<div class="stampl" aria-hidden="true">
   <span class="stampl-c" data-clock>--:--</span>
 </div>`;
 
+/* ── previous and next, across the eight routes ────────────────────────
+   A reader who reaches the end of a page is told what comes before it and
+   what comes after it, by name, with the one line that says what is there.
+   Pure markup: no script, and it works on the printed page too. */
+function prevNext(opts) {
+  const here = ROUTES.findIndex((r) => r.page === (opts.page || 'home'));
+  if (here < 0) return '';
+  const cell = (r, kind) => (r
+    ? `<a class="eos-pn-a" href="/${r.path}" data-pn="${kind}"><span class="eos-pn-k">${kind === 'prev' ? 'Back' : 'Next'}</span><b>${esc(r.label)}</b><span class="eos-pn-g">${esc(r.gist)}</span></a>`
+    : '<span class="eos-pn-a is-end" aria-hidden="true"></span>');
+  return `<nav class="eos-pn" aria-label="Previous and next page">${cell(ROUTES[here - 1], 'prev')}${cell(ROUTES[here + 1], 'next')}</nav>`;
+}
+
 export function footer(cfg, p, opts = {}) {
   const home = isHome(opts);
   const col = (id, title, inner) => `<details class="eos-d" id="eos-${id}" open><summary><span class="eos-k">${esc(title)}</span>${ic('down', 18, { cls: 'eos-chev' })}</summary><div class="eos-b">${inner}</div></details>`;
@@ -133,6 +159,7 @@ export function footer(cfg, p, opts = {}) {
         ${col('help', 'Help', `<ul class="eos-l">${link('/features', 'Features')}${link('/security', 'Security')}${link('/pricing', 'Pricing')}${link('/contact', 'Write to a person')}</ul>`)}
         ${col('write', 'Write to us', `<p class="eos-mail"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy the address">${ic('copy', 16)}</button></p><p class="eos-fine">One inbox. A person answers.</p>${social(p.id, { text: true, cls: 'stamps', size: 18, label: 'Cohort on social' })}`)}
       </div>
+      ${prevNext(opts)}
       <div class="eos-sign">
         <div class="eos-out">
           <span class="eos-so">Oregon · <b data-clock>--:--</b></span>

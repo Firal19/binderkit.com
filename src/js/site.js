@@ -210,7 +210,7 @@
     const btns = $$('[data-mode-toggle]');
     const dark = window.matchMedia('(prefers-color-scheme: dark)');
     const current = () => { const m = root.getAttribute('data-mode'); return m === 'dark' || m === 'light' ? m : (dark.matches ? 'dark' : 'light'); };
-    const paint = () => { const m = current(); btns.forEach((b) => { b.setAttribute('aria-pressed', String(m === 'dark')); b.setAttribute('aria-label', m === 'dark' ? 'Switch to light' : 'Switch to dark'); }); const meta = $('meta[name="theme-color"]'); if (meta && b0) meta.setAttribute('content', m === 'dark' ? (b0.getAttribute('data-theme-dark') || '#17201F') : (b0.getAttribute('data-theme-light') || meta.getAttribute('content'))); };
+    const paint = () => { const m = current(); btns.forEach((b) => { b.setAttribute('aria-pressed', String(m === 'dark')); b.setAttribute('aria-label', m === 'dark' ? 'Switch to light' : 'Switch to dark'); }); const metas = $$('meta[name="theme-color"]'); if (metas.length && b0) { const c = m === 'dark' ? (b0.getAttribute('data-theme-dark') || '#17201F') : (b0.getAttribute('data-theme-light') || metas[0].getAttribute('content')); /* both, because the page ships one meta per colour scheme: an explicit choice has to win whichever one the OS is currently matching. */ metas.forEach((x) => x.setAttribute('content', c)); } };
     const b0 = btns[0];
     btns.forEach((b) => b.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
@@ -233,7 +233,10 @@
     const show = (key) => {
       if (key === current) return;
       current = key;
-      phones.forEach((p) => { p.hidden = p.dataset.tour !== key; });
+      /* token match, not equality: a tour that shows the same screen at two
+         steps had to render it twice (5 kB on cohort) because a shell could
+         only claim one key. data-tour="marpass handoff" now serves both. */
+      phones.forEach((p) => { p.hidden = !(` ${p.dataset.tour} `).includes(` ${key} `); });
     };
     let ticking = false;
     const scan = () => {
@@ -311,7 +314,11 @@
       const t = id && document.getElementById(id);
       if (!t) return;
       e.preventDefault();
-      t.scrollIntoView({ behavior: calm.matches ? 'auto' : 'smooth', block: 'start' });
+      /* A card in a film strip is reached sideways, not from the top: pull
+         it to the start of its own rail and leave the page where it is.
+         This is what makes /#strip-cohort-marpass a link to one screen. */
+      const rail = t.closest('[data-rail]');
+      t.scrollIntoView(rail ? { behavior: calm.matches ? 'auto' : 'smooth', inline: 'start', block: 'nearest' } : { behavior: calm.matches ? 'auto' : 'smooth', block: 'start' });
       t.setAttribute('tabindex', '-1');
       t.focus({ preventScroll: true });
       history.replaceState(null, '', `#${id}`);
@@ -547,8 +554,241 @@
     addEventListener('resize', show, { passive: true });
   };
 
+  /* ── the working demo: rails, screen switchers, callouts ─────────────
+     The shared behaviour behind filmStrip(), screenSwitch() and
+     callouts() in render/instruments.js. Everything here is an upgrade on
+     something that already works: the rail is a real overflow-x container
+     that a finger, a trackpad and a scrollbar already scroll, its captions
+     are already in the HTML, the switcher already renders every screen
+     with scripting off, and a callout list is an ordered list of
+     sentences whatever happens.
+
+     One delegated listener per behaviour, never one per element: a page
+     may carry three rails of eight screens and the listener count does not
+     move. Nothing is attached at all on a page that has none.
+
+     BOTH POINTERS. A finger scrolls the rail natively, with momentum and
+     snap, so drag is bound to a mouse pointer only — hijacking touchmove
+     would take the momentum away and give nothing back. Keys, snap sync,
+     the index announcement, the tabs and the callout lighting are
+     pointer-agnostic and run on every device.
+
+     REDUCED MOTION. Every programmatic scroll asks for 'auto' rather than
+     'smooth' when the reader has asked for less motion; the stylesheet
+     makes the matching call for its transitions by declaring them inside
+     prefers-reduced-motion: no-preference rather than switching them off
+     afterwards. */
+  const RAIL = '[data-rail]';
+  const STEP = { ArrowLeft: -1, ArrowRight: 1, Home: 'h', End: 'e' };
+  let dg = null, slid = false, spoke = 0;
+  const kids = (r) => $$('.fs-i', r);
+  /* A caller's selector is data, so it may be wrong; a bad one must cost a
+     missing pin, never a thrown exception that takes the rest of the page
+     down with it. */
+  const pick = (root, sel) => { try { return sel && root ? root.querySelector(sel) : null; } catch (x) { return null; } };
+  const pct = (a, b) => ((a / b) * 100).toFixed(2) + '%';
+  const ease = () => (calm.matches ? 'auto' : 'smooth');
+  /* The rail is position:relative, so a card's offsetLeft is measured from
+     the same origin as scrollLeft and the snapped card is simply the one
+     whose left edge sits nearest the left edge of the visible strip. */
+  const nearest = (r) => {
+    const el = kids(r);
+    if (!el.length) return 0;
+    const x = r.scrollLeft + el[0].offsetLeft;
+    let b = 0, d = Infinity;
+    for (let i = 0; i < el.length; i++) { const v = Math.abs(el[i].offsetLeft - x); if (v < d) { d = v; b = i; } }
+    return b;
+  };
+  const goTo = (r, i) => {
+    const el = kids(r);
+    const n = el[Math.max(0, Math.min(el.length - 1, i))];
+    if (n) n.scrollIntoView({ behavior: ease(), inline: 'start', block: 'nearest' });
+  };
+  const swSet = (box, i, move) => {
+    const tabs = $$('[role="tab"]', box);
+    if (!tabs.length) return;
+    i = Math.max(0, Math.min(tabs.length - 1, i));
+    if (box.dataset.at === String(i) && !move) return;
+    box.dataset.at = i;
+    const ps = $$('.swx-p', box);
+    tabs.forEach((t, j) => { t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; });
+    ps.forEach((x, j) => x.toggleAttribute('data-on', j === i));
+    if (!move) return;
+    tabs[i].focus();
+    const rid = box.getAttribute('data-sw-rail');
+    const strip = rid ? document.getElementById(rid) : null;
+    const rail = strip ? $(RAIL, strip) : null;
+    if (rail) goTo(rail, i);
+  };
+  const railSync = (r) => {
+    const i = nearest(r);
+    if (r.dataset.at === String(i)) return;
+    const first = r.dataset.at === undefined;
+    r.dataset.at = i;
+    const el = kids(r);
+    el.forEach((x, j) => x.toggleAttribute('data-on', j === i));
+    const box = r.closest('.fstrip');
+    if (!box) return;
+    $$('.fs-jump a', box).forEach((a, j) => { if (j === i) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    const sw = box.id ? $('[data-sw-rail="' + box.id + '"]') : null;
+    if (sw) swSet(sw, i, false);
+    /* Say it once the strip has come to rest. Announcing every card a fast
+       flick passes over is noise, not status. */
+    const live = $('.fs-live', box);
+    if (!live || first) return;
+    clearTimeout(spoke);
+    spoke = setTimeout(() => { live.textContent = (i + 1) + ' of ' + el.length + ', ' + (el[i] ? el[i].getAttribute('data-t') || '' : ''); }, 300);
+  };
+  /* A pin that names a selector is placed from the measured element, so it
+     stays right through a zoom change, a font swap and a reflow. A pin
+     whose selector stops matching hides itself rather than pointing at the
+     wrong thing — the sentence is still in the list underneath. */
+  const place = () => {
+    for (const w of $$('[data-callouts]')) {
+      const stage = $('.cal-stage', w);
+      if (!stage) continue;
+      const b = stage.getBoundingClientRect();
+      if (!b.width) continue;
+      for (const pin of $$('.cal-pin[data-sel]', w)) {
+        const t = pick(stage, pin.getAttribute('data-sel'));
+        if (!t) { pin.hidden = true; continue; }
+        const q = t.getBoundingClientRect();
+        pin.hidden = false;
+        pin.style.setProperty('--x', pct(q.left + q.width / 2 - b.left, b.width));
+        pin.style.setProperty('--y', pct(q.top + q.height / 2 - b.top, b.height));
+      }
+    }
+  };
+  let litB = null;
+  const dark = (w) => {
+    if (!w) return;
+    for (const x of $$('[data-cal][data-on],[data-lit-t]', w)) { x.removeAttribute('data-on'); x.removeAttribute('data-lit-t'); }
+    w.removeAttribute('data-lit');
+  };
+  const light = (e) => {
+    const t = e.target;
+    const n = t && t.closest ? t.closest('[data-callouts] [data-cal]') : null;
+    const w = n ? n.closest('[data-callouts]') : null;
+    if (litB && litB !== w) { dark(litB); litB = null; }
+    if (!w) return;
+    const k = n.getAttribute('data-cal');
+    if (w.getAttribute('data-lit') === k) return;
+    dark(w);
+    litB = w;
+    w.setAttribute('data-lit', k);
+    for (const x of $$('[data-cal="' + k + '"]', w)) x.setAttribute('data-on', '');
+    const pin = $('.cal-pin[data-cal="' + k + '"]', w);
+    const q = pick($('.cal-stage', w), pin && pin.getAttribute('data-sel'));
+    if (q) q.setAttribute('data-lit-t', '');
+  };
+  const demos = () => {
+    const rails = $$(RAIL);
+    const boxes = $$('[data-switch]');
+    const cals = $$('[data-callouts]');
+    if (!rails.length && !boxes.length && !cals.length) return;
+
+    if (rails.length || boxes.length) {
+      document.addEventListener('keydown', (e) => {
+        const k = STEP[e.key];
+        if (k === undefined || e.metaKey || e.ctrlKey || e.altKey) return;
+        const t = e.target;
+        if (!t || !t.matches) return;
+        if (t.matches('[role="tab"]')) {
+          const box = t.closest('[data-switch]');
+          if (!box) return;
+          const tabs = $$('[role="tab"]', box);
+          const n = tabs.length;
+          /* A tablist wraps, a rail does not: the tabs are a ring of five
+             names, the rail is a line with a first and a last card. */
+          e.preventDefault();
+          swSet(box, k === 'h' ? 0 : k === 'e' ? n - 1 : (tabs.indexOf(t) + k + n) % n, true);
+          return;
+        }
+        /* Only when the rail itself holds focus: a link inside a caption
+           keeps the arrow keys it is entitled to. */
+        if (!t.matches(RAIL)) return;
+        const el = kids(t);
+        const to = k === 'h' ? 0 : k === 'e' ? el.length - 1 : nearest(t) + k;
+        if (to < 0 || to >= el.length) return;
+        e.preventDefault();
+        goTo(t, to);
+      });
+      /* Capture, so the drag guard gets in front of anchors() below and a
+         drag that happens to end on a link does not follow it. */
+      document.addEventListener('click', (e) => {
+        if (slid) { slid = false; e.preventDefault(); e.stopPropagation(); return; }
+        const b = e.target.closest ? e.target.closest('[data-sw-to]') : null;
+        const box = b ? b.closest('[data-switch]') : null;
+        if (box) { e.preventDefault(); swSet(box, Number(b.getAttribute('data-sw-to')), true); }
+      }, true);
+    }
+
+    if (rails.length) {
+      let pend = null;
+      document.addEventListener('scroll', (e) => {
+        const t = e.target;
+        if (!t || t.nodeType !== 1 || !t.matches(RAIL) || pend === t) return;
+        pend = t;
+        requestAnimationFrame(() => { const r = pend; pend = null; if (r) railSync(r); });
+      }, { capture: true, passive: true });
+      document.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse' || e.button) return;
+        const r = e.target.closest ? e.target.closest(RAIL) : null;
+        if (r) dg = { r, x: e.clientX, l: r.scrollLeft, id: e.pointerId, on: false };
+      });
+      document.addEventListener('pointermove', (e) => {
+        if (!dg || e.pointerId !== dg.id) return;
+        const dx = e.clientX - dg.x;
+        if (!dg.on) {
+          if (Math.abs(dx) < 5) return;
+          dg.on = true;
+          dg.r.classList.add('is-drag');
+          try { dg.r.setPointerCapture(dg.id); } catch (x) { }
+        }
+        dg.r.scrollLeft = dg.l - dx;
+      });
+      const stop = () => { if (!dg) return; slid = dg.on; dg.r.classList.remove('is-drag'); dg = null; };
+      document.addEventListener('pointerup', stop);
+      document.addEventListener('pointercancel', stop);
+      rails.forEach((r) => railSync(r));
+      /* A link someone pasted. The browser's own fragment scroll only brings
+         a card far enough in to be visible, which for a rail means it lands
+         wherever it happens to land; align it to the start so the screen
+         that was shared is the screen you arrive on. */
+      const land = () => {
+        const t = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+        if (t && t.closest(RAIL)) t.scrollIntoView({ inline: 'start', block: 'nearest' });
+      };
+      land();
+      addEventListener('hashchange', land);
+    }
+
+    /* A tab strip that fits is not a scroller. .swx-tabs keeps overflow-x: auto
+       so it still scrolls with scripting off, where it is the only way to reach
+       a tab that does not fit; when it DOES fit, this marks it and the sheet
+       turns the overflow off, so no assistive tech is handed a scroll region
+       with nothing in it. Measured, not guessed, and re-measured on resize. */
+    const strips = $$('.swx-tabs');
+    if (strips.length) {
+      const fits = () => strips.forEach((x) => x.toggleAttribute('data-fits', x.scrollWidth <= x.clientWidth + 1));
+      fits();
+      addEventListener('resize', fits, { passive: true });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fits);
+    }
+
+    if (cals.length) {
+      document.addEventListener('pointerover', light);
+      document.addEventListener('focusin', light);
+      place();
+      addEventListener('resize', place, { passive: true });
+      /* The shells are drawn in the page's own faces, so a pin measured
+         before the webfont lands is measured against the fallback. */
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    }
+  };
+
   window.PHO = { $, $$, calm, toast, root, EMAIL };
-  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); consent(); drafts(); emailCheck(); sendByMail(); fab(); document.dispatchEvent(new CustomEvent('pho:ready')); };
+  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); demos(); consent(); drafts(); emailCheck(); sendByMail(); fab(); document.dispatchEvent(new CustomEvent('pho:ready')); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

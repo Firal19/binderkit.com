@@ -2,15 +2,9 @@
 // reasoning at every step and the three guardrails.
 
 import { iosShell } from '../../instruments.js';
-import { header, footer, section, title, sheet, planner, citesBlock, number, find, esc, ic } from './chrome.js';
+import { header, footer, section, title, sheet, planner, citesBlock, BOOK, atChapter, onThisPage, find, esc, ic } from './chrome.js';
 
-const SECS = number('BK-PL', [
-  { id: 'top', label: 'Five answers in. A shelf of binders out.', tab: '' },
-  { id: 'answers', label: 'The answers, and the plan', tab: 'Answers' },
-  { id: 'steps', label: 'From question zero to reset', tab: 'Steps', foldName: 'The steps', gist: 'What each step decides, and what it costs to change your mind.' },
-  { id: 'guardrails', label: 'The three guardrails', tab: 'Guardrails', gist: 'Coverage, scope and access, cohesion.' },
-  { id: 'artefacts', label: 'What prints', tab: 'Prints', gist: 'The contents page, the dividers, the brief and the procedure.' },
-]);
+const SECS = BOOK['/plan'];
 const [TOP, ANSWERS, STEPS, GUARDRAILS, ARTS] = SECS;
 
 const ARTEFACTS = [
@@ -21,12 +15,13 @@ const ARTEFACTS = [
 ];
 
 function render(cfg, p) {
+  atChapter('/plan');
   const loop = find('loop');
   const screen = find('screen');
   return `<a class="skip" href="#main">Skip to content</a>
 ${header(cfg, p, { page: 'plan', tabs: SECS.filter((s) => s.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light" data-printing="sheet">
-${title(TOP, { eyebrow: 'Chapter · The plan', h1: loop.heading, lede: loop.sub, ctas: `<a class="btn pri lg" href="#answers">${ic('question', 18)}<span>Answer the five</span></a><a class="btn lg" href="/#join" data-cta="plan">${esc(cfg.cta.primary)}</a>` })}
+${title(TOP, { eyebrow: 'Chapter · The plan', h1: loop.heading, lede: loop.sub, ctas: `<a class="btn pri lg" href="#answers">${ic('question', 18)}<span>Answer the five</span></a><a class="btn lg" href="/#join" data-cta="plan">${esc(cfg.cta.primary)}</a>`, index: onThisPage(SECS) })}
 ${section(ANSWERS, `<h2 id="h-answers">The answers, and the plan they make.</h2><p class="sub">${esc(loop.pull)}</p>
   <div class="plan-g print-zone">
     ${planner({ cls: 'is-page' })}

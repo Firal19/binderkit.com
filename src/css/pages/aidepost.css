@@ -76,7 +76,7 @@ h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em
 .strip-l { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-weight: 700; font-size: 12.5px; color: var(--soft); }
 .fine { font-size: 13.5px; color: var(--soft); line-height: 1.55; max-width: 62ch; }
 .fine a { color: var(--ink); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
-.fine a:hover { text-decoration: underline; }
+@media (hover: hover) { .fine a:hover { text-decoration: underline; } }
 .cap { font-size: 13.5px; color: var(--soft); line-height: 1.5; }
 .pull { font-family: var(--font-display); font-weight: 600; font-size: clamp(24px, 3vw, 38px); line-height: 1.1; letter-spacing: -0.03em; margin-top: 36px; max-width: 26ch; }
 .head { margin-bottom: clamp(28px, 4vw, 48px); }
@@ -114,11 +114,12 @@ html[data-side="caregiver"] .sw-b[aria-pressed="true"] { color: #1C1620; }
 .nav-set { display: flex; gap: 6px; align-items: center; }
 .nav-set a { display: inline-flex; align-items: center; height: 40px; padding: 0 12px; font-weight: 600; font-size: 14px; color: var(--muted); text-decoration: none; position: relative; }
 .nav-set a::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 2px; background: var(--orchid); transform: scaleX(0); transition: transform 180ms; }
-.nav-set a:hover, .nav-set a[aria-current="true"] { color: var(--ink); }
+.nav-set a[aria-current="true"] { color: var(--ink); }
+@media (hover: hover) { .nav-set a:hover { color: var(--ink); } }
 .nav-set a[aria-current="true"]::after { transform: scaleX(1); }
 .hd-r { grid-area: right; display: flex; align-items: center; gap: 10px; justify-self: end; }
 .hd-k { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; color: var(--soft); }
-.hd-k:hover { color: var(--ink); background: var(--wash); }
+@media (hover: hover) { .hd-k:hover { color: var(--ink); background: var(--wash); } }
 .hd-cta { min-height: 40px; }
 .badge-t { position: relative; display: grid; grid-template-columns: 1fr 1fr; align-items: center; min-height: 40px; padding: 3px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); font-size: 12.5px; font-weight: 700; color: var(--soft); isolation: isolate; }
 .badge-t > span { display: inline-flex; align-items: center; gap: 5px; padding: 0 10px; min-height: 32px; border-radius: 9px; transition: color 200ms; }
@@ -168,7 +169,8 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .pal-list { display: grid; padding: 8px; }
 .pal-list li[hidden] { display: none; }
 .pal-row { display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center; width: 100%; min-height: 48px; padding: 0 12px; border-radius: 12px; text-align: left; color: var(--ink); }
-.pal-row:hover, .pal-row.is-on { background: var(--wash); }
+.pal-row.is-on { background: var(--wash); }
+@media (hover: hover) { .pal-row:hover { background: var(--wash); } }
 .pal-t { font-weight: 700; font-size: 15px; }
 .pal-s { font-size: 12.5px; color: var(--soft); }
 .pal-none { padding: 14px 16px 18px; font-size: 14px; color: var(--soft); }
@@ -183,13 +185,13 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .ntf[hidden] { display: none; }
 .ntf.is-on { transform: translate(-50%, 0); opacity: 1; }
 .ntf-b { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 4px 8px; border-radius: 14px; text-align: left; color: inherit; }
-.ntf-b:hover { background: rgba(255, 255, 255, .08); }
+@media (hover: hover) { .ntf-b:hover { background: rgba(255, 255, 255, .08); } }
 .ntf-i { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: rgba(255, 255, 255, .1); flex: none; }
 .ntf-t { display: grid; }
 .ntf-k { font-size: 12px; opacity: .65; }
 .ntf-m { font-weight: 700; font-size: 15px; }
 .ntf-x { width: 44px; border-radius: 14px; display: grid; place-items: center; color: inherit; opacity: .8; }
-.ntf-x:hover { opacity: 1; background: rgba(255, 255, 255, .08); }
+@media (hover: hover) { .ntf-x:hover { opacity: 1; background: rgba(255, 255, 255, .08); } }
 
 /* ── hero: headline, the board, two doors ─────────────────────────────── */
 .hero { padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(32px, 5vw, 64px); }
@@ -224,7 +226,7 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .cell { display: block; width: 100%; min-width: 44px; padding: 14px 6px; border-radius: 10px; font-weight: 600; font-size: 14px; background: var(--wash); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cell-i { display: none; }
 .cell.is-open { background: var(--orchid); color: #1C1620; box-shadow: 0 14px 30px -14px rgba(212, 105, 159, .8); font-weight: 800; position: relative; cursor: pointer; transition: transform 160ms, box-shadow 160ms; }
-.cell.is-open:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -14px rgba(212, 105, 159, .9); }
+@media (hover: hover) { .cell.is-open:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -14px rgba(212, 105, 159, .9); } }
 .cell.is-open::after { content: ""; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: #1C1620; }
 .cell.is-open[aria-expanded="true"] { outline: 3px solid var(--ink); outline-offset: 2px; }
 .cell.is-just { background: var(--teal-soft); color: var(--teal); animation: land 600ms cubic-bezier(.22, 1, .36, 1); }
@@ -285,7 +287,7 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .doors { position: relative; margin-top: clamp(28px, 4vw, 48px); display: grid; grid-template-columns: 1fr 1fr; border-radius: 26px; overflow: hidden; background: var(--card); border: 1px solid var(--line); isolation: isolate; }
 .doors-bg { position: absolute; inset: 0; background: var(--night); clip-path: polygon(var(--x) 0, 100% 0, 100% 100%, calc(var(--x) - 5%) 100%); transition: clip-path 80ms linear; z-index: 0; }
 .door { position: relative; z-index: 1; display: grid; gap: 12px; align-content: start; padding: 32px; text-decoration: none; color: var(--ink); transition: transform 240ms cubic-bezier(.22, 1, .36, 1); }
-.door:hover { transform: translateY(-3px); }
+@media (hover: hover) { .door:hover { transform: translateY(-3px); } }
 .door-k { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; }
 .door b { font-weight: 500; font-size: 16px; line-height: 1.5; color: var(--muted); max-width: 34ch; }
 .door-go { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; margin-top: 6px; }
@@ -316,7 +318,7 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .annot { margin-top: 28px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .annot li { display: grid; align-content: start; gap: 8px; }
 .an-b { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; width: 100%; min-height: 44px; padding: 10px 12px 10px 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); text-align: left; transition: border-color 160ms, background 160ms; }
-.an-b:hover { border-color: var(--ink); }
+@media (hover: hover) { .an-b:hover { border-color: var(--ink); } }
 .an-b[aria-pressed="true"] { border-color: var(--orchid); background: var(--orchid-soft); }
 .an-n { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 14px; }
 .an-b[aria-pressed="true"] .an-n { background: var(--orchid); color: #1C1620; }
@@ -416,7 +418,7 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 .ts-t { font-family: var(--font-display); font-weight: 700; font-size: 34px; letter-spacing: -0.03em; line-height: 1; }
 .ts-bars { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
 .ts-d { display: grid; grid-template-rows: auto 1fr auto; justify-items: center; align-items: end; gap: 4px; height: 128px; padding: 6px 2px; border-radius: 12px; border: 1px solid transparent; transition: background 160ms; }
-.ts-d:hover { background: var(--wash); }
+@media (hover: hover) { .ts-d:hover { background: var(--wash); } }
 .ts-d[aria-pressed="true"] { border-color: var(--line); background: var(--card); }
 .ts-v { font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted); }
 .ts-b { width: 100%; max-width: 30px; height: var(--h); min-height: 4px; border-radius: 6px 6px 3px 3px; background: var(--teal); align-self: end; transition: height 260ms cubic-bezier(.22, 1, .36, 1), background 200ms; }
@@ -438,7 +440,11 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 .care .eyebrow { color: var(--orchid-ink); }
 .care .eyebrow::before { background: var(--orchid); }
 .care h2 { color: var(--ink); }
-#caregivers.care h2 { font-size: clamp(38px, 5.2vw, 64px); }
+/* (1,1,1) — an id the shared phone tier at (0,0,1) cannot reach, which is
+   why this h2 was stuck at 38px on a 390px screen while every other h2 on
+   the site had come down to 26. It is a desktop composition decision, so
+   it now says so with a width query instead of with specificity. */
+@media (min-width: 641px) { #caregivers.care h2 { font-size: clamp(38px, 5.2vw, 64px); } }
 .care .btn:not(.pri) { background: transparent; border-color: rgba(247, 243, 236, .3); color: var(--ink); }
 .care-g { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
 .care-l { margin-top: 26px; display: grid; gap: 12px; }
@@ -464,7 +470,7 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 .wallet-s, .free-s { border-top: 1px solid var(--line); }
 .wallet { display: grid; gap: 14px; }
 .wcard { padding: 22px 24px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; transition: transform 200ms cubic-bezier(.22, 1, .36, 1); }
-.wcard:hover { transform: translateX(6px); }
+@media (hover: hover) { .wcard:hover { transform: translateX(6px); } }
 .wcard-k { grid-column: 1; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12.5px; color: var(--soft); }
 .wcard b { grid-column: 1; font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; }
 .wcard-w { grid-column: 2; grid-row: 1 / 3; font-weight: 700; font-size: 15px; padding: 8px 12px; border-radius: 10px; background: var(--teal-soft); color: var(--teal); }
@@ -606,7 +612,7 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .ft-dt { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.02em; }
 .ft-l { display: grid; }
 .ft-l a { display: flex; align-items: center; gap: 8px; padding: 4px 0; color: var(--muted); font-weight: 600; text-decoration: none; line-height: 1.3; }
-.ft-l a:hover { color: var(--ink); text-decoration: underline; }
+@media (hover: hover) { .ft-l a:hover { color: var(--ink); text-decoration: underline; } }
 .ft-fam a { color: var(--ink); }
 .ft-fam a > span:last-child { display: grid; }
 .ft-fam small { font-size: 12px; color: var(--soft); font-weight: 500; }
@@ -614,7 +620,7 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .ft-w { font-weight: 700; font-size: 12.5px; letter-spacing: -0.02em; overflow-wrap: anywhere; }
 .ft-w a { text-decoration: none; color: var(--ink); }
 .ft-copy { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-weight: 700; font-size: 13px; color: var(--ink); }
-.ft-copy:hover { border-color: var(--ink); }
+@media (hover: hover) { .ft-copy:hover { border-color: var(--ink); } }
 .ft-note { font-size: 12.5px; color: var(--soft); line-height: 1.45; }
 .ft-sun { display: grid; gap: 8px; justify-items: start; }
 .ft-sun .mk { --c-tile: var(--ink); --c-glyph: var(--bg); }
@@ -627,7 +633,7 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .ft-legal { margin-top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
 .ft-legal p { max-width: 80ch; }
 .ft-keys { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 10px; font-weight: 700; font-size: 13px; color: var(--muted); }
-.ft-keys:hover { color: var(--ink); background: var(--card); }
+@media (hover: hover) { .ft-keys:hover { color: var(--ink); background: var(--card); } }
 
 /* ── the footer a phone gets instead of the week ────────────────────────
    Seven day-columns is a desktop metaphor; below 900 the grid used to
@@ -658,11 +664,11 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .soc-pills .soc-t { display: none; }
 .soc-pills .soc-i { position: relative; min-width: 44px; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); }
 .soc-pills .soc-i::after { content: ""; position: absolute; top: -3px; right: -2px; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); border: 2px solid var(--card); transition: background 160ms; }
-.soc-pills .soc-i:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.soc-pills .soc-i:hover::after { background: var(--orchid); }
+@media (hover: hover) { .soc-pills .soc-i:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); } }
+@media (hover: hover) { .soc-pills .soc-i:hover::after { background: var(--orchid); } }
 html[data-side="caregiver"] .soc-pills .soc-i { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid); border-color: var(--bg); }
-html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid); color: #1C1620; border-color: var(--orchid); }
+@media (hover: hover) { html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid); color: #1C1620; border-color: var(--orchid); } }
 
 /* ── the marketing pages ───────────────────────────────────────────────── */
 .hero-p h1, .hero-c h1, .hero-s h1 { font-size: var(--fs-display); max-width: 18ch; }
@@ -749,7 +755,7 @@ html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid);
 .family { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .fam-g { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .fam { display: grid; gap: 8px; align-content: start; padding: 24px; border-radius: 20px; background: var(--bg); border: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: transform 200ms cubic-bezier(.22, 1, .36, 1); }
-a.fam:hover { transform: translateY(-3px); }
+@media (hover: hover) { a.fam:hover { transform: translateY(-3px); } }
 .fam.is-us { border-color: var(--ink); }
 .fam-mk { margin-bottom: 8px; }
 .fam b { font-family: var(--font-display); font-size: 20px; letter-spacing: -0.02em; }
@@ -771,6 +777,259 @@ a.fam:hover { transform: translateY(-3px); }
 .pv-c { border-radius: 18px; }
 .pv-c .strip-l { color: var(--orchid-ink); }
 .pv .ctas .btn { min-height: 50px; }
+
+/* ══ THE SECOND TWENTY-FIVE ═══════════════════════════════════════════════
+   Navigation, the ledger, the family and the demo primitives, all wearing
+   the same two-sided face: ink is the provider, orchid is the caregiver,
+   and nothing else ever takes the accent. */
+
+/* ── where you are, in the header ─────────────────────────────────────
+   A phone header has no nav rail to infer the route from, so it says it.
+   Above 900 the section nav is back and this would be a third label for
+   the same fact, so it goes. */
+.hd-id { grid-area: brand; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.hd-where { display: none; }
+.hd-where::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--orchid); flex: none; }
+
+/* ── the page index: two tones, one per side ──────────────────────────
+   data-spy is site.js's scroll spy — the chip whose section is in view
+   takes aria-current. It is the same component at every width; below 640
+   it scrolls sideways rather than becoming a different idea. */
+.ix { width: var(--wrap-w); margin: 0 auto; display: flex; align-items: center; gap: 14px;
+      padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.ix-k { display: inline-flex; align-items: center; gap: 7px; flex: none; font-weight: 700;
+        font-size: 12.5px; color: var(--soft); }
+.ix-l { display: flex; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: none;
+        scroll-snap-type: x proximity; }
+.ix-l::-webkit-scrollbar { display: none; }
+.ix-l a { display: inline-flex; align-items: center; gap: 7px; min-height: var(--tap); padding: 0 12px;
+          border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--muted);
+          text-decoration: none; white-space: nowrap; scroll-snap-align: start;
+          border: 1px solid transparent; transition: background 160ms, color 160ms, border-color 160ms; }
+.ix-l a::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none;
+                  border: 1.5px solid currentColor; opacity: .45; }
+.ix-l a[data-side-hint="prov"]::before { background: var(--ink); border-color: var(--ink); opacity: .35; }
+.ix-l a[data-side-hint="care"]::before { background: var(--orchid); border-color: var(--orchid); opacity: 1; }
+@media (hover: hover) { .ix-l a:hover { color: var(--ink); border-color: var(--line); } }
+.ix-l a[aria-current="true"] { background: var(--ink); color: var(--bg); }
+.ix-l a[aria-current="true"]::before { background: var(--orchid); border-color: var(--orchid); opacity: 1; }
+.dark-half .ix, .ix.is-dark { border-color: var(--line); }
+
+/* ── prev / next: the site as a ring you can walk ─────────────────────
+   No wrap-around. The first route has no previous and does not draw one,
+   because a pager that silently loops teaches a reader the order is not
+   real. Zero script: two anchors and a counter. */
+.pg { width: var(--wrap-w); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: var(--sp-6) 0 var(--sp-5); border-top: 1px solid var(--line); }
+.pg-i { display: grid; gap: 4px; align-content: start; padding: 18px 20px; border-radius: 18px;
+        background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink);
+        transition: transform 200ms cubic-bezier(.22, 1, .36, 1), border-color 160ms; }
+@media (hover: hover) { .pg-i:hover { transform: translateY(-2px); border-color: var(--ink); } }
+.pg-i.is-next { text-align: right; justify-items: end; grid-column: 2; }
+.pg-i.is-prev + .pg-of { grid-column: 1 / -1; }
+.pg-k { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px;
+        color: var(--orchid-ink); }
+.pg-i.is-next .pg-k { flex-direction: row-reverse; }
+.pg-i b { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -0.025em; line-height: 1.1; }
+.pg-g { font-size: 14px; color: var(--muted); line-height: 1.4; }
+.pg-i[data-side-hint="care"] { border-color: color-mix(in srgb, var(--orchid) 45%, var(--line)); }
+.pg-of { grid-column: 1 / -1; font-weight: 700; font-size: 13px; color: var(--soft); text-align: center; }
+
+/* ── the five screens, one tap from the top ───────────────────────────── */
+.sj { width: var(--wrap-w); margin: 0 auto; display: flex; align-items: center; gap: 12px;
+      padding: 12px 0; }
+.sj-k { display: inline-flex; align-items: center; gap: 7px; flex: none; font-weight: 700;
+        font-size: 12.5px; color: var(--soft); }
+.sj-l { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.sj-l::-webkit-scrollbar { display: none; }
+.sj-l a { display: inline-flex; align-items: center; gap: 7px; min-height: var(--tap); padding: 0 12px;
+          border-radius: 12px; border: 1px solid var(--line); background: var(--card);
+          font-weight: 600; font-size: 14px; color: var(--ink); text-decoration: none; white-space: nowrap; }
+@media (hover: hover) { .sj-l a:hover { border-color: var(--ink); } }
+.sj-l a[data-side-hint="care"] { background: var(--night); color: #F7F3EC; border-color: var(--night); }
+.sj-n { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: var(--soft); }
+.sj-l a[data-side-hint="care"] .sj-n { color: var(--orchid); }
+.sj-all { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: var(--tap);
+          font-weight: 700; font-size: 14px; color: var(--orchid-ink); text-decoration: none; }
+@media (hover: hover) { .sj-all:hover { text-decoration: underline; } }
+
+/* ── copy the address of the thing you are looking at ─────────────────── */
+.dl { display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 12px;
+      border-radius: 10px; border: 1px solid var(--line); background: var(--card);
+      font-weight: 700; font-size: 13px; color: var(--soft); flex: none; }
+@media (hover: hover) { .dl:hover { border-color: var(--ink); color: var(--ink); } }
+
+/* ── the ledger: what is true today ──────────────────────────────────── */
+.led { display: grid; }
+.led-h, .led-r { display: grid; grid-template-columns: minmax(0, 1fr) 172px minmax(0, 2.2fr);
+                 gap: 20px; align-items: baseline; }
+.led-h { padding: 0 0 10px; font-size: 12.5px; font-weight: 700; color: var(--soft); }
+.led-r { padding: 16px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.led-r:last-child { border-bottom: 1px solid var(--line); }
+.led-r b { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.led-w { color: var(--muted); line-height: 1.5; }
+.led-s { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 13px; }
+.led-s::before { content: ""; width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--soft); }
+.led-s.is-covered { color: var(--teal); }
+.led-s.is-covered::before { background: var(--teal); }
+.led-s.is-open { color: var(--orchid-ink); }
+.led-s.is-open::before { background: var(--orchid); }
+.led-s.is-pending::before { background: transparent; border: 2px solid var(--orchid); }
+
+/* ── the four words, and no fifth colour ─────────────────────────────── */
+.words-g, .schema-g, .grd-g { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                              gap: clamp(28px, 4vw, 56px); align-items: start; }
+.stl { display: grid; gap: 10px; align-content: start; }
+.stl-i { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 14px 18px;
+         border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.stl-i dt { display: flex; align-items: center; gap: 10px; font-family: var(--font-display);
+            font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.stl-i dd { font-size: 14.5px; color: var(--muted); line-height: 1.5; }
+.stl-d { width: 12px; height: 12px; border-radius: 50%; flex: none; background: var(--soft); }
+.stl-i.is-covered .stl-d { background: var(--teal); }
+.stl-i.is-open .stl-d { background: var(--orchid); }
+.stl-i.is-pending .stl-d { background: transparent; border: 2.5px solid var(--orchid); }
+.stl-i.is-expired { border-color: var(--orchid); }
+.stl-i.is-expired .stl-d { background: var(--orchid); box-shadow: 0 0 0 4px var(--orchid-soft); }
+
+/* ── the family band: the line under each mark is a boundary, not a logo ── */
+.fam-t { font-size: 13.5px; color: var(--muted); line-height: 1.45; }
+.fam-g { align-items: stretch; }
+.fam { align-content: start; }
+
+/* ── the graduation map ──────────────────────────────────────────────── */
+.grd { display: grid; gap: 14px; align-content: start; }
+.grd-l { display: grid; counter-reset: gl; }
+.grd-l li { counter-increment: gl; display: grid; grid-template-columns: 26px minmax(0, 1fr);
+            gap: 4px 12px; padding: 13px 0; border-top: 1px solid var(--line); }
+.grd-l li:last-child { border-bottom: 1px solid var(--line); }
+.grd-l li::before { content: counter(gl); grid-row: 1 / 3; width: 26px; height: 26px; border-radius: 50%;
+                    display: grid; place-items: center; background: var(--wash);
+                    font-family: var(--font-display); font-weight: 700; font-size: 12.5px; }
+.grd-l b { font-size: 15.5px; font-weight: 700; line-height: 1.35; }
+.grd-l span { display: inline-flex; align-items: center; gap: 7px; grid-column: 2;
+              font-size: 14px; color: var(--orchid-ink); font-weight: 600; }
+
+/* ── the shift record, and the field that is not on it ───────────────── */
+.schm { padding: 22px 24px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+.schm-f { display: flex; flex-wrap: wrap; gap: 7px; margin: 4px 0 16px; }
+.schm-f li { display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px;
+             border-radius: 999px; background: var(--wash); font-size: 13.5px; font-weight: 600; }
+.schm-n { font-size: 14.5px; color: var(--muted); line-height: 1.55; }
+.schm-n b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 19px;
+            letter-spacing: -0.02em; line-height: 1.2; color: var(--orchid-ink); margin-bottom: 6px; }
+
+/* ── the palette's destinations ──────────────────────────────────────── */
+.pal-row.is-go { text-decoration: none; }
+.pal-go { width: 24px; display: grid; place-items: center; }
+.pal-go::before { content: ""; width: 8px; height: 8px; border-radius: 50%;
+                  border: 2px solid var(--orchid); }
+.pal-p { font-family: var(--font-body); font-size: 12px; font-weight: 700; color: var(--soft); }
+
+/* ── the demo primitives, in this face ───────────────────────────────── */
+.hero-sc .hero-dw { display: flex; justify-content: center; min-width: 0; }
+.hero-sc h1 { font-size: clamp(40px, 5.2vw, 86px); max-width: 14ch; }
+.hero-dw .swx { width: 100%; }
+.swx-p *:is(.phone) { box-shadow: 0 30px 60px -32px rgba(23, 32, 31, .5), inset 0 0 0 2px #2A3130; }
+.swx-tab[aria-selected="true"] { border: 0; }
+.fs-i[data-kind="ios"] *:is(.phone) { box-shadow: 0 30px 60px -32px rgba(23, 32, 31, .45), inset 0 0 0 2px #2A3130; }
+.fs-pv { display: block; }
+.strp .head-r { align-items: flex-end; }
+.cal-pin { background: var(--orchid); color: #1C1620; }
+
+/* ── the annotated shell gets a desktop-sized room ────────────────────
+   instruments-extra gives a web shell inside a strip card or a switcher
+   panel a 1180px room (.fs-i[data-kind="web"], .swx-p[data-kind="web"]),
+   because a 1280px application drawn into the 460px default is unreadable.
+   callouts() emits no data-kind, so the callout stage never picked up that
+   override and #cal-hire shipped at zoom .359 on a 1440 desktop — the
+   hiring screen the section exists to annotate, at a third of true size,
+   in a 1296px container with 645px of it empty. The room is set on the
+   wrapper, where --dm-room inherits down to the shell the same way. */
+.cal-wrap { --dm-room: 1180px; }
+
+/* On a phone the same shell is the 768px build and the room is the glass,
+   so the fit alone would land at .40–.54 and the five pins would sit on
+   text at 4–7px. .cal-stage is allowed to overrun the glass and the
+   wrapper scrolls sideways — the same bargain the rail already makes for
+   its own web card — so the floor can be a floor. .82 is the strip's
+   number and this matches it rather than inventing a second one. */
+@media (max-width: 640px) {
+  .cal-wrap { --dm-min: .82; overflow-x: auto; overscroll-behavior-x: contain;
+              scrollbar-width: none; scroll-snap-type: x proximity; }
+  .cal-wrap::-webkit-scrollbar { display: none; }
+  .cal-wrap .cal-stage { justify-self: start; scroll-snap-align: start; margin-inline: 0; }
+  .cal-wrap .cal-list { position: sticky; left: 0; width: var(--wrap-w); margin-inline: auto; }
+  /* .browser is 800px tall and clips. Above 640 the hiring screen fits
+     inside that; below it the shell switches to its 768 build, the side
+     column stacks under the main one, and the last 90px — the side rail's
+     action, which pin 4 points at — was cut off. The pin was placed from
+     the element's measured box, so it landed at 111% of the stage: a pink
+     disc sitting on the sentence underneath, quoting a button no reader
+     could see. The window grows to its contents at this width instead. */
+  .cal-stage .browser { --dh: auto; height: auto; }
+}
+.wallet-c a, .free-c a { display: inline-flex; align-items: center; gap: 5px; color: var(--ink);
+                         font-weight: 700; text-decoration: none; }
+@media (hover: hover) { .wallet-c a:hover, .free-c a:hover { text-decoration: underline; } }
+.free-c { max-width: 52ch; }
+
+/* ── everything it can say ───────────────────────────────────────────── */
+.msg { padding: 22px 24px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); align-self: start; }
+.msg-l { display: grid; gap: 14px; margin: 4px 0 14px; }
+.msg-l li { display: grid; gap: 6px; padding: 14px 16px; border-radius: 14px; background: var(--wash); }
+.msg-q { font-family: var(--font-display); font-weight: 700; font-size: 19px; letter-spacing: -0.02em;
+         line-height: 1.25; quotes: "“" "”"; }
+.msg-w { font-size: 14.5px; color: var(--muted); line-height: 1.5; }
+
+/* ── the first ten minutes: four checkboxes and no script ─────────────
+   The input is the thumb target, so it is 44px on a touch screen and a
+   drawn 26px box on a mouse-driven one. appearance:none plus a background
+   image, because a pseudo-element on a checkbox is not reliable. */
+.ft10 { padding: 20px 22px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+.ft10-l { display: grid; gap: 4px; margin: 6px 0 12px; }
+.ft10-l li { display: flex; align-items: center; gap: 12px; min-height: var(--tap-row); }
+.ft10-x { appearance: none; -webkit-appearance: none; flex: none; width: 26px; height: 26px; margin: 0;
+          border-radius: 9px; border: 2px solid var(--line); background: var(--bg);
+          transition: background 160ms, border-color 160ms; cursor: pointer; }
+.ft10-x:checked { background: var(--orchid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231C1620' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7'/%3E%3C/svg%3E") center / 62% no-repeat;
+                 border-color: var(--orchid); }
+.ft10-x:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.ft10-l label { font-size: 15px; line-height: 1.4; cursor: pointer; }
+.ft10-x:checked + label { color: var(--soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+/* ── the boundary, and who holds it instead ──────────────────────────── */
+.dn { display: grid; gap: 8px; margin-top: 18px; }
+.dn li { display: grid; gap: 2px; padding: 13px 16px; border-radius: 14px;
+         background: var(--bg); border: 1px solid var(--line); }
+.family .dn li { background: var(--bg); }
+.dn b { font-size: 15.5px; font-weight: 700; line-height: 1.35; }
+.dn b::before { content: "Does not "; color: var(--orchid-ink); }
+.dn span { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.dn a { color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── the product's own map ───────────────────────────────────────────── */
+.pmap { display: grid; gap: 16px; }
+.pmap-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.pmap-c { padding: 18px 20px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+.pmap-c ul { display: flex; flex-wrap: wrap; gap: 6px; }
+.pmap-c li { display: inline-flex; align-items: center; min-height: 32px; padding: 0 13px;
+             border-radius: 999px; background: var(--wash); font-size: 14.5px; font-weight: 600; }
+
+/* ── what is invented here, named ────────────────────────────────────── */
+.smp { border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+.smp > summary { display: grid; grid-template-columns: minmax(0, 1fr) 24px; gap: 16px; align-items: center;
+                 min-height: var(--tap); padding: 14px 20px; cursor: pointer; list-style: none; }
+.smp > summary::-webkit-details-marker { display: none; }
+.smp > summary b { display: inline-flex; align-items: center; gap: 10px;
+                   font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+.smp[open] > summary .faq-x::after { transform: translate(-50%, -50%) scaleY(0); }
+.smp-b { padding: 0 20px 18px; }
+.smp-b ul { display: grid; gap: 8px; margin-bottom: 12px; }
+.smp-b li { font-size: 14.5px; color: var(--muted); line-height: 1.5; }
+.smp-b b { color: var(--ink); }
+.strp-u { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+          gap: 14px; align-items: start; margin-top: var(--sp-5); }
 
 /* ── narrower ──────────────────────────────────────────────────────────── */
 @media (max-width: 1200px) { .hd-in { column-gap: 14px; } .sw-b { padding: 0 12px; font-size: 13.5px; } .hd-k { display: none; } }
@@ -1230,3 +1489,308 @@ a.fam:hover { transform: translateY(-3px); }
 @media (pointer: coarse) {
   .pr-b { min-height: var(--tap); }
 }
+
+/* ══ THE PHONE, DENSER ════════════════════════════════════════════════════
+   The shared tier took --sec-y, the heading ramp and --sp-4..8 down by a
+   fifth and moved the whole page by 4.7%, because on this site prose is
+   37–54% of a phone screen and prose is HELD at 15px. What was left was
+   hand-typed vertical padding in this sheet, and this is the sweep of it:
+   every margin, padding, min-height and row gap below 640 comes down by
+   about a fifth, and not one of the five floors moves.
+
+     15px  prose, wherever it sits — p, li, dd, blockquote
+     16px  anything you type into
+     44px  anything a thumb presses, in both dimensions
+     48px  a destination in a list
+     12px  any text at all
+
+   Where a value is already at a floor it is not in this block. Where a
+   number looks arbitrary it is the floor arithmetic: a .cell keeps 44px of
+   min-height and gives up only the padding that was making it taller. */
+
+@media (max-width: 900px) {
+  /* the header says where you are, because there is no nav rail to infer
+     it from below 900 — and above 900 the rail says it better. */
+  .hd-id { flex-direction: column; align-items: flex-start; gap: 0; justify-content: center; min-width: 0; }
+  /* 44 + 15 = 59 inside a 60px bar: the wordmark keeps its thumb target and
+     the route label gets the line under it, with nothing spilling out. */
+  .hd-id .brand { height: var(--tap); }
+  .hd-where { display: flex; align-items: center; gap: 6px; height: 15px; font-size: 13px;
+              line-height: 1.2; font-weight: 700; color: var(--soft); letter-spacing: -0.01em;
+              max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hd-where::before { margin-bottom: 1px; }
+  .words-g, .schema-g, .grd-g, .strp-u { grid-template-columns: minmax(0, 1fr); }
+  .pmap-g { grid-template-columns: minmax(0, 1fr); }
+  /* the ledger stops being a table and becomes six statements */
+  .led-h { display: none; }
+  .led-r { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .pg { grid-template-columns: minmax(0, 1fr); }
+  .pg-i.is-next { grid-column: 1; text-align: left; justify-items: start; }
+  .pg-i.is-next .pg-k { flex-direction: row; }
+  /* the 15px reading floor, on the new components */
+  .pg-g, .fam-t, .led-w, .stl-i dd, .schm-n, .grd-l span, .grd-l b, .schm-f li, .fs-pv, .cal-x,
+  .msg-w, .smp-b li, .dn span, .dn b, .pmap-c li, .ft10-l label
+  { font-size: var(--fs-read); }
+  /* the thumb, on the only control this site draws itself */
+  .ft10-x { width: var(--tap); height: var(--tap); border-radius: 12px; }
+}
+/* .chap is the desktop chapter strip; .ix is the same destinations for a
+   phone. Exactly one of the two is ever painted, never both. */
+@media (min-width: 901px) { main[data-page="providers"] .ix { display: none; } }
+
+@media (max-width: 640px) {
+  /* ── type rhythm: the space around words, not the words ───────────── */
+  .sub { margin-top: 12px; }
+  .eyebrow { margin-bottom: 12px; }
+  .strip-l { margin-bottom: 8px; }
+  .fine { line-height: 1.5; }
+  .pull { margin-top: 26px; }
+  .head { margin-bottom: 20px; }
+  .boundary { margin-top: 26px; }
+  .lede { margin-top: 16px; }
+  .ctas { margin-top: 22px; gap: 10px; }
+
+  /* ── the hero ──────────────────────────────────────────────────────── */
+  .hero { padding-top: 22px; padding-bottom: 26px; }
+  .hero-live { margin-top: 10px; min-height: 26px; }
+  .hero-fine { margin-top: 14px; }
+  .hero-g { row-gap: 22px; }
+  .board-w { margin-top: 26px; }
+  /* 12px of padding is what was making a 44px cell 57px tall. The cell keeps
+     its 44px floor; the row gives back the 13px it did not need. */
+  .board th { padding: 9px 2px; }
+  .board td { padding: 4px 1px; }
+  .cell { padding: 10px 1px; }
+  .board th[scope="row"] { padding-left: 10px; }
+  .board-u { margin-top: 10px; row-gap: 10px; }
+  .tonight { padding: 6px 12px 6px 9px; }
+  .doors { margin-top: 22px; }
+  .door { padding: 20px 18px; gap: 9px; }
+  .door.is-care { padding-left: 18px; }
+  .door-go { margin-top: 3px; }
+  .door-k { font-size: 21px; }
+
+  /* ── the claim sheet ───────────────────────────────────────────────── */
+  .claim { margin-top: 14px; }
+  .claim-c { padding: 16px 15px 18px; }
+  .needs { margin-top: 12px; gap: 6px; }
+  .claim-cap { margin-top: 10px; }
+  .claim-steps { margin-top: 16px; gap: 8px; }
+  .cs { padding: 11px 0; gap: 10px; }
+  .cs-w { margin-top: 3px; }
+  .elig { margin-top: 9px; }
+  .elig-i { padding: 7px 10px; }
+  .cs-r { margin-top: 6px; }
+  .claim-a { margin-top: 14px; gap: 8px; }
+  .claim-rec { margin-top: 12px; padding: 10px 12px; }
+
+  /* ── three steps: the crop is 57% of every step and shows one screen ── */
+  .step-g { gap: 12px; }
+  .step { padding: 18px 18px 0; gap: 8px; }
+  /* the mock keeps --mock-z: .8 — this crops the frame, it does not shrink
+     the product. 200px still carries the status bar, the title and the
+     first two rows, which is the whole point of a cropped device. */
+  .step .crop { margin: 8px -8px 0; height: 200px; }
+  .step-n { width: 32px; height: 32px; }
+
+  /* ── the annotated board and the roster ────────────────────────────── */
+  .annot { margin-top: 20px; }
+  .an-b { padding: 8px 10px; }
+  .an-d { padding: 0 2px; }
+  .ros { margin-top: 26px; padding: 14px 10px 15px; }
+  .ros-h { margin-bottom: 12px; }
+  .ros .fine { margin-top: 10px; }
+  .shell-cap { margin-top: 7px; }
+
+  /* ── credentials ───────────────────────────────────────────────────── */
+  .ladder { margin-top: 22px; }
+  .ladder li { padding: 10px 0; }
+  .side-note { margin-top: 18px; padding: 13px 15px; }
+  .tl { padding: 16px; }
+  .tl-card { padding: 16px 17px; gap: 5px; }
+  .tl-who { font-size: 23px; }
+  .tl-n { margin-top: 4px; }
+  .tl-r { margin-top: 15px; }
+  .tl-lab { margin-bottom: 6px; }
+  .tl-rail { height: 44px; margin-top: 4px; }
+
+  /* ── hours ─────────────────────────────────────────────────────────── */
+  .facts { margin-top: 22px; gap: 10px; }
+  .facts li { padding: 11px 0; }
+  .hrs-toys { margin-top: 26px; gap: 14px; }
+  .ck { padding: 18px 16px; gap: 16px; }
+  .ck-t p { margin-top: 5px; }
+  .ck-act { margin-top: 11px; }
+  .ts { padding: 15px 14px; }
+  .ts-bars { margin-top: 11px; }
+  .ts-d { height: 96px; }
+  .ts-f { margin-top: 10px; padding: 7px 10px; }
+  .ts-a { margin-top: 10px; }
+
+  /* ── the caregiver side ────────────────────────────────────────────── */
+  /* clamp(56px, 8vw, 112px) resolves to 56 at 390 — a third more than the
+     shared --sec-y next to it, on a page whose sections are otherwise all
+     the same height. One rhythm, the shared one. */
+  .care { padding-block: var(--sec-y); }
+  .care-l { margin-top: 18px; gap: 10px; }
+  .care-l li { font-size: 15.5px; padding-left: 21px; }
+  .care-l li::before { top: 9px; width: 9px; height: 9px; }
+  .promise { margin-top: 18px; }
+  .care .fine { margin-top: 12px; }
+  .dist { margin-top: 20px; padding: 16px 16px 17px; }
+  .offers { margin-top: 8px; gap: 6px; }
+  .offer { padding: 10px 12px; }
+  .wallet { gap: 10px; }
+  .wcard { padding: 15px 17px; }
+  .wcard b { font-size: 20px; }
+  .wallet-c { margin-top: 12px; }
+  .free-l { gap: 8px; }
+  .free-l li { padding: 11px 13px; gap: 10px; }
+  .free-c { margin-bottom: 14px; }
+  .care-pivot { padding-block: var(--sp-4) var(--sp-3); }
+
+  /* ── the rules, the deck, the roles ────────────────────────────────── */
+  .rule-r { padding: 12px 0; }
+  .rules-c { margin-top: 18px; }
+  .deck-c { padding: 16px 18px; }
+  .deck-nav { margin-top: 10px; }
+  .roles-c { margin-top: 18px; }
+  .flip, .flip-f, .flip-b { min-height: 152px; }
+  .flip-f, .flip-b { padding: 13px 15px 34px; }
+  .flip-hint { left: 15px; bottom: 11px; }
+
+  /* ── questions ─────────────────────────────────────────────────────── */
+  .faq-i summary, .mach-i summary { padding: 14px 0; gap: 14px; }
+  .faq-a { padding: 0 0 18px; }
+  .faq-a p, .mach-i > p { font-size: 16px; line-height: 1.55; }
+  .mach-i > p { padding: 0 0 18px; }
+
+  /* ── pricing ───────────────────────────────────────────────────────── */
+  .tiers { gap: 10px; }
+  .tier { padding: 17px 18px; }
+  .tier.is-post summary { padding: 17px 18px; }
+  .tier-x { padding: 0 18px 16px; }
+  .tier-more { margin-top: 6px; }
+  .tier-p { font-size: 27px; }
+  .tier-care { padding: 20px 18px; }
+  .pricing .fine { margin-top: 14px; }
+  .pr-sw { margin-bottom: 15px; }
+  .subs { margin-top: 20px; gap: 10px; }
+  .note { padding: 17px 18px; }
+  .note .fine { margin-top: 10px; }
+  .arrow { margin-top: 10px; }
+  .defs { margin-top: 10px; }
+  .defs dt { padding: 8px 0 0; }
+  .defs dd { padding-bottom: 9px; }
+  .flow-l li { padding: 10px 0; }
+  .flow .fine, .flow-l + .fine { margin-top: 10px; }
+
+  /* ── the waitlist ──────────────────────────────────────────────────── */
+  .join-g { row-gap: 24px; }
+  .two { margin-top: 22px; gap: 10px; }
+  .two-c { padding: 15px 16px; }
+  .two-c ol { gap: 6px; }
+  .two-c .cap { margin-top: 10px; }
+  .join-f { padding: 16px; }
+  .join-f .fine { margin-top: 10px; }
+
+  /* ── the marketing pages ───────────────────────────────────────────── */
+  .proof { margin-top: 24px; gap: 10px; }
+  .proof li { padding: 15px 17px; gap: 6px; }
+  .ch-head { margin-bottom: 18px; }
+  .ch-g { margin-top: 20px; row-gap: 22px; }
+  .ch-side { gap: 16px; }
+  .flow h3, .trans h3 { margin-bottom: 10px; font-size: 18px; }
+  .flow + .trans, .trans + .flow { margin-top: 24px; }
+  .trans-h, .trans-r { padding: 8px 0; }
+  .gates { padding: 16px 18px; }
+  .gates h3 { margin-bottom: 10px; }
+  .gates ul { gap: 6px; margin-bottom: 10px; }
+  .ch .hrs-toys { margin-top: 20px; }
+  .ch .pull { margin-top: 20px; }
+  .care-side { gap: 12px; }
+  .care-card { padding: 17px 18px; }
+  .care-card h3 { margin-bottom: 8px; font-size: 17px; }
+  .care-card h3 + .tick + h3 { margin-top: 14px; }
+  .tick { gap: 6px; }
+  .prot-g { gap: 10px; }
+  .prot-g li { padding: 14px 16px; gap: 3px 12px; }
+  .free-first { padding: 17px 18px; }
+  .free-first ol { gap: 6px; }
+  .free-first .cap { margin-top: 10px; }
+  .two-b p { margin-top: 10px; }
+  .fam-g { gap: 10px; }
+  .fam { padding: 16px 18px; gap: 6px; }
+  .fam-mk { margin-bottom: 4px; }
+  .fam-by { margin-top: 18px; }
+  .contact-l { gap: 8px; }
+  .contact-l li { padding: 11px 13px; }
+  .contact-l .ft-copy { margin-top: 6px; }
+  .contact-t .fine { margin-top: 12px; }
+  .contact-f { padding: 16px; }
+  .post-g, .two-g, .write-g, .contact-g, .hero-cg, .pay-g, .q-g { row-gap: 22px; }
+
+  /* ── /privacy: the longest single section on the site, and every line of
+     it is prose at the floor. Only the space between the lines moves. ── */
+  .pv h3 { margin-top: 28px; }
+  .pv-c { padding: 13px; }
+  .pv .ctas .btn { min-height: var(--tap); }
+
+  /* ── the new components ────────────────────────────────────────────── */
+  .ix { gap: 8px; padding: 8px 0; }
+  /* The destinations are prose in a list and the floor for that is 15px.
+     They shipped at 13.5 and were twelve of mobile-gate's fourteen majors
+     on their own; the rail already scrolls sideways, so the width the
+     larger word costs is width it had somewhere to put. The label beside
+     them is a label, not prose, and sits at the 13px the rest of this
+     sheet's small labels use — the page minimum was 13px before this
+     section existed and it is 13px again. */
+  .ix-k span, .ix-k { font-size: 13px; }
+  .ix-l a { padding: 0 10px; font-size: 15px; }
+  .sj { gap: 8px; padding: 9px 0; flex-wrap: wrap; }
+  .sj-all { margin-left: auto; }
+  .pg { padding: var(--sp-5) 0 var(--sp-4); gap: 10px; }
+  .pg-i { padding: 13px 15px; }
+  .pg-i b { font-size: 19px; }
+  .led-r { padding: 12px 0; }
+  .led-r b { font-size: 17px; }
+  .stl { gap: 8px; }
+  .stl-i { padding: 11px 14px; }
+  .stl-i dt { font-size: 17px; }
+  .grd-l li { padding: 10px 0; }
+  .schm { padding: 16px 17px; }
+  .schm-f { margin: 4px 0 12px; gap: 6px; }
+  .schm-n b { font-size: 17px; margin-bottom: 4px; }
+  .msg { padding: 16px 17px; }
+  .msg-l { gap: 10px; margin: 4px 0 11px; }
+  .msg-l li { padding: 11px 13px; gap: 4px; }
+  .msg-q { font-size: 17px; }
+  .ft10 { padding: 15px 16px; }
+  .ft10-l { margin: 4px 0 10px; }
+  .dn { margin-top: 14px; gap: 6px; }
+  .dn li { padding: 10px 13px; }
+  .pmap { gap: 12px; }
+  .pmap-c { padding: 14px 15px; }
+  .smp > summary { padding: 11px 15px; gap: 12px; }
+  .smp > summary b { font-size: 16.5px; }
+  .smp-b { padding: 0 15px 14px; }
+  .smp-b ul { gap: 6px; margin-bottom: 10px; }
+  .strp-u { margin-top: var(--sp-4); gap: 10px; }
+
+  /* ── the footer ────────────────────────────────────────────────────── */
+  .ft-top { margin-bottom: 16px; }
+  .ft-ph .ft-w { margin-top: 16px; }
+  .ft-ph-act { margin: 8px 0 18px; }
+  .ft-ph-d > summary { min-height: var(--tap-row); }
+  .ft-ph-d .ft-l { padding: 2px 0 8px; }
+  .ft-ph .soc { margin-top: 18px; }
+  .ft-ph .pho { margin-top: 14px; }
+  .ft-legal { margin-top: 20px; }
+}
+
+/* ── the caption under the hero device keeps its gutter ───────────────
+   .swx-stage bleeds to the glass below 640 so the screen inside it is as
+   large as the hardware allows — correct for the device, wrong for the
+   sentence under it, whose box then ran edge to edge. The mock keeps the
+   bleed; the words take the page's own column back. */
+@media (max-width: 640px) { .hero-dw .swx-c { width: var(--wrap-w); margin-inline: auto; } }

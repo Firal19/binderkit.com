@@ -75,7 +75,14 @@
   :root {
     --hdr: 56px;                                /* one bar, one height */
     --hdr-scrolled: 48px;
-    --scroll-pad: calc(var(--hdr) + var(--sp-3));
+    /* base.css pads #top-bar by env(safe-area-inset-top) — viewport-fit=cover
+       runs the layout viewport under the Dynamic Island — so the bar is
+       --hdr PLUS the inset tall, while the scroll padding only ever counted
+       --hdr. On a notched phone every in-page anchor landed up to 59px under
+       the bar: tap a section in the sheet and you arrive mid-paragraph with
+       the heading hidden. env() is 0px wherever there is no inset, so this
+       is a no-op on a desk and on every headless gate. */
+    --scroll-pad: calc(var(--hdr) + var(--sp-3) + env(safe-area-inset-top, 0px));
     --fs-label: 13px;                           /* 12px is where a label stops
                                                    being a bug; 13 is where it
                                                    starts being readable */
@@ -224,10 +231,129 @@
 /* ═══ 640 · THE PHONE TIER ═══════════════════════════════════════════════
    Grids go to one, the fold fires, the dock is paid for. */
 @media (max-width: 640px) {
-  :root { --sec-y: 56px; }
+
+  /* ═══ THE DENSITY TIER ════════════════════════════════════════════════
+     One reading of "20% smaller on a phone", chosen and locked: DENSITY,
+     NOT LEGIBILITY. About a fifth more page per screen, with nothing
+     harder to read and nothing harder to press. So everything that is AIR
+     or DISPLAY comes down by a fifth, and everything a finger or an eye
+     actually lands on does not move:
+
+       moves:  --sec-y, --sp-4..--sp-8, --hdr, h1/h2/h3, heading leading,
+               the fold row, the shared legal-page furniture.
+       holds:  --fs-body 16, --fs-read 15, --fs-label 13, --fs-lede,
+               --gutter, --sp-1..--sp-3 (hairline gaps never scaled),
+               --tap 44, --tap-row 48, input 16px, every mockup interior.
+
+     Each space curve below is the base.css curve with all three legs at
+     four fifths, so it tracks 80% at 320, 390 AND 640 rather than being
+     right at one width and guessed at the others. They are written out
+     rather than multiplied because a custom property cannot read its own
+     previous value: `--sp-4: calc(var(--sp-4) * .8)` is a cycle and
+     resolves to the guaranteed-invalid value, which inherits, silently.
+
+     There IS a step at the 640/641 boundary — 20% of it. That is the
+     ladder working, not a fault: the same file already steps --fs-label
+     11.5->13 at 900 and --sec-y 48->56 at 640. Nobody drags a phone
+     across a breakpoint; a reader is on one side of it. */
+  :root {
+    --sec-y: 45px;                                /* was 56 */
+    --hdr: 52px;                                  /* was 56. The floor is 48:
+                                                     the bar must still hold a
+                                                     44px control with air on
+                                                     both sides of it. */
+    --sp-4: clamp(13px, 0.67rem + 0.53vw, 19px);  /* 16.0 -> 12.8 at 390 */
+    --sp-5: clamp(16px, 0.74rem + 1.06vw, 29px);  /* 20.0 -> 16.0 */
+    --sp-6: clamp(21px, 0.95rem + 1.85vw, 45px);  /* 28.1 -> 22.4 */
+    --sp-7: clamp(29px, 1.35rem + 2.65vw, 64px);  /* 39.9 -> 31.9 */
+    --sp-8: clamp(42px, 1.77rem + 4.23vw, 96px);  /* 56.0 -> 44.8 */
+
+    /* h2 and h3 as tokens, so the ramp reaches the elements that read the
+       token and not just the ones that are <h2>: .fold-s .fold-h is the
+       phone index's own heading and is a <span>. */
+    --fs-h2: clamp(19px, 0.94rem + 1.45vw, 25px); /* 25.9 -> 20.7 at 390 */
+    --fs-h3: 17.5px;                              /* 20.0 -> 17.5 at 390 */
+  }
 
   .ctas { flex-direction: column; }
   .ctas > .btn { width: 100%; }
+  .btn.lg { min-height: 50px; }                   /* 56 -> 50, floor is 44 */
+  .form { gap: 12px; }                            /* 14 -> 12 */
+
+  /* ── the phone heading ramp ─────────────────────────────────────────
+     MEASURED at 390 before this block existed: h1 32.8 everywhere, and
+     h2 at 26 / 28.9 / 29.9 / 30 / 32 / 34 / 38 across the four sites. So
+     h2 was arriving the same size as h1 — the 8.4vw cap at 900 pulls h1
+     down onto a phone and nothing pulled h2 down with it, and a ramp
+     whose first two rungs are 32.8 and 32 is not a ramp. This block is
+     one cut and one repair at the same time.
+
+       h1  26.2 at 390 · 26.0 at 360 · 26.0 at 320 · 34.2 at 640
+       h2  20.7        · 20.3        · 19.7        · 24.3
+       h3  17.5 flat across the tier
+       prose 15-16, untouched.
+
+     h1 is written as the 900 cap TIMES four fifths rather than as a new
+     curve, so it composes with `min(var(--fs-h1), 8.4vw)` instead of
+     racing it: whatever that cap resolves to at a given width, this is
+     80% of it. The 26px max() is the floor the brief sets and the reason
+     it exists is that below 26 a headline stops reading as a headline; it
+     binds at 360 and narrower, which is exactly where a 20% cut would
+     have gone too far. Nothing here is a `--t-*` or a `--c-*`, and the
+     mock list is the full one from base.css plus .cp and .divset.
+
+     h2/h3 read the tokens set above. `html[data-mode]` is (0,1,2) here,
+     which clears every `.st-t h2` / `.faq-i h3` / bare `h2` in the four
+     page sheets without !important. The ONE selector in the kit it cannot
+     clear is aidepost's `#caregivers.care h2` at (1,2,1) — an id — which
+     therefore stays at 38px and is that site's own to bring down. */
+  html[data-mode] h1:not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, .screen, [data-mock]) *) {
+    font-size: max(26px, min(var(--fs-h1), 8.4vw) * .8);
+  }
+  html[data-mode] h2:not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, .screen, [data-mock]) *) {
+    font-size: var(--fs-h2);
+    line-height: 1.12;                            /* three of the four sites
+                                                     let h2 inherit body 1.55,
+                                                     which on a phone is 2-3
+                                                     wrapped lines of it */
+  }
+  html[data-mode] h3:not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, .screen, [data-mock]) *) {
+    font-size: var(--fs-h3);
+    line-height: 1.24;
+  }
+
+  /* ── and the one thing the ramp above breaks ────────────────────────
+     A control that lives INSIDE a heading takes its position from that
+     heading's line box. The ramp above makes those line boxes fractional
+     — 20.26px x 1.12 = 22.6912px at 360 — and a box positioned on a
+     fractional baseline measures fractionally: cohort's .h-link, drawn
+     at exactly `width: var(--tap); height: var(--tap)`, came back as
+     43.9995px tall at deviceScaleFactor 2. No thumb can tell. A strict
+     `b.height < 44` can, and tools/mobile.mjs did, in three runs out of
+     nine, on a control whose own computed style says 44px.
+
+     One pixel of tolerance ends it, for this control and for any future
+     one: a floor is a floor, and 45 is over 44. min-* is inert on a
+     non-replaced inline box, so a plain inline link inside a heading is
+     not relaid out — only a control that already has a box, which is the
+     only kind a thumb can miss. Today this matches exactly one class,
+     cohort's .h-link (9 visible instances, 12 more inside closed folds);
+     careshop, binderkit and aidepost put no control inside a heading. */
+  html[data-mode] *:is(h1, h2, h3, h4) *:is(a, button, [role="button"]):not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, .screen, [data-mock]) *) {
+    min-height: calc(var(--tap) + 1px);
+    min-width: calc(var(--tap) + 1px);
+  }
+
+  /* Leading is a function of MEASURE, and the measure here is ~34
+     characters, not the ~62 that 1.55 was chosen for. Short line, tight
+     leading — this is the correct value for a phone, not a concession.
+     Written at ZERO specificity (`:where()` all the way down) so it only
+     ever replaces the INHERITED body value: every site rule that states a
+     line-height on its own prose still wins, and nothing in a mockup is
+     reached. */
+  :where(.page, footer, .msheet) *:where(p, li, dd):not(:where(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, .screen, [data-mock]) *) {
+    line-height: 1.45;
+  }
 
   /* ── the fold.
      Below 640 a long page opens as an index: the hero, the section that
@@ -249,6 +375,37 @@
      independently and each patched it in its own sheet. It belongs here, once.
      Keep it: removing it re-opens every fold whose wrap sets `display`. */
   .js [data-phone="fold"] > [hidden] { display: none; }
+
+  /* ── the fold row, denser ───────────────────────────────────────────
+     On a folded phone page these rows ARE the navigation — eleven of them
+     on cohort, fourteen on binderkit, nineteen on aidepost, twenty-two on
+     careshop — and every one was taller than its own 64px min-height, so
+     that min-height governed nothing. A heading and a gist, both leading
+     at the inherited 1.55, inside 12+12 of padding. MEASURED at 390, the
+     distinct row heights per site:
+
+       cohort     74.8 / 100.3  ->  63.8 / 89.3
+       aidepost   95.5 / 118.6  ->  78.6 / 98.8
+       binderkit  93.9          ->  91.2   (own rule, see below)
+       careshop   74.5 / 96.3 / 119.1  ->  unchanged (own rule)
+
+     56px is the new floor under all of it: eight clear of the 48px
+     list-row destination and twelve clear of the 44px thumb.
+
+     careshop's `.js [data-phone="fold"] > .fold-s` is (0,3,0) and
+     binderkit's `.page .sec[data-phone="fold"] > .fold-s` is (0,3,1), so
+     both keep their own row and this reaches them only through --sp-*.
+     That is the right outcome and not a miss: a site that has stated a
+     number for its own index row outranks the shared default, which is
+     what the shared default is for.
+
+     .fold-h and .fold-g are matched through `*:where()` so they land at
+     (0,1,0), UNDER aidepost's own (0,2,0) 1.15 heading leading and its
+     two-line clamped gist. Those are better than these two numbers and
+     have to keep winning; this only replaces the inherited 1.55. */
+  .fold-s { min-height: 56px; padding-block: var(--sp-2); }
+  .fold-s *:where(.fold-h) { line-height: 1.24; }
+  .fold-s *:where(.fold-g) { line-height: 1.35; }
 
   /* ── the bars, made solid.
      Every face gives its sticky header and its bottom dock a translucent
@@ -276,6 +433,19 @@
      background of its own, so the page showed through behind the logo. */
   .bar { background: var(--bg); }
 
+  /* ── the other end of the scroll padding ────────────────────────────
+     --scroll-pad keeps an anchor clear of the sticky header. Nothing kept
+     it clear of the fixed bar at the BOTTOM, so a form field that the
+     on-screen keyboard scrolls into view, and any anchor the browser
+     lands with block:"end", arrived UNDER the dock — the same defect the
+     .fab rule below already pays for, one layer up. Four names for one
+     bar (cohort/careshop --dock, binderkit --footbar-h, aidepost
+     --bar-h); the unset ones resolve to 0px, which is why all three are
+     added rather than chosen between, exactly as .fab does it. */
+  html[data-mode] {
+    scroll-padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px));
+  }
+
   /* The floating write-to-us sits above whatever this face mounts at the
      bottom. --dock covers cohort (48) and careshop (60); binderkit calls its
      bar --footbar-h (52) and aidepost calls its own --bar-h (64), and both
@@ -284,6 +454,23 @@
   .fab {
     bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px));
   }
+
+  /* ── /privacy and /terms, at the same density as everything else ────
+     `.pv` is shared furniture declared in base.css, and it dresses two of
+     every site's seven routes, so it carries a real share of the average.
+     Every number below is 75-80% of its base.css value and not one of
+     them is type: the prose on those two pages is the prose floor and
+     does not move. base.css anchors: .head 32 · h3 40/10 · p 10 ·
+     .fine 40 · .ctas 22 · .pv-c 20 · .pv-dl 14 and 11. */
+  .pv .head { margin-bottom: 24px; }
+  .pv h3 { margin-top: 30px; margin-bottom: 8px; }
+  .pv p { margin-top: 8px; }
+  .pv .fine { margin-top: 30px; }
+  .pv .ctas { margin-top: 18px; }
+  .pv-c { padding: 16px; }
+  .pv-dl { margin-top: 11px; }
+  .pv-dl dt, .pv-dl dd { padding: 8px 0; }
+  .pv-dl dd { margin-bottom: 11px; }
 
   /* MOBILE-SPEC §7.8 — "the last line clears the dock". The pages that mount a
      dock pad the body by exactly --dock, which is the dock's own height, so the
@@ -306,7 +493,7 @@
    It SHORTENS. It never hides. Nothing a 390px screen can reach may be
    taken away from a 320px one. */
 @media (max-width: 400px) {
-  :root { --sec-y: 48px; }
+  :root { --sec-y: 38px; }                        /* was 48 */
   .msheet { padding-inline: var(--sp-4); }
 }
 
@@ -336,7 +523,14 @@
    inline-flex would make the element invisible to the rule instead of
    compliant — and the thumb would still meet a 40px target. */
 @media (pointer: coarse) {
-  .btn, .btn.sm, .soc-i, .pho, .act { min-height: var(--tap); }
+  /* +1px is not a fudge, it is the sub-pixel guard this kit already proved once.
+     A 44px min-height inside a flex parent whose height is fractional computes
+     to 43.9995 at deviceScaleFactor 2, and every gate tests `height < 44`
+     strictly — so a control that is correct by construction reports as a
+     violation. It fired on cohort's .h-link (fixed the same way, responsive.css
+     ~line 325) and then on binderkit's two .btn.sm on the fold device. A floor
+     one pixel above the floor costs nothing and ends the whole class of it. */
+  .btn, .btn.sm, .soc-i, .pho, .act { min-height: calc(var(--tap) + 1px); }
 
   :is(nav, header, footer, .menu, .sheet, .drawer, .ssheet, .toc-sheet, .toc,
       .dock, .tabs, .footbar, .tally-bar, .eos-l, .eos-d, .ft-l,

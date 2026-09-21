@@ -1,6 +1,6 @@
 // aidepost.com — the front page. The light half, then the page turns over.
 
-import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, spec, find, S, STEPS, BOUNDARY, shell, boardTable, doors, rosterToy, credTimeline, timesheetToy, clockToy, distanceToy, walletCards, deck, flipRoles, tierBlock, annotatedBoard, joinBlock } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, spec, find, S, STEPS, BOUNDARY, shell, boardTable, doors, rosterToy, credTimeline, timesheetToy, clockToy, distanceToy, walletCards, deck, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav, pager, ledger, familyBand, doesNotList, deepLink, screensOf } from './bits.js';
 
 function hero(cfg, p) {
   return `<section class="hero" id="top" aria-labelledby="h1">
@@ -91,8 +91,7 @@ function caregivers() {
       <div class="wallet-t">${eyebrow('Your wallet')}<h2 id="h-wallet">Your dates, in your pocket.</h2><p class="sub">Keep your own credential dates in one place, and carry them from one employer to the next. A notice at thirty days and at seven — to you, by name; to a manager, only as a count.</p>
         <ul class="care-l">${s.lines.slice(5).map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
       ${walletCards()}
-      <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'credentials' })}</div>
-        <p class="cap">The same dates on the provider’s side: surfaced with the shift, never used to remove anyone from the list.</p></div>
+      <p class="cap wallet-c">The same dates appear on the provider’s side — surfaced with the shift, never used to remove anyone from the list. <a href="/caregivers#wallet">The wallet, at depth ${ic('arrow', 14, { pin: false })}</a></p>
     </div>
   </section>
   <section class="sec care free-s" id="free" aria-labelledby="h-free" data-reveal data-phone="fold" data-gist="Free for ever — and the four things Aidepost will never do to a caregiver.">
@@ -100,8 +99,7 @@ function caregivers() {
       <div class="free-t">${eyebrow('Free, for ever')}<h2 id="h-free">You are not the product.</h2><p class="promise">${esc(s.promise)}</p>
         <div class="ctas">${s.ctas.map(([label, href], i) => `<a class="btn ${i === 0 ? 'pri' : ''} lg" href="${esc(href)}" data-cta="caregiver">${esc(label)}</a>`).join('')}</div>
         <p class="fine">${esc(s.fine)}</p></div>
-      <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'hire' })}</div>
-        <p class="cap">What a relief worker sees when a shift goes outward — the work, the distance, and nothing about a resident.</p></div>
+      <p class="cap free-c">What a relief worker sees when a shift goes outward is the work, the distance, and nothing about a resident. <a href="/screens#strip-hire">See that screen ${ic('arrow', 14, { pin: false })}</a></p>
       <ul class="free-l" aria-label="What Aidepost never does to a caregiver">
         <li>${ic('x', 18, { pin: 'open' })}<span><b>No background check</b> — the provider runs ORCHARDS; Aidepost holds a status she types.</span></li>
         <li>${ic('x', 18, { pin: 'open' })}<span><b>No rating</b> — attendance is showed, did not show, or late with a number of minutes. No stars, no comment, no free text.</span></li>
@@ -149,20 +147,71 @@ function pricing(cfg, p) {
     <div class="head">${h2('pricing', s.heading, EVERY_PLAN)}</div>
     ${tierBlock(p)}
     <p class="fine">${esc(s.note)}</p>
-    <div class="subs">
-      <div class="note"><h3>${esc(find('start').signupHeading)}</h3><ol class="arrow">${SIGNUP_SIX.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol></div>
-      <div class="note"><h3>${esc(BILLING_STATES.heading)}</h3><dl class="defs">${BILLING_STATES.rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></div>
-    </div>
-    <p class="fine"><a href="/pricing">Pricing, at depth ${ic('arrow', 14, { pin: false })}</a></p>
+    <p class="fine"><a href="/pricing">${esc(find('start').signupHeading)}, ${esc(BILLING_STATES.heading.toLowerCase())}, and what one post buys — pricing at depth ${ic('arrow', 14, { pin: false })}</a></p>
   </div>`);
 }
 
 const join = (cfg, p) => sec('join', 'join', joinBlock(cfg, p));
 
-export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'refuses', 'roles', 'questions', 'pricing', 'join', 'claim']);
+/* ── the five screens, one tap from the top of the page ───────────────
+   The full strip is 31 kB of HTML and only index.html is measured, so it
+   lives on /screens where it costs the budget nothing. What belongs here is
+   the door to it — and every one of these is a deep link that lands on a
+   single screen, sideways, in the rail. */
+/* The chips are numbered, and so is the rail they land in. They were two
+   hand-written lists in two files and they disagreed: a visitor tapped
+   “05 Her side” here and arrived at a card captioned 03. The order is now
+   read from the same place the rail reads it — instruments.js's own screen
+   list — so the two numberings cannot drift again. Only the words are
+   local, because /screens renames two of the five for its own captions. */
+const SCREEN_WORDS = { board: ['The board', 'prov'], credentials: ['Credentials', 'prov'], caregiver: ['Her side', 'care'], hours: ['Timesheets', 'prov'], hire: ['Posts', 'prov'] };
+const SCREEN_LINKS = screensOf('aidepost').map((s) => [s.key, ...(SCREEN_WORDS[s.key] || [s.title, 'both'])]);
+const stripJump = () => `<nav class="sj" aria-label="Jump straight to one screen">
+  <span class="sj-k">${ic('board', 16)}All five screens</span>
+  <ol class="sj-l" data-scrollx>${SCREEN_LINKS.map(([k, t, side], i) => `<li><a href="/screens#strip-${k}" data-side-hint="${side}"><span class="sj-n">${String(i + 1).padStart(2, '0')}</span>${esc(t)}</a></li>`).join('')}</ol>
+  <a class="sj-all" href="/screens">Open the strip ${ic('arrow', 16, { pin: false })}</a>
+</nav>`;
+
+/* ── the ledger ───────────────────────────────────────────────────────
+   A pre-launch product that states its own state is doing the one thing a
+   deck cannot fake. Every row is read from brand.js or data/page.js. */
+const ledgerSec = (p) => fold('What is live, what is not, and the one question we have not closed.', sec('ledger', 'ledger', `<div class="wrap">
+  <div class="head head-r"><div>${eyebrow('Stated plainly')}${h2('ledger', 'What is true today.', 'Aidepost is pre-launch and this page says so in every row. No row reports an Aidepost customer, a pilot, a metric or a raise, because there is not one to report.')}</div>${deepLink('/#ledger', 'the status ledger')}</div>
+  ${ledger(p)}
+  <p class="pull">Providers pay. Caregivers never do — so the side that is hardest to buy is the side that costs nothing to reach.</p>
+</div>`));
+
+/* ── the family ───────────────────────────────────────────────────────── */
+const familySec = (p) => fold('Four rooms, one ladder — and what each one takes off Aidepost’s plate.', sec('family', 'family', `<div class="wrap">
+  <div class="head">${eyebrow('The family')}${h2('family', esc(find('family').heading), 'Aidepost holds the workforce and nothing else. The other three rooms are real products at real addresses, and one of them is live today. The state printed beside each one is that product’s own, read from the family register — none of it is an Aidepost number.')}</div>
+  ${familyBand()}
+  ${doesNotList(p)}
+  <p class="fine"><a href="/about#ladder">Every mini graduates into Provider Hub Oregon by export → import, and her data is already in PHO’s shape — the map ${ic('arrow', 14, { pin: false })}</a></p>
+</div>`));
+
+export const HOME_IX = [
+  ['top', 'Saturday night', 'prov'],
+  ['providers', 'Inward, then outward', 'prov'],
+  ['board', 'The board', 'prov'],
+  ['credentials', 'Credentials', 'prov'],
+  ['hours', 'Hours', 'prov'],
+  ['caregivers', 'Shifts near you', 'care'],
+  ['wallet', 'Your wallet', 'care'],
+  ['free', 'Free, for ever', 'care'],
+  ['refuses', 'What we refuse', 'both'],
+  ['ledger', 'What is true today', 'both'],
+  ['family', 'The four rooms', 'both'],
+  ['questions', 'Questions', 'both'],
+  ['pricing', 'Pricing', 'both'],
+  ['join', 'Join', 'both'],
+];
+
+export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'refuses', 'roles', 'ledger', 'family', 'questions', 'pricing', 'join', 'claim']);
 
 export function home(cfg, p) {
   return shell(cfg, p, { page: 'home', ids: HOME_IDS }, `${hero(cfg, p)}
+${stripJump()}
+${ixNav(HOME_IX)}
 ${steps()}
 ${board()}
 ${credentials()}
@@ -171,9 +220,12 @@ ${caregivers()}
 ${rules()}
 ${refuses()}
 ${roles()}
+${ledgerSec(p)}
+${familySec(p)}
 ${questions()}
 ${pricing(cfg, p)}
-${join(cfg, p)}`);
+${join(cfg, p)}
+${pager('/')}`);
 }
 
 export { spec, S };

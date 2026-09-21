@@ -99,7 +99,7 @@ code, .ctl { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .
 .ev.is-superseded { color: var(--soft); text-decoration: line-through; }
 .place { display: inline-block; margin-left: 6px; padding: 1px 5px; border: 1px solid var(--rule); border-radius: 2px; font-family: var(--font-mono); font-style: normal; font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .cite { color: var(--ink); text-decoration: underline dotted; text-decoration-color: var(--peri); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.cite:hover { text-decoration-style: solid; }
+@media (hover: hover) { .cite:hover { text-decoration-style: solid; } }
 kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 3px; font-family: var(--font-mono); font-size: 11.5px; text-align: center; }
 .ic-binderkit { flex: none; }
 
@@ -120,7 +120,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .run-n { color: var(--ink); font-weight: 500; min-width: 8ch; }
 .rule-r { display: flex; align-items: center; gap: 4px; justify-self: end; }
 .rb { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; min-width: 44px; padding: 0 10px; border-radius: 3px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); transition: color 120ms, background 120ms; }
-.rb:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+@media (hover: hover) { .rb:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); } }
 .rb-i { padding: 0; justify-content: center; }
 .rb[aria-expanded="true"] { background: var(--ink); color: var(--bg); }
 .lamp-on { opacity: 0; transition: opacity 200ms; }
@@ -145,8 +145,12 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .dtab { display: grid; grid-template-columns: 0fr auto; align-items: center; height: 44px; border: 1px solid var(--rule); border-right: 0; border-radius: 3px 0 0 3px; background: var(--bg); color: var(--muted); text-decoration: none; overflow: hidden; transition: grid-template-columns 260ms cubic-bezier(.2, .8, .2, 1), transform 220ms cubic-bezier(.2, .8, .2, 1), background 160ms, color 160ms; }
 .dtab-l { min-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transition: opacity 160ms, padding 260ms; }
 .dtab-n { width: 40px; text-align: center; font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
-.dtab:hover, .dtab:focus-visible { grid-template-columns: 1fr auto; color: var(--ink); }
-.dtab:hover .dtab-l, .dtab:focus-visible .dtab-l { opacity: 1; padding-left: 14px; }
+.dtab:focus-visible { grid-template-columns: 1fr auto; color: var(--ink); }
+.dtab:focus-visible .dtab-l { opacity: 1; padding-left: 14px; }
+@media (hover: hover) {
+  .dtab:hover { grid-template-columns: 1fr auto; color: var(--ink); }
+  .dtab:hover .dtab-l { opacity: 1; padding-left: 14px; }
+}
 .dtab[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); transform: translateX(-6px); }
 .tabs-cta { display: none; }
 
@@ -160,7 +164,8 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .toc li a, .toc li { display: flex; align-items: baseline; gap: 10px; min-height: 44px; padding: 8px 0; text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--line); }
 .toc li a { border-bottom: 0; width: 100%; }
 .toc li:has(> a) { padding: 0; }
-.toc li a:hover .toc-t, .toc li a:focus-visible .toc-t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.toc li a:focus-visible .toc-t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+@media (hover: hover) { .toc li a:hover .toc-t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
 .toc li a[aria-current="page"] .toc-t { font-weight: 600; }
 .toc-no { flex: none; width: 2.2ch; font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
 .toc-t { min-width: 0; font-size: 16px; line-height: 1.35; }
@@ -224,7 +229,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .seg-t { display: grid; gap: 2px; min-height: 56px; padding: 9px 10px; align-content: center; transition: background 140ms, color 140ms; }
 .seg-t b { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; letter-spacing: .04em; }
 .seg-t small { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; color: var(--soft); }
-.seg-i:hover .seg-t { background: var(--wash); }
+@media (hover: hover) { .seg-i:hover .seg-t { background: var(--wash); } }
 .seg-i input:checked + .seg-t { background: var(--ink); color: var(--bg); }
 .seg-i input:checked + .seg-t small { color: color-mix(in srgb, var(--bg) 70%, transparent); }
 .seg-i input:focus-visible + .seg-t { outline: 2px solid var(--ink); outline-offset: -3px; }
@@ -397,7 +402,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .faq-a { padding: 18px 0 20px 54px; max-width: 74ch; border-bottom: 1px solid var(--line); }
 .faq-a p { font-size: 16.5px; color: var(--muted); line-height: 1.6; }
 .faq-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 6px; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); text-decoration: none; }
-.faq-link:hover { color: var(--ink); }
+@media (hover: hover) { .faq-link:hover { color: var(--ink); } }
 
 /* ── pricing ───────────────────────────────────────────────────────────── */
 .sell-note { margin-top: 14px; font-size: 14.5px; color: var(--muted); line-height: 1.55; max-width: 70ch; }
@@ -453,8 +458,15 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .ledger dt { font-family: var(--font-display); font-size: 18px; }
 .ledger dd { font-size: 15px; color: var(--muted); line-height: 1.55; }
 .never { margin-top: 30px; display: grid; border-top: 1px solid var(--rule); }
-.never li { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
-.never code { padding-top: 4px; color: var(--soft); }
+/* One column, not two. The 70px column was for the BK-9n code, and the
+   renderer stopped emitting it: library.js maps NEVER_ROWS as ([, t, why]),
+   which discards it. The <div> that carries the whole row was landing in
+   the empty code column — measured in WebKit, 70px wide and 548px tall at
+   1440 and 58 x 592 at 390, six rows of it, with a 1098px column beside it
+   holding nothing. A grid column reserved for markup that is no longer
+   emitted is not a spacing choice, it is a broken row. */
+.never li { display: grid; gap: 4px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.never code { margin-right: 8px; color: var(--soft); }
 .never b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 19px; }
 .never b s { text-decoration-color: var(--peri); text-decoration-thickness: 2px; }
 .never span { display: block; margin-top: 4px; font-size: 14.5px; color: var(--muted); line-height: 1.5; }
@@ -488,12 +500,12 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .colo-ctl { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
 .stamps-row { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; }
 .stamp { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 3px; background: var(--card); color: var(--ink); font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-decoration: none; transition: background 120ms, color 120ms; }
-.stamp:hover { background: var(--ink); color: var(--bg); }
+@media (hover: hover) { .stamp:hover { background: var(--ink); color: var(--bg); } }
 .soc.stamps { margin-top: 12px; gap: 8px; }
 .stamps .soc-i { width: 44px; height: 44px; min-width: 44px; padding: 0; border: 1px solid var(--rule); border-radius: 3px; background: var(--card); color: var(--muted); position: relative; }
 .stamps .soc-i::before, .stamps .soc-i::after { content: ""; position: absolute; left: 3px; width: 3px; height: 3px; border-radius: 50%; border: 1px solid var(--rule); background: var(--bg); }
 .stamps .soc-i::before { top: 12px; } .stamps .soc-i::after { bottom: 12px; }
-.stamps .soc-i:hover { background: var(--ink); color: var(--bg); transform: none; }
+@media (hover: hover) { .stamps .soc-i:hover { background: var(--ink); color: var(--bg); transform: none; } }
 .stamps .soc-t { display: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
 .stamps.is-text .soc-i { width: auto; padding: 0 12px 0 14px; gap: 10px; }
 .stamps.is-text .soc-t { display: inline; }
@@ -534,8 +546,12 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 .cmd-l li[hidden] { display: none; }
 .cmd-r { display: grid; width: 100%; text-align: left; gap: 2px; padding: 10px 12px; min-height: 44px; border-radius: 3px; font-size: 15px; }
 .cmd-r small { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; color: var(--soft); }
-.cmd-r[aria-current="true"], .cmd-r:hover { background: var(--ink); color: var(--bg); }
-.cmd-r[aria-current="true"] small, .cmd-r:hover small { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+.cmd-r[aria-current="true"] { background: var(--ink); color: var(--bg); }
+.cmd-r[aria-current="true"] small { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+@media (hover: hover) {
+  .cmd-r:hover { background: var(--ink); color: var(--bg); }
+  .cmd-r:hover small { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+}
 .cmd-foot { padding: 10px 16px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; color: var(--soft); display: flex; gap: 8px; align-items: center; }
 .pop { position: absolute; z-index: 45; width: min(340px, calc(100vw - 32px)); padding: 14px 16px 12px; background: var(--card); border: 1px solid var(--rule); box-shadow: 0 24px 48px -28px rgba(23, 32, 31, .5); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .pop[hidden] { display: none; }
@@ -552,6 +568,232 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 .pv-dl dt { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
 .pv p a { color: var(--ink); }
 .head .sub { max-width: 60ch; }
+
+/* ══ THE WORKING DEMO, BOUND INTO THE BINDER ════════════════════════════
+   instruments-extra.css draws the mechanism — the rail, the tablist, the
+   pins — and it is deliberately face-neutral. Everything below is this
+   binder's dress for it and nothing else: no geometry, no behaviour, no
+   size that would take a caption under the 15px prose floor (.fs-i and
+   .cal-i are <li>, so every word inside one is reading matter).
+   A plate in a printed book is numbered in the margin, captioned in small
+   type and separated from its neighbour by a rule. Nothing here is round:
+   the icon set's only circles are punch holes. */
+.fstrip, .swx, .cal-wrap { --dm-hair: var(--line); --dm-pane: var(--wash); }
+.fs-h, .fs-t { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.01em; }
+.fs-no, .fs-jn, .swx-no { font-family: var(--font-mono); letter-spacing: .04em; }
+.fs-pl { font-family: var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.fs-pv { border-left-width: 3px; }
+.fs-i { border-left: 1px solid var(--line); padding-left: var(--sp-4); }
+.fs-i:first-child { border-left: 0; padding-left: 0; }
+.fs-jump a, .swx-tabs, .swx-tab { border-radius: var(--r); }
+.fs-jump a, .swx-tab { font-family: var(--font-mono); font-size: 15px; letter-spacing: .04em; }
+.fs-jump a[aria-current="true"], .swx-tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); box-shadow: none; }
+.fs-jump a[aria-current="true"] .fs-jn, .swx-tab[aria-selected="true"] .swx-no { color: var(--bg); }
+.cal-pin, .cal-n { border-radius: 2px; font-family: var(--font-mono); }
+.cal-i { border-radius: 0; border-left: 1px solid transparent; }
+.cal-i[data-on] { border-color: var(--line); border-left-color: var(--peri); }
+[data-lit-t] { border-radius: 2px; }
+/* the plate's own address, in its caption. 44px because it is a real
+   control inside the page body, where the shared coarse-pointer net
+   (anchored on nav/header/footer) deliberately does not reach. */
+.plate-a { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap);
+  padding: 0 10px; margin-left: -10px; border: 1px solid transparent; border-radius: var(--r);
+  font-family: var(--font-mono); font-size: 15px; letter-spacing: .02em; color: var(--soft); }
+@media (hover: hover) { .plate-a:hover { border-color: var(--rule); color: var(--ink); } }
+
+/* ── the control number, as the address of its section ─────────────────
+   A control number IS an address in a binder. Here it is one on the web
+   too: the stamp in the margin copies the deep link. The icon appears on
+   hover and on focus, so the resting page is still just a number. */
+.ctl { display: inline-flex; align-items: baseline; gap: 6px; padding-top: 6px;
+  color: var(--soft); white-space: nowrap; text-align: left; }
+.ctl-c { opacity: 0; transform: translateY(1px); transition: opacity 140ms; }
+.ctl:focus-visible { color: var(--ink); }
+.ctl:focus-visible .ctl-c { opacity: 1; }
+@media (hover: hover) {
+  .ctl:hover { color: var(--ink); }
+  .ctl:hover .ctl-c { opacity: 1; }
+}
+.foot .ctl { padding-top: 6px; }
+
+/* ── what is on this page ──────────────────────────────────────────────
+   The binder's answer to "where am I": the same numbered list with leader
+   dots the footer and the contents sheet print, marked as you scroll. Set
+   in columns so a sixteen-section chapter is five lines tall, not sixteen. */
+.here-w { grid-column: 2; margin-top: clamp(26px, 3vw, 44px); padding-top: 16px; border-top: 1px solid var(--rule); }
+.toc.here { grid-template-columns: repeat(auto-fill, minmax(208px, 1fr)); column-gap: clamp(20px, 3vw, 44px); }
+.toc.here li a { min-height: 40px; padding: 5px 0; }
+.toc.here .toc-t { font-size: 15px; }
+.toc.here a[aria-current="true"] { color: var(--ink); }
+.toc.here a[aria-current="true"] .toc-t { font-weight: 600; }
+.toc.here a[aria-current="true"] .here-n { color: var(--peri-ink); }
+
+/* ── leaf back, leaf forward ───────────────────────────────────────────
+   Two real links and no script: a binder is a book, and a book has a page
+   before this one and a page after it. */
+.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 34px;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.pager-a { display: grid; gap: 3px; padding: 16px 20px 18px 0; min-height: var(--tap-row);
+  align-content: center; text-decoration: none; color: var(--ink); }
+.pager-a.is-next { text-align: right; padding: 16px 0 18px 20px; border-left: 1px solid var(--line); }
+.pager-a.is-none { border-left: 1px solid var(--line); }
+.pager-k { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+.pager-t { font-family: var(--font-display); font-weight: 500; font-size: 20px; letter-spacing: -0.01em; }
+.pager-n { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+@media (hover: hover) { .pager-a:hover .pager-t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
+
+/* ── the three proofs ──────────────────────────────────────────────────
+   The same four-across rule the printed artefacts use, at three. */
+.art-g.proof-g { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 30px; }
+.proof b { font-size: 17px; }
+
+/* ── two instruments that answer in the product's own words ────────────
+   The determinism check and the three guardrails. Both put their answer
+   in a live region, because the answer is the point and a reader who
+   cannot see the page still gets it. */
+.det, .tryg { margin-top: 34px; padding: 20px 22px; border: 1px solid var(--rule); background: var(--card); }
+.det p, .tryg p { font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 70ch; }
+.det .btn { margin-top: 14px; }
+.det-out { margin-top: 12px; font-family: var(--font-mono); font-size: 13px; letter-spacing: .02em; color: var(--soft); }
+.det-out[data-state="ok"] { color: var(--peri-ink); }
+.det-out[data-state="bad"] { color: var(--danger); }
+.tryg-b { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+/* base.css:205 sets white-space:nowrap on every .btn, which is right for a
+   call to action and wrong for a sentence: with scripting off nothing folds,
+   these three sit at full width on a phone, and one of them pushed the
+   document to 417px at a 390px viewport. They wrap. */
+.tryg-b .btn { white-space: normal; text-align: left; max-width: 100%; }
+.tryg-b .btn > span { min-width: 0; overflow-wrap: anywhere; }
+.tryg-b .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tryg-o { border-left: 3px solid var(--peri); padding-left: 16px; min-height: 76px; }
+.tryg-g { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--peri-ink); }
+.tryg-r { font-family: var(--font-display); font-style: italic; font-size: clamp(18px, 1.9vw, 22px); line-height: 1.35; color: var(--ink); margin-top: 4px; }
+.tryg-alt { margin-top: 8px; }
+.tryg-idle { color: var(--soft); }
+
+/* ── the boundary, and the test that draws it ──────────────────────── */
+.bd-g { margin-top: 36px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 3vw, 48px); align-items: start; }
+.bd-c .next { margin-top: 0; }
+.next-t { font-family: var(--font-display); font-weight: 500; font-size: 17px; }
+.bd-never .refused { margin-top: 0; }
+.bt { margin-top: 30px; border: 1px solid var(--rule); padding: 18px 20px 20px; background: var(--wash); }
+.bt fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.bt legend { padding: 0; }
+.bt-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; }
+.bt-r { position: relative; display: flex; align-items: center; gap: 12px; min-height: 48px;
+  padding: 4px 0; cursor: pointer; border-top: 1px dotted var(--line); }
+/* The input fills the row and is invisible, so the thing a thumb presses
+   IS 48px tall — not an 18px box with a label beside it. */
+.bt-i { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.bt-b { flex: none; width: 18px; height: 18px; border: 1px solid var(--rule); background: var(--bg); position: relative; }
+.bt-i:checked + .bt-b::after { content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.bt-i:focus-visible + .bt-b { outline: 2px solid var(--focus); outline-offset: 2px; }
+.bt-q { font-size: 15px; line-height: 1.35; }
+.bt-out { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.bt-out p { font-size: 15px; line-height: 1.5; color: var(--muted); }
+.bt-a { display: none; padding-left: 14px; border-left: 3px solid var(--peri); margin-top: 8px; }
+.bt:has(.bt-i:checked) .bt-0 { display: none; }
+.bt:has(#bt-does:checked) *:is([data-bt-a="does"]) { display: block; }
+.bt:has(#bt-store:checked) *:is([data-bt-a="store"]) { display: block; }
+.bt:has(#bt-track:checked) *:is([data-bt-a="track"]) { display: block; }
+.bt:has(#bt-finding:checked) *:is([data-bt-a="finding"]) { display: block; }
+
+/* ── the state of the work, counted ───────────────────────────────── */
+.stat-l { font-style: normal; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em;
+  text-transform: uppercase; padding: 2px 7px; border: 1px solid var(--line); border-radius: 2px;
+  color: var(--muted); margin-left: 8px; vertical-align: 2px; white-space: nowrap; }
+.stat-l.is-live { border-color: var(--ink); color: var(--ink); }
+.stat-l.is-none, .stat-l.is-open { border-color: var(--peri); color: var(--peri-ink); background: var(--peri-soft); }
+.counts, .tbls, .notif, .ctlw { margin-top: 34px; }
+.count-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); }
+.count-g > div { display: grid; gap: 2px; padding: 14px 16px 16px 0; align-content: start; }
+.count-g > div + div { border-left: 1px solid var(--line); padding-left: 16px; }
+.count-g dt { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.count-g dd { font-family: var(--font-display); font-size: 32px; line-height: 1.05; }
+.count-g > div > span { font-size: 14px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.count-g.is-wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.notif .arrow { margin-top: 0; }
+.ctlx { margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; border-top: 1px solid var(--rule); }
+.ctlx > div { display: grid; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--line); align-content: start; }
+.ctlx dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.ctlx dt code { font-family: var(--font-mono); font-size: 15px; letter-spacing: 0; color: var(--ink); text-transform: none;
+  border: 1px solid var(--rule); padding: 1px 6px; margin-right: 6px; }
+.ctlx dd { font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+
+/* ── the four state words, and the family band ─────────────────────── */
+.tag-g.is-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ev.is-verified { border-color: var(--ink); color: var(--ink); }
+.ev.is-unverified, .ev.is-derived { border-color: var(--peri); color: var(--peri-ink); }
+.ev.is-superseded { color: var(--soft); text-decoration: line-through; }
+.room-m { flex: none; display: grid; place-items: center; }
+.room-l { flex: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; color: var(--muted);
+  min-height: var(--tap); display: inline-flex; align-items: center; padding-inline: 8px; text-decoration: none; }
+@media (hover: hover) { .room-l:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; } }
+.room.is-house { border-bottom: 0; border-top: 1px solid var(--rule); margin-top: 6px; }
+.grad { margin-top: 40px; }
+.grad .sub { margin-top: 8px; }
+
+/* ── the right-edge rail, when the window is short ───────────────────
+   Sixteen 47px tabs are 752px, and a 1440x800 window has 800. The tabs
+   are a fine-pointer affordance — the coarse-pointer net in responsive.css
+   holds every touch target at 44 — so on a short desk window they come
+   down to 36 and the column scrolls if it still does not fit. */
+.tabs { max-height: calc(100dvh - 24px); overflow: hidden auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+@media (min-width: 901px) and (max-height: 880px) and (pointer: fine) {
+  .dtab { height: 36px; }
+  .dtab-n { width: 34px; }
+}
+
+/* ── the annotated shell's room ────────────────────────────────────────
+   callouts() carries no data-kind, so the shared 460px default room scaled
+   a 1280px desktop browser to a third of true size. A browser inside a
+   callout wrapper gets the room a film strip gives a web card. */
+.cal-wrap:has(.browser) { --dm-room: 1180px; }
+
+/* ── the register of plates ────────────────────────────────────────────
+   A printed book lists its plates before it prints them. Five rows, each
+   naming the screen, what it shows, the one thing it is evidence for, and
+   a button that copies that plate's address. */
+.preg { margin-top: 30px; display: grid; border-top: 1px solid var(--rule); }
+.preg-i { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 4px 14px;
+  padding: 18px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.preg-n { font-family: var(--font-display); font-size: 24px; line-height: 1.1; color: var(--soft); }
+.preg-b { min-width: 0; display: grid; gap: 4px; }
+.preg-b b { font-family: var(--font-display); font-weight: 500; font-size: 19px; }
+.preg-b b a { text-decoration: none; }
+.preg-b b a:focus-visible { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+@media (hover: hover) { .preg-b b a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
+.preg-tab, .preg-pl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.preg-pl { display: block; color: var(--peri-ink); }
+.preg-c { font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 68ch; }
+.preg-p { display: block; margin-top: 4px; padding-left: 14px; border-left: 3px solid var(--peri); font-size: 15px; line-height: 1.5; }
+.preg-i .plate-a { grid-column: 3; grid-row: 1 / -1; align-self: center; }
+/* base.css:205 holds every .btn to nowrap. A call to action should not
+   wrap; a sentence on a 320px phone has to. */
+.preg-cta { margin-top: 22px; white-space: normal; max-width: 100%; }
+
+/* ── the sentence that keeps a mockup honest ───────────────────────────
+   shells.css:102 sets the mock footer two pixels under the mock's own body
+   size, which lands "Illustrative answers — the five questions are v1's
+   content work." at 11px at 390 — the smallest text on the page, and under
+   the 15px prose floor this site holds everywhere else. Inside a binderkit
+   face the label a demo is only honest because of is set at the mock's own
+   body size and inked rather than greyed. It is the label, not fine print. */
+.face[data-product="binderkit"] .foot-a { font-size: max(13px, var(--t-body-size)); color: var(--c-ink); }
+
+/* ── the contents sheet says where you are ─────────────────────────────
+   The sheet IS the phone menu, and it opens from any scroll position, so
+   the section you are in is marked in it. site.js header() drives any
+   [data-spy] whose links point at sections; this is the mark. */
+.toc-in-ch a[aria-current="true"] .toc-t { font-weight: 700; }
+.toc-in-ch a[aria-current="true"] .toc-n { color: var(--peri-ink); }
+.toc-in-ch a[aria-current="true"] .toc-no::before { content: "▸ "; color: var(--peri-ink); }
+
+/* the foot bar names the section, not just the page number: a page number
+   on a seven-thousand-pixel phone page is a progress bar, and a name is a
+   location. Hidden until the phone tier, where the bar exists. */
+.fb-w { display: none; }
 
 /* ── print: only the sheet, at 8.5 × 11, with the printer's mark ───────── */
 @media print {
@@ -570,6 +812,44 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .cite { text-decoration: none; color: #17201F; }
   .ev.is-derived { background: none; border: 1px solid #17201F; color: #17201F; }
   main:not([data-printing="sheet"]) .sec { border-top: 1px solid #000; }
+}
+
+/* ══ THE DESK · the tightening the phone got, applied to the wide view ═══
+   deskgate, measured on this build: /about 1.14x vertical payoff, /pricing
+   1.17x, /library 0.97x, /screens 0.88x — against a 1.45 floor and a 1.20
+   blocker line — and 0.25x of the phone's density per unit area in the
+   first two screenfuls. The cause is one-sided work: last round tightened
+   the phone tier and left the desk alone, so --sec-y was 96px top AND
+   bottom on every section at 1440 against 38px on a phone, the title page
+   spent another 152px on padding, and four chapters ran a single column
+   down the middle of a 1348px line box.
+
+   This takes the air out and gives three lists the second column the width
+   was already paying for. 1200 is the top rung of this site's declared
+   ladder (1200 / 900 / 640 / 400), so nothing here moves below it and the
+   lap band, the phone tier and every floor under them are untouched. */
+@media (min-width: 1200px) {
+  :root { --sec-y: 58px; }
+  .hero { padding-top: 32px; padding-bottom: 48px; }
+  .foot { padding-top: 56px; }
+
+  /* Seven steps, six refusals and eight principles are lists, not prose:
+     one column at 1352px sets them at deskgate's measured 148-character
+     median line on /library and stacks them for three screenfuls. Two
+     columns halve both. `.doc-b >` keeps this off the copies that already
+     sit inside a two-column band on the front page — .bd-never .refused
+     would otherwise become four columns of four words. */
+  .doc-b > .steps,
+  .doc-b > .never,
+  .doc-b > .refused { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(32px, 3.2vw, 56px); }
+  .ledger div { grid-template-columns: 170px minmax(0, 1fr); }
+  .ledger dd, .gates span, .room > div span { max-width: 62ch; }
+
+  /* The lead-in above a block of furniture is 30-34px at every width. On a
+     phone that is a paragraph's worth of separation; at 1440, stacked down
+     a chapter, it is most of a screenful of nothing. */
+  .steps, .gates, .ledger, .never, .rooms, .preg, .counts, .tbls, .notif, .ctlw { margin-top: 24px; }
+  .never + .strip-l { margin-top: 26px; }
 }
 
 /* ── narrower ──────────────────────────────────────────────────────────── */
@@ -753,7 +1033,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
      cell. It is a text link, not a button; giving it 44px would break the
      line it sits in, and it is the same shape the gate itself exempts
      inside p / li / dd.) */
-  .tog, .sheet-tap { min-height: var(--tap); }
+  .tog, .sheet-tap { min-height: calc(var(--tap) + 1px); }
 
   /* the restacked table's own column labels sit above their value, so they
      carry the row's meaning rather than decorating it. */
@@ -902,11 +1182,322 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .cite-r dd { font-size: 15px; }
 }
 
-/* ── a section's own screen, inside the binder's frame ───────────────────
-   base.css sizes .sec-dev mocks against the viewport minus its gutters, which
-   does not know about this site's index rail: .page carries padding-right 44px
-   at >=901 (:112). Without that the 1280px editor shell ran 87px past the
-   document at 1024. Take the rail off the room, and leave a little air. */
+/* ── a shell inside the binder's frame ───────────────────────────────────
+   base.css and instruments-extra.css size a mock against the viewport minus
+   its gutters, which does not know about this site's index rail: .page
+   carries padding-right 44px at >=901 (:112). Without that a 1280px editor
+   shell ran 87px past the document at 1024. Take the rail off the room, and
+   leave a little air. .cal-stage is the annotated shell, which has the same
+   problem for the same reason. */
 .sec-dev .dev .browser, .sec-dev .browser {
   --mock-room: calc(min(var(--max, 1600px), 100vw - 2 * var(--gutter, 24px)) - 116px);
+}
+/* The three shared instruments cap a mock at the viewport minus the two
+   gutters. This site spends 44px of the right gutter on the index rail at
+   >=901, so the cap has to know about it or a wide shell runs under the
+   tabs. Below 901 the rail is gone and the shared cap is already right. */
+@media (min-width: 901px) {
+  .fstrip, .swx, .cal-wrap { --dm-cap: calc(100vw - 2 * var(--gutter) - 44px); }
+}
+
+
+/* ══ 900 · THE FLOORS UNDER THE NEW FURNITURE ═══════════════════════════
+   Every class this file added since the working demo landed, measured
+   against the same three floors the rest of the sheet keeps: 15px for
+   anything inside p / li / dd / blockquote whatever its length, 13px for
+   the mono label voice, 44px for anything a thumb presses. It is a
+   separate block from the one above only because it is a separate pass —
+   the numbers are the same numbers.
+
+   .preg-i, .fs-i and .cal-i are <li>. .ctlx dd, .ledger dd and .defs dd
+   are <dd>. .det-out, .tryg-g, .tryg-r, .tryg-alt and .bt-out p are <p>.
+   Every one of them is reading matter to the gate, and none of them is
+   allowed under 15 whatever it looks like. */
+@media (max-width: 900px) {
+  .preg-c, .preg-p, .preg-tab, .preg-pl, .ctlx dd, .bt-q, .bt-out p,
+  .det p, .det-out, .tryg p, .tryg-g, .tryg-alt, .tryg-idle,
+  .count-g > div > span, .next li span, .next li small, .next-t,
+  .fs-s, .room > div span, .room-d
+  { font-size: var(--fs-read); }
+  .preg-tab, .preg-pl, .tryg-g { letter-spacing: .04em; }
+  /* not prose — chrome, a list row's number, a pager's kicker — so the
+     12px floor applies and 13 is where a mono label starts being read. */
+  .count-g dt, .ctlx dt, .pager-k, .pager-n, .stat-l, .here-n, .fb-w
+  { font-size: var(--fs-label); letter-spacing: var(--track-label); }
+  .stat-l { padding: 1px 6px; }
+  /* The control number in the margin is a button now — it copies the
+     address of its section — and the shared coarse-pointer net is
+     anchored on nav / header / footer and deliberately never reaches
+     inside the page body. So it says its own floor, here. */
+  .ctl { min-height: var(--tap); padding-top: 0; align-items: center;
+         margin-left: -6px; padding-inline: 6px; }
+  .here-w { grid-column: auto; }
+  /* `.tag-g.is-4` is (0,2,0) and outranks both the shared one-column rule
+     at 900 and the auto-fit rule at 640, so four tracks of minmax(0,1fr)
+     survived onto a 320px phone: 59px tracks holding a 96px evidence tag,
+     and the fourth one put the document 14px past the glass with scripting
+     off. It collapses on the same 150px floor as the rest. */
+  .tag-g.is-4 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+}
+
+/* Below 900 the annotated stage is the old .shell again: the house's own
+   reframe puts a 768px application into 460px at z=0.599 — the density
+   aidepost's .dev .phone already ships — and the stage scrolls sideways to
+   hold it rather than shrinking to half of true size to avoid the scroll.
+   The pins go, because a pin's percentage resolves against the visible box
+   of a scroller and would point at the wrong pixel as soon as it moved;
+   every sentence they carry is in the numbered list underneath. */
+@media (max-width: 900px) {
+  .cal-wrap:has(.browser) { --dm-cap: 460px; }
+  .cal-wrap:has(.browser) .cal-stage { justify-self: stretch; width: auto;
+    overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; }
+  .cal-wrap:has(.browser) .cal-stage::-webkit-scrollbar { display: none; }
+  .cal-wrap:has(.browser) .cal-pin { display: none; }
+  .cal-wrap + .shell-hint { display: flex; margin-top: 10px; }
+}
+
+/* On a touch screen there is no hover, so an affordance that only appears
+   on hover does not exist. The copy mark on the control number is drawn
+   at rest wherever hovering is impossible. */
+@media (hover: none) {
+  .ctl-c { opacity: .55; }
+}
+
+
+/* ══ 640 · THE DENSITY PASS, IN THIS SHEET ══════════════════════════════
+   The shared tier (css/responsive.css) took --sec-y, --sp-4..8, --hdr and
+   the heading ramp down by a fifth, and measured the result: the matched
+   page height moved 4.0%. It could not move further because the rest of
+   the air on a Binderkit phone page is HAND-TYPED into this file — 34px
+   here, 36px there, 44px above the four printed artefacts — and the
+   shared layer was rightly forbidden from touching a site's own sheet.
+
+   This block is that sweep. Every number below is four fifths of the
+   value above it, rounded to the pixel, and nothing in it is a floor:
+
+     moves   section and card padding, list-row padding, margins between
+             blocks, row gaps, heading leading, the lede and the two
+             muted prose sizes above the floor, prose leading from
+             1.5–1.6 to 1.45 (the measure here is ~34 characters, not the
+             ~62 that 1.55 was chosen for).
+     holds   15px prose · 16px inputs · 13px labels · 44px taps · 48px
+             list rows · 12px any text · every mockup interior, and the
+             contents page at the size it prints, because the sheet IS
+             the pitch.
+
+   Leading is stated on the named prose classes rather than left to the
+   shared :where() rule, because each of those classes states its own
+   line-height at (0,1,0) or better and therefore already beats it. */
+@media (max-width: 640px) {
+
+  /* ── type above the floors, and the leading that goes with it ────── */
+  .sub { margin-top: 11px; font-size: 16px; line-height: 1.4; }
+  .lede { margin-top: 17px; font-size: var(--fs-lede); line-height: 1.4; }
+  .closing { margin-top: 19px; font-size: 15.5px; line-height: 1.45; }
+  .cap { margin-top: 11px; line-height: 1.45; }
+  .fine, .foot-fine, .colo-t { line-height: 1.45; }
+  .eyebrow, .strip-l { margin-bottom: 10px; }
+  .boundary { margin-top: 28px; font-size: clamp(19px, 5.4vw, 23px); line-height: 1.28; }
+  .refusal { margin-top: 24px; font-size: clamp(19px, 5.2vw, 24px); line-height: 1.28; padding-left: 16px; }
+  .figure p { font-size: clamp(19px, 5.2vw, 24px); line-height: 1.22; }
+  .banner-note p, .lib td, .tag-g > div, .cite-r dd, .guard span, .gates span,
+  .rules li, .six li, .never li div span, .refused li, .step p, .phone-t p,
+  .ledger dd, .defs dd, .po-why, .po-notice, .pl-why, .pl-fine, .sell-note,
+  .art span:not(.art-n), .annot span, .preg-c, .preg-p, .ctlx dd, .cal-x,
+  .det p, .tryg p, .bt-out p, .count-g > div > span
+  { line-height: 1.45; }
+
+  /* ── the document, and the title page ────────────────────────────── */
+  .hero { padding-top: 22px; padding-bottom: 30px; }
+  .ctas { margin-top: 22px; gap: 10px; }
+  .hero .fine { margin-top: 13px; }
+  .doc { gap: 0; }
+  .here-w { display: none; }
+
+  /* ── the planner ─────────────────────────────────────────────────── */
+  .planner { margin-top: 26px; }
+  .pl { gap: 17px; }
+  .pl-track legend { margin-bottom: 10px; font-size: 18px; }
+  .seg-t { min-height: 48px; padding: 7px 9px; }
+  .pl-why { margin-top: 6px; }
+  .pl-qs { gap: 11px; }
+  .pl-q { padding-top: 11px; }
+  .field { gap: 8px; }
+  .pl-acts { padding-top: 4px; }
+  .po { padding: 14px 14px 16px; }
+  .po-l { margin-top: 11px; }
+  .po-b { padding: 9px 0; }
+  .po-left { margin-top: 3px; padding-top: 8px; }
+  .po-counts { margin-top: 13px; padding-top: 11px; gap: 6px 16px; }
+  .po-notice { margin-top: 11px; }
+  .po-banner, .replan { margin-top: 13px; padding: 9px 11px; }
+  .plan-g { margin-top: 26px; gap: 20px; }
+  .planner { gap: 20px; }
+  .plan-sheet .sheet-acts { margin-top: 11px; }
+
+  /* ── the page, and the four artefacts ────────────────────────────── */
+  .sheet-tools { margin-top: 24px; padding: 9px 0; gap: 10px; }
+  .page-g { margin-top: 24px; }
+  .annot { gap: 14px; }
+  .banner-note { margin-top: 28px; padding: 15px 16px; }
+  .figure { margin-top: 28px; padding-top: 17px; }
+  .arts { margin-top: 34px; }
+  /* Four short cards in one column is four screenfuls of scrolling for
+     sixty words. They are a numeral, four words and a sentence, and they
+     read as captions rather than as prose.
+
+     auto-fit with a 150px floor rather than a fifth breakpoint: 150 is
+     the width the mobile gate holds a column of text to, so the grid
+     pairs them up wherever two 150px tracks fit and drops to one where
+     they do not. Measured: two 168px tracks at 390 and at 430, one 280px
+     track at 320 — the same rule, no new rung on the ladder, and the
+     answer is right at a width nobody tested. */
+  .art-g, .tag-g { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); column-gap: 14px; }
+  .art-g { border-top: 0; }
+  .art, .art + .art { padding: 12px 0 14px; border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+  .art:first-child { border-top: 1px solid var(--rule); }
+  .art-n { font-size: 26px; }
+
+  /* ── the tables, the tags and the citations ──────────────────────── */
+  .lib { margin-top: 24px; }
+  .lib tr { padding: 11px 0; }
+  .tags, .cites { margin-top: 28px; }
+  .tag-g { gap: 11px; }
+  .cites { padding-top: 11px; }
+  .cite-r { padding: 8px 0; }
+  .struck { margin-top: 31px; padding: 20px 0; }
+  .struck p { gap: 14px; }
+
+  /* ── the editor and the versions ─────────────────────────────────── */
+  .shell { margin-top: 26px; }
+  .guards { margin-top: 24px; }
+  .guard { padding: 14px 0; }
+  .vtog, .ptog { margin-top: 20px; }
+  .rules { margin-top: 31px; }
+  .rules ol { gap: 8px; }
+
+  /* ── nothing about anyone, and the boundary ──────────────────────── */
+  .six { margin-top: 26px; }
+  .six li { padding: 12px 0; gap: 11px; grid-template-columns: 24px minmax(0, 1fr); }
+  .tick { width: 24px; height: 24px; }
+  .bd-g { margin-top: 28px; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .bt { margin-top: 24px; padding: 14px 15px 16px; }
+  .bt-rows { grid-template-columns: minmax(0, 1fr); }
+  .bt-out { margin-top: 13px; padding-top: 11px; }
+
+  /* ── the state of the work ───────────────────────────────────────── */
+  .counts, .tbls, .notif, .ctlw { margin-top: 26px; }
+  .count-g { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .count-g > div, .count-g > div + div { padding: 10px 10px 12px 0; border-left: 0; border-top: 1px solid var(--line); }
+  .count-g > div:first-child, .count-g > div:nth-child(2) { border-top: 0; }
+  .count-g.is-wide { grid-template-columns: minmax(0, 1fr); }
+  .count-g.is-wide > div:nth-child(2) { border-top: 1px solid var(--line); }
+  .count-g dd { font-size: 26px; }
+  .ctlx { grid-template-columns: minmax(0, 1fr); }
+  .ctlx > div { padding: 11px 0; }
+
+  /* ── roles, questions, pricing, join ─────────────────────────────── */
+  .perms { margin-top: 24px; }
+  .perms dt, .perms dd { padding: 8px 0; }
+  .faq { margin-top: 24px; }
+  .faq-i summary { padding: 15px 0; gap: 11px; grid-template-columns: 34px minmax(0, 1fr) 20px; }
+  .faq-a { padding: 14px 0 16px; }
+  .faq-a p { font-size: 15.5px; line-height: 1.45; }
+  .faq-link { margin-top: 2px; }
+  .sell-note { margin-top: 11px; }
+  .tiers { margin-top: 20px; }
+  .sec .fine { margin-top: 14px; }
+  .subs { margin-top: 20px; gap: 22px; }
+  .arrow { margin-top: 10px; }
+  .defs { margin-top: 10px; }
+  .defs.is-wide { margin-top: 19px; }
+  .defs dt, .defs dd { padding: 8px 0; }
+  .ten { margin-top: 25px; }
+  .ten ol { gap: 8px; }
+  .ten.is-wide { margin-top: 20px; }
+  .join-f { padding: 18px; }
+  .join-f.is-contact { margin-top: 22px; }
+  .join-f .fine { margin-top: 11px; }
+
+  /* ── the chapters' own furniture ─────────────────────────────────── */
+  .steps { margin-top: 24px; }
+  .step { padding: 17px 0; gap: 11px; grid-template-columns: 44px minmax(0, 1fr); }
+  .step p { margin-top: 6px; }
+  .step .refusal { margin-top: 13px; }
+  .gates { margin-top: 24px; }
+  .gates li { padding: 14px 0; }
+  .phone-g { margin-top: 31px; }
+  .ledger { margin-top: 24px; }
+  .ledger div { padding: 11px 0; gap: 2px; }
+  .never { margin-top: 24px; }
+  .never li { padding: 12px 0; gap: 3px; }
+  .never + .strip-l { margin-top: 26px; }
+  .rooms { margin-top: 24px; }
+  .room { padding: 12px 0; gap: 11px; }
+  .toc.is-ladder { margin-top: 20px; }
+  .maker { margin-top: 20px; gap: 13px; }
+  .grad { margin-top: 31px; }
+
+  /* ── the working demo, and the two instruments that answer ───────── */
+  .det, .tryg { margin-top: 26px; padding: 15px 16px; }
+  .det .btn { margin-top: 11px; }
+  .det-out { margin-top: 10px; }
+  .tryg-b { margin-bottom: 11px; }
+  .tryg-o { padding-left: 12px; min-height: 0; }
+  .tryg-r { font-size: 18px; line-height: 1.3; }
+  .art-g.proof-g { margin-top: 24px; }
+  .preg { margin-top: 24px; }
+  .preg-i { padding: 14px 0; grid-template-columns: 32px minmax(0, 1fr); gap: 4px 12px; }
+  .preg-i .plate-a { grid-column: 2; grid-row: auto; margin-top: 2px; }
+  .preg-n { font-size: 20px; }
+  .preg-cta { margin-top: 17px; }
+  .fs-i { padding-left: var(--sp-3); }
+
+  /* ── leaf back, leaf forward ─────────────────────────────────────── */
+  .pager { margin-bottom: 26px; grid-template-columns: minmax(0, 1fr); }
+  .pager-a { padding: 11px 0; }
+  .pager-a.is-next { text-align: left; padding: 11px 0; border-left: 0; border-top: 1px solid var(--line); }
+  .pager-a.is-none { display: none; }
+  .pager-t { font-size: 18px; }
+
+  /* ── the footer, the colophon and the dialogs ────────────────────── */
+  .foot { padding-top: 36px; }
+  .foot-g { gap: 22px; }
+  .soc.stamps { margin-top: 10px; }
+  .keys-in { padding: 14px 16px 16px; }
+  .cmd-l { padding: 6px; }
+  .cmd-r { padding: 8px 10px; }
+  /* The foot bar now says WHERE as well as how far. The bar is a
+     1fr / auto / 1fr grid and its two buttons are nowrap, so a centre
+     column that asks for its max-content squeezes them until PRINT and
+     the page number touch — measured at 390. min-width:0 all the way
+     down, and the name is the only thing that gives: it ellipses to
+     whatever is left after the number and the two thumb targets. */
+  .footbar { column-gap: 8px; }
+  .fb-p { min-width: 0; }
+  .fb-w { display: block; min-width: 0; flex: 0 1 auto; overflow: hidden;
+          text-overflow: ellipsis; white-space: nowrap; color: var(--soft); }
+
+  /* ── /privacy and /terms: the shared tier took the margins, this
+     takes the rule-and-padding this sheet types itself ─────────────── */
+  .pv .head { padding-top: 16px; }
+  .pv h3 { padding-top: 14px; }
+}
+
+
+/* ══ 400 · WHERE THE SHORTENING STOPS ═══════════════════════════════════
+   The narrow tier shortens and never hides, and this is the one place the
+   density pass above goes too far: two columns of artefact cards is 163px
+   of measure at 390 — fine — and 133px at 320, under the 150px floor a
+   column of text needs. So the pair-up is a 400-and-up decision. */
+@media (max-width: 400px) {
+  /* the two thumb targets keep their 44px; only their side padding gives,
+     which is what buys the section name room to sit beside the number. */
+  .fb-b { padding: 0 10px; }
+  /* deliberately empty of the artefact grid: the auto-fit rule above
+     already collapses it to one column wherever two 150px tracks do not
+     fit, which at 320 is exactly what happens. Kept as the landing place
+     for anything this site does need to shorten below 400. */
+  .preg-i { grid-template-columns: 26px minmax(0, 1fr); }
 }

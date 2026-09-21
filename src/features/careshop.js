@@ -76,4 +76,102 @@ export const FEATURES = [
   { id: 'cs-25', name: 'The stickers, and the write page', kind: 'social',
     what: 'Eight label-shaped social stickers peel on hover and on press; on /write they carry their handles beside the contact form with CareShop’s own topics.',
     probe: [{ home: 'class="soc rc-soc"' }, { css: '.rc-soc .soc-i:hover' }, { route: 'write' }, { html: 'A house wants to switch' }, { js: 'is-peel' }] },
+
+  /* ══ THE WORKING DEMO ══════════════════════════════════════════════════
+     Twenty-five more, and one test on every probe: REMOVE THE FEATURE AND
+     THE PROBE MUST FAIL. So a probe is never a shared class the kit draws
+     anyway, never a sentence the vault prints in two places, and never a
+     line of site.js that four products share — it is the id, the
+     attribute or the words this feature and nothing else puts in the
+     bytes. Where a string exists on two routes the probe names the one
+     that would go.
+
+     Ten of them are the family backbone, rendered in the store's own
+     fittings: the shelf, the ticket switcher, the annotated till, the
+     entrance board, the walk, the palette, the stock take, the four
+     rooms, the ladder, the addresses. Fifteen are CareShop's own
+     material, and every fact in them is read from brand.js, page.js,
+     states.js or FEATURES_CARESHOP.md. */
+
+  { id: 'cs-26', name: 'The shelf: all eight screens, full size', kind: 'demo',
+    what: 'A route of its own carries a full-bleed rail of every screen the product has — drag, flick, arrow keys, snap — each on a paper plinth with its own id, and a row of price-tag tickets that jumps to any of them.',
+    probe: [{ route: 'shelf' }, { html: 'id="shelf-rail"' }, { html: 'data-strip="careshop"' }, { html: 'id="shelf-today-mgr"' }, { css: '.fs-jump a[aria-current="true"]' }] },
+  { id: 'cs-27', name: 'What this proves, under every screen', kind: 'demo',
+    what: 'Every screen on the shelf carries a caption and, under it, the one rule of the product that screen is evidence for — so a picture is an argument rather than decoration.',
+    probe: [{ html: 'class="fs-pv"' }, { html: 'class="fs-pl"' }, { html: 'What this proves' }, { css: '.fs-pv{' }] },
+  { id: 'cs-28', name: 'The ticket switcher: a device whose screen changes', kind: 'demo',
+    what: 'Today is one phone with a two-ticket rail over it — a real tablist with roving tabindex and one panel per screen — and the stage keeps its box, so switching a caregiver for a manager moves nothing on the page.',
+    probe: [{ home: 'data-switch' }, { home: 'id="sw-today-p1"' }, { home: 'data-sw-to="1"' }, { css: '.swx-tab[aria-selected="true"]' }] },
+  { id: 'cs-29', name: 'The till, annotated', kind: 'demo',
+    what: 'The buy queue drawn as the desktop application, with six numbered pins over it; pointing at a pin lights the row, the sentence and the element it quotes, and a pin whose element is gone hides rather than pointing at the wrong thing.',
+    probe: [{ route: 'shelf' }, { html: 'data-callouts' }, { html: 'class="cal-pin"' }, { html: 'data-sel=".conf-a"' }] },
+  { id: 'cs-30', name: 'The entrance board', kind: 'navigation',
+    what: 'Every stop on the page as a numbered shelf ticket, in walk order — a wrapping row on a desk, a thumb rail on a phone — and the one you are standing in is lit and scrolled into view as you go.',
+    probe: [{ home: 'data-dir' }, { home: 'class="dir-i"' }, { js: "$$('.dir-i')" }, { css: '.dir-i[aria-current]' }] },
+  { id: 'cs-31', name: 'Walk on: the aisle behind you and the aisle ahead', kind: 'navigation',
+    what: 'Every one of the ten routes ends with the walk — the previous and next room of the store, named, with a line saying what is in it. The two ends of the walk, the front page and /privacy, have one neighbour rather than two and print an empty cell for the other. Two anchors and no script.',
+    probe: [{ home: 'class="walkon"' }, { html: 'rel="prev"' }, { home: 'Walk on' }, { css: '.wo-c{' },
+      /* /privacy is last in the walk, so its back cell is the only one
+         pointing at /write: this pins the route that had none. */
+      { html: '<a class="wo-c" href="/write" rel="prev">' }] },
+  { id: 'cs-32', name: 'The palette walks the whole store', kind: 'navigation',
+    what: '⌘K now holds three drawers in one field: the product’s verbs, the nine other rooms, and all eight screens — so a reader who knows the name of a thing types it instead of hunting for it.',
+    probe: [{ home: 'class="pal-h"' }, { home: 'data-verb="aisle 1 · the loop"' }, { home: '/shelf#shelf-cook' }, { css: '.pal-h{' }] },
+  { id: 'cs-33', name: 'Copy the address of the aisle you are in', kind: 'mobile',
+    what: 'The dock’s “You are in” is a button: press it and the deep link to the aisle on screen is on the clipboard. The attribute is kept in step with the label as you scroll, so the two can never disagree.',
+    probe: [{ home: 'data-here-copy' }, { home: 'data-copied="Link to this aisle copied"' }, { js: "cp.setAttribute('data-copy'" }] },
+  { id: 'cs-34', name: 'Every screen has an address', kind: 'navigation',
+    what: 'On the shelf, each of the eight screens is listed with an anchor that lands it under the reader’s thumb and a Copy button that hands the whole URL over.',
+    probe: [{ route: 'shelf' }, { html: 'addr-c' }, { html: 'data-copied="Link to Today · a manager copied"' }] },
+  { id: 'cs-35', name: 'The four labels, and no fifth', kind: 'page',
+    what: 'Short, Expiring, Stocked, Over — the only four states this product marks — printed with the definition of each, in the same chips the screens above use.',
+    probe: [{ route: 'shelf' }, { html: 'class="labels-l"' }, { html: 'More than the shelf needs' }, { css: '.labels-i' }] },
+  { id: 'cs-36', name: 'The stock take: live, and not live', kind: 'honesty',
+    what: 'Two columns on /about: eight things running in houses today, and seven that are specified, priced or promised and are not in the product — the trial, the citation confidence field, five of the eight purchasing rules, the customer BAA.',
+    probe: [{ route: 'about' }, { html: 'class="take-g"' }, { html: 'Not in the product · 7' }, { css: '.take-c.is-off .take-l{' }] },
+  { id: 'cs-37', name: 'The three rooms next door', kind: 'family',
+    what: 'Cohort, Binderkit and Aidepost with their marks, what each owns, their real status — draft, not built — and a live link to each. CareShop is named as the only one of the four you can buy today.',
+    probe: [{ route: 'about' }, { html: 'class="fam-a"' }, { html: 'class="fam-s" data-kind="draft"' }, { css: '.fam-s[data-kind="live"]' }] },
+  { id: 'cs-38', name: 'The ladder out of the kitchen', kind: 'family',
+    what: 'What the kitchen holds, mapped row by row onto the module of Provider Hub Oregon that absorbs it: export → import, one login, nothing re-typed and nothing stranded.',
+    probe: [{ route: 'about' }, { html: 'class="ldr"' }, { html: 'class="grad-f"' }, { css: '.ldr-r{' }] },
+  { id: 'cs-39', name: 'The boundary test, as it ships in Settings', kind: 'honesty',
+    what: 'One question with four answers, and three of them send you next door — a resident’s care to Cohort, the roster to Aidepost, the binder to Binderkit — with the unresolved wording of the sentence stated rather than tidied.',
+    probe: [{ route: 'features' }, { html: 'class="own"' }, { html: 'class="own-i is-here"' }, { css: '.own-i.is-here' }] },
+  { id: 'cs-40', name: 'Five origins, and no sixth', kind: 'interaction',
+    what: 'Each of the five things that can file a buy request opens to show the queue line it actually produced, read off the same rows the screens use. One open at a time, with no script — the browser’s own exclusive disclosure.',
+    probe: [{ route: 'features' }, { html: 'name="careshop-origin"' }, { html: 'class="orig-row"' }, { css: '.orig-d[open]' }] },
+  { id: 'cs-41', name: 'Zone is not aisle is not category', kind: 'interaction',
+    what: 'The same five things sorted the two ways a person walks them — the house’s zones and the shop’s aisles — with the third axis defined and deliberately not listed, because the product never derives one from another.',
+    probe: [{ route: 'stock' }, { html: 'name="careshop-axis"' }, { html: 'class="axes-l"' }, { html: '19 aisles' }] },
+  { id: 'cs-42', name: 'The twelve governing rules', kind: 'honesty',
+    what: 'The product’s own constitution, each rule with a chip saying whether it is in the product today, being repaired in the rebuild, or specified and not built. Four of the twelve are not in force and say so — three being repaired, one specified and not built — and the count is read off the list rather than typed.',
+    probe: [{ route: 'rules' }, { html: 'class="gov"' }, { html: 'The curation rule' }, { html: 'being repaired' },
+      /* both places the count ships. If a rule's state changes these fail
+         and the sentence has to be re-read, which is the point. */
+      { html: 'Four of the twelve are not fully in force' }, { html: '>4 not in force<' }] },
+  { id: 'cs-43', name: 'What leaves the house', kind: 'honesty',
+    what: 'A message out of the system carries a house code and a count and never a resident, a diet, an allergen or an item name — because there is no free-text body parameter anywhere in it. Two of the twenty-two templates send today.',
+    probe: [{ route: 'rules' }, { html: 'id="h-egress"' }, { html: 'A message carries a code and a count.' }] },
+  { id: 'cs-44', name: 'The shopper with no account', kind: 'page',
+    what: 'The token link a spouse doing the Costco run opens: what it grants, what it grants nothing of, and why the ledger is written on a signed-in person’s confirmation rather than on the shopper’s tap.',
+    probe: [{ route: 'loop' }, { html: 'id="h-token"' }, { html: 'class="tok-c is-no"' }, { css: '.tok-c.is-no' }] },
+  { id: 'cs-45', name: 'The closed lists, counted', kind: 'page',
+    what: 'The sizes of the vocabularies an allergen check matches on — 401 catalogue items, 20 categories, 19 aisles, 9 zones, 18 diet tags, 9 allergens — with the note that none of them is a projection or a customer count.',
+    probe: [{ route: 'features' }, { html: 'class="vocab-n"' }, { html: 'class="vocab"' }, { css: '.vocab-n{' }] },
+  { id: 'cs-46', name: 'Checkout, honestly', kind: 'honesty',
+    what: 'A receipt slip of the terms of the till: what is sold, how, and the two lines most price pages leave out — the three-day trial, which is not live, and branding, which is frozen.',
+    probe: [{ route: 'pricing' }, { html: 'rc-terms' }, { html: 'TERMS OF THE TILL' }, { html: 'Not live. There is no trial in the product today' }] },
+  { id: 'cs-47', name: 'The keyboard map', kind: 'page',
+    what: 'Every key the store answers to, printed: ⌘K for the palette, ←/→ for the aisles and for the shelf rail, Home and End on a ticket switcher, Esc to close. A demo nobody can drive is a screenshot.',
+    probe: [{ route: 'shelf' }, { html: 'class="keys-k"' }, { html: 'Open the palette: the verbs, the nine rooms' }, { css: '.keys kbd' }] },
+  { id: 'cs-48', name: 'The movement, and its seven fields', kind: 'page',
+    what: 'Every change to on-hand is one immutable movement carrying the item, the house, the delta, a reason from a fixed set, the actor, the time and the key that records it exactly once. Delete is not one of the reasons.',
+    probe: [{ route: 'stock' }, { html: 'class="mvt-k"' }, { html: 'class="mvt"' }, { css: '.mvt-k{' }] },
+  { id: 'cs-49', name: 'Two people, one shelf', kind: 'page',
+    what: 'What the product does when two people count the same item, when a manager approves while a caregiver is editing, and when a number arrives far outside the last one — accepted and marked, never silently refused.',
+    probe: [{ route: 'stock' }, { html: 'Two people, one shelf' }, { html: 'Out of range is accepted, and marked' }] },
+  { id: 'cs-50', name: 'Every figure says where it comes from', kind: 'honesty',
+    what: 'Each of the four numbers in the band carries a chip naming its source — demo data, or in the product — and a line under the band states that two of the four are readings off the sample house and not a customer count.',
+    probe: [{ home: 'class="stat-s"' }, { home: 'data-src="demo data"' }, { home: 'class="stat-f"' }, { css: '.stat-s[data-src="demo data"]' }] },
 ];

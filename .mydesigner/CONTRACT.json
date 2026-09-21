@@ -1,0 +1,184 @@
+{
+  "surface": "pho-four-landing-sites",
+  "date": "2026-09-21",
+  "class": "marketing",
+  "task": "redesign + feature-add",
+  "source_of_truth": "sites/_kit (four repos are generated from it by make.mjs)",
+  "lock": {
+    "aesthetic_unit": "none-new \u2014 the house system wins; extract only design-taste-frontend's ban list",
+    "banned": [
+      "hallmark (hard-stops for 3 questions)",
+      "minimalist-ui (one fixed look; would erase four metaphors)",
+      "high-end-visual-design (generic agency look)",
+      "inspo corpus (project has a design system; S3 says suppress)",
+      "brand/sync-brand-to-tokens.cjs and design-system/generate-tokens.cjs (would overwrite faces.css)",
+      "any build/generate script during audit or read stages"
+    ]
+  },
+  "ground": {
+    "tokens_owned_here": [
+      "--fs-*",
+      "--sp-*",
+      "--bp-*",
+      "--gutter",
+      "--max",
+      "--wrap-w",
+      "--sec-y",
+      "--tap",
+      "--tap-row",
+      "--dock"
+    ],
+    "namespace_reserved": "--t-* and --c-* belong to canvas.css/faces.css, written on .face[data-product] at (0,2,0); NEVER declare one in base.css or responsive.css. --t-mono is a font-family, not a size.",
+    "breakpoint_ladder": [
+      1200,
+      900,
+      640,
+      400
+    ],
+    "ladder_file": "src/css/responsive.css \u2014 appended LAST in build.mjs SHEETS; every rule must sit inside a width<=1200 or capability query",
+    "sheet_order": [
+      "base.css",
+      "canvas.css",
+      "shells.css",
+      "faces.css",
+      "instruments-extra.css",
+      "pages/<id>.css",
+      "responsive.css"
+    ],
+    "floors_px": {
+      "any_text": 12,
+      "prose_text": 15,
+      "input_text": 16,
+      "tap_both_dims": 44,
+      "tap_row": 48
+    },
+    "mock_roots_exempt": [
+      ".phone",
+      ".browser",
+      ".paper",
+      ".paper-sheet",
+      ".wk",
+      ".ph",
+      ".cp",
+      ".divset",
+      ".screen",
+      "[data-mock]"
+    ],
+    "mock_trap": ".face is NOT a mock root \u2014 every page mounts <main class=\"page face canvas\">, so a .face-scoped selector reaches the whole document",
+    "build_trap": "squeeze() collapses `\\s*([{};:,>])\\s*` so `X :is(...)` ships as `X:is(...)` and matches nothing. Write `X *:is(...)`.",
+    "budgets": {
+      "index_html_kB_warn": 160,
+      "js_kB_warn": 60,
+      "fonts_kB_warn": 340
+    },
+    "baseline_2026_09_21": {
+      "cohort_html_kB": 143.4,
+      "cohort_js_kB": 43.6,
+      "features_each": 25,
+      "check_notes": 0
+    }
+  },
+  "honesty_rules": [
+    "No invented product facts, metrics, customers, testimonials, logos or case studies. Three of the four products are pre-launch.",
+    "Prices come only from src/data/brand.js.",
+    "Nothing red on Cohort.",
+    "Never 'ready', 'compliant' or 'audit-proof' on Binderkit.",
+    "CareShop cites no rule.",
+    "A feature that displays a number must read it from real data or say plainly it is a demo."
+  ],
+  "gates": [
+    "node tools/check.mjs \u2014 feature probes against built bytes, floor 25, no ceiling",
+    "node tools/shots.mjs --all --mobile \u2014 320/390/430, fails on sideways scroll, console errors, inputs <16px, controls <40px",
+    "node tools/measure.mjs --route <r> \u2014 round-2 width/density measurement",
+    "desaudit: twodesign.mjs, mobile-gate.mjs, deskgate.mjs, physics.mjs, craftbar.mjs",
+    "designcheck: funccheck.mjs, tellcheck.mjs"
+  ],
+  "known_false_positives": [
+    "binderkit's 13 dead-control blockers are one Print button (js/site.js:341 window.print(); headless suppresses the dialog)",
+    "cohort's h2:hover .h-link has a :focus-visible twin (pages/cohort.css:534)",
+    "motion-budget 560/600/900ms is deliberate metaphor motion declared as --t-dur-*",
+    "safari-skips-links is a macOS Safari preference, off by default"
+  ],
+  "file_ownership": {
+    "shared_single_writer": [
+      "src/css/base.css",
+      "src/css/responsive.css",
+      "src/css/sections.css",
+      "src/css/site.css",
+      "src/js/site.js",
+      "src/render/shared.js",
+      "src/render/page.js",
+      "build.mjs",
+      "tools/check.mjs"
+    ],
+    "per_site_parallel_safe": [
+      "src/css/pages/<id>.css",
+      "src/js/pages/<id>.js",
+      "src/render/pages/<id>.js",
+      "src/render/pages/<id>/*",
+      "src/features/<id>.js",
+      "src/render/icons/<id>.js"
+    ]
+  },
+  "direction": {
+    "chosen": "A \u2014 The Working Demo",
+    "commits_to": "Conviction comes from the product running inside the page. Every new feature is a live instrument the visitor can operate without signing up: the full-bleed film strip of every real screen, interactive simulators, a hero device whose screen can be switched, annotated desktop shells, scroll-driven walkthroughs. A partner forms an opinion by USING it.",
+    "mobile_20pct": {
+      "reading": "density, not legibility",
+      "shrinks": [
+        "h1/h2/h3/display type",
+        "--sec-y",
+        "--sp-4..--sp-8",
+        "card and section padding",
+        "caption and chrome type above the floors",
+        "instrument zoom ONLY where currently >1.0"
+      ],
+      "holds": [
+        "prose 15-16px",
+        "inputs 16px",
+        "tap 44x44",
+        "tap-row 48px",
+        "instrument zoom never below 0.8 on phones \u2014 the product screens ARE the pitch"
+      ],
+      "target": "~20% more page visible per phone screen, nothing harder to read or press"
+    },
+    "screens_available": {
+      "cohort": 5,
+      "careshop": 8,
+      "binderkit": 5,
+      "aidepost": 5
+    },
+    "verify_recipe": "cd sites/_kit && PRODUCT=<id> DIST=<private tmp> node build.mjs && PRODUCT=<id> DIST=<private tmp> node tools/check.mjs  \u2014 fully parallel-safe, touches no site directory"
+  },
+  "baseline_measured_2026_09_21": {
+    "mobile_gate": {
+      "cohort": {
+        "blocker": 0,
+        "major": 2,
+        "minor": 1
+      },
+      "careshop": {
+        "blocker": 0,
+        "major": 3,
+        "minor": 1,
+        "extra": "tap.overlap x1"
+      },
+      "binderkit": {
+        "blocker": 0,
+        "major": 2,
+        "minor": 3,
+        "extra": "type.h1-cap x2 \u2014 the 20% headline cut may close these"
+      },
+      "aidepost": {
+        "blocker": 0,
+        "major": 2,
+        "minor": 1
+      }
+    },
+    "majors_are_known_systemic": "touch.hover-leak + touch.hover-sticks on all four (~140 :hover rules outside @media (hover:hover)); touch.theme-color minor is known (site.js swaps it on the toggle)",
+    "density_390px": {
+      "cohort_total_page_height_7_routes": 38469
+    },
+    "bar_for_after": "still 0 blockers on all four; no NEW major or minor; page height down ~20%"
+  }
+}

@@ -2,12 +2,13 @@
 // Each is a full body in the same chrome as the front page.
 
 import { esc, skip, sec, h2, eyebrow, tiers, contact, CONTACT, byline, hello, mailto, social } from '../../shared.js';
-import { webShell, iosShell } from '../../instruments.js';
+import { webShell, iosShell, filmStrip, callouts } from '../../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../data/page.js';
 import { PRODUCTS, MINIS } from '../../../data/brand.js';
 import { ic } from '../../icons/cohort.js';
 import { header, footer } from './chrome.js';
-import { find, MODULES, MOVED, REMOVED, NOT_NOW, LARGER, REFUSALS, NOT_STORED, TOPICS, APP } from './data.js';
+import { find, MODULES, MOVED, REMOVED, NOT_NOW, LARGER, REFUSALS, NOT_STORED, TOPICS, APP,
+  SCREEN_ORDER, SCREEN_NOTES, SITE, STRIP, PASS } from './data.js';
 
 const shell = (cfg, p, page, inner) => `${skip()}
 ${header(cfg, p, { page })}
@@ -56,6 +57,8 @@ function features(cfg, p) {
     ${fold('Allergy, and the PRN interval', sec('gates', 'fgates', `<div class="wrap">
       <div class="head">${h2('gates', 'Two of those can stop a caregiver. The rest inform.', 'The allergy gate and the PRN interval gate — both in the MAR, both chosen because the harm of not stopping is physical.')}</div>
       <div class="fg2">${find('loop').gates.map((g, i) => `<div class="note"><span class="gate-n">${i + 1}</span><p>${esc(g)}</p></div>`).join('')}</div>
+      <ol class="pass" aria-label="The seven states of a medication pass">${PASS.map(([label, stop, note]) => `<li class="pass-s"${stop ? ` data-stop="${stop}"` : ''}><b>${esc(label)}</b><span>${esc(note)}</span>${stop ? `<span class="pass-b">Stop ${stop}</span>` : ''}</li>`).join('')}</ol>
+      <p class="cap">Seven states, and exactly two of them stop a caregiver. The number is fixed by a rule, not by taste: no module may add a third.</p>
       <p class="more"><a href="/#stops">${ic('gate', 16)}<span>See the two stops on the front page</span>${ic('right', 16)}</a></p>
     </div>`))}
     ${fold('And what came out on purpose', sec('moved', 'fmoved', `<div class="wrap fm-g">
@@ -74,6 +77,61 @@ function features(cfg, p) {
     ${sec('fjoin', 'fjoin', `<div class="wrap">
       <div class="head">${eyebrow('Early access')}${h2('fjoin', 'That is the whole product.', `${total} capabilities, two stops, eleven refusals. Ask for the list in writing, or come and see it run a shift.`)}</div>
       <div class="ctas"><a class="btn pri lg" href="/#join">${ic('stamp', 18)}${esc(cfg.cta.primary)}</a><a class="btn lg" href="/security">${ic('shield', 18)}What it holds</a></div>
+    </div>`)}`);
+}
+
+/* ── /screens ───────────────────────────────────────────────────────────
+   The whole product, on its own route. A full five-screen strip is 30 kB
+   of HTML; tools/check.mjs measures /index.html and nothing else, so the
+   strip lives here where it costs the budget nothing — and a route called
+   “Screens” is the link a reader actually sends to someone else. */
+const NOTES = Object.fromEntries(SCREEN_ORDER.map((k) => [k, SCREEN_NOTES[k]]));
+
+function screens(cfg, p) {
+  const strip = filmStrip('cohort', {
+    id: STRIP,
+    only: SCREEN_ORDER,
+    notes: NOTES,
+    label: 'Every screen in Cohort, at the size it ships',
+    hint: 'Drag it, scroll it, or use the arrow keys. Every screen here is the product itself, drawn from the specification and filled with sample data.',
+    jumpLabel: 'Jump to a screen',
+  });
+  /* present:'sheet' is passed explicitly. The board's own view state sets
+     shellPresent:'none', and presentOf() lets that beat the screen's own
+     default — so a marpass shell rendered with no options draws the list
+     and no Six Rights dialog, which is the thing three of these four pins
+     are pointing at. */
+  const pass = callouts(iosShell('cohort', { key: 'marpass', present: 'sheet' }), [
+    { n: 1, text: 'Six Rights, six boxes, all of them required — and the sixth is the record itself: signing writes who and when.', sel: '.sheet-h' },
+    { n: 2, text: 'The first stop. The allergy is named before the dose is signed, not after it, with its severity, its reaction and where the information came from.', sel: '.notice-a' },
+    { n: 3, text: 'The second stop, on the same screen: an as-needed dose before its minimum interval. Two conditions, not one — the interval, and the ceiling in twenty-four hours.', sel: '.notice-a + .notice-a' },
+    { n: 4, text: 'And the cost of going on: Override means typing a reason of at least ten characters, recorded on the dose, written to the audit log, and the manager is told.', sel: '.btn-row' },
+  ], { id: 'cal-pass', label: 'The allergy gate, as a caregiver meets it' });
+  const desk = callouts(webShell('cohort', { key: 'today', width: 1024 }), [
+    { n: 1, text: 'Today on the desktop: one row per resident, composed at read time from the MAR, documentation and incidents. Today stores nothing of its own.', sel: '.tbl-a' },
+    { n: 2, text: 'The same allergy, surfaced rather than enforced — this screen states it, and the MAR is where it stops anyone.', sel: '.notice-a' },
+    { n: 3, text: 'Every row ends in a stamp: who last wrote to that resident’s record, and when.', sel: '.stamp-a' },
+  ], { id: 'cal-desktop', label: 'Today, on the desktop app' });
+  const link = (key, tab) => `<li class="dl-i"><b>${esc(tab)}</b><code class="dl-u">${esc(SITE)}/screens#${STRIP}-${key}</code><button type="button" class="copyb" data-copy="${esc(SITE)}/screens#${STRIP}-${key}" data-copied="Link to the ${esc(tab)} screen copied" aria-label="Copy the link to the ${esc(tab)} screen">${ic('copy', 16)}</button></li>`;
+  return shell(cfg, p, 'screens', `
+    ${phead('Screens', 'Every screen, at the size it ships.', 'Five surfaces, drawn from the specification and filled with sample data. The phones are at the size they ship. The desktop window is 1024px across and it is that size on a desktop; on a phone you get the app’s own narrow build instead of a shrunken wide one, at 80%, panned sideways. Nothing here is scaled down to the point where it cannot be read. Drag the strip, or use the arrow keys.')}
+    ${sec('strip', 'sstrip', `<div class="wrap">${strip}</div>`, { label: 'The five screens' })}
+    ${fold('The allergy gate, pin by pin', sec('annot', 'sannot', `<div class="wrap">
+      <div class="head">${eyebrow('The stop, annotated')}${h2('annot', 'The allergy gate, pin by pin.', 'Four numbered pins over the real screen. Move across a sentence and the element it quotes lights up; the sentences are an ordered list underneath, so nothing is lost when a pin cannot be placed.')}</div>
+      ${pass}
+    </div>`))}
+    ${fold('The same record, on the desktop', sec('desk', 'sdesk', `<div class="wrap">
+      <div class="head">${eyebrow('The same record, wider')}${h2('desk', 'And the same record on the desktop.', 'One record, two devices, one rule. On a desktop this is the 1024px app at its real size. On a phone it is not that window shrunk — it is the app’s own narrow build, one column with the rail folded away, at 80%; drag sideways for the rest of it.')}</div>
+      <div class="shell-w" data-scrollx tabindex="0" role="group" aria-label="Today on the desktop app — scroll sideways for the rest of the screen">${desk}</div>
+    </div>`))}
+    ${fold('Every screen has an address', sec('deep', 'sdeep', `<div class="wrap">
+      <div class="head">${h2('deep', 'Every screen has an address.', 'Send one. It opens on that screen, not at the top of the page.')}</div>
+      <ul class="dl-l">${SCREEN_ORDER.map((k) => link(k, SCREEN_NOTES[k].tab)).join('')}</ul>
+      <p class="more"><a href="/#shift">${ic('clock', 16)}<span>Or watch them in order, across one shift</span>${ic('right', 16)}</a></p>
+    </div>`))}
+    ${sec('sjoin', 'sjoin', `<div class="wrap">
+      <div class="head">${eyebrow('Early access')}${h2('sjoin', 'That is the product.', 'Five screens, two stops, one record that cannot be quietly changed. It is not built yet and the first house is named; both of those are on the front page in the same words.')}</div>
+      <div class="ctas"><a class="btn pri lg" href="/#join">${ic('stamp', 18)}${esc(cfg.cta.primary)}</a><a class="btn lg" href="/#standing">${ic('ledger', 18)}What is live, and what is not</a></div>
     </div>`)}`);
 }
 
@@ -177,6 +235,7 @@ function contactPage(cfg, p) {
 }
 
 export const pages = [
+  { path: 'screens', title: 'Screens', description: 'Every screen in Cohort at the size it ships: Today, the MAR pass, an incident, the handoff and the resident record — with what each one proves.', render: screens },
   { path: 'features', title: 'Features', description: 'Everything Cohort does: the MAR and its two gates, documentation, incidents, the handoff, tasks, plans — and what it refuses on principle.', render: features },
   { path: 'pricing', title: 'Pricing', description: 'One price per house. The three-day trial, the six signup steps, what happens if a payment fails, and how many houses each plan covers.', render: pricingPage },
   { path: 'security', title: 'Security and privacy', description: 'What Cohort holds, how the record is held up, what leaves the house, and the two stops — in the same words as the product.', render: security },

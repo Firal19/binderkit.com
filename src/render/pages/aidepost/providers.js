@@ -1,7 +1,7 @@
 // /providers — the provider side at depth: four screens, each doing work,
 // and the flows from the feature document told step by step.
 
-import { esc, sec, fold, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credTimeline, timesheetToy, clockToy, joinBlock } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credTimeline, timesheetToy, clockToy, joinBlock, ixNav, pager, deepLink } from './bits.js';
 
 const CHAPTERS = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['hiring', 'Hiring']];
 
@@ -31,7 +31,7 @@ function chBoard() {
   const s = find('screen');
   const loop = find('loop');
   return sec('board', 'ch', `<div class="wrap">
-    <div class="ch-head">${eyebrow('1 · The board')}${h2('board', s.heading, s.sub)}</div>
+    <div class="ch-head head-r"><div>${eyebrow('1 · The board')}${h2('board', s.heading, s.sub)}</div>${deepLink('/providers#board', 'the board')}</div>
     <div class="shell" tabindex="0" role="group" aria-label="The desktop board — scroll sideways for the rest">${webShell('aidepost', { key: 'board' })}</div>
     <span class="shell-cap">Drag sideways — the board goes on past the edge.</span>
     <div class="ch-g">
@@ -163,6 +163,12 @@ function failed() {
 
 export const PROVIDERS_IDS = new Set(['top', 'board', 'credentials', 'hours', 'hiring', 'machines', 'payment', 'join']);
 
+/* .chap is the desktop chapter strip and is hidden below 900, where 50px of
+   permanent chrome under a 60px header is 21% of the viewport. .ix is the
+   same four destinations for a phone, in the page rather than stuck to it —
+   CSS shows exactly one of the two, never both. */
+const PROV_IX = [['board', 'The board', 'prov'], ['credentials', 'Credentials', 'prov'], ['hours', 'Hours', 'prov'], ['hiring', 'Hiring', 'prov'], ['machines', 'The machines', 'prov'], ['payment', 'If a payment fails', 'prov'], ['join', 'Join', 'both']];
+
 export const providersPage = {
   path: 'providers',
   title: 'For providers',
@@ -170,12 +176,14 @@ export const providersPage = {
   render(cfg, p) {
     return shell(cfg, p, { page: 'providers', ids: PROVIDERS_IDS }, `${top(cfg, p)}
 ${strip()}
+${ixNav(PROV_IX)}
 ${chBoard()}
 ${chCredentials()}
 ${chHours()}
 ${chHiring()}
 ${machines()}
 ${failed()}
-${sec('join', 'join', joinBlock(cfg, p))}`);
+${sec('join', 'join', joinBlock(cfg, p))}
+${pager('/providers')}`);
   },
 };

@@ -42,6 +42,11 @@
       const addStop = (el, label) => { if (!el || !label || seen.has(el)) return; seen.add(el); stops2.push({ el, label }); };
       signs.forEach((a) => addStop(document.getElementById(a.getAttribute('href').slice(1)), `${a.querySelector('.sign-a')?.textContent || ''} · ${a.querySelector('.sign-t')?.textContent || ''}`.replace(/^ · /, '')));
       $$('[data-stop]').forEach((s) => addStop(s, s.dataset.stop || ''));
+      /* and every ticket on the entrance board, so the dock names a stop on
+         the nine routes that carry no aisle signs of their own. addStop
+         skips an element already named, so a folded section's own data-stop
+         still wins — this only fills the gaps. */
+      $$('.dir-i').forEach((a) => addStop(document.getElementById(a.getAttribute('href').slice(1)), (a.querySelector('b') || {}).textContent || ''));
       stops2.sort((a, b) => top(a.el) - top(b.el));
       const spy = (links) => {
         const line = window.scrollY + window.innerHeight * 0.32;
@@ -438,7 +443,13 @@
       const btn = $('button[aria-controls="palette"]');
       if (!pal || !btn) return;
       const inp = $('.pal-in', pal);
-      const items = $$('.pal-l li', pal);
+      /* the three drawer headings are <li> too, and they are neither
+         destinations nor arrow stops: they leave `items` so Enter can
+         never land on one, and they leave the list entirely the moment a
+         query is typed, because a filtered palette is one flat list of
+         hits rather than three labelled drawers with holes in them. */
+      const items = $$('.pal-l li:not(.pal-h)', pal);
+      const heads = $$('.pal-l .pal-h', pal);
       const empty = $('.pal-empty', pal);
       document.addEventListener('keydown', (e) => {
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); btn.click(); }
@@ -448,6 +459,7 @@
         let n = 0, firstOn = null;
         items.forEach((li) => { const hit = !q || (li.querySelector('.pal-r')?.dataset.verb || '').includes(q) || (li.textContent || '').toLowerCase().includes(q); li.hidden = !hit; li.removeAttribute('data-on'); if (hit) { n += 1; if (!firstOn) firstOn = li; } });
         if (firstOn) firstOn.setAttribute('data-on', '');
+        heads.forEach((h) => { h.hidden = !!q; });
         empty.hidden = n > 0;
       };
       inp.addEventListener('input', filter);
@@ -541,7 +553,68 @@
       });
     };
 
-    where(); ring(); fan(); scan(); counters(); par(); approve(); allergen(); reserve(); prices(); stores(); ladder(); cook(); palette(); rcGroups(); receipt(); showMe(); legend(); stickers();
+    /* ── the entrance board, and the address of the aisle you are in ─────
+       Two jobs, one scroll listener, because they answer the same
+       question: which stop is the reader standing in. The board marks it
+       with aria-current and pushes that ticket into view inside its OWN
+       scroller — never scrollIntoView, which would move the page under a
+       thumb that is already moving it. The dock's "You are in" button
+       takes the same id and keeps its data-copy in step, so the shared
+       [data-copy] verb — which reads the attribute at the moment of the
+       press — hands over the exact address of the aisle on screen.
+       Nothing here runs on a page with neither. */
+    const board = () => {
+      const links = $$('.dir-i');
+      const cp = $('[data-here-copy]');
+      if (!links.length && !cp) return;
+      const base = cp ? cp.getAttribute('data-copy') : '';
+      const box = links.length ? links[0].closest('.dir-l-o') : null;
+      let last = null;
+      const paint = () => {
+        const line = window.scrollY + window.innerHeight * 0.32;
+        let on = null;
+        links.forEach((a) => {
+          const t = document.getElementById(a.getAttribute('href').slice(1));
+          if (t && t.getBoundingClientRect().top + window.scrollY <= line) on = a;
+        });
+        if (on !== last) {
+          if (last) last.removeAttribute('aria-current');
+          if (on) on.setAttribute('aria-current', 'true');
+          last = on;
+          if (on && box) {
+            const max = box.scrollWidth - box.clientWidth;
+            if (max > 4) box.scrollTo({ left: Math.max(0, Math.min(max, on.offsetLeft - (box.clientWidth - on.offsetWidth) / 2)), behavior: calm.matches ? 'auto' : 'smooth' });
+          }
+        }
+        if (cp) cp.setAttribute('data-copy', on ? base + on.getAttribute('href') : base);
+      };
+      let t = false;
+      const tick = () => { if (!t) { t = true; requestAnimationFrame(() => { t = false; paint(); }); } };
+      window.addEventListener('scroll', tick, { passive: true });
+      document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.fold-s')) requestAnimationFrame(paint); });
+      paint();
+    };
+
+    /* ── the annotated till: a keyboard path to the callouts ───────────
+       MEASURED BUG, fixed here. site.js binds BOTH pointerover and focusin
+       to light a callout, but nothing inside the widget can take focus —
+       the pins are aria-hidden decorations and the sentences are plain
+       <li> — so the focusin half was unreachable and the feature was
+       pointer-only. Measured on /shelf at 390px: 0 focusable elements
+       inside [data-callouts].
+
+       The sentence is the right target rather than the pin. It is the
+       readable half, it is already in reading order, and it is a 346x110
+       box where the pin is 28x28. One attribute turns on the handler that
+       was already written; the ring comes from this sheet's own
+       :focus-visible. The pin stays decorative and stays aria-hidden. */
+    const callouts = () => {
+      for (const s of $$('[data-callouts] .cal-i[data-cal]')) {
+        if (!s.hasAttribute('tabindex')) s.setAttribute('tabindex', '0');
+      }
+    };
+
+    where(); ring(); fan(); scan(); counters(); par(); approve(); allergen(); reserve(); prices(); stores(); ladder(); cook(); palette(); rcGroups(); receipt(); showMe(); legend(); stickers(); board(); callouts();
   };
   if (window.PHO) init(); else document.addEventListener('pho:ready', init, { once: true });
 })();

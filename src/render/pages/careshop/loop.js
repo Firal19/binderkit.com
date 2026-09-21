@@ -49,6 +49,7 @@ export function loopPage(cfg, p) {
   const node = (label) => s.nodes.find((n) => n.label === label);
   const machine = (label) => s.machines.find(([l]) => l === label)[1];
   const buy = screen('buy');
+  const sharedRun = find('evidence').blocks.find((b) => b.label === 'The shared run');
   const para = (t) => `<p class="st-p">${esc(t)}</p>`;
   const rail = `<nav class="rail" aria-label="Stations" data-spy data-scrollx>${['count', 'queue', 'approve', 'shop', 'receipt', 'stock', 'cook'].map((id, i) => `<a href="#s-${id}"><span>${i + 1}</span>${esc(id.charAt(0).toUpperCase() + id.slice(1))}</a>`).join('')}</nav>`;
 
@@ -61,6 +62,15 @@ ${station(4, 'shop', node('The shop').label + '.', `${reg('shop')}${para(node('T
 ${station(5, 'receipt', node('The receipt').label + '.', `${para(node('The receipt').note)}<p class="st-p"><b>The shared run.</b> ${esc(machine('Shared run'))}</p>`, receiptInstrument(), { gist: 'Closing the run is the only moment stock rises.' })}
 ${station(6, 'stock', 'Back on the shelf.', `${reg('reserve')}<p class="st-p"><b>Expiry.</b> ${esc(machine('Expiry'))}</p><p class="st-p"><b>Reserve.</b> ${esc(machine('Reserve'))}</p><div class="shows">${showMe('Applesauce', 'Two days')}${showMe('Frozen peas', 'Over — a note, not an alarm')}</div><a class="more" href="/stock">${ic('arrow', 16)}Stock in depth</a>`, phone('expiry'), { rev: true, gist: 'Expiry and the reserve, back on the shelf.' })}
 ${station(7, 'cook', node('The menu').label + ', and the cook.', `${reg('cook')}${para(node('The menu').note)}<p class="st-p"><b>Cook.</b> ${esc(machine('Cook'))}</p><div class="shows">${showMe('Allergen check', 'Before plating')}${showMe('Complete', 'Stock down, once')}</div>`, `<div class="ph-pair" data-scrollx>${phone('cook')}${phone('menu')}</div>`, { gist: 'The menu, the allergen check, complete — once.' })}
+${sec('token', 'token-s', `<div class="wrap">
+  <div class="head">${sticker('lock', 'The sixth person has no account')}${h2('token', 'A spouse doing the Costco run.', 'The person doing the shopping is often not the person with the licence, and the product is built around that rather than around a seat. A token link opens one run — and it is the sharpest example of the boundary this product keeps.')}</div>
+  <div class="tok">
+    <div class="tok-c is-yes"><span class="strip-l">${ic('check', 16)}The link grants</span><ul>${['Ticking an item off the run', 'Marking one unavailable', 'Closing the run when it is done'].map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
+    <div class="tok-c is-no"><span class="strip-l">${ic('x', 16)}It grants nothing else</span><ul>${['No session, and no route into anything else', 'No resident, no tag, no tray note — the snapshot comes from a source that cannot read the resident table', 'No write to the ledger: a signed-in person confirms first, because an account-less person cannot be held to a financial record'].map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
+  </div>
+  <p class="st-p">${esc(sharedRun.text.split('The email that carries')[1] ? 'The email that carries' + sharedRun.text.split('The email that carries')[1] : sharedRun.text)}</p>
+  <p class="demo-f">${esc(machine('Shared run'))}</p>
+</div>`, { label: 'The shared run' })}
 ${sec('ledger', 'ledger', `<div class="wrap ledger-in">
   ${sticker('receipt', 'The record')}
   <p class="pull">${esc(s.pull)}</p>

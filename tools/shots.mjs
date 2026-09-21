@@ -93,6 +93,10 @@ for (const route of PAGES) {
           const s = getComputedStyle(el);
           if (s.overflowX === 'auto' || s.overflowX === 'scroll' || s.position === 'fixed') continue;
           if (el.closest('[data-scrollx], .board-w, .shell, .crop, .fan, .divs, .tour, .lp-scrollx, .lp-board-in')) continue;
+          /* the demo primitives are deliberate sideways scrollers, like .board-w
+             above. They postdate this list; without them the gate reports every
+             film strip on every site as an overflow defect. */
+          if (el.closest('.fs-rail, .fs-jump, .swx-tabs')) continue;
           if (el.closest('.hp, .sr-only, .skip, [hidden], [aria-hidden="true"][data-offscreen]')) continue;
           if (s.visibility === 'hidden' || s.opacity === '0') continue;
           out.push(`${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ')[0]} → ${Math.round(r.right)}`);

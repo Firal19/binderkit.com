@@ -6,12 +6,15 @@
 // end-of-shift sheet the product composes at 18:45. Every icon carries a
 // stamp's ink dot, every entry is “Logged by · at”, and nothing is red.
 
-import { esc, skip, waitlist, faq, tiers, sec, h2, eyebrow } from '../shared.js';
-import { iosShell, SURFACES } from '../instruments.js';
+import { esc, skip, waitlist, faq, tiers, sec, h2, eyebrow, mark } from '../shared.js';
+import { iosShell, SURFACES, screenSwitch } from '../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../data/page.js';
+import { STATE_SETS } from '../../data/states.js';
+import { MINIS } from '../../data/brand.js';
 import { ic } from '../icons/cohort.js';
-import { header, footer } from './cohort/chrome.js';
-import { DAY, hid, tourKey, REFUSALS, NOT_STORED, HOUSE_KEYS, APP, find } from './cohort/data.js';
+import { header, footer, SCREENS } from './cohort/chrome.js';
+import { DAY, hid, tourKey, REFUSALS, NOT_STORED, HOUSE_KEYS, APP, find,
+  LEDGER, WEDGE, LIMIT, BOUNDARY, GRADUATION, INKS, SITE, screenHref } from './cohort/data.js';
 import { pages } from './cohort/pages.js';
 
 export { header, footer, pages };
@@ -38,6 +41,53 @@ const fold = (gist, html) => html.replace(
   `<section data-phone="fold" data-gist="${esc(gist)}" class="sec`,
 );
 
+/* ── the hero device: a real tablist over the product's own screens ─────
+   screenSwitch() is the shared primitive; every panel keeps its box in the
+   same grid cell, so changing screen moves nothing on the page. With
+   scripting off the tab strip is not painted and the screens simply stack.
+   HERO_SCREENS is deliberately short: /screens carries all five, and
+   index.html is the only page in this kit with a byte budget. */
+const HERO_SCREENS = ['today', 'handoff'];
+const heroSwitch = () => screenSwitch('cohort', {
+  id: 'sw-hero',
+  on: 0,
+  only: HERO_SCREENS,
+  label: 'Cohort, on the house phone — pick a screen',
+  notes: {
+    today: { tab: '06:55 · Today', cap: 'The first screen after sign-in: what is due this shift, what is documented, what is waiting on a decision. Counts, never a score.' },
+    handoff: { tab: '18:45 · Handoff', cap: 'The other end of the same shift, composed from the day rather than typed from memory — and reading it records a receipt.' },
+  },
+});
+
+/* ── “what's on this page”, and where you are in it ─────────────────────
+   One chip per stop, carrying the hour the shift gives it. `data-spy` is
+   js/site.js's own contract: it marks the chip whose section is in view,
+   on this nav exactly as it already does on the time rail. Zero new
+   script, and with scripting off it is still a complete index. */
+const INDEX = [
+  ['top', '06:55', 'Sign in'],
+  ['shift', '07:02', 'The shift'],
+  ['stops', '08:00', 'Two stops'],
+  ['refuses', '', 'Refusals'],
+  ['record', '13:40', 'The record'],
+  ['grammar', '', 'The grammar'],
+  ['roles', '', 'Who holds it'],
+  ['house', '', 'Your house'],
+  ['standing', '', 'Where this is'],
+  ['family', '', 'The other rooms'],
+  ['questions', '', 'Questions'],
+  ['pricing', '', 'Pricing'],
+  ['join', '19:00', 'Join'],
+];
+const pageIndex = () => `<nav class="pidx" aria-label="What is on this page" data-spy>
+    <span class="pidx-k">On this page</span>
+    <div class="pidx-r">${INDEX.map(([id, hr, label]) => `<a class="pidx-a" href="#${id}">${hr ? `<span class="pidx-h">${hr}</span>` : ''}<span class="pidx-l">${esc(label)}</span></a>`).join('')}</div>
+    <a class="pidx-all" href="/screens"><span>All five screens</span>${ic('right', 15)}</a>
+  </nav>`;
+
+/* the one mark every rendered instrument on this site carries */
+export const demoBadge = (t = 'Sample data') => `<span class="demo-b">${esc(t)}</span>`;
+
 /* ── 06:55 · the hero ──────────────────────────────────────────────────── */
 function hero(cfg, p) {
   const strip = find('hero').strip;
@@ -55,10 +105,11 @@ function hero(cfg, p) {
         </div>
         <p class="now" data-now><span class="now-dot" aria-hidden="true"></span><span class="now-t">It is <b data-oregon>06:55</b> in Oregon.</span> <span class="now-d" data-due>The demo shift signs in at 06:55.</span></p>
         <p class="fine">Offline-safe. Two safety gates and nothing else that blocks. Every entry stamped “Logged by · at”.</p>
+        ${demoBadge('The screens beside this use sample data')}
       </div>
       <div class="hero-v">
         <div class="dev hero-dev">
-          ${iosShell('cohort', { key: 'today' })}
+          ${heroSwitch()}
           <span class="float f1" aria-hidden="true"><span class="stamp-a">${esc(today.rows[0].stamp)}</span><span class="float-l">every entry, stamped</span></span>
           <span class="float f2" aria-hidden="true"><span class="st-a" data-state="due"><i></i>${esc(today.tabBadge.text)}</span><span class="float-l">a count, never a score</span></span>
           <span class="float f3" aria-hidden="true"><span class="float-l">the night handoff</span><b>${esc(today.handoff.receipt)}</b></span>
@@ -91,6 +142,8 @@ function keysDialog() {
     ['<kbd>J</kbd><kbd>K</kbd>', 'Next and previous hour on the shift'],
     ['<kbd>↓</kbd><kbd>↑</kbd>', 'The same, while an hour is focused'],
     ['<kbd>⌘</kbd><kbd>K</kbd>', 'Jump to a verb, a stop or a page'],
+    ['<kbd>←</kbd><kbd>→</kbd>', 'Move across the screens — on the hero switcher and on the film strip'],
+    ['<kbd>Home</kbd><kbd>End</kbd>', 'The first screen, and the last'],
     ['<kbd>T</kbd>', 'Back to 06:55'],
     ['<kbd>?</kbd>', 'This sheet'],
     ['<kbd>Esc</kbd>', 'Close whatever is open'],
@@ -121,7 +174,7 @@ function shift() {
       <button class="keysb" type="button" aria-controls="keys" aria-expanded="false" data-focus=".keys-x">${ic('keyboard', 18)}<span>Keys</span><kbd>?</kbd></button>
     </div>
     <div class="tl-g">
-      <div class="tour"><div class="tour-stick"><div class="crop"><div class="dev">${phones}</div></div><span class="tour-cap" aria-hidden="true"><i></i><span data-tour-cap>06:55</span></span></div></div>
+      <div class="tour"><div class="tour-stick"><div class="crop"><div class="dev">${phones}</div></div><span class="tour-cap" aria-hidden="true"><i></i><span data-tour-cap>06:55</span>${demoBadge()}</span></div></div>
       <ol class="tl">${steps}</ol>
     </div>
     ${keysDialog()}
@@ -142,8 +195,7 @@ function stops() {
       ${gate(2, 'The PRN interval gate', 'An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.', 'Two conditions, not one — before the order’s minimum interval, or beyond its maximum in twenty-four hours. The stop shows when the last dose was given and when the next one is permitted.')}
     </div>
     <p class="pull">${esc(loop.pull)}</p>
-    <div class="sec-dev"><div class="dev">${iosShell('cohort', { key: 'marpass' })}</div>
-      <p class="cap">The allergy gate, as a caregiver meets it: the Six Rights dialog asking for a reason before it will sign.</p></div>
+    <p class="more"><a href="/screens#cal-pass">${ic('screens', 16)}<span>The allergy gate, pin by pin — the Six Rights dialog asking for a reason before it will sign</span>${ic('right', 16)}</a></p>
     <div class="machines"><span class="strip-l">Four records, and what each one will not do</span>
       ${loop.machines.map(([n, seq]) => `<div class="machine"><b>${esc(n)}</b><span>${esc(seq)}</span></div>`).join('')}
     </div>
@@ -157,9 +209,14 @@ function refuses() {
       <div>${h2('refuses', 'What Cohort will not do, and why.', 'Eleven refusals. Each one is a position, not a missing feature, and each carries its reason.')}</div>
       <button class="printb" type="button" data-print data-print-only="refuses">${ic('print', 18)}<span>Print this list</span></button>
     </div>
-    <ol class="ref-l">${REFUSALS.map(([t, why], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b><span>${esc(why)}</span></div></li>`).join('')}</ol>
+    <ol class="ref-l">${REFUSALS.map(([t, why], i) => { const n = String(i + 1).padStart(2, '0'); return `<li id="refuse-${n}"><span class="ref-n">${n}</span><div><b>${esc(t)}</b><span>${esc(why)}</span><button type="button" class="ref-a" data-copy="${SITE}/#refuse-${n}" data-copied="Link to refusal ${n} copied" aria-label="Copy a link to refusal ${n}">#refuse-${n}</button></div></li>`; }).join('')}</ol>
     <div class="notstored"><span class="strip-l">Not stored, by design</span><p>${NOT_STORED.map(esc).join(' · ')}.</p></div>
-    <p class="boundary">Cohort keeps the residents’ record. It does not schedule staff, run the kitchen, or build binders.</p>
+    <div class="bmap"><span class="strip-l">And where each of those lives instead</span>
+      <p class="boundary">Cohort keeps the residents’ record. Five things it will not be, and the room that is.</p>
+      <ul class="bmap-l">${BOUNDARY.map(([what, id, who, href]) => `<li class="bmap-r"><span class="bmap-w">${esc(what)}</span>${href
+        ? `<a class="bmap-to" href="${esc(href)}" rel="noopener" data-room="${esc(id)}">${esc(who)}</a>`
+        : `<span class="bmap-to is-none">${esc(who)}</span>`}</li>`).join('')}</ul>
+    </div>
     <p class="ref-print" aria-hidden="true">Cohort · What it will not do · cohorthome.app · by Providerhub Oregon</p>
   </div>`);
 }
@@ -187,6 +244,44 @@ function record() {
   </div>`);
 }
 
+/* ── a correction, drawn: the addendum is under the original ───────────
+   REFUSALS 04 and 05 in one picture. Nothing is replaced and nothing is
+   deleted, so the shape is a stack, not a swap. */
+function addendum() {
+  const row = (cls, k, t, who) => `<div class="adden-r ${cls}"><span class="adden-k">${esc(k)}</span><p>${esc(t)}</p><span class="stamp-a">${esc(who)}</span></div>`;
+  return `<div class="adden"><span class="strip-l">A correction, as this product makes one</span>
+    ${row('is-orig', 'The original', 'Resident declined the 08:00 dose; offered again at 08:40.', 'Logged by M. Okafor · 08:05')}
+    <span class="adden-j" aria-hidden="true">${ic('down', 16)}</span>
+    ${row('is-add', 'The addendum', 'Correction: the second offer was at 09:10, not 08:40.', 'Logged by M. Okafor · 09:20')}
+    <p class="adden-f">${ic('close', 14)}<span>There is no third row. The original is not edited, not struck through and not removed — the state machine has no transition that would do it.</span></p>
+  </div>`;
+}
+
+/* ── the four words, and the three inks ────────────────────────────────
+   The state words are verbatim from src/data/states.js; the inks are the
+   page's own palette, named so the reader can check the claim rather than
+   take it. Nothing on this site is red. */
+function legend() {
+  const states = STATE_SETS.cohort;
+  return `<div class="legend">
+    <div class="stleg"><span class="strip-l">The four words this product owns</span>
+      <dl class="stleg-l">${states.map(([k, label, , why]) => `<div class="stleg-i"><dt><span class="st-a" data-state="${esc(k)}"><i></i>${esc(label)}</span></dt><dd>${esc(why)}</dd></div>`).join('')}</dl>
+    </div>
+    <div class="inks"><span class="strip-l">Three inks, and what each one marks</span>
+      <dl class="inks-l">${INKS.map(([k, t, why]) => `<div class="inks-i" data-ink="${esc(k)}"><dt><i aria-hidden="true"></i>${esc(t)}</dt><dd>${esc(why)}</dd></div>`).join('')}</dl>
+    </div>
+  </div>`;
+}
+
+/* ── the grammar of the record: how it corrects, and what it may say ─── */
+function grammar() {
+  return sec('grammar', 'grammar', `<div class="wrap">
+    <div class="head">${eyebrow('The grammar')}${h2('grammar', 'How a correction is made, and what the record is allowed to say.', 'Two rules and a palette. They are testable on any string the product prints, which is the only kind of tone rule worth writing down.')}</div>
+    ${addendum()}
+    ${legend()}
+  </div>`);
+}
+
 /* ── three people, and who is holding the phone now ───────────────────── */
 function roles() {
   const s = find('roles');
@@ -197,8 +292,7 @@ function roles() {
       <div class="seg" role="group" aria-label="Who is holding the phone"><button type="button" data-shift="now" aria-pressed="true">Now</button><button type="button" data-shift="day" aria-pressed="false">Day <span>06:55–19:00</span></button><button type="button" data-shift="night" aria-pressed="false">Night</button></div>
     </div>
     <div class="role-g" data-roles>${s.rows.map(([r, who, does, dev]) => `<div class="role" data-day="${on[r][0]}" data-night="${on[r][1]}"><span class="role-n">${ic(r === 'caregiver' ? 'pill' : r === 'manager' ? 'pen' : 'house', 16)}${esc(r)}</span><span class="role-on" data-role-on></span><p class="role-w">${esc(who)}</p><p class="role-d">${esc(does)}</p><span class="role-r">${ic('clock', 14)}${esc(dev)}</span></div>`).join('')}</div>
-    <div class="sec-dev"><div class="dev">${iosShell('cohort', { key: 'residents' })}</div>
-      <p class="cap">The resident record as a caregiver sees it — contacts and allergies read-only, edited by a manager or the provider.</p></div>
+    <p class="more"><a href="${screenHref('residents')}">${ic('screens', 16)}<span>The resident record, as a caregiver sees it — contacts and allergies read-only</span>${ic('right', 16)}</a></p>
     <p class="closing">${esc(s.closing)}</p>
   </div>`);
 }
@@ -232,6 +326,52 @@ function house() {
           <span class="door-toast">Ready to work offline — your entries will queue.</span>
         </span>
       </a>
+    </div>
+  </div>`);
+}
+
+/* ── where this actually is ────────────────────────────────────────────
+   The ledger is the whole investment case stated as facts a partner can
+   check, and every row that is not live says so in the same breath. No
+   metric, no customer, no number that is not in the vault. */
+function standing() {
+  const WORD = { yes: 'Live', no: 'Not yet', part: 'Partly' };
+  return sec('standing', 'standing', `<div class="wrap">
+    <div class="head">${eyebrow('No metrics, because there are none')}${h2('standing', 'Where this actually is, line by line.', 'Three of the four products in this family are pre-launch and this is one of them. Everything below is checkable; nothing below is a projection.')}</div>
+    <div class="ledg" role="table" aria-label="What is live and what is not">
+      ${LEDGER.map(([live, what, why]) => `<div class="ledg-r" role="row" data-live="${live}"><span class="ledg-s" role="cell"><i aria-hidden="true"></i>${WORD[live]}</span><b class="ledg-w" role="cell">${esc(what)}</b><span class="ledg-y" role="cell">${esc(why)}</span></div>`).join('')}
+    </div>
+    <div class="wedge">
+      <div class="wedge-t"><span class="strip-l">What is defensible, and how you would check it</span>
+        <ol class="wedge-l">${WEDGE.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
+      </div>
+      <div class="note limit"><h3>And the one it misses</h3><p>${esc(LIMIT)}</p></div>
+    </div>
+  </div>`);
+}
+
+/* ── the other three rooms, and the ladder out of them ─────────────────
+   The family band and the graduation path: one house on Cohort becomes
+   twenty on Provider Hub Oregon by export → import, because her record is
+   already in PHO's shape. */
+function family(cfg, p) {
+  const room = (x) => `<a class="room" href="https://${esc(x.domain)}" rel="noopener">
+      <span class="room-mk">${mark(x.id, 34, { label: false })}</span>
+      <span class="room-n">${esc(x.name)}</span>
+      <span class="room-d">${esc(x.descriptor)}. Owns ${esc(x.domainWord)}.</span>
+      <span class="room-o">${ic('ext', 14)}${esc(x.status)}</span>
+      <span class="room-u">${esc(x.domain)}</span>
+    </a>`;
+  return sec('family', 'family', `<div class="wrap">
+    <div class="head">${eyebrow('One house, four rooms')}${h2('family', 'Cohort is one room of four.', 'Each one is a small, complete product a provider can buy on its own. Cohort holds the residents; the other three hold the workforce, the household and the paperwork.')}</div>
+    <div class="rooms">
+      <span class="room is-here"><span class="room-mk">${mark('cohort', 34, { label: false })}</span><span class="room-n">${esc(p.name)}<span class="room-here">You are here</span></span><span class="room-d">${esc(p.descriptor)}. Owns ${esc(p.domainWord)}.</span><span class="room-o">${ic('now', 14)}${esc(p.status)}</span><span class="room-u">${esc(p.domain)}</span></span>
+      ${MINIS.filter((x) => x.id !== 'cohort').map(room).join('')}
+    </div>
+    <div class="grad">
+      <span class="strip-l">And the ladder out of the room</span>
+      <ol class="grad-l">${GRADUATION.map(([t, d], i) => `<li class="grad-s" data-grad="${i + 1}"><span class="grad-n" aria-hidden="true">${i + 1}</span><div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join('')}</ol>
+      <p class="cap">Every mini graduates into Provider Hub Oregon by export → import; her data is already in PHO’s shape. The export is also hers to take anywhere else.</p>
     </div>
   </div>`);
 }
@@ -271,7 +411,12 @@ function pricing(cfg, p) {
   </div>`);
 }
 
-/* ── 19:00 · join ──────────────────────────────────────────────────────── */
+/* ── 19:00 · join ────────────────────────────────────────────────────────
+   Each of the first five minutes lands on the screen that does it, so the
+   list is a route into the product rather than a promise about it. */
+const TEN_ON = ['today', 'residents', 'marpass', 'marpass', 'today'];
+const SCREEN_TAB = Object.fromEntries(SCREENS.map((x) => [x.key, x.note.tab]));
+
 function join(cfg, p) {
   const s = find('start');
   return sec('join', 'join', `<div class="wrap join-g">
@@ -279,23 +424,40 @@ function join(cfg, p) {
       ${eyebrow(JOIN.eyebrow)}
       <h2 id="h-join">${esc(JOIN.heading)}</h2>
       <p class="sub">${esc(JOIN.sub)}</p>
-      <div class="ten"><span class="strip-l">${esc(s.heading)}</span><ol>${s.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol></div>
+      <div class="ten"><span class="strip-l">${esc(s.heading)}</span><ol class="ftn">${s.steps.map((t, i) => `<li><span>${esc(t)} <a class="ftn-s" href="${screenHref(TEN_ON[i] || 'today')}">${esc(SCREEN_TAB[TEN_ON[i] || 'today'])}</a></span></li>`).join('')}</ol></div>
     </div>
     <div class="join-f">${waitlist(cfg, p)}<p class="fine">${esc(JOIN.fine)}</p></div>
   </div>`);
 }
 
+/* WHAT DOES *NOT* FOLD, and why.
+   #standing (the status ledger) and #pricing (no number, open decision #8)
+   are the two sections that say what is not true yet. Both were folded for
+   one round and both are open again: a disclosure behind a tap is a
+   disclosure a phone reader does not make, and the phone is the device
+   this site is read on.
+
+   There is a measurement trap under this too. tools density.mjs measures
+   section[id].getBoundingClientRect() with the folds SHUT, so newly folding
+   a section that used to be open reads as a density win when nothing got
+   denser — #pricing alone went 1986px → 116px that way. Folding is for
+   sections this round ADDED (#grammar, #family); it is never applied to a
+   section the previous build showed open. */
 export function render(cfg, p) {
   return `${skip()}
 ${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="cohort" data-mode="light">
 ${hero(cfg, p)}
+${pageIndex()}
 ${fold('Seven hours on the house phone', shift())}
 ${fold('Allergy, and the PRN interval', stops())}
 ${fold('Eleven refusals, with reasons', refuses())}
 ${record()}
+${fold('Addenda, four words and three inks', grammar())}
 ${fold('Who is holding the phone', roles())}
 ${fold('The same record, on the web', house())}
+${standing()}
+${fold('The other three rooms, and the ladder', family(cfg, p))}
 ${fold('Wi-fi, exports, the stops', questions())}
 ${pricing(cfg, p)}
 ${join(cfg, p)}

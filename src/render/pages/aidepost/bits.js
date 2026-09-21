@@ -10,8 +10,48 @@ import { iosShell, webShell, SURFACES } from '../../instruments.js';
 import { PAGES, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../../data/page.js';
 import { ic } from '../../icons/aidepost.js';
 import { header, footer } from './chrome.js';
+import { byId } from '../../../data/brand.js';
+import { STATE_SETS } from '../../../data/states.js';
+import { mark } from '../../shared.js';
+import { screensOf, filmStrip as rawFilmStrip, screenSwitch, callouts as rawCallouts } from '../../instruments.js';
 
 export { esc, skip, sec, h2, eyebrow, waitlist, faq, iosShell, webShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN };
+export { screensOf, screenSwitch, mark, byId, STATE_SETS };
+
+/* ── two shared instruments, adjusted for this site ───────────────────
+   Both are post-processed here rather than in instruments.js, because
+   instruments.js is the shared renderer and three other sites draw from
+   it. The pattern is screens.js's own sx(): take the instrument's bytes
+   and change the one attribute this site needs changed.
+
+   1 · THE STRIP'S OUTER ID. filmStrip puts the id it is given on the
+   .fstrip wrapper AND derives every child id from it — the rail, the hint
+   and one per card. On /screens the strip sits inside sec('strip', …),
+   which already owns #strip, so the built page carried the id twice:
+   getElementById('strip') and the #strip fragment both resolved to the
+   section, and the Link button beside the heading copied an address that
+   was ambiguous in the bytes. The section keeps the name — it is what the
+   index links to and what the button copies — and the wrapper gives it up.
+   Nothing reads the wrapper's own id: site.js reaches the strip through
+   [data-rail] and .closest('.fstrip'), the cards keep #strip-caregiver and
+   the rest, and box.id is consulted only to find a [data-sw-rail] switcher,
+   which this site does not render. */
+export function filmStrip(productId, opts = {}) {
+  const html = rawFilmStrip(productId, opts);
+  return html.replace(/^(\s*<div class="fstrip[^"]*") id="[^"]*"/, '$1');
+}
+
+/* 2 · THE CALLOUT LIST TAKES A KEYBOARD. site.js lights a callout on
+   pointerover and on focusin, and the sentence on /screens tells a reader
+   to move through the list with a keyboard — but callouts() renders each
+   sentence as a plain <li>, so nothing in the list could take focus and
+   the focusin half of the handler could never fire. Each row becomes a
+   focusable region: it is not a button, because activating it does
+   nothing — reaching it is the whole interaction, exactly as hovering it
+   is. aria-describedby is not needed; the row IS the description. */
+export function callouts(inner, list = [], opts = {}) {
+  return rawCallouts(inner, list, opts).replace(/<li class="cal-i"/g, '<li class="cal-i" tabindex="0"');
+}
 
 /* A section that folds on a phone. Two attributes, and site.js folds() does
    the rest: below 640 the section collapses to a 64px summary carrying its
@@ -271,3 +311,192 @@ export function joinBlock(cfg, p) {
     <div class="join-f">${waitlist(cfg, p, { housesLabel: 'You are' })}<p class="fine">${esc(JOIN.fine)}</p></div>
   </div>`;
 }
+
+/* ══ THE SECOND TWENTY-FIVE ═══════════════════════════════════════════════
+   Everything below is the working demo: the routes as a ring you can walk,
+   the page as an index you can see, the product's own screens as a strip you
+   can operate, and the four things a partner asks that this product can
+   answer from the vault rather than from a deck. Nothing here invents a
+   number, a customer or a date. Where a fact is not decided, it says so. */
+
+/* ── the ring of routes ───────────────────────────────────────────────
+   ROUTES and pager() live in chrome.js and are re-exported here so every
+   page module keeps importing them from the same place. They had to move:
+   /privacy is rendered by the kit's shared render/privacy.js, which this
+   site cannot add a section to — but it does call this product's own
+   footer(), and that is in chrome.js. bits.js already imports chrome.js,
+   so the ring has to sit on the chrome side of that edge or the import
+   graph closes on itself. */
+export { ROUTES, routeIx, pager } from './chrome.js';
+
+/* ── "what is on this page", and which side each part belongs to ───────
+   data-spy is site.js's own scroll spy: it puts aria-current on the link
+   whose section is in view. Two tones, because on this site every part of
+   every page belongs to one of exactly two people. */
+export function ixNav(rows, opts = {}) {
+  if (!rows || !rows.length) return '';
+  return `<nav class="ix" aria-label="${esc(opts.label || 'What is on this page')}" data-spy data-ix>
+    <span class="ix-k">${ic('board', 16)}On this page</span>
+    <ol class="ix-l" data-scrollx>${rows.map(([id, label, side]) => `<li><a href="#${esc(id)}" data-side-hint="${esc(side || 'both')}">${esc(label)}</a></li>`).join('')}</ol>
+  </nav>`;
+}
+
+/* ── a section heading you can copy the address of ────────────────────
+   site.js delegates [data-copy] globally, so this costs no script at all.
+   The address is absolute on purpose: the reason to copy it is to paste it
+   somewhere that is not this page.
+
+   The address must carry its own route. The first version of this took a
+   bare id and assumed the home page, which is where #ledger does live —
+   but #ladder lives only on /about and #board only on /providers, so two
+   of the five buttons copied an address for a section that was not on the
+   page named, and one of the two was a fragment that exists nowhere. A
+   bare id now throws at build time rather than shipping a dead link: the
+   button's whole job is that the address it hands over works. */
+export const deepLink = (addr, what) => {
+  const s = String(addr);
+  if (!s.startsWith('/')) throw new Error(`deepLink("${s}"): an address must start with the route it lives on — "/${s}" or "/about#${s}", not a bare id`);
+  const [route, frag] = s.split('#');
+  const href = `https://aidepost.com/${route.replace(/^\//, '')}${frag ? `#${frag}` : ''}`;
+  return `<button class="dl" type="button" data-copy="${esc(href)}" data-copied="Link copied" aria-label="Copy a link to ${esc(what)}">${ic('copy', 14, { pin: false })}<span>Link</span></button>`;
+};
+
+/* ── the ledger: what is true today, in the product's own words ────────
+   Every row is read from brand.js, data/page.js or the vault document. A
+   row that is not decided says Open and names the register number. */
+export function ledger(p) {
+  const rows = [
+    ['The product', 'open', p.status, 'No repository yet. Nothing in this page is running in a house; every screen on it is the specification, drawn, with sample data.'],
+    ['The specification', 'covered', 'Written', 'Nineteen Aidepost tables over eighteen platform tables, four machines, and sixteen messages that may be sent at all — the send function takes an event key and references, and has no body parameter.'],
+    ['This page', 'covered', 'Live', 'aidepost.com is live, and it is the only part of Aidepost that is. What you have just operated is the specification, drawn — not a product you can buy yet.'],
+    ['Prices', 'pending', 'Not set', 'Pro and Scale are Open (#8). A job post is one charge per post, on every tier including the trial; the amount is set at launch.'],
+    ['Caregivers', 'covered', 'Free, permanently', 'The documented exception. No organisation, no card, nothing to cancel — and that is the acquisition model, not a promotion.'],
+    ['The largest open question', 'open', 'Undecided', 'Whether a one-to-one assignment should be able to record the initials of the person supported at all. Removing the field removes all protected information, the customer agreement, the view logging and one launch blocker. We have not decided it.'],
+  ];
+  return `<div class="led" role="table" aria-label="What is true today">
+    <div class="led-h" role="row"><span role="columnheader">What</span><span role="columnheader">State</span><span role="columnheader">Where it stands</span></div>
+    ${rows.map(([what, st, state, why]) => `<div class="led-r" role="row"><b role="cell">${esc(what)}</b><span role="cell" class="led-s is-${esc(st)}">${esc(state)}</span><span role="cell" class="led-w">${esc(why)}</span></div>`).join('')}
+  </div>`;
+}
+
+/* ── the four words this product owns ─────────────────────────────────
+   Lifted from data/states.js, which is lifted from the system board. The
+   fourth one is a borrow and says so: Aidepost takes Cohort's coral for an
+   expired credential rather than inventing a fifth colour. */
+export const stateLegend = () => `<dl class="stl" aria-label="The four words Aidepost uses">${STATE_SETS.aidepost.map(([k, label, tone, why]) => `<div class="stl-i is-${esc(k)}"><dt><span class="stl-d" aria-hidden="true"></span>${esc(label)}</dt><dd>${esc(why)}${tone === 'borrowed' ? '' : ''}</dd></div>`).join('')}</dl>`;
+
+/* ── the family band ──────────────────────────────────────────────────
+   The other three rooms and the house above them, each with its own mark,
+   its own live address and its own honest state. The line under each one
+   is what it takes off Aidepost's plate, read from Aidepost's own doesNot
+   list — so the band is a boundary statement, not a logo wall. */
+const TAKES = {
+  cohort: 'Takes the residents: care, the MAR, incidents. Aidepost holds none of it.',
+  careshop: 'Takes the kitchen. Aidepost schedules the person, never the meal.',
+  binderkit: 'Writes the house rules. Aidepost registers the version and records the signature.',
+  pho: 'The enterprise layer every mini graduates into, by export → import.',
+};
+/* A progress percentage with no definition behind it is a metric, and an
+   undefined one. brand.js carries “Spec-first · ~3% built” for the
+   umbrella; nothing on this site or in the vault says what the denominator
+   is, so the figure is dropped and the sourced half of the state is kept.
+   Every other state string — Live, Draft v2.1 · not built · pilot named —
+   is the vault's own wording for that product and is printed verbatim. */
+const sourced = (state) => String(state).replace(/\s*·\s*~?\d+(\.\d+)?%\s*built/i, '');
+export function familyBand() {
+  const order = ['cohort', 'careshop', 'binderkit', 'pho'];
+  return `<div class="fam-g">${order.map((id) => {
+    const q = byId[id];
+    return `<a class="fam" href="https://${esc(q.domain)}" rel="noopener"><span class="fam-mk">${mark(id, 34, { label: false })}</span><b>${esc(q.name)}</b><span class="fam-d">${esc(q.descriptor)}</span><span class="fam-t">${esc(TAKES[id])}</span><span class="fam-o">${esc(sourced(q.status))}</span></a>`;
+  }).join('')}</div>`;
+}
+
+/* ── the graduation path ──────────────────────────────────────────────
+   data/page.js carries the rows; the claim is only that the shapes match,
+   which is the claim the vault makes. */
+export function gradLadder() {
+  const s = find('ladder');
+  return `<div class="grd">
+    <ol class="grd-l">${s.rows.map(([what, where]) => `<li><b>${esc(what)}</b><span>${ic('arrow', 15, { pin: false })}${esc(where)}</span></li>`).join('')}</ol>
+    <p class="fine">${esc(s.footer)}</p>
+  </div>`;
+}
+
+/* ── the shift record, field by field ─────────────────────────────────
+   The point of this block is an absence, and an absence cannot be drawn by
+   drawing something. So the fields are listed, and then the field that is
+   not there is named — and the schema check that asserts it is named too. */
+export const SHIFT_FIELDS = ['house', 'date', 'start', 'end', 'role', 'credentials required', 'awake overnight', 'ratio', 'rate'];
+export const schemaBlock = () => `<div class="schm">
+  <span class="strip-l">${ic('shift', 16)}Every field on a shift</span>
+  <ul class="schm-f" aria-label="The fields a shift record carries">${SHIFT_FIELDS.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
+  <p class="schm-n"><b>And nothing that can describe a person receiving care.</b> The schema check asserts that no such field exists, and a code review that finds one is a blocker, not a finding. Shifts are never public; a job posting is, and only once you have published it.</p>
+</div>`;
+
+/* ── everything Aidepost is able to say ───────────────────────────────
+   Sixteen messages, and the send function has no body parameter — so the
+   set of sentences this product can emit is finite and printable. Both
+   renderings below are the vault's own strings. */
+export function messages() {
+  const ev = find('evidence');
+  const q = (label) => ev.blocks.find((b) => b.label === label) || {};
+  const rows = [q('What an email says'), q('What a push says')];
+  return `<div class="msg">
+    <span class="strip-l">${ic('mail', 16)}Every sentence it can send</span>
+    <ol class="msg-l">${rows.map((b) => `<li><q class="msg-q">${esc(b.quote || '')}</q><span class="msg-w">${esc(b.text || '')}</span></li>`).join('')}</ol>
+    <p class="fine">Sixteen messages may be sent at all. The send function takes an event key and references, so there is no body parameter and nothing to write free text into. Where a message names a time it renders as a day and a shift name — “Sat night” — never a date and time, because a precise time identifies a person’s routine to anyone holding the phone.</p>
+  </div>`;
+}
+
+/* ── the first ten minutes, ticked off against the demo above ─────────
+   Four checkboxes and no script: :checked does the whole thing. The steps
+   are brand.js's own firstTen for this product, unedited. */
+export function firstTen(p) {
+  const steps = p.firstTen || [];
+  return `<div class="ft10">
+    <span class="strip-l">${ic('clock', 16)}The first ten minutes</span>
+    <ul class="ft10-l">${steps.map((t, i) => `<li><input class="ft10-x" type="checkbox" id="ft10-${i}"><label for="ft10-${i}">${esc(t)}</label></li>`).join('')}</ul>
+    <p class="fine">Four things, in this order, on the day you sign up. The screens they happen on are all in the rail above — tick them off as you find them.</p>
+  </div>`;
+}
+
+/* ── the boundary, read straight off brand.js ─────────────────────────
+   "run payroll or background checks (the provider does; …)" splits at the
+   bracket into the refusal and who holds it instead, and where the second
+   half names another room the card links to it. Nothing is rewritten. */
+const ROOM = [['Cohort', 'cohort'], ['CareShop', 'careshop'], ['Binderkit', 'binderkit'], ['PHO', 'pho']];
+export function doesNotList(p) {
+  const items = p.doesNot || [];
+  return `<ul class="dn" aria-label="What Aidepost does not do, and who does it instead">${items.map((raw) => {
+    const m = String(raw).match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+    const what = m ? m[1] : raw;
+    const who = m ? m[2] : '';
+    const hit = ROOM.find(([name]) => who.includes(name));
+    const q = hit ? byId[hit[1]] : null;
+    return `<li><b>${esc(what.charAt(0).toUpperCase() + what.slice(1))}</b>${who ? `<span>${q ? `<a href="https://${esc(q.domain)}" rel="noopener">${esc(who)}</a>` : esc(who)}</span>` : ''}</li>`;
+  }).join('')}</ul>`;
+}
+
+/* ── the product's own map, from its own navigation ───────────────────── */
+export function productMap(p) {
+  return `<div class="pmap">
+    <div class="pmap-g">${(p.nav || []).map((g) => `<div class="pmap-c"><span class="strip-l">${ic(g.group === 'Organisation' ? 'house' : 'board', 16)}${esc(g.group)}</span><ul>${g.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`).join('')}</div>
+    <p class="fine">Five tabs on a phone — ${(p.tabs || []).map((t) => esc(t)).join(', ')} — and the same eight destinations on a desktop. That is the whole product; there is no second one behind a sales call.</p>
+  </div>`;
+}
+
+/* ── what is invented here, named ─────────────────────────────────────
+   The disclaimer in the footer says the screens use sample data. This says
+   which data, because a reader who has just operated five screens deserves
+   to know exactly where the fiction starts and stops. */
+export const sampleNote = () => `<details class="smp">
+  <summary><b>${ic('question', 18)}What on these screens is invented, exactly</b><span class="faq-x" aria-hidden="true"></span></summary>
+  <div class="smp-b">
+    <ul>
+      <li><b>Invented:</b> the house identifiers (WH-1 and WH-2), the staff names (M. Okafor, J. Ruiz, T. Nguyen, K. Silva, R. Alvarez, D. Park, S. Lee), the dates, the hours, the rate, and the distances.</li>
+      <li><b>Not invented:</b> the field names, the state words, the notice intervals, the wording of every message, the order of every flow, and every refusal. Those are the specification.</li>
+      <li><b>Not present anywhere:</b> a customer, a pilot house, a usage number, a revenue figure, a headcount or a raise. Aidepost is pre-launch and has none of those to report.</li>
+    </ul>
+    <p class="fine">No resident appears on any screen, in sample form or otherwise: a shift record has no field that could hold one, and neither has a posting. The one record that is still argued about is the one-to-one assignment — whether it should be able to carry the initials of the person supported is the open question the ledger names, and it is not decided.</p>
+  </div>
+</details>`;

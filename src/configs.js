@@ -20,7 +20,7 @@ export const CONFIGS = {
       { id: 'house', label: 'Your house' },
       { id: 'pricing', label: 'Pricing' },
     ],
-    og: { bg: '#F9F4EC', ink: '#17201F', accent: '#E0704F', tile: '#0F5C5A', glyph: '#F9F4EC', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
+    og: { bg: '#F9F4EC', bgDark: '#0E1F1E', ink: '#17201F', accent: '#E0704F', tile: '#0F5C5A', glyph: '#F9F4EC', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
     faq: [
       ['Will Cohort stop my caregiver mid-shift?', 'Twice, ever: a medication that matches a recorded allergy, and an as-needed dose given too soon after the last one. Everything else surfaces and steps aside. There are no countdown timers anywhere in the product.'],
       ['Does Cohort work when the house wifi is bad?', 'Yes. Incidents are filed offline-safe and idempotent, and every shift write goes through an outbox. The record catches up; the caregiver does not wait for it.'],
@@ -54,7 +54,7 @@ export const CONFIGS = {
       { id: 'kitchen', label: 'Your kitchen' },
       { id: 'pricing', label: 'Pricing' },
     ],
-    og: { bg: '#f6f4f0', ink: '#191713', accent: '#c25a38', tile: '#486b3d', glyph: '#ffffff', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Hanken Grotesk', bodyFile: 'hanken-grotesk.woff2', weight: 600 },
+    og: { bg: '#f6f4f0', bgDark: '#1b1613', ink: '#191713', accent: '#c25a38', tile: '#486b3d', glyph: '#ffffff', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Hanken Grotesk', bodyFile: 'hanken-grotesk.woff2', weight: 600 },
     faq: [
       ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
       ['Who checks the rules CareShop cites?', 'Today the product explains ten Oregon citations in one line each, and shows the rule text on every other catalogue row. Until a provider inspected on that track has reviewed the full set, the product says so.'],
@@ -84,7 +84,7 @@ export const CONFIGS = {
       { id: 'library', label: 'The library' },
       { id: 'pricing', label: 'Pricing' },
     ],
-    og: { bg: '#FFFFFF', ink: '#17201F', accent: '#6E8FE8', tile: '#17201F', glyph: '#FFFFFF', display: 'Newsreader', displayFile: 'newsreader.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
+    og: { bg: '#FFFFFF', bgDark: '#F3EBDA', ink: '#17201F', accent: '#6E8FE8', tile: '#17201F', glyph: '#FFFFFF', display: 'Newsreader', displayFile: 'newsreader.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
     faq: [
       ['Can’t I just copy another provider’s binder?', 'A copied binder carries someone else’s licence track, someone else’s house count, and someone else’s gaps. Binderkit builds the plan from your track and your five answers.'],
       ['Will Binderkit make me compliant?', 'No. It tells you what the rule asks for, with the rule printed beside it, in order. It does not certify anything — and the words ready, compliant and audit-proof are forbidden in the product by design.'],
@@ -115,7 +115,7 @@ export const CONFIGS = {
       { id: 'credentials', label: 'Credentials' },
       { id: 'pricing', label: 'Pricing' },
     ],
-    og: { bg: '#F7F3EC', ink: '#17201F', accent: '#D4699F', tile: '#17201F', glyph: '#F7F3EC', display: 'Bricolage Grotesque', displayFile: 'bricolage-grotesque.woff2', body: 'Manrope', bodyFile: 'manrope.woff2', weight: 700 },
+    og: { bg: '#F7F3EC', bgDark: '#1C1620', ink: '#17201F', accent: '#D4699F', tile: '#17201F', glyph: '#F7F3EC', display: 'Bricolage Grotesque', displayFile: 'bricolage-grotesque.woff2', body: 'Manrope', bodyFile: 'manrope.woff2', weight: 700 },
     faq: [
       ['Why not just post an open shift in the Facebook group?', 'A Facebook group does not know who holds a current CPR card, cannot record that the shift was offered to your own staff first, and leaves you no timesheet at the end of the week.'],
       ['Will Aidepost stop me scheduling someone whose CPR has lapsed?', 'No. It tells you at thirty days, at seven days, and on the roster itself. Credentials are surfaced, never enforced — the decision stays yours.'],

@@ -153,11 +153,49 @@
     const input = $('.pal-in', pal);
     const rows = $$('.pal-l li', pal);
     const none = $('.pal-none', pal);
-    const links = () => rows.filter((li) => !li.hidden).map((li) => $('a', li));
+    const list = $('.pal-l', pal);
+    /* Read the rows out of the DOM, not out of the captured array: filter()
+       reorders them, and Enter takes whatever is first ON THE SCREEN. */
+    const links = () => $$('.pal-l > li:not([hidden]) > a', pal);
+    /* RANKING. Rows ship in DOM order — verbs, the five screens, the stops,
+       the pages — and the first visible one is what Enter takes. With a
+       plain substring filter, typing “handoff” matched the verb row “Read
+       the handoff” first and Enter went to /#0702, the top of the front
+       page, while the row that goes to /screens#strip-cohort-handoff sat
+       second. The feature's own sentence says the opposite. So a match on
+       the row's NAME outranks a match anywhere in the row, and a name that
+       STARTS with what you typed outranks a name that merely contains it —
+       which is what puts “Handoff — the screen” above “Read the handoff”
+       without special-casing a kind. Ties keep DOM order, so nothing else
+       about this list moves. */
+    const items = rows.map((li, i) => {
+      const t = $('.pal-t', li);
+      return { li, i, name: (t ? t.textContent : li.textContent).trim().toLowerCase(), all: li.textContent.toLowerCase() };
+    });
+    const score = (it, q) => {
+      if (it.name === q) return 4;
+      if (it.name.startsWith(q)) return 3;
+      if (it.name.split(/[^a-z0-9]+/).some((w) => w && w.startsWith(q))) return 2;
+      if (it.name.includes(q)) return 1;
+      return it.all.includes(q) ? 0 : -1;
+    };
     const filter = () => {
       const q = input.value.trim().toLowerCase();
       let n = 0;
-      rows.forEach((li) => { const hit = !q || li.textContent.toLowerCase().includes(q); li.hidden = !hit; if (hit) n += 1; });
+      if (!q) {
+        items.forEach((it) => { it.li.hidden = false; list.appendChild(it.li); });
+        n = items.length;
+      } else {
+        const hits = [];
+        for (const it of items) {
+          const sc = score(it, q);
+          it.li.hidden = sc < 0;
+          if (sc >= 0) hits.push({ it, sc });
+        }
+        hits.sort((a, b) => (b.sc - a.sc) || (a.it.i - b.it.i));
+        hits.forEach(({ it }) => list.appendChild(it.li));
+        n = hits.length;
+      }
       none.hidden = n > 0;
       links().forEach((a, i) => a.classList.toggle('is-on', i === 0));
     };
@@ -385,22 +423,27 @@
   /* ── 18:45 · the handoff sheet composes itself as the step comes in ──── */
   const compose = () => {
     const li = document.getElementById('1845');
-    const pane = $('.tour-p.is-compose');
+    /* One handoff phone, not two. 07:02 and 18:45 are the same screen, and
+       rendering it twice cost 5 kB of index.html for a wrapper class. The
+       class is put on and taken off around the 18:45 step instead, so the
+       07:02 reader still sees the sheet whole. */
+    const pane = $('.tour-p[data-tour="handoff"]');
     if (!li || !pane) return;
     const items = $$('.kv-a > *', pane);
     const extra = $$('.passage-a, .receipt-a', pane);
     let timers = [];
     const stop = () => { timers.forEach(clearTimeout); timers = []; };
-    const clear = () => { stop(); pane.classList.remove('is-done'); items.forEach((x) => x.classList.remove('is-in')); extra.forEach((x) => x.classList.remove('is-in')); };
+    const clear = () => { stop(); pane.classList.remove('is-done', 'is-compose'); items.forEach((x) => x.classList.remove('is-in')); extra.forEach((x) => x.classList.remove('is-in')); };
     const run = () => {
       clear();
+      pane.classList.add('is-compose');
       const step = calm.matches ? 0 : 220;
       items.forEach((x, i) => timers.push(setTimeout(() => x.classList.add('is-in'), 200 + step * Math.floor(i / 2))));
       const base = 300 + step * Math.ceil(items.length / 2);
       extra.forEach((x, i) => timers.push(setTimeout(() => x.classList.add('is-in'), base + i * 260)));
       timers.push(setTimeout(() => pane.classList.add('is-done'), base + extra.length * 260 + 200));
     };
-    if (!('IntersectionObserver' in window)) { pane.classList.add('is-done'); return; }
+    if (!('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) run(); else clear(); }), { threshold: 0.35 });
     io.observe(li);
   };
@@ -596,10 +639,54 @@
     mq.addEventListener('change', sync);
   };
 
+  /* ── the pins are asked again the moment the stage has a width ────────
+     site.js place() measures each .cal-stage and skips it when the rect is
+     zero (`if (!b.width) continue`), and it only ever runs at boot, on
+     resize and on fonts.ready. At <=640 both annotated screens sit inside a
+     collapsed fold, so at boot they measure 0 and every pin stays hidden —
+     and opening the fold never asked again. Measured on /screens at 390
+     before this: boot [hidden x4] -> fold opened [hidden x4] -> one pixel of
+     resize [visible, --x/--y set]. The headline mechanic of the feature was
+     dead on the device the product ships on.
+
+     A ResizeObserver asks again, and only on the 0 -> painted edge: place()
+     is itself a resize listener, so anything that fired on every frame would
+     be a loop. The initial width is recorded before observe() so the
+     callback ResizeObserver fires immediately is not mistaken for that edge
+     on a desktop, where the stages are painted from the start. */
+  const pins = () => {
+    const stages = $$('[data-callouts] .cal-stage');
+    if (!stages.length || typeof ResizeObserver === 'undefined') return;
+    const was = new WeakMap();
+    stages.forEach((el) => was.set(el, el.getBoundingClientRect().width));
+    let t = 0;
+    const ro = new ResizeObserver((entries) => {
+      let woke = false;
+      for (const e of entries) {
+        const w = e.contentRect.width;
+        if (w > 1 && (was.get(e.target) || 0) <= 1) woke = true;
+        was.set(e.target, w);
+      }
+      if (!woke) return;
+      clearTimeout(t);
+      t = setTimeout(() => window.dispatchEvent(new Event('resize')), 0);
+    });
+    stages.forEach((el) => ro.observe(el));
+  };
+
+  /* ── the shift sheet keeps its way out on screen ──────────────────────
+     .ssheet-h is sticky now (see cohort.css); this only draws its hairline
+     once the sheet has actually been scrolled. */
+  const sheetEdge = () => {
+    const sh = $('.ssheet');
+    if (!sh) return;
+    sh.addEventListener('scroll', () => { sh.toggleAttribute('data-scrolled', sh.scrollTop > 4); }, { passive: true });
+  };
+
   const boot = () => {
     clock(); signOut(); rail(); tabs(); textSize(); phoneMode(); palette(); keys(); caption();
     simulator(); airplane(); compose(); flips(); roles(); compare(); faqs(); houses();
-    headingLinks(); totop(); footer(); printing(); stages();
+    headingLinks(); totop(); footer(); printing(); stages(); pins(); sheetEdge();
   };
   if (window.PHO) boot(); else document.addEventListener('pho:ready', boot);
 })();

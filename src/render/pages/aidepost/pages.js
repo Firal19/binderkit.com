@@ -1,6 +1,6 @@
 // /pricing, /about and /contact.
 
-import { esc, sec, h2, eyebrow, faq, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, find, shell, tierBlock, joinBlock, BOUNDARY } from './bits.js';
+import { esc, sec, h2, eyebrow, faq, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, find, shell, tierBlock, joinBlock, BOUNDARY, ixNav, pager, gradLadder, stateLegend, deepLink } from './bits.js';
 import { contact, mailto, hello, byline } from '../../shared.js';
 import { PRODUCTS } from '../../../data/brand.js';
 
@@ -25,6 +25,7 @@ export const pricingPage = {
   render(cfg, p) {
     const s = find('pricing');
     return shell(cfg, p, { page: 'pricing', ids: new Set(['top', 'pricing', 'post', 'signup', 'billing', 'questions', 'join']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Pricing')}<h1 id="h1">${esc(s.heading)}</h1><p class="lede">${esc(EVERY_PLAN)}</p></div></section>
+${ixNav([['pricing', 'The tiers', 'prov'], ['post', 'One charge per post', 'prov'], ['signup', 'Signing up', 'both'], ['billing', 'If a payment fails', 'prov'], ['questions', 'Questions', 'both'], ['join', 'Join', 'both']])}
 ${sec('pricing', 'pricing', `<div class="wrap">${tierBlock(p)}<p class="fine">${esc(s.note)}</p></div>`)}
 ${sec('post', 'post', `<div class="wrap post-g">
   <div>${eyebrow('Job post')}<h2 id="h-post"><span class="ap-wide">One charge per post. It publishes when it is paid.</span><span class="ap-phone">Why a post is not in the subscription.</span></h2><p class="sub">A subscription is per house. A post is per post — on every tier, including the trial, because a home that needs to hire should not have to upgrade to do it.</p></div>
@@ -35,7 +36,8 @@ ${sec('signup', 'signup', `<div class="wrap subs">
   <div class="note" id="billing"><h3>${esc(BILLING_STATES.heading)}</h3><dl class="defs">${BILLING_STATES.rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></div>
 </div>`, { label: 'Signing up, and billing' })}
 ${sec('questions', 'questions', `<div class="wrap q-g"><div class="head">${h2('questions', 'Asked about the price.')}</div>${faq(find('objections').rows.filter(([q]) => /post|Facebook|pay/i.test(q)).concat([['Do caregivers pay for Aidepost?', 'Never. Providers buy Aidepost. Caregivers create a profile, keep their credential dates, claim shifts and apply to posts free, without an organisation and without a card.']]))}</div>`)}
-${sec('join', 'join', joinBlock(cfg, p))}`);
+${sec('join', 'join', joinBlock(cfg, p))}
+${pager('/pricing')}`);
   },
 };
 
@@ -48,10 +50,22 @@ export const aboutPage = {
     const ev = find('evidence');
     const closing = ev.closingBlocks;
     const umbrella = PRODUCTS.find((x) => x.id === 'pho');
-    return shell(cfg, p, { page: 'about', ids: new Set(['top', 'two', 'boundary', 'write']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('About')}<h1 id="h1">The workforce record, and nothing else.</h1><p class="lede">${esc(p.lede)}</p></div></section>
+    return shell(cfg, p, { page: 'about', ids: new Set(['top', 'two', 'boundary', 'words', 'ladder', 'write']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('About')}<h1 id="h1">The workforce record, and nothing else.</h1><p class="lede">${esc(p.lede)}</p></div></section>
 ${sec('two', 'two-s', `<div class="wrap two-g">${closing.map((b) => `<div class="two-b"><h2 id="${b === closing[0] ? 'h-two' : 'h-two-b'}">${esc(b.heading)}</h2><p>${esc(b.text)}</p></div>`).join('')}</div>`)}
 ${sec('boundary', 'bound', `<div class="wrap"><div class="head">${h2('boundary', 'What Aidepost will not do.')}</div><p class="boundary">${esc(BOUNDARY)}</p></div>`)}
-${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Made in Oregon.')}<p class="sub">${esc(umbrella.name)} — ${esc(umbrella.descriptor.toLowerCase())}. One inbox, read by a person.</p>${byline(false)}</div><div class="write-a"><a class="btn pri lg" href="/contact">${ic('mail', 18, { pin: false })}Contact</a><a class="btn lg" href="${mailto(cfg)}">${esc(hello(cfg))}</a></div></div>`)}`);
+${sec('words', 'words', `<div class="wrap words-g">
+  <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth colour.', 'Every state in Aidepost is one of these four, and coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
+    <p class="fine">Expired deliberately borrows Cohort’s coral rather than inventing a fifth colour for the family. The vault states it; this page does not pretend it was our idea.</p></div>
+  ${stateLegend()}
+</div>`)}
+${sec('ladder', 'ladder-s', `<div class="wrap grd-g">
+  <div><div class="head head-r"><div>${eyebrow('The ladder')}${h2('ladder', esc(find('ladder').heading), esc(find('ladder').sub))}</div>${deepLink('/about#ladder', 'the graduation map')}</div>
+    <p class="fine">Every mini graduates the same way: one export, one import, and the same table shapes on the other side — org, house, licence track, staff, shift, credential. The code and the interface do not travel; they are rebuilt on ${esc(umbrella.name)}’s own design. The map below is the claim, stated as a claim.</p></div>
+  ${gradLadder()}
+</div>`)}
+${ixNav([['two', 'Two sides', 'both'], ['boundary', 'What we will not do', 'both'], ['words', 'The four words', 'both'], ['ladder', 'The ladder', 'both'], ['write', 'Write to a person', 'both']])}
+${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Made in Oregon.')}<p class="sub">${esc(umbrella.name)} — ${esc(umbrella.descriptor.toLowerCase())}. One inbox, read by a person.</p>${byline(false)}</div><div class="write-a"><a class="btn pri lg" href="/contact">${ic('mail', 18, { pin: false })}Contact</a><a class="btn lg" href="${mailto(cfg)}">${esc(hello(cfg))}</a></div></div>`)}
+${pager('/about')}`);
   },
 };
 
@@ -73,6 +87,7 @@ ${sec('contact', 'contact-s', `<div class="wrap contact-g">
     <p class="fine">No ticket, no bot, no newsletter. One person reads it and answers.</p>
   </div>
   ${contact(cfg, p, { topics: AP_TOPICS, placeholder: 'What would you like to know? If you run a house, say which track. If you are a caregiver, say roughly where.' })}
-</div>`)}`);
+</div>`)}
+${pager('/contact')}`);
   },
 };

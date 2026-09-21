@@ -9,7 +9,7 @@
 import { esc, sec, h2, faq } from '../../shared.js';
 import { PAGES } from '../../../data/page.js';
 import { ic } from '../../icons/careshop.js';
-import { page, pageHead, sticker } from './parts.js';
+import { page, pageHead, sticker, directory } from './parts.js';
 
 const spec = PAGES.careshop;
 const find = (k) => spec.sections.find((s) => s.key === k);
@@ -21,6 +21,25 @@ const lines = (d) => ['Every screen, every plan', ...d.split(/\.\s+/).flatMap((x
   return t.length > 40 ? t.split(/,\s+/) : [t];
 }).filter(Boolean).map((t) => t.charAt(0).toUpperCase() + t.slice(1))];
 
+
+/* ── CHECKOUT, HONESTLY ────────────────────────────────────────────────
+   brand.js prices this product Free $0 / Pro $19 / Scale $37 and carries
+   a "3-day trial" row that the live product does not have. The tier cards
+   above already drop that row rather than sell it; this slip is where it
+   is NAMED — because a reader who has seen a trial advertised on a
+   sibling site will look for one here, and the useful answer is the true
+   one. Every other line is read from the specification. */
+const TERMS = [
+  ['SOLD ON', 'The web, through Stripe Checkout', true],
+  ['THE APP', 'Never presents a purchase sheet', true],
+  ['ABOVE YOUR PLAN', 'Shown with its cost, never silently blocked', true],
+  ['CANCEL', 'One tap, and export any time', true],
+  ['THE UNIT', 'A house — not a seat, not a resident, not an item', true],
+  ['THE SHOPPER WITH NO ACCOUNT', 'Opens a shared run and closes it. Not a seat, and not counted', true],
+  ['3-DAY TRIAL', 'Not live. There is no trial in the product today', false],
+  ['YOUR OWN BRANDING', 'Frozen. If it returns it will be decided then, not inherited', false],
+];
+
 export function pricingPage(cfg, p) {
   const s = find('pricing');
   const ladder = find('ladder');
@@ -28,10 +47,20 @@ export function pricingPage(cfg, p) {
     ...p.pricing.rows.filter(([n]) => n !== '3-day trial' && n !== 'Free')];
 
   const inner = `${pageHead('Price tags', s.heading, s.sub)}
+${directory([['plans', 'The three plans', 'Free · $19 · $37'], ['terms', 'What is sold, and what is not', '2 not sold'], ['counts', 'What a plan counts', '4 answers'], ['ladder', 'The ladder out', '5 rows'], ['questions', 'Questions', '4 answers']], { title: 'On this page' })}
 ${sec('plans', 'plans-s', `<div class="wrap">
   <div class="tiers">${rows.map(([n, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}">${i === 1 ? '<span class="tier-flag">Most houses</span>' : ''}<span class="tier-n">${esc(n)}</span><span class="tier-p">${esc(price.replace(' / mo', ''))}<small>${price.includes('/ mo') ? ' / house / mo' : ''}</small></span><ul class="tier-f">${lines(d).map((t) => `<li><span class="tier-tick" aria-hidden="true"></span>${esc(t)}</li>`).join('')}</ul><a class="btn ${i === 1 ? 'pri' : ''}" href="${esc(cfg.cta.primaryHref)}" data-cta="pricing">${i === 0 ? 'Start free' : 'Start with ' + esc(n)}</a></div>`).join('')}</div>
   <p class="fine">${esc(s.note)}</p>
 </div>`, { label: 'Plans' })}
+${sec('terms', 'terms-s', `<div class="wrap">
+  <div class="head">${sticker('receipt', 'Before you reach for a card')}${h2('terms', 'What is sold, and what is not.', 'Free, nineteen and thirty-seven are the real prices and you can pay them today. The last two lines are the ones most price pages leave out.')}</div>
+  <div class="rc rc-terms">
+    <div class="rc-top"><b class="rc-store">TERMS OF THE TILL</b><span class="rc-meta">${esc(p.pricing.rows.map(([n, price]) => `${n} ${price.replace(' / mo', '')}`).join(' · ').toUpperCase())}</span></div>
+    <div class="rc-lines">${TERMS.map(([k, v, on]) => `<span class="rc-l${on ? '' : ' is-void'}"><span>${esc(k)}</span><i aria-hidden="true"></i><b>${esc(v)}</b></span>`).join('')}</div>
+    <div class="rc-tear" aria-hidden="true"></div>
+    <p class="rc-thanks">TWO LINES ON THIS SLIP ARE THINGS WE DO NOT SELL.</p>
+  </div>
+</div>`)}
 ${sec('counts', 'counts-s', `<div class="wrap">
   <div class="head">${sticker('tag', 'What a plan counts')}${h2('counts', 'The unit is the house.', 'Not the seat, not the resident, not the item. A house is a licensed facility, and a plan covers however many people work in it.')}</div>
   <dl class="defs">

@@ -66,3 +66,274 @@
 .brief-c .st-a { justify-self: start; }
 .brief-l { font-size: calc(var(--t-body-size) - 1.5px); color: var(--c-soft); line-height: 1.3; }
 .brief-tri.is-desk { max-width: 520px; }
+
+/* ══ THE WORKING DEMO ═════════════════════════════════════════════════════
+   The chrome around a live product screen: the film strip, the hero screen
+   switcher and the numbered callouts. Everything INSIDE a .phone / .browser
+   / .paper / .wk is still canvas.css's and faces.css's business and is not
+   touched here.
+
+   TOKENS. This block is page chrome, not mockup chrome, so it reads the
+   page's own names and never a --t-* or a --c-*: those are written on
+   .face[data-product] at (0,2,0) and are the mockup's language. The nine
+   names every one of the four page sheets declares are --bg --card --ink
+   --muted --soft --line --accent --accent-ink --r, plus base.css's --fs-*,
+   --sp-*, --gutter, --tap and --scroll-pad. Nothing else is assumed.
+   Locals are --dm-*, which no other sheet uses.
+
+   THE BUILD TRAP. build.mjs squeeze() eats the space around { } ; : , > so
+   `X :is(…)` ships as `X:is(…)` and matches nothing. Every descendant that
+   reaches a mockup below is written `X *:is(…)`.
+
+   FLOORS. A .fs-i and a .cal-i are <li>, so every word inside one is prose
+   to the gate: 15px is the floor and no caption dips under it. The mock
+   interiors keep their own smaller scale, which is correct and exempt. */
+
+.fstrip, .swx, .cal-wrap {
+  --dm-hair: color-mix(in srgb, var(--ink) 11%, var(--bg));
+  --dm-pane: color-mix(in srgb, var(--ink) 4%, var(--bg));
+  --dm-room: 460px;
+  --dm-min: 0;
+  /* The hard ceiling on a mock's painted width. The rail is allowed to
+     overflow it — a card wider than the viewport is what a rail is FOR —
+     but the switcher and the callout stage are not, and a mock that runs
+     past the glass in a page that cannot scroll sideways is just clipped.
+     Both of those bleed to the gutters below 640 and raise this to match,
+     which is what buys the phone a bigger screen rather than a smaller
+     one: 378px of product on a 390pt phone, up from 350px. */
+  --dm-cap: calc(100vw - 2 * var(--gutter));
+}
+
+/* ── the rail ──────────────────────────────────────────────────────────
+   It bleeds by reversing the gutter and the safe area, never by a 100vw
+   margin: a classic desktop scrollbar makes 100vw wider than the page, and
+   body{overflow-x:clip} would crop the far edge silently rather than
+   report it. The wrap is already the viewport minus exactly those two, so
+   giving them back reaches the glass and stops there. Measured: left 0,
+   right 320 at 320; left 0, right 1440 at 1440; zero document overflow at
+   320 / 390 / 430 / 1280 / 1440. */
+.fstrip { display: grid; gap: var(--sp-3); }
+.fs-head { display: grid; gap: 6px; }
+.fs-h { font-family: var(--font-display); font-size: var(--fs-h3); line-height: 1.15; }
+.fs-s { font-size: var(--fs-read); color: var(--muted); max-width: 62ch; }
+
+.fs-rail {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: var(--sp-2) 0 var(--sp-4);
+  /* Trailing room, or the last cards can never reach the snap port: a deep link
+     to the final screen scrolled it into view while the caption still read the
+     third. The percentage resolves against the rail's own width, so a phone
+     (card ~= rail) falls back to the gutter and a 1440 desktop gets ~1000px.
+     --fs-card is the widest card a site expects; override it per sheet. */
+  padding-inline-end: max(var(--gutter, 20px), calc(100% - var(--fs-card, 420px)));
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-behavior: auto;
+  touch-action: pan-x pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dm-hair) transparent;
+}
+.is-bleed .fs-rail {
+  margin-inline: calc(-1 * (var(--gutter) + env(safe-area-inset-left, 0px))) calc(-1 * (var(--gutter) + env(safe-area-inset-right, 0px)));
+  padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px)) max(calc(var(--gutter) + env(safe-area-inset-right, 0px)), calc(100% - var(--fs-card, 420px)));
+  scroll-padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px));
+}
+.fs-rail.is-drag { scroll-snap-type: none; cursor: grabbing; user-select: none; }
+/* No :focus-visible rule here or on .swx-p: both carry tabindex, so
+   base.css's one ring already reaches them at zero specificity and a second
+   one would only be a slower way to disagree with it. */
+
+.fs-i {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  scroll-margin-top: var(--scroll-pad, 84px);
+}
+.fs-fig { margin: 0; display: grid; gap: var(--sp-3); justify-items: start; width: max-content; }
+.fs-stage { position: relative; }
+/* The mock fits the room this item has, and never shrinks past the point
+   where the product stops being readable — the screens ARE the pitch. */
+.fs-stage *:is(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, [data-mock]) {
+  --mock-room: min(var(--dm-room), var(--dm-cap));
+  --mock-z: max(var(--dm-min), var(--mock-fit));
+}
+.fs-i[data-kind="web"] { --dm-room: 1180px; }
+.fs-i[data-kind="paper"] { --dm-room: 540px; }
+.fs-i[data-kind="week"] { --dm-room: 760px; }
+
+.fs-cap { display: grid; gap: 5px; max-width: 42ch; }
+.fs-hd { display: flex; align-items: baseline; gap: var(--sp-2); }
+.fs-no { font-family: var(--font-mono); font-size: 15px; font-variant-numeric: tabular-nums; color: var(--soft); flex: none; }
+.fs-i[data-on] .fs-no { color: var(--accent-ink); }
+.fs-t { font-family: var(--font-display); font-size: 17px; line-height: 1.25; font-weight: 600; }
+.fs-d { font-size: 15px; line-height: 1.45; color: var(--muted); }
+.fs-pv { display: grid; gap: 2px; margin-top: 3px; padding-left: var(--sp-3); border-left: 2px solid var(--accent-ink); font-size: 15px; line-height: 1.45; color: var(--ink); }
+.fs-pl { font-family: var(--font-mono); font-size: 15px; letter-spacing: .01em; color: var(--accent-ink); }
+
+.fs-hint { font-size: 15px; color: var(--soft); }
+/* 15px, not the label size: .fs-hint is a <p>, and the gate holds prose to
+   15px whatever its length. It also must never be hidden at any width — it
+   is the only instruction the rail ever gives. */
+
+/* ── the jump index: also the deep links ───────────────────────────── */
+/* MOUNT A STRIP INSIDE A .wrap. This rule pulls itself outward by --sp-2 so the
+   chips' padding lines up with the rail edge; outside a .wrap there is no gutter
+   to pull back into and the document scrolls sideways 8px each side at every
+   phone width. Two site agents lost a gate cycle to this. Kept at (0,1,0) on
+   purpose: careshop.css:1720 sets .fs-jump{gap:7px} at the same specificity and
+   must keep winning on source order. */
+.fs-jump {
+  display: flex; gap: var(--sp-2);
+  overflow-x: auto; scrollbar-width: none;
+  margin-inline: calc(-1 * var(--sp-2));
+  padding-inline: var(--sp-2);
+}
+.fs-jump::-webkit-scrollbar { display: none; }
+.fs-jump a {
+  flex: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: var(--tap); padding: 0 14px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--card);
+  font-size: 15px; line-height: 1.2; text-decoration: none; color: var(--muted);
+  white-space: nowrap;
+}
+@media (hover: hover) { .fs-jump a:hover { border-color: var(--accent-ink); color: var(--ink); } }
+.fs-jump a[aria-current="true"] { border-color: var(--accent-ink); background: var(--dm-pane); color: var(--ink); font-weight: 600; }
+.fs-jn { font-family: var(--font-mono); font-size: 15px; font-variant-numeric: tabular-nums; color: var(--soft); }
+.fs-jump a[aria-current="true"] .fs-jn { color: var(--accent-ink); }
+
+/* ── the hero screen switcher ──────────────────────────────────────────
+   Every panel keeps its box in the same grid cell, so the stage is always
+   as tall as the tallest screen and a tab change moves nothing. Inactive
+   panels go out with visibility, which also takes them out of the a11y
+   tree and out of the tab order without a single line of script. */
+/* minmax(0,1fr), so a stage that bleeds past the gutters cannot drag the
+   tab strip out with it: the column keeps the measure, the stage overhangs. */
+.swx { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+.swx-tabs {
+  display: flex; gap: var(--sp-2); justify-self: center; max-width: 100%;
+  overflow-x: auto; scrollbar-width: none;
+  padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--dm-pane);
+}
+.swx-tabs::-webkit-scrollbar { display: none; }
+/* set by site.js once the strip has been measured. With scripting off the
+   attribute never appears and the strip stays scrollable, which is the
+   safe direction: a tab that does not fit is still reachable. */
+.swx-tabs[data-fits] { overflow-x: visible; }
+.swx-tab {
+  flex: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: var(--tap); padding: 0 16px; border-radius: 999px;
+  font-size: 15px; line-height: 1.2; color: var(--muted); white-space: nowrap;
+}
+@media (hover: hover) { .swx-tab:hover { color: var(--ink); } }
+.swx-tab[aria-selected="true"] { background: var(--card); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.swx-no { font-family: var(--font-mono); font-size: 15px; font-variant-numeric: tabular-nums; color: var(--soft); }
+.swx-tab[aria-selected="true"] .swx-no { color: var(--accent-ink); }
+
+.swx-stage { display: grid; justify-items: center; }
+.swx-stage > .swx-p { grid-area: 1 / 1; display: grid; gap: var(--sp-3); justify-items: center; }
+.swx-p:not([data-on]) { visibility: hidden; pointer-events: none; }
+.swx-c { max-width: 46ch; text-align: center; font-size: 15px; line-height: 1.45; color: var(--muted); }
+.swx-p *:is(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, [data-mock]) {
+  --mock-room: min(var(--dm-room), var(--dm-cap));
+  --mock-z: max(var(--dm-min), var(--mock-fit));
+}
+.swx-p[data-kind="web"] { --dm-room: 1180px; }
+.swx-p[data-kind="paper"] { --dm-room: 540px; }
+.swx-p[data-kind="week"] { --dm-room: 760px; }
+/* No script, no tab strip — and then every screen is simply on the page,
+   one under the other, which is the honest fallback for a switcher. */
+.no-js .swx-tabs { display: none; }
+.no-js .swx-stage { gap: var(--sp-6); }
+.no-js .swx-stage > .swx-p { grid-area: auto; }
+.no-js .swx-p:not([data-on]) { visibility: visible; pointer-events: auto; }
+
+/* ── numbered callouts ─────────────────────────────────────────────────
+   A pin with coordinates is painted by CSS alone. A pin that names a
+   selector starts out hidden and site.js reveals it once it has measured
+   the element — so a selector that stops matching leaves no orphan pin,
+   and the sentence is still in the list underneath either way. */
+.cal-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-4); }
+/* the same room ladder .fs-i and .swx-p already declare. A callout stage
+   holding a desktop shell needs 1180px or it paints at a third size. */
+.cal-wrap[data-kind="web"] { --dm-room: 1180px; }
+.cal-wrap[data-kind="paper"] { --dm-room: 540px; }
+.cal-wrap[data-kind="week"] { --dm-room: 760px; }
+/* width:max-content and no max-width, deliberately: the stage is the
+   coordinate space every pin is a percentage of, so it has to hug the mock
+   exactly. --dm-cap is what keeps it inside the page, not a clamp here. */
+.cal-stage { position: relative; justify-self: center; width: max-content; }
+.cal-stage *:is(.phone, .browser, .paper, .paper-sheet, .wk, .ph, .cp, .divset, [data-mock]) {
+  --mock-room: min(var(--dm-room), var(--dm-cap));
+  --mock-z: max(var(--dm-min), var(--mock-fit));
+}
+.cal-pin {
+  position: absolute; left: var(--x, 50%); top: var(--y, 50%);
+  z-index: 3; transform: translate(-50%, -50%);
+  display: grid; place-items: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--btn); color: var(--btn-ink);
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700; line-height: 1;
+  box-shadow: 0 0 0 3px var(--bg), 0 6px 16px -8px rgba(0, 0, 0, .6);
+}
+.cal-pin[data-on] { outline: 2px solid var(--accent-ink); outline-offset: 4px; }
+.cal-list { display: grid; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; max-width: 62ch; }
+.cal-i {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: var(--sp-3); align-items: start;
+  padding: 9px 11px; border: 1px solid transparent; border-radius: var(--r);
+}
+.cal-i[data-on] { border-color: var(--line); background: var(--dm-pane); }
+.cal-n {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card);
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700; line-height: 1; color: var(--accent-ink);
+}
+.cal-i[data-on] .cal-n { background: var(--btn); border-color: var(--btn); color: var(--btn-ink); }
+.cal-x { font-size: 15px; line-height: 1.5; color: var(--ink); }
+/* The element a callout quotes, lit inside the mockup. An outline, never a
+   border or a padding change: those would reflow the screen it points at. */
+[data-lit-t] { outline: 2px solid var(--accent-ink); outline-offset: 2px; border-radius: 6px; }
+
+/* ── motion is opt-in, not opt-out ─────────────────────────────────────
+   The default above is motionless, so a reader who asked for no motion
+   gets none whatever the cascade does. site.js makes the same call for
+   programmatic scrolling, which is the half CSS cannot reach. */
+@media (prefers-reduced-motion: no-preference) {
+  .fs-jump a, .swx-tab, .cal-i, .cal-pin, .fs-no { transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, outline-color 160ms ease; }
+}
+
+/* ── the phone: denser chrome, and a floor under the product ───────────
+   Only the chrome shrinks. --dm-min stops the mock at 82% of true size on
+   a phone-shaped screen and at 50% for a desktop shell, because a screen
+   nobody can read proves nothing. An item wider than the viewport is fine
+   here and only fine here: the rail scrolls sideways by design. */
+@media (max-width: 640px) {
+  .fstrip { gap: var(--sp-2); }
+  .fstrip { --dm-min: .82; }
+  .fs-i[data-kind="web"] { --dm-min: .5; }
+  /* The one place the product gets the whole phone: the hero device and the
+     annotated shell reach the glass, so the screen inside them is as large
+     as the hardware allows. They keep no floor because they have no
+     sideways scroll to escape into — the fit IS the floor here, and it
+     lands at .97 on a 390pt phone and 1.0 on a 430. */
+  .swx-stage, .cal-stage {
+    margin-inline: calc(-1 * (var(--gutter) + env(safe-area-inset-left, 0px))) calc(-1 * (var(--gutter) + env(safe-area-inset-right, 0px)));
+  }
+  .swx, .cal-wrap { --dm-cap: calc(100vw - var(--sp-3)); }
+  .fs-rail { gap: var(--sp-4); padding-bottom: var(--sp-3); }
+  .fs-cap { max-width: min(42ch, 86vw); }
+  .fs-t { font-size: 16px; }
+  .swx { gap: var(--sp-3); }
+  .swx-tabs { justify-self: stretch; border-radius: var(--r); }
+  .swx-tab { padding: 0 13px; }
+  .cal-wrap { gap: var(--sp-3); }
+  .cal-i { padding: 8px 9px; }
+}

@@ -1,16 +1,9 @@
 // /library — the four libraries: what each draws on, what is in it, how much
 // has been read against the rule, and the honest state of the content.
 
-import { header, footer, section, title, number, find, esc, cite, ev, citesBlock } from './chrome.js';
+import { header, footer, section, title, BOOK, atChapter, onThisPage, find, esc, cite, ev, citesBlock } from './chrome.js';
 
-const SECS = number('BK-LB', [
-  { id: 'top', label: 'The library is the product', tab: '' },
-  { id: 'libraries', label: 'Four tracks, four libraries', tab: 'Libraries' },
-  { id: 'evidence', label: 'The evidence tags, and the four rules', tab: 'Evidence', foldName: 'The evidence tags', gist: 'Verified, derived or open, and the four rules behind a version.' },
-  { id: 'written', label: 'What is written, and what is not', tab: 'Written', foldName: 'What is written', gist: 'The AFH-DD library counted rather than claimed.' },
-  { id: 'never', label: 'Removed, and never', tab: 'Never', gist: 'Six taken out on purpose, and six this product will never do.' },
-  { id: 'words', label: 'Three words', tab: 'Words' },
-]);
+const SECS = BOOK['/library'];
 const [TOP, LIBS, EVID, WRITTEN, NEVER, WORDS] = SECS;
 
 const NEVER_ROWS = [
@@ -41,12 +34,13 @@ const STATE = [
 ];
 
 function render(cfg, p) {
+  atChapter('/library');
   const s = find('depth');
   const screen = find('screen');
   return `<a class="skip" href="#main">Skip to content</a>
 ${header(cfg, p, { page: 'library', tabs: SECS.filter((x) => x.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">
-${title(TOP, { eyebrow: 'Chapter · The library', h1: s.heading, lede: s.sub, ctas: `<a class="btn pri lg" href="#libraries">The four libraries</a><a class="btn lg" href="#written">What is written</a>` })}
+${title(TOP, { eyebrow: 'Chapter · The library', h1: s.heading, lede: s.sub, ctas: `<a class="btn pri lg" href="#libraries">The four libraries</a><a class="btn lg" href="#written">What is written</a>`, index: onThisPage(SECS) })}
 ${section(LIBS, `<h2 id="h-libraries">Four tracks, four libraries.</h2><p class="sub">A facility has one track, chosen when you create it. Here is what each library draws on, what is in it, and how much of it has been read against the rule.</p>
   <table class="lib"><thead><tr>${s.cols.map((c) => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead>
     <tbody>${s.rows.map((row) => `<tr><th scope="row" data-col="${esc(s.cols[0])}">${esc(row[0])}</th><td data-col="${esc(s.cols[1])}" class="is-auth"><code>${esc(row[1])}</code></td><td data-col="${esc(s.cols[2])}">${esc(row[2])}</td><td data-col="${esc(s.cols[3])}"><b>${esc(row[3])}</b></td></tr>`).join('')}</tbody></table>
@@ -55,7 +49,7 @@ ${section(EVID, `<h2 id="h-evidence">Every item prints its evidence tag.</h2><p 
   <div class="tag-g"><div>${ev('verified')}<span>Someone inspected on this track read the primary source.</span></div><div>${ev('derived')}<span>Inferred from the rule chapter; prints that way, visibly, until confirmed.</span></div><div>${ev('open')}<span>No authority yet — marked as such, never hidden.</span></div></div>
   ${citesBlock()}
   <div class="banner-note"><span class="strip-l">${esc(screen.side.label)}</span><p>${esc(screen.side.text)}</p></div>`)}
-${section(WRITTEN, `<h2 id="h-written">What is written, and what is not.</h2><p class="sub">The planner and the print are ready. The libraries themselves are still being read against the rule.</p>
+${section(WRITTEN, `<h2 id="h-written">What is written, and what is not.</h2><p class="sub">The planner and the print are built. The libraries themselves are still being read against the rule.</p>
   <dl class="ledger">${STATE.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
   <p class="boundary">We would rather hand you a banner than a tidy page.</p>`)}
 ${section(NEVER, `<h2 id="h-never">Removed, and never.</h2><p class="sub">These stay out. Each one would have required a record about a person, or a claim the product cannot support.</p>

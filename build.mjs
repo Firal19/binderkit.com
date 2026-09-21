@@ -163,7 +163,8 @@ function head({ title, description, canonical, css, preload = [], extra = '', im
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${canonical}">
-<meta name="theme-color" content="${CONFIG.og.bg}">
+<meta name="theme-color" content="${CONFIG.og.bg}" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="${CONFIG.og.bgDark || CONFIG.og.bg}" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(p.name)}">

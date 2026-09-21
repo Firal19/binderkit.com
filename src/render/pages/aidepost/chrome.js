@@ -11,11 +11,62 @@ import { ic } from '../../icons/aidepost.js';
 
 export const PROVIDER_NAV = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['pricing', 'Pricing']];
 export const CAREGIVER_NAV = [['caregivers', 'Shifts near you'], ['wallet', 'Your wallet'], ['free', 'Free, for ever']];
-export const PAGE_LINKS = [['/providers', 'Providers'], ['/caregivers', 'Caregivers'], ['/pricing', 'Pricing'], ['/about', 'About'], ['/contact', 'Contact']];
+export const PAGE_LINKS = [['/providers', 'Providers'], ['/caregivers', 'Caregivers'], ['/screens', 'The screens'], ['/pricing', 'Pricing'], ['/about', 'About'], ['/contact', 'Contact']];
+
+/* ── the ring of routes, and the pager across it ──────────────────────
+   Both used to live in bits.js. They are here because /privacy is drawn by
+   the kit's shared render/privacy.js — a file this site does not own and
+   three other sites read — and the only part of that page Aidepost supplies
+   is this footer. bits.js imports this file, so putting the ring on the
+   chrome side keeps the import graph a line rather than a loop; bits.js
+   re-exports all three and every page module still imports them from there. */
+export const ROUTES = [
+  ['/', 'Both sides', 'The whole argument on one page', 'both'],
+  ['/providers', 'For providers', 'The board, credentials, hours, hiring', 'prov'],
+  ['/caregivers', 'For caregivers', 'Shifts near you, free for ever', 'care'],
+  ['/screens', 'The screens', 'All five, at the size they ship', 'both'],
+  ['/pricing', 'Pricing', 'Per house, plus one charge per post', 'both'],
+  ['/about', 'About', 'The workforce record, and nothing else', 'both'],
+  ['/contact', 'Contact', 'One inbox, one person answers', 'both'],
+  ['/privacy', 'Privacy', 'What Aidepost holds, and what it does not', 'both'],
+];
+export const routeIx = (path) => ROUTES.findIndex(([h]) => h === path);
+
+/* prev/next across the ring. Not a carousel: the first route has no
+   previous and says so by not drawing one, because a pager that wraps
+   silently teaches a reader that the order is not real. The last route has
+   no next for the same reason — but it does have a previous, and /privacy
+   shipped with neither, which is a dead end rather than a stated edge. */
+export function pager(path) {
+  const i = routeIx(path);
+  if (i < 0) return '';
+  const cell = (n, dir) => {
+    const [href, title, gist, side] = n;
+    return `<a class="pg-i is-${dir}" href="${esc(href)}" data-side-hint="${esc(side)}" rel="${dir}"><span class="pg-k">${ic(dir === 'prev' ? 'left' : 'right', 16, { pin: false })}${dir === 'prev' ? 'Back to' : 'Next'}</span><b>${esc(title)}</b><span class="pg-g">${esc(gist)}</span></a>`;
+  };
+  const prev = i > 0 ? cell(ROUTES[i - 1], 'prev') : '';
+  const next = i < ROUTES.length - 1 ? cell(ROUTES[i + 1], 'next') : '';
+  return `<nav class="pg" aria-label="The rest of the site, in order">${prev}${next}<span class="pg-of">${i + 1} of ${ROUTES.length}</span></nav>`;
+}
+
+/* Where you are, said in the header on a phone, where there is no nav rail
+   to infer it from. */
+export const WHERE = { home: 'Both sides', providers: 'For providers', caregivers: 'For caregivers', screens: 'The screens', pricing: 'Pricing', about: 'About', contact: 'Contact', privacy: 'Privacy', '404': 'Not here' };
 
 /* Where a section link points depends on the page it sits on: in-page when
    the id is here, back to the front page when it is not. */
 const linker = (ids) => (id) => (ids && ids.has(id) ? `#${id}` : `/#${id}`);
+
+const GO = [
+  ['/', 'Both sides', 'the front page'],
+  ['/providers', 'For providers', 'the board, credentials, hours, hiring'],
+  ['/caregivers', 'For caregivers', 'shifts near you, free for ever'],
+  ['/screens', 'The screens', 'all five, at the size they ship'],
+  ['/pricing', 'Pricing', 'per house, plus one charge per post'],
+  ['/about', 'About', 'the workforce record, and nothing else'],
+  ['/contact', 'Contact', 'one inbox, one person answers'],
+  ['/privacy', 'Privacy', 'what Aidepost holds'],
+];
 
 const VERBS = [
   ['offer', 'Offer to own staff', 'the board · inward first', 'board'],
@@ -24,8 +75,6 @@ const VERBS = [
   ['export', 'Export timesheets', 'hours · CSV, never pay', 'export'],
   ['side', 'Turn the page over', 'switch side', 'sides'],
   ['mode', 'Day / Night', 'switch the light', 'moon'],
-  ['pricing', 'Go to pricing', '/pricing', 'free'],
-  ['write', 'Write to a person', '/contact', 'mail'],
 ];
 
 const modeBadge = () => `<button class="badge-t" type="button" data-mode-toggle aria-label="Switch to dark" data-theme-light="#F7F3EC" data-theme-dark="#1C1620"><span class="badge-d">${ic('sun', 16, { pin: false })}<span>Day</span></span><span class="badge-n">${ic('moon', 16, { pin: false })}<span>Night</span></span><span class="badge-pin" aria-hidden="true"></span></button>`;
@@ -35,14 +84,14 @@ function palette() {
     <div class="pal-scrim" data-close></div>
     <div class="pal-c">
       <label class="pal-ask">${ic('search', 18, { pin: false })}<input class="pal-in" type="text" placeholder="Type a verb…" aria-label="Type a verb" autocomplete="off" spellcheck="false"><kbd>esc</kbd></label>
-      <ul class="pal-list" role="list">${VERBS.map(([k, t, s, i]) => `<li><button class="pal-row" type="button" data-verb="${k}">${ic(i, 18)}<span class="pal-t">${esc(t)}</span><span class="pal-s">${esc(s)}</span></button></li>`).join('')}</ul>
-      <p class="pal-none" hidden>No verb matches. Aidepost has four: offer, post, add a date, export.</p>
+      <ul class="pal-list" role="list">${VERBS.map(([k, t, s, i]) => `<li><button class="pal-row" type="button" data-verb="${k}">${ic(i, 18)}<span class="pal-t">${esc(t)}</span><span class="pal-s">${esc(s)}</span></button></li>`).join('')}${GO.map(([h, t, s]) => `<li><a class="pal-row is-go" href="${h}"><span class="pal-go" aria-hidden="true"></span><span class="pal-t">${esc(t)}</span><span class="pal-s">${esc(s)}</span><span class="pal-p">${esc(h)}</span></a></li>`).join('')}</ul>
+      <p class="pal-none" hidden>Nothing matches. Aidepost has four verbs — offer, post, add a date, export — and eight places to be.</p>
     </div>
   </div>`;
 }
 
 function keysCard() {
-  const rows = [['1', 'I run a house'], ['2', 'I’m a caregiver'], ['⌘ K', 'The verbs'], ['?', 'This card'], ['Esc', 'Close whatever is open']];
+  const rows = [['1', 'I run a house'], ['2', 'I’m a caregiver'], ['⌘ K', 'The verbs, and every page'], ['← →', 'Move through the screens — in the strip, or in the tabs'], ['Home End', 'The first screen, the last screen'], ['?', 'This card'], ['Esc', 'Close whatever is open']];
   return `<div class="keys" id="keys" hidden role="dialog" aria-label="Keyboard shortcuts" aria-modal="true">
     <div class="pal-scrim" data-close></div>
     <div class="keys-c">
@@ -80,7 +129,10 @@ export function header(cfg, p, opts = {}) {
 
   return `<header class="hd" id="top-bar" data-page="${esc(page)}">
     <div class="wrap hd-in">
-      <a class="brand" href="/" aria-label="${esc(p.name)} — home">${mark(p.id, 30, { label: false })}<span class="brand-n">${esc(p.name)}</span></a>
+      <div class="hd-id">
+        <a class="brand" href="/" aria-label="${esc(p.name)} — home">${mark(p.id, 30, { label: false })}<span class="brand-n">${esc(p.name)}</span></a>
+        <span class="hd-where" data-where>${esc(WHERE[page] || 'Both sides')}</span>
+      </div>
       <div class="sw" role="group" aria-label="Which side are you on?">
         <button class="sw-b is-prov" type="button" data-side-set="provider" aria-pressed="true">I run a house</button>
         <button class="sw-b is-care" type="button" data-side-set="caregiver" aria-pressed="false">I’m a caregiver</button>
@@ -107,7 +159,7 @@ export function header(cfg, p, opts = {}) {
       </div>
       <div class="sheet-ix msheet-g" data-page-index><span class="msheet-k">In this page</span></div>
       <div class="sheet-f">
-        <nav class="sheet-p" aria-label="Pages">${[['/pricing', 'Pricing'], ['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']].map(([h, t]) => `<a href="${h}">${esc(t)}</a>`).join('')}</nav>
+        <nav class="sheet-p" aria-label="Pages">${[['/screens', 'Screens'], ['/pricing', 'Pricing'], ['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']].map(([h, t]) => `<a href="${h}">${esc(t)}</a>`).join('')}</nav>
         ${modeBadge()}<button class="sheet-x" type="button" data-close aria-label="Close menu">${ic('x', 20, { pin: false })}</button>
       </div>
     </div>
@@ -148,7 +200,7 @@ function phoneFoot(cfg, p, at, li) {
       <button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button>
       <p class="ft-note">One inbox. A person answers.</p>
     </div>
-    ${group('Product', [['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/pricing', 'Pricing']])}
+    ${group('Product', [['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']])}
     ${group('Caregivers', [['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])}
     ${group('Company', [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['https://providerhub.us', 'providerhub.us']])}
     ${social(p.id, { cls: 'soc-pills', size: 16, label: 'Aidepost on social, again' })}
@@ -168,13 +220,19 @@ export function footer(cfg, p, opts = {}) {
     ['Social', social(p.id, { cls: 'soc-pills', size: 16, text: true, label: 'Aidepost on social' })],
     ['', `<div class="ft-sun">${mark(p.id, 80, { label: false })}<span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span>${byline(true)}</div>`],
   ];
-  return `<footer class="ft" id="foot">
+  /* /privacy is the eighth route and the only one whose <main> this site
+     does not render, so it was the only one that ended with no way on or
+     back. The pager is emitted here, between </main> and the footer: it is
+     a <nav> and a sibling of main, which is where a "the rest of the site"
+     nav is allowed to sit, and .pg reads only :root tokens so it paints the
+     same there as it does inside main on the other seven. */
+  return `${opts.page === 'privacy' ? pager('/privacy') : ''}<footer class="ft" id="foot">
     <div class="wrap">
       <div class="ft-top">
         <p class="ft-line">${ic('board', 20)}<span>Tonight is <b data-clock="day">the day</b>. <span class="ft-today"></span></span></p>
         <button class="btn sm ft-print" type="button" data-print>${ic('print', 18, { pin: false })}Print the roster</button>
       </div>
-      <div class="ft-wk" role="group" aria-label="Aidepost, laid out as a week">
+      <div class="ft-wk" data-scrollx role="group" aria-label="Aidepost, laid out as a week">
         ${cols.map(([title, body], i) => `<div class="ft-d${title ? '' : ' is-sun'}" data-day="${DAYS[i]}"><span class="ft-dn">${DAYS[i]}<i class="ft-tonight" aria-hidden="true">tonight</i></span>${title ? `<b class="ft-dt">${esc(title)}</b>` : ''}${body}</div>`).join('')}
       </div>
       ${phoneFoot(cfg, p, at, li)}

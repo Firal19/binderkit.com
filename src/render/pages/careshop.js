@@ -9,10 +9,10 @@
 // a ring that turns as you scroll. Every screen on the page is doing work.
 
 import { esc, faq, sec, h2, skip } from '../shared.js';
-import { iosShell } from '../instruments.js';
+import { iosShell, screenSwitch } from '../instruments.js';
 import { PAGES } from '../../data/page.js';
 import { ic } from '../icons/careshop.js';
-import { header, footer, sticker, chip, screen, parDemo, approveDemo, allergenDemo, reserveDemo, priceDemo, storeDemo, ladderDemo, cookDemo, printList } from './careshop/parts.js';
+import { header, footer, sticker, chip, screen, parDemo, approveDemo, allergenDemo, reserveDemo, priceDemo, storeDemo, ladderDemo, cookDemo, printList, walkOn, directory } from './careshop/parts.js';
 import { loopPage } from './careshop/loop.js';
 import { stockPage } from './careshop/stock.js';
 import { rulesPage } from './careshop/rules.js';
@@ -20,17 +20,26 @@ import { aboutPage } from './careshop/about.js';
 import { writePage } from './careshop/write.js';
 import { featuresPage } from './careshop/features.js';
 import { pricingPage } from './careshop/pricing.js';
+import { shelfPage } from './careshop/shelf.js';
 
 export { header, footer };
 
 const spec = PAGES.careshop;
 const find = (k) => spec.sections.find((s) => s.key === k);
 
+/* ── EVERY FIGURE SAYS WHERE IT COMES FROM ─────────────────────────────
+   The sixth field is the provenance, and it is not decoration. Two of
+   these four are readings off the sample house the instruments on this
+   page all draw — a demo number, and it says so on the number rather
+   than in a footnote at the bottom of the receipt. The other two are
+   facts about how the product is built, which a reader can check against
+   the product itself. A landing page that shows a figure a visitor
+   cannot source is the thing this whole site is trying not to be. */
 const STATS = [
-  ['$', '14.20', 2, 'at risk on the shelf today', 'Every dated item, most urgent first, and the value totalled at the foot.'],
-  ['', '3 × 5', 0, 'days × beds is the reserve target', 'Arithmetic, not a shrug. The bed count is typed by a human.'],
-  ['', '5', 0, 'origins for a buy request. No sixth.', 'A menu shortfall, an expiry, a par breach, a reserve gap, or a caregiver’s ask.'],
-  ['', '6', 0, 'front doors, one contract', 'The shelf, the scanner, Today, a workbook, the catalogue, a shared run — all write the same request.'],
+  ['$', '14.20', 2, 'at risk on the shelf today', 'Every dated item, most urgent first, and the value totalled at the foot.', 'demo data'],
+  ['', '3 × 5', 0, 'days × beds is the reserve target', 'Arithmetic, not a shrug. The bed count is typed by a human.', 'demo data'],
+  ['', '5', 0, 'origins for a buy request. No sixth.', 'A menu shortfall, an expiry, a par breach, a reserve gap, or a caregiver’s ask.', 'in the product'],
+  ['', '6', 0, 'front doors, one contract', 'The shelf, the scanner, Today, a workbook, the catalogue, a shared run — all write the same request.', 'in the product'],
 ];
 
 /* the seven stations on the ring, each a link to the aisle it lives in */
@@ -42,6 +51,27 @@ export const RING = [
   ['Receipt', 'queue', 'Closing the run is the only moment stock rises from a shop.'],
   ['Stock', 'stock', 'On hand is never typed. It moves through the record.'],
   ['Cook', 'cook', 'Complete, and stock goes down — once.'],
+];
+
+/* ── the entrance board ───────────────────────────────────────────────
+   Every stop on the front page, in walk order, with the shortest true
+   name and what is down there. It is real anchors, so it works with no
+   script; careshop.js marks the one you are standing in as you scroll.
+   These are the same ids the aisle signs, the drawer and the receipt all
+   point at, so a name can only be wrong in one place. */
+export const HOME_STOPS = [
+  ['loop', 'The loop', '7 stations'],
+  ['today', 'Today', '2 briefings'],
+  ['stock', 'Stock', '4 zones'],
+  ['queue', 'The queue', '5 origins'],
+  ['cook', 'Cook mode', '1 warning'],
+  ['reserve', 'Reserves', 'days × beds'],
+  ['record', 'Residents', '9 refusals'],
+  ['roles', 'Who is in the store', '6 people'],
+  ['kitchen', 'Your kitchen', '1 door'],
+  ['questions', 'Questions', '4 answers'],
+  ['pricing', 'Pricing', '3 plans'],
+  ['start', 'The first ten minutes', '4 steps'],
 ];
 
 const TILES = {
@@ -140,11 +170,12 @@ function scanner() {
 }
 
 /* ── the numbers band ─────────────────────────────────────────────────── */
-const stats = () => sec('numbers', 'numbers', `<div class="wrap"><ul class="stats">${STATS.map(([pre, n, dec, l, d]) => {
+const stats = () => sec('numbers', 'numbers', `<div class="wrap"><ul class="stats">${STATS.map(([pre, n, dec, l, d, src]) => {
   const parts = n.split(' × ');
   const num = parts.map((x) => `<span data-count="${esc(x)}" data-dec="${dec}">${esc(x)}</span>`).join('<span class="stat-x"> × </span>');
-  return `<li><span class="stat-n">${pre}${num}</span><span class="stat-l">${esc(l)}</span><span class="stat-d">${esc(d)}</span></li>`;
-}).join('')}</ul></div>`, { label: 'Four numbers' });
+  return `<li><span class="stat-n">${pre}${num}</span><span class="stat-l">${esc(l)}</span><span class="stat-d">${esc(d)}</span><span class="stat-s" data-src="${esc(src)}">${esc(src)}</span></li>`;
+}).join('')}</ul>
+<p class="stat-f">Two of these four are readings off the sample house every screen here shows — marked <b>demo data</b>, and not a customer count. The other two are facts about how the product is built.</p></div>`, { label: 'Four numbers' });
 
 /* ── the loop: a ring that turns as you scroll ────────────────────────── */
 function loop() {
@@ -174,21 +205,29 @@ function loop() {
 }
 
 /* ── Today · the live home ────────────────────────────────────────────── */
+/* ── Today · the device you can switch ────────────────────────────────
+   Two static crops side by side asked the reader to compare two pictures
+   at 244px each. One device with a two-ticket rail asks them to press
+   something, and the stage keeps its box across both panels, so nothing
+   on the page moves when they do. The shared screenSwitch() draws it —
+   roving tabindex, aria-selected, one role="tabpanel" per screen — and
+   this sheet dresses the rail as the store's own shelf-edge tickets.
+   With scripting off the tabs are not painted and both screens stack,
+   which is the composition it replaced. */
 function today() {
   const t = TILES.today;
+  const sw = screenSwitch('careshop', {
+    id: 'sw-today', only: ['today', 'today-mgr'], on: 0,
+    label: 'Which briefing',
+    notes: {
+      today: { tab: 'A caregiver', cap: 'Willow House · one shift. Cook today, what is short, what is dated.' },
+      'today-mgr': { tab: 'A manager', cap: 'Every house, rolled up — restock across houses and the cost of the next run.' },
+    },
+  });
   return sec('today', 'briefing', `<div class="wrap">
     <div class="head">${sticker('clock', t.tag)}${h2('today', t.t + '.', t.d)}</div>
     <div class="aisle-g is-wide">
-      <div class="aisle-ph is-pair" data-scrollx>
-        <figure>
-          <div class="crop">${phone('today')}</div>
-          <figcaption class="ph-cap">A caregiver · Willow House</figcaption>
-        </figure>
-        <figure>
-          <div class="crop">${phone('today-mgr')}</div>
-          <figcaption class="ph-cap">A manager · every house</figcaption>
-        </figure>
-      </div>
+      <div class="aisle-ph is-sw">${sw}</div>
       <div class="aisle-d">
         <ul class="brief-roles">
           <li><b>A caregiver sees their shift.</b><span>Cook today, what is short, what is dated — one house, in the house’s own time zone.</span></li>
@@ -225,12 +264,12 @@ function queue() {
       <div class="aisle-d">${approveDemo()}${priceDemo()}</div>
     </div>
     <div class="doors"><span class="strip-l">${esc(s.strip.label)}</span><div class="doors-r" data-scrollx>${s.strip.cells.map((c, i) => `<span class="door-c"><span class="door-n">${i + 1}</span>${esc(c)}</span>`).join('')}</div><p class="doors-f">${esc(s.strip.foot)}</p></div>
-    <div class="aisle-g shopq">
-      <div class="aisle-ph"><div class="crop">${phone('shop')}</div><p class="ph-cap">${esc(sh.foot)}</p></div>
+    <div class="aisle-g shopq is-rev">
+      <div class="aisle-ph">${storeDemo()}</div>
       <div class="aisle-d">
         <div class="shopq-t">${sticker('store', TILES.shop.tag)}<h3>${esc(TILES.shop.t)}</h3><p>${esc(TILES.shop.d)}</p>
-          <button type="button" class="btn" data-print>${ic('print', 18)}Print the list</button></div>
-        ${storeDemo()}
+          <p class="ph-cap is-left">${esc(sh.foot)}</p>
+          <div class="ctas is-row"><button type="button" class="btn" data-print>${ic('print', 18)}Print the list</button><a class="btn" href="/shelf#shelf-shop">${ic('shelf', 18)}See the shop screen</a></div></div>
       </div>
     </div>
   </div>`);
@@ -246,9 +285,11 @@ function cook() {
       <div class="aisle-ph"><div class="crop">${phone('cook')}</div></div>
       <div class="aisle-d">${cookDemo()}</div>
     </div>
-    <div class="aisle-g is-rev menu-g">
-      <div class="aisle-ph" data-menu-phone><div class="crop">${phone('menu')}</div><p class="ph-cap">${esc(m.foot)}</p></div>
-      <div class="aisle-d"><div class="menu-t"><h3>${esc(m.title)} — ${esc(m.sub)}</h3><p>${esc(m.desktopSub)}</p></div>${allergenDemo()}</div>
+    <div class="menu-g" data-menu-phone>
+      <div class="menu-t"><h3>${esc(m.title)} — ${esc(m.sub)}</h3><p>${esc(m.desktopSub)}</p></div>
+      <div class="menu-d">${allergenDemo()}
+        <div class="menu-side"><p class="ph-cap is-left">${esc(m.foot)}</p><a class="more" href="/shelf#shelf-menu">${ic('arrow', 16)}The menu screen, full size</a></div>
+      </div>
     </div>
   </div>`);
 }
@@ -346,8 +387,8 @@ function start(cfg) {
   return sec('start', 'start', `<div class="wrap start-g">
     <div>${sticker('clock', 'The first ten minutes')}${h2('start', 'If the loop closes once, you trust it.')}</div>
     <ol class="ten">${s.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
-    <div class="sec-dev"><div class="dev">${iosShell('careshop', { key: 'today' })}</div>
-      <p class="cap">Where the first ten minutes end: Today, with the loop closed once.</p></div>
+    <div class="sec-dev"><p class="cap">Where the first ten minutes end: Today, with the loop closed once — the same screen at the top of this page, and the first of the eight on the shelf.</p>
+      <a class="more" href="/shelf">${ic('shelf', 16)}All eight screens, full size</a></div>
     <a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="start"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a>
   </div>`);
 }
@@ -366,6 +407,7 @@ ${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="careshop" data-mode="light">
 ${hero(cfg, p)}
 ${named(stats(), 'The store in numbers')}
+${directory(HOME_STOPS)}
 ${loop()}
 ${fold(today(), 'The first screen after sign-in — a shift, or every house.', 'Home · Today')}
 ${fold(stock(), 'Pantry, fridge, freezer, reserve — in the house’s walk order.', 'Aisle 2 · Stock')}
@@ -379,6 +421,7 @@ ${fold(questions(), 'Asked at the till, and answered.', 'Questions')}
 ${pricing(cfg, p)}
 ${named(start(cfg), 'The first ten minutes')}
 ${printList(cfg)}
+${walkOn('home')}
 </main>
 ${footer(cfg, p, { page: 'home', fine: find('foot').disclaimer })}`;
 }
@@ -388,6 +431,7 @@ export const pages = [
   { path: 'pricing', title: 'Pricing', description: 'Free, Pro at nineteen a house, Scale at thirty-seven — what a plan counts, and the ladder out of the kitchen into the whole house.', render: pricingPage },
   { path: 'loop', title: 'The loop', description: 'Count, queue, approve, shop, receipt, stock, cook — seven stations, six screens, and the house’s own data moving around them without anyone re-typing it.', render: loopPage },
   { path: 'stock', title: 'Stock', description: 'Stock by zone, the par you set, Expiry Watch with the value at risk, and the reserve target — days times beds times the quantity per bed per day.', render: stockPage },
+  { path: 'shelf', title: 'The shelf', description: 'All eight CareShop screens at the size they ship, each captioned with what it proves — plus the buy queue at the till, annotated point by point.', render: shelfPage },
   { path: 'rules', title: 'The rules', description: 'The ten Oregon citations CareShop explains today, how sure we are about each, and what will not return.', render: rulesPage },
   { path: 'about', title: 'About', description: 'CareShop is live at careshop.app and used by real houses. Kitchen software for licensed Oregon care homes, by Provider Hub Oregon.', render: aboutPage },
   { path: 'write', title: 'Write to us', description: 'One inbox. A question, a house that wants to switch, pricing, privacy — a person answers from the same address.', render: writePage },

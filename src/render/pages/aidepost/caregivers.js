@@ -1,7 +1,7 @@
 // /caregivers — the dark page. Shifts near you, the wallet, your hours,
 // free for ever, and the rules that protect a worker.
 
-import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, walletCards, clockToy, timesheetToy, joinBlock } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, walletCards, clockToy, timesheetToy, joinBlock, ixNav, pager } from './bits.js';
 
 const PROTECT = [
   ['No background check is run on you', 'The provider runs ORCHARDS herself. Aidepost holds only a status she types — never a result, never the content.'],
@@ -78,6 +78,8 @@ function free(cfg, p) {
 
 export const CAREGIVERS_IDS = new Set(['top', 'caregivers', 'wallet', 'hours', 'protect', 'free', 'join']);
 
+const CARE_IX = [['caregivers', 'Shifts near you', 'care'], ['wallet', 'Your wallet', 'care'], ['hours', 'Your hours', 'care'], ['protect', 'What protects you', 'care'], ['free', 'Free, for ever', 'care'], ['join', 'Join', 'care']];
+
 export const caregiversPage = {
   path: 'caregivers',
   title: 'For caregivers',
@@ -85,12 +87,14 @@ export const caregiversPage = {
   render(cfg, p) {
     return shell(cfg, p, { page: 'caregivers', ids: CAREGIVERS_IDS }, `<div class="dark-half is-page" data-dark-half>
 ${top(cfg, p)}
+${ixNav(CARE_IX)}
 ${shifts()}
 ${wallet()}
 ${hours()}
 ${protect()}
 ${free(cfg, p)}
 ${sec('join', 'join care-join', joinBlock(cfg, p))}
+${pager('/caregivers')}
 </div>`);
   },
 };

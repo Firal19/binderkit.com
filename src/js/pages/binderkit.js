@@ -15,6 +15,7 @@
   /* ── the running control number, and the page number on a phone ────── */
   const run = () => {
     const el = $('#run-ctl'); const secs = $$('[data-ctl]'); const pn = $('[data-page-n]'); const pt = $('[data-page-total]');
+    const nm = $('[data-page-name]');
     if (!el && !pn) return;
     if (pt) pt.textContent = String(secs.length || 1);
     let t = false;
@@ -25,6 +26,10 @@
       secs.forEach((s, k) => { if (s.offsetTop <= line) { on = s; i = k; } });
       if (el && on) el.textContent = on.dataset.ctl;
       if (pn) pn.textContent = `p. ${i + 1}`;
+      /* the foot bar says WHERE, not just how far: a page number on a
+         seven-thousand-pixel phone page is a progress bar, and a name is a
+         location. Both, on one line, under the thumb. */
+      if (nm && on && on.dataset.name) nm.textContent = on.dataset.name;
     };
     window.addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(paint); } }, { passive: true });
     window.addEventListener('resize', paint, { passive: true });
@@ -91,7 +96,10 @@
       if (verb === 'lamp') { const b = $('[data-mode-toggle]'); if (b) b.click(); return; }
       if (verb === 'share') { const b = $('[data-share]'); if (b) b.click(); return; }
       if (verb.startsWith('go:')) { const t = document.getElementById(verb.slice(3)); if (t) scrollTo(t); return; }
-      if (verb.startsWith('chapter:')) location.href = verb.slice(8);
+      if (verb.startsWith('chapter:')) { location.href = verb.slice(8); return; }
+      /* every section of every other chapter, by name or by control
+         number — the palette is this binder's index finger. */
+      if (verb.startsWith('open:')) location.href = verb.slice(5);
     };
     q.addEventListener('input', filter);
     d.addEventListener('click', (e) => { const b = e.target.closest('.cmd-r'); if (b) run(b.dataset.verb); else if (e.target === d) d.close(); });
@@ -111,6 +119,16 @@
       const t = e.target;
       if (t && t.matches && t.matches('input, select, textarea, [contenteditable="true"]')) return;
       if ($('dialog[open]')) return;
+      /* The film strip and the screen switcher own the arrow keys while
+         they hold focus. site.js demos() binds them on the SAME document
+         and calls preventDefault() but not stopPropagation(), so without
+         this guard one ArrowRight both advanced the strip and chapter-
+         navigated the page — which moved focus off the rail, so every
+         press after the first scrolled the page and the strip was
+         unreachable. The two selectors are exactly the two demos() acts
+         on, so the rail keeps the keys it implements and a link inside a
+         plate caption keeps the ones it is entitled to. */
+      if (t && t.matches && t.matches('[data-rail], [role="tab"]')) return;
       if (e.key === 'ArrowRight' && links.length) { e.preventDefault(); const a = links[Math.min(links.length - 1, idxOf(links) + 1)]; if (a) a.click(); }
       else if (e.key === 'ArrowLeft' && links.length) { e.preventDefault(); const i = idxOf(links); if (i > 0) links[i - 1].click(); else window.scrollTo({ top: 0, behavior: calm.matches ? 'auto' : 'smooth' }); }
       else if (e.key === 'p') { e.preventDefault(); window.print(); }
@@ -120,6 +138,7 @@
   };
 
   /* ── the planner: five answers in, the plan and the sheet out ───────── */
+  let planTwice = null;
   const planner = () => {
     const form = $('#planner'); const out = $('#plan-out'); const dataEl = $('#bk-plan-data');
     if (!form || !out || !dataEl) return;
@@ -208,6 +227,11 @@
       form.dataset.version = plan.version.control;
       document.dispatchEvent(new CustomEvent('bk:plan', { detail: plan }));
     };
+    /* The whole investment case in one button: the same answers, run
+       through the rule twice, compared character for character. The
+       product's own test is stronger — two generations from one library
+       version produce byte-identical FILES — but this is the same rule. */
+    planTwice = () => { const a = read(); const A = planText(computePlan(D, a), a); const B = planText(computePlan(D, a), a); return { n: A.length, same: A === B }; };
     form.addEventListener('change', paint);
     form.addEventListener('submit', (e) => { e.preventDefault(); paint(); });
     const reset = $('[data-plan-reset]', form);
@@ -383,6 +407,31 @@
     first.parentNode.insertBefore(lead, first);
   };
 
+  /* ── determinism, checked in the page ──────────────────────────────── */
+  const determinism = () => {
+    const b = $('[data-determinism]'); const out = $('[data-det-out]');
+    if (!b || !out || !planTwice) { if (b) b.remove(); return; }
+    b.addEventListener('click', () => {
+      const r = planTwice();
+      out.dataset.state = r.same ? 'ok' : 'bad';
+      out.textContent = r.same
+        ? `Generated twice from the answers above: identical, ${r.n} characters, character for character.`
+        : 'The two generations differed. That would be a defect, and finding it is what this button is for.';
+    });
+  };
+
+  /* ── the three guardrails, played ───────────────────────────────────
+     Every word of the refusal is already in the markup, on the button
+     that asks for it, so this moves strings rather than holding them. */
+  const guards = () => {
+    const out = $('[data-guard-out]'); if (!out) return;
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-guard-try]'); if (!b) return;
+      $$('[data-guard-try]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      out.innerHTML = `<p class="tryg-g">${esc(b.dataset.gname)} answered</p><p class="tryg-r">\u201c${esc(b.dataset.refusal)}\u201d</p><p class="tryg-alt">${esc(b.dataset.alt)}</p>`;
+    });
+  };
+
   const boot = () => {
     run(); foldRows(); openAll();
     const links = tabs();
@@ -390,8 +439,8 @@
     const openKeys = keysCard();
     const openPal = palette();
     keys(links, openKeys, openPal);
-    planner(); legend(); cites(); versions(); turn(); ledger(); sell(); faq(); shell();
-    document.documentElement.setAttribute('data-bk', 'ready');
+    planner(); determinism(); guards(); legend(); cites(); versions(); turn(); ledger(); sell(); faq(); shell();
+    document.documentElement.setAttribute('data-bk', 'set');
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

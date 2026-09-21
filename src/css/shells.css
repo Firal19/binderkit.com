@@ -16,7 +16,7 @@
 /* ── L2 · rhythm: the chrome joins the grid ───────────────────────────── */
 .phone .navbar { padding: calc(var(--g) * 1.5) calc(var(--g) * 4) calc(var(--g) * 1.5); gap: calc(var(--g) * 2); }
 .phone .content { padding: var(--g) calc(var(--g) * 4.5) calc(var(--g) * 5); gap: calc(var(--g) * 3.5); }
-.phone .tabbar { padding: calc(var(--g) * 1.5) calc(var(--g) * 1.5) 0; }
+.phone .tabbar { padding: calc(var(--g) * 1.5) calc(var(--g) * 1.5) 34px; }
 .browser .snav { padding: calc(var(--g) * 4) calc(var(--g) * 3); gap: calc(var(--g) * 3.5); }
 .browser .snav-item { padding: calc(var(--g) * 1.75) calc(var(--g) * 2); }
 .browser .snav-g { padding: calc(var(--g) * 1.5) calc(var(--g) * 2) var(--g); }
@@ -71,10 +71,14 @@
 /* ── the phone: an iOS app, not a web page shaped like one ────────────── */
 .phone .status { padding: 10px 30px 0; }
 /* Hardware, drawn to the device: 54pt status bar, a 125 × 36 island with its
-   lens, a 34pt home-indicator inset. None of it scales with density. */
+   lens, a 5 × 134pt home indicator sitting 8pt off the glass. None of it
+   scales with density, and none of it is a layout row that can be pushed
+   out of the bezel. The 34pt inset lives on the tab bar, which follows the
+   screen's bottom radius so the safe area cannot square off into the frame. */
 .phone .island { position: relative; width: 125px; }
 .phone .island::after { content: ""; position: absolute; right: 9px; top: 50%; width: 11px; height: 11px; border-radius: 50%; transform: translateY(-50%); background: #23282B; }
-.phone .home-ind { height: 34px; }
+.phone .home-ind { left: calc(50% - 67px); bottom: 8px; width: 134px; height: 5px; background: var(--c-ink); }
+.phone .tabbar { border-bottom-left-radius: 46px; border-bottom-right-radius: 46px; }
 
 .phone .navbar { min-height: var(--t-tap); justify-content: space-between; border-bottom: 0; }
 .phone .navbar-l { display: inline-flex; align-items: center; gap: 5px; min-height: var(--t-tap); padding-right: calc(var(--g) * 1.5); color: var(--c-teal); font-weight: 600; font-size: calc(var(--t-body-size) - .5px); min-width: 0; }
@@ -92,7 +96,7 @@
 .phone[data-scrolled] .navbar { border-bottom: var(--t-border) solid var(--c-line); }
 .phone[data-scrolled] .navbar-title { display: block; }
 
-.phone .content { overflow: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.phone .content { min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: none; }
 .phone .content::-webkit-scrollbar { width: 0; height: 0; }
 /* A scroller's children keep their own height — nothing squashes to make the
    screen fit, because on a phone the screen does not fit, it scrolls. */
@@ -208,7 +212,7 @@
 [data-mode="dark"] .pal-r.on { color: var(--c-ink); }
 
 /* ── tables that behave like tables ───────────────────────────────────── */
-.face .tbl-a tbody tr:hover td { background: var(--c-wash); }
+@media (hover: hover) { .face .tbl-a tbody tr:hover td { background: var(--c-wash); } }
 .face .tbl-a tbody tr[aria-selected="true"] td { background: var(--t-accent-soft); }
 .face .tbl-a th[aria-sort] { color: var(--c-teal); }
 .face .tbl-a th[aria-sort="ascending"]::after { content: " ↑"; }

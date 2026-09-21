@@ -203,6 +203,11 @@ else {
 const size = (f) => fs.statSync(path.join(DIST, f)).size;
 const pageKb = size('/index.html'.slice(1)) / 1024;
 if (pageKb > 160) note(warn, `index.html is ${pageKb.toFixed(0)} kB of HTML`);
+/* The heaviest instruments now live on their own routes precisely because only
+   index.html was measured. Measure the biggest of those too, or the next
+   runaway page ships unseen. */
+const other = pages.filter((f) => f !== '/index.html').map((f) => [routeOf(f), size(f) / 1024]).sort((a, b) => b[1] - a[1])[0];
+if (other && other[1] > 220) note(warn, `${other[0]} is ${other[1].toFixed(0)} kB of HTML — the heaviest route after /`);
 const fontKb = files.filter((f) => f.endsWith('.woff2')).reduce((a, f) => a + size(f.slice(1)), 0) / 1024;
 if (fontKb > 340) note(warn, `${fontKb.toFixed(0)} kB of fonts on disk`);
 const jsKb = js.length / 1024;

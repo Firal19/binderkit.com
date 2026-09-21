@@ -660,7 +660,14 @@ const fillOf = (opts) => {
   return f === 'empty' || f === 'loading' ? f : 'filled';
 };
 const presentOf = (s, opts) => {
-  const p = opts.present != null ? opts.present : view().shellPresent;
+  /* Precedence, and the order matters: an explicit opts.present wins, then the
+     SCREEN's own declared present, then the view default. It used to read the
+     view default second, and since kit.js:21 defaults shellPresent to 'none',
+     the 'none' short-circuited below and a screen that declares its own dialog
+     silently drew without one — cohort's marpass shipped with no Six Rights
+     sheet on #stops, and callout pins aimed at it pointed at nothing. */
+  const p = opts.present != null ? opts.present
+    : (s.present != null ? s.present : view().shellPresent);
   if (p === 'none') return '';
   return p || s.present || '';
 };
@@ -1049,3 +1056,166 @@ export function webShell(productId, opts = {}) {
    other two hanging off it — a new key, never a changed one. */
 export const SURFACES = Object.fromEntries(Object.entries(surfaces).map(([id, s]) => [id, { ...s.screens[0], screens: s.screens }]));
 export const SCREENS = Object.fromEntries(Object.entries(surfaces).map(([id, s]) => [id, s.screens.map((x) => ({ key: x.key, title: x.title }))]));
+
+/* ══ THE WORKING DEMO ═════════════════════════════════════════════════════
+   Three shared primitives the four landing pages build their live sections
+   out of. None of them is wired into a page here: a site module calls them
+   and supplies its own words.
+
+     filmStrip()   a full-bleed rail of EVERY real screen a product has,
+                   each at true size, snapped, captioned, and deep-linkable.
+     screenSwitch() a hero device whose screen changes, with no layout shift.
+     callouts()    numbered pins over any shell, each quoting one element.
+
+   Nothing here re-renders a screen. iosShell / webShell / paperSheet /
+   weekBoard already draw them from `surfaces`, and every item below is one
+   of those calls with a caption bolted on. A caption the caller does not
+   supply falls back to the screen's OWN sub-line out of the vault — never
+   to an invented claim.
+
+   All three degrade: the rail is a plain overflow-x container, the switcher
+   renders as a stack of every screen with scripting off, and a callout list
+   is an ordered list of sentences whatever happens. site.js adds arrow
+   keys, drag, the index announcement and the pin placement on top. */
+
+const SHELLS = { ios: iosShell, web: webShell, paper: paperSheet, week: weekBoard };
+const pad2 = (n) => (n < 10 ? `0${n}` : String(n));
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
+const pidOf = (productId) => ((productOf(productId) || {}).id || 'pho');
+
+/* Every screen a product owns, in vault order, with the words the vault
+   already carries. A caller reads this to decide what to caption. */
+export function screensOf(productId) {
+  const list = (surfaces[pidOf(productId)] || {}).screens || [];
+  return list.map((s, i) => ({ i, key: s.key, title: s.title, sub: s.sub, tab: s.nav, deskTitle: s.desktopTitle, deskSub: s.desktopSub }));
+}
+
+/* One row of a strip or one panel of a switcher. `kind` may be a string for
+   the whole set or a function of the screen key, so a product can show four
+   phones and one desktop in the same rail. */
+function demoRows(productId, opts = {}) {
+  const pid = pidOf(productId);
+  const only = Array.isArray(opts.only) && opts.only.length ? opts.only : null;
+  const notes = opts.notes || {};
+  const kindOf = typeof opts.kind === 'function' ? opts.kind : () => (opts.kind || 'ios');
+  const rows = ((surfaces[pid] || {}).screens || [])
+    .filter((s) => (only ? only.includes(s.key) : true))
+    .sort((a, b) => (only ? only.indexOf(a.key) - only.indexOf(b.key) : 0))
+    .map((s) => {
+      const kind = SHELLS[kindOf(s.key)] ? kindOf(s.key) : 'ios';
+      const desk = kind === 'web';
+      const n = notes[s.key] || {};
+      return {
+        key: s.key,
+        kind,
+        tab: n.tab || s.nav || s.title,
+        title: n.title || (desk ? s.desktopTitle : s.title) || s.title,
+        cap: n.cap != null ? n.cap : ((desk ? s.desktopSub : s.sub) || ''),
+        proves: n.proves || '',
+        html: SHELLS[kind](pid, Object.assign({ mode: opts.mode }, opts.shell || {}, n.shell || {}, { key: s.key })),
+      };
+    });
+  return rows.concat((opts.extras || []).map((x) => ({
+    key: x.key || slug(x.title || 'extra'),
+    kind: x.kind || 'ios',
+    tab: x.tab || x.title || '',
+    title: x.title || '',
+    cap: x.cap || '',
+    proves: x.proves || '',
+    html: x.html || '',
+  })));
+}
+
+/* ── 1 · the film strip ────────────────────────────────────────────────
+   <ol> because it IS an ordered list of screens, role="list" because
+   list-style:none takes the role away from VoiceOver, tabindex="0" because
+   a scroll container a mouse can reach has to be reachable by a keyboard
+   too. Every <li> carries its own id, so /#strip-cohort-marpass is a link
+   to one screen. Text inside an <li> is prose to the gate, so every word
+   of a caption is at or above the 15px floor by construction. */
+export function filmStrip(productId, opts = {}) {
+  const p = productOf(productId) || { id: 'pho', name: 'Provider Hub' };
+  const id = opts.id || `strip-${p.id}`;
+  const rows = demoRows(p.id, opts);
+  const hintId = `${id}-hint`;
+  const label = opts.label || `Every screen in ${p.name}, at the size it ships`;
+  const hint = opts.hint || 'Drag it, scroll it, or use the arrow keys. Every screen here is the product itself.';
+  const cards = rows.map((r, i) => `<li class="fs-i" id="${E(id)}-${E(r.key)}" data-kind="${E(r.kind)}" data-t="${E(r.title)}"${i === 0 ? ' data-on' : ''}>
+      <figure class="fs-fig">
+        <div class="fs-stage">${r.html}</div>
+        <figcaption class="fs-cap">
+          <span class="fs-hd"><span class="fs-no">${pad2(i + 1)}</span><b class="fs-t">${E(r.title)}</b></span>
+          ${r.cap ? `<span class="fs-d">${E(r.cap)}</span>` : ''}
+          ${r.proves ? `<span class="fs-pv"><span class="fs-pl">What this proves</span>${E(r.proves)}</span>` : ''}
+        </figcaption>
+      </figure>
+    </li>`).join('');
+  const jump = opts.jump === false ? '' : `<nav class="fs-jump" aria-label="${E(opts.jumpLabel || 'Jump to a screen')}">${rows.map((r, i) => `<a href="#${E(id)}-${E(r.key)}"${i === 0 ? ' aria-current="true"' : ''}><span class="fs-jn">${pad2(i + 1)}</span>${E(r.tab || r.title)}</a>`).join('')}</nav>`;
+  return `<div class="fstrip${opts.bleed === false ? '' : ' is-bleed'}" id="${E(id)}" data-strip="${E(p.id)}">
+    ${opts.title ? `<div class="fs-head"><h3 class="fs-h">${E(opts.title)}</h3>${opts.sub ? `<p class="fs-s">${E(opts.sub)}</p>` : ''}</div>` : ''}
+    ${jump}
+    <ol class="fs-rail" id="${E(id)}-rail" role="list" tabindex="0" aria-label="${E(label)}" aria-describedby="${E(hintId)}" data-rail>${cards}</ol>
+    <p class="fs-hint" id="${E(hintId)}">${E(hint)}</p>
+    <p class="fs-live sr-only" role="status" aria-live="polite"></p>
+  </div>`;
+}
+
+/* ── 2 · the hero screen switcher ──────────────────────────────────────
+   A real tablist: roving tabindex, aria-selected, one panel per screen,
+   arrow keys and Home/End implemented in site.js. Every panel stays in the
+   same grid cell and keeps its box, so the stage is always as tall as the
+   tallest screen and changing tabs moves nothing. The inactive panels are
+   hidden with visibility, not the hidden attribute, which is what keeps the
+   height — and visibility:hidden takes them out of the a11y tree and out of
+   the tab order for free. With scripting off the tab strip is not painted
+   and the panels stack, so the hero still shows every screen.
+
+   opts.rail: the id of a filmStrip on the same page. The tabs then drive
+   the strip as well, and the strip drives the tabs back as it scrolls. */
+export function screenSwitch(productId, opts = {}) {
+  const p = productOf(productId) || { id: 'pho', name: 'Provider Hub' };
+  const id = opts.id || `sw-${p.id}`;
+  const rows = demoRows(p.id, opts);
+  const on = Math.max(0, Math.min(rows.length - 1, Number(opts.on) || 0));
+  const tabs = rows.map((r, i) => `<button class="swx-tab" type="button" role="tab" id="${E(id)}-t${i}" aria-selected="${i === on ? 'true' : 'false'}" aria-controls="${E(id)}-p${i}" tabindex="${i === on ? '0' : '-1'}" data-sw-to="${i}"><span class="swx-no">${pad2(i + 1)}</span>${E(r.tab || r.title)}</button>`).join('');
+  const panels = rows.map((r, i) => `<div class="swx-p" id="${E(id)}-p${i}" role="tabpanel" tabindex="0" aria-labelledby="${E(id)}-t${i}" data-kind="${E(r.kind)}"${i === on ? ' data-on' : ''}>${r.html}${r.cap ? `<p class="swx-c">${E(r.cap)}</p>` : ''}</div>`).join('');
+  return `<div class="swx" id="${E(id)}" data-switch${opts.rail ? ` data-sw-rail="${E(opts.rail)}"` : ''}>
+    <div class="swx-tabs" role="tablist" aria-label="${E(opts.label || `${p.name} screens`)}">${tabs}</div>
+    <div class="swx-stage">${panels}</div>
+  </div>`;
+}
+
+/* ── 3 · numbered callouts over a shell ────────────────────────────────
+   callouts(iosShell('cohort', { key: 'marpass' }), [
+     { n: 1, text: 'The allergy is caught before the dose, not after.', sel: '.notice-a' },
+     { n: 2, text: 'Every line says who signed it and when.', x: 62, y: 74 },
+   ], { label: 'What the MAR pass does' })
+
+   `sel` is a selector resolved against the shell at run time — site.js
+   measures the element and puts the pin on its centre. `x`/`y` are
+   percentages of the stage and need no script at all, which is why a
+   caller that wants the pins visible with scripting off gives coordinates.
+   Either way the ordered list underneath carries every sentence, so
+   nothing is lost when a pin cannot be placed.
+
+   Pointing at a pin (or focusing anything inside its list item) lights the
+   pin, the row and the element it quotes. The pins are aria-hidden: they
+   repeat a number the list already reads out. */
+export function callouts(inner, list = [], opts = {}) {
+  const id = opts.id || `cal-${slug(opts.label || 'shell')}`;
+  const nOf = (c, i) => String(c.n != null ? c.n : i + 1);
+  const pins = list.map((c, i) => {
+    const xy = c.x != null ? ` style="--x:${Number(c.x) || 0}%;--y:${Number(c.y) || 0}%"` : '';
+    return `<b class="cal-pin" data-cal="${E(nOf(c, i))}"${c.sel ? ` data-sel="${E(c.sel)}"` : ''}${c.x == null ? ' hidden' : ''}${xy} aria-hidden="true">${E(nOf(c, i))}</b>`;
+  }).join('');
+  const items = list.map((c, i) => `<li class="cal-i" data-cal="${E(nOf(c, i))}"><b class="cal-n" aria-hidden="true">${E(nOf(c, i))}</b><span class="cal-x">${E(c.text || '')}</span></li>`).join('');
+  /* data-kind is what gives the stage its room. Without it a webShell inside
+     callouts() inherits --dm-room: 460px and paints at a third size with
+     unreadable type — measured 0.36 zoom at 1440. Mirrors .fs-i[data-kind]
+     and .swx-p[data-kind], which have carried it since the primitives landed. */
+  const kind = opts.kind || '';
+  return `<div class="cal-wrap${opts.side ? ' is-side' : ''}"${kind ? ` data-kind="${E(kind)}"` : ''} id="${E(id)}" data-callouts>
+    <div class="cal-stage">${inner}${pins}</div>
+    <ol class="cal-list" aria-label="${E(opts.label || 'What you are looking at')}">${items}</ol>
+  </div>`;
+}

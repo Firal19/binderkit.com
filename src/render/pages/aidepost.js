@@ -11,6 +11,7 @@ import { header, footer } from './aidepost/chrome.js';
 import { home } from './aidepost/home.js';
 import { providersPage } from './aidepost/providers.js';
 import { caregiversPage } from './aidepost/caregivers.js';
+import { screensPage } from './aidepost/screens.js';
 import { pricingPage, aboutPage, contactPage } from './aidepost/pages.js';
 
 export { header, footer };
@@ -19,4 +20,4 @@ export function render(cfg, p) {
   return home(cfg, p);
 }
 
-export const pages = [providersPage, caregiversPage, pricingPage, aboutPage, contactPage];
+export const pages = [providersPage, caregiversPage, screensPage, pricingPage, aboutPage, contactPage];

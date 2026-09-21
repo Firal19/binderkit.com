@@ -317,12 +317,60 @@
     d.addEventListener('pointerleave', () => { target = 50; kick(); });
   });
 
-  /* ── the chapter strip keeps the lit chapter in view on a phone ────── */
-  const chapters = () => {
-    const strip = $('[data-chap]'); if (!strip || !('MutationObserver' in window)) return;
-    const ul = $('ul', strip);
+  /* ── a scroll-spy rail keeps the lit destination in view ────────────
+     Two rails now: the desktop chapter strip on /providers and the page
+     index on every route. site.js sets aria-current on both — this is the
+     half that makes it useful on a phone, where the rail is 350px wide and
+     the destination you are inside is often off the right edge. */
+  const chapters = () => $$('[data-chap],[data-ix]').forEach((strip) => {
+    if (!('MutationObserver' in window)) return;
+    const ul = $('ul, ol', strip); if (!ul) return;
     const mo = new MutationObserver(() => { const a = $('a[aria-current="true"]', strip); if (!a) return; ul.scrollTo({ left: a.offsetLeft - (ul.clientWidth - a.offsetWidth) / 2, behavior: smooth() }); });
     mo.observe(strip, { attributes: true, subtree: true, attributeFilter: ['aria-current'] });
+  });
+
+  /* ── the hero device takes the side the page is on ──────────────────
+     The switch flips the whole site; on /screens it flips the device too,
+     which is the one place the two-sided idea can be shown instead of
+     described. It drives the tablist the way a reader does — by clicking
+     the tab — so site.js owns the state and there is nothing to keep in
+     sync. At boot the click is followed by a blur, because a remembered
+     side must not steal focus from the top of the document. */
+  const heroSides = () => {
+    const box = document.getElementById('sw-sides'); if (!box) return;
+    const tabs = $$('[role="tab"]', box); if (tabs.length < 2) return;
+    const sync = (quiet) => {
+      const i = root.dataset.side === 'caregiver' ? 1 : 0;
+      if (String(box.dataset.at || 0) === String(i)) return;
+      tabs[i].click();
+      if (quiet) tabs[i].blur();
+    };
+    document.addEventListener('ap:side', () => sync(false));
+    box.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-sw-to]');
+      if (!b) return;
+      setSide(b.dataset.swTo === '1' ? 'caregiver' : 'provider');
+      explicitAt = Date.now();
+    });
+    sync(true);
+  };
+
+  /* ── the contact form arrives on the side you are already on ────────
+     The waitlist's "You are" follows the switch already; the topic select
+     is the same question asked once more, and a caregiver who has spent
+     the page on the dark side should not have to answer it twice. It
+     follows until she touches it, and never again after that. */
+  const topicSide = () => {
+    const sel = $('#contactform select[name="topic"]'); if (!sel) return;
+    const care = [...sel.options].find((o) => /caregiver/i.test(o.value)); if (!care) return;
+    sel.addEventListener('change', () => { sel.dataset.touched = '1'; });
+    const follow = () => {
+      if (sel.dataset.touched) return;
+      if (root.dataset.side === 'caregiver') sel.value = care.value;
+      else if (sel.value === care.value) sel.selectedIndex = 0;
+    };
+    document.addEventListener('ap:side', follow);
+    follow();
   };
 
   /* "Open every section" is a button, not a link, so menus() does not close
@@ -367,6 +415,6 @@
     all();
   };
 
-  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); openAllCloses(); stripEdges(); };
+  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); heroSides(); topicSide(); openAllCloses(); stripEdges(); };
   boot();
 })();

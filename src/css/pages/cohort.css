@@ -96,9 +96,9 @@ html[data-scrolled] .tr-in { height: 58px; }
 .rail-hr:empty { visibility: hidden; }
 .rail-tick { width: 6px; height: 6px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--soft); flex: none; transition: transform 200ms, background 200ms, border-color 200ms; }
 .rail-l { font-size: 12.5px; font-weight: 600; letter-spacing: -0.015em; white-space: nowrap; color: var(--ink); line-height: 1.15; }
-.rail-stop:hover { color: var(--teal); }
-.rail-stop:hover .rail-hr, .rail-stop:hover .rail-l { color: var(--teal); }
-.rail-stop:hover .rail-tick { border-color: var(--teal); }
+@media (hover: hover) { .rail-stop:hover { color: var(--teal); } }
+@media (hover: hover) { .rail-stop:hover .rail-hr, .rail-stop:hover .rail-l { color: var(--teal); } }
+@media (hover: hover) { .rail-stop:hover .rail-tick { border-color: var(--teal); } }
 .rail-stop[aria-current] { color: var(--teal); }
 .rail-stop[aria-current] .rail-tick { background: var(--teal); border-color: var(--teal); transform: scale(1.25); }
 .rail-stop[aria-current] .rail-hr, .rail-stop[aria-current] .rail-l { color: var(--teal); }
@@ -110,7 +110,7 @@ html[data-scrolled] .tr-in { height: 58px; }
 .tr-tools { display: flex; align-items: center; gap: 2px; }
 .tr-rule { width: 1px; height: 16px; background: var(--line); margin: 0 2px; flex: none; }
 .tr-k { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; color: var(--soft); transition: color 160ms, background 160ms; }
-.tr-k:hover { color: var(--teal); background: var(--wash); }
+@media (hover: hover) { .tr-k:hover { color: var(--teal); background: var(--wash); } }
 .tr-r .shiftb { width: 36px; height: 36px; padding: 0; justify-content: center; border: 0; background: transparent; }
 .tr-r .shiftb-l { display: none; }
 .tr-a { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--soft); }
@@ -123,11 +123,11 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
   html[data-mode="auto"] .shiftb-d { display: none; }
   html[data-mode="auto"] .shiftb-n { display: inline-flex; }
 }
-.shiftb:hover { color: var(--teal); background: var(--wash); }
+@media (hover: hover) { .shiftb:hover { color: var(--teal); background: var(--wash); } }
 .signin { font-weight: 550; font-size: 13.5px; color: var(--muted); text-decoration: none; padding: 0 6px; white-space: nowrap; }
-.signin:hover { color: var(--ink); }
+@media (hover: hover) { .signin:hover { color: var(--ink); } }
 .stampb { display: inline-flex; align-items: center; height: 40px; padding: 0 15px; border-radius: 999px; background: var(--teal); color: var(--bg); font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; transition: background 180ms; }
-.stampb:hover { background: var(--btn-hover); color: var(--bg); }
+@media (hover: hover) { .stampb:hover { background: var(--btn-hover); color: var(--bg); } }
 .tr-menu { display: none; width: 44px; height: 44px; border-radius: 12px; place-items: center; color: var(--ink); margin-right: -8px; }
 
 /* the shift sheet — the phone's menu */
@@ -148,7 +148,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .ssheet-t { display: flex; flex-wrap: wrap; gap: 8px; }
 .ssheet-t .shiftb { min-height: 42px; }
 .textb { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font-size: 14px; font-weight: 500; text-decoration: none; transition: color 160ms, border-color 160ms; }
-.textb:hover { color: var(--teal); border-color: var(--teal); }
+@media (hover: hover) { .textb:hover { color: var(--teal); border-color: var(--teal); } }
 .textb[aria-pressed="true"] { color: var(--teal); border-color: var(--teal); }
 .ssheet-a { display: grid; gap: 10px; }
 .ssheet-f { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
@@ -165,7 +165,8 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .pal-l { max-height: min(52vh, 440px); overflow: auto; padding: 6px; }
 .pal-l li[hidden] { display: none; }
 .pal-r { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 46px; padding: 6px 12px; border-radius: 12px; text-decoration: none; color: var(--ink); outline: none; }
-.pal-r:hover, .pal-r:focus-visible, .pal-r.is-on { background: var(--wash); }
+.pal-r:focus-visible, .pal-r.is-on { background: var(--wash); }
+@media (hover: hover) { .pal-r:hover { background: var(--wash); } }
 .pal-r .ic-cohort { color: var(--teal); }
 .pal-t { font-weight: 600; font-size: 15px; }
 .pal-s { font-size: 12.5px; color: var(--soft); text-align: right; }
@@ -204,7 +205,18 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .float .stamp-a { color: var(--teal); }
 .float-l { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
 .float b { font-weight: 600; color: var(--ink); font-size: 12.5px; }
-.f1 { left: -158px; top: 10%; } .f2 { right: -150px; top: 42%; animation-delay: -2s; } .f3 { left: -150px; bottom: 14%; animation-delay: -4s; }
+/* The three offsets are percentages of .hero-dev, and .hero-dev is now the
+   switcher — a 44px tab strip and a caption taller than the phone it used to
+   be. At the old 10% .f1 landed on the status bar and covered the scope
+   picker. Re-solved against the new box: measured at 1440, .f1 sits beside
+   the first list row, .f2 beside the badge it names, .f3 beside the foot. */
+.f1 { left: -158px; top: 22%; } .f2 { right: -104px; top: 46%; animation-delay: -2s; } .f3 { left: -150px; bottom: 20%; animation-delay: -4s; }
+/* The hero device is now a switcher, and .swx-c's own 46ch measure — wider
+   than the phone — was setting the width of .hero-dev, which is the box the
+   three floats hang off. Measured at 1440: .f2 ran 17px past the glass. The
+   caption keeps the phone's own width here and nowhere else. */
+.hero-dev .swx { justify-items: center; }
+.hero-dev .swx-c { max-width: 32ch; }
 /* Those offsets are sized for the room a 1600 column leaves either side of a
    .92 phone. Between 900 and 1200 the hero column narrows and .f2 ran 71px
    past the viewport at 1024, and 7px at 1280. Below 900 they are hidden outright. */
@@ -217,7 +229,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .shift { border-top: 1px solid var(--line); }
 .shift-head, .ref-head, .roles-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
 .keysb, .printb { display: inline-flex; align-items: center; gap: 7px; min-height: var(--tap); padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); font-size: 13.5px; font-weight: 600; flex: none; background: var(--card); transition: color 160ms, border-color 160ms; }
-.keysb:hover, .printb:hover { color: var(--teal); border-color: var(--teal); }
+@media (hover: hover) { .keysb:hover, .printb:hover { color: var(--teal); border-color: var(--teal); } }
 .tl-g { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: clamp(32px, 5vw, 80px); align-items: start; }
 .tour { order: 2; min-width: 0; }
 .tour-stick { position: sticky; top: 92px; display: grid; justify-items: center; gap: 14px; }
@@ -231,7 +243,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .tl-i { display: grid; grid-template-columns: 78px 36px minmax(0, 1fr); padding: 20px 0; align-items: start; scroll-margin-top: 100px; }
 .tl-at { display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 8px 0 4px; margin-left: -4px; text-decoration: none; color: var(--soft); font-family: var(--font-mono); font-size: 13px; letter-spacing: .06em; font-variant-numeric: tabular-nums; border-radius: 8px; transition: color 160ms, background 160ms; }
 .tl-ic { color: var(--teal); display: inline-flex; }
-.tl-at:hover { color: var(--teal); background: var(--wash); }
+@media (hover: hover) { .tl-at:hover { color: var(--teal); background: var(--wash); } }
 .tl-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--teal); margin: 14px 0 0 11px; transition: background 200ms, box-shadow 200ms; }
 .tl-i[data-on] .tl-dot { background: var(--teal); box-shadow: 0 0 0 6px var(--wash); }
 .tl-b h3 { font-size: 1.3rem; padding-top: 8px; transition: color 200ms; }
@@ -245,7 +257,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .sim-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .sim-n, .air-out { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--teal); }
 .sim-reset, .air-add { display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 13.5px; font-weight: 600; transition: color 160ms, border-color 160ms; }
-.sim-reset:hover, .air-add:hover { border-color: var(--teal); color: var(--teal); }
+@media (hover: hover) { .sim-reset:hover, .air-add:hover { border-color: var(--teal); color: var(--teal); } }
 .air-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
 .air-sw { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 12px 0 4px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); font-size: 13.5px; font-weight: 600; transition: color 160ms, border-color 160ms; }
 .air-k { position: relative; width: 36px; height: 22px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 16%, transparent); transition: background 200ms; flex: none; }
@@ -267,7 +279,8 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 /* the simulator, over the rendered instrument */
 .is-sim:not(.is-open) .scrim-a, .is-sim:not(.is-open) .sheet-a { display: none; }
 .is-sim .row-a[role="button"] { cursor: pointer; transition: background 140ms; }
-.is-sim .row-a[role="button"]:hover, .is-sim .row-a[role="button"]:focus-visible { background: var(--c-wash); outline: none; }
+.is-sim .row-a[role="button"]:focus-visible { background: var(--c-wash); outline: none; }
+@media (hover: hover) { .is-sim .row-a[role="button"]:hover { background: var(--c-wash); outline: none; } }
 .is-sim .row-a.is-signed { animation: rise 300ms; }
 .is-sim.is-open .sheet-a { animation: rise 320ms cubic-bezier(.22, 1, .36, 1); }
 .is-sim .sheet-a .btn-a { cursor: pointer; }
@@ -319,7 +332,7 @@ html[data-mode="dark"] .gate-b .gate-p.is-strong { color: #0E1F1E; }
 .gate-cta { margin-top: auto; padding-top: 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--teal); }
 .gate-b .gate-cta { color: var(--mint); }
 html[data-mode="dark"] .gate-b .gate-cta { color: #0F5C5A; }
-.gate:hover .gate-cta { text-decoration: underline; }
+@media (hover: hover) { .gate:hover .gate-cta { text-decoration: underline; } }
 .machines { margin-top: 44px; display: grid; }
 .machine { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; padding: 16px 0; border-top: 1px solid var(--line); }
 .machine:last-child { border-bottom: 1px solid var(--line); }
@@ -418,7 +431,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .house-k span { color: var(--muted); line-height: 1.5; }
 .house-v { min-width: 0; }
 .door { display: block; text-decoration: none; color: #17201F; background: #FFFCF7; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--sh-3), var(--sh-2); transition: transform 220ms ease, box-shadow 220ms ease; }
-.door:hover { transform: translateY(-3px); }
+@media (hover: hover) { .door:hover { transform: translateY(-3px); } }
 .door-bar { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #ECEAE4; border-bottom: 1px solid rgba(23, 32, 31, .12); }
 .door-bar i { width: 10px; height: 10px; border-radius: 50%; background: rgba(23, 32, 31, .18); }
 .door-url { margin-left: 10px; flex: 1; text-align: center; font-family: var(--font-mono); font-size: 12px; color: #3E4846; background: #F7F5F0; border-radius: 6px; padding: 5px 10px; }
@@ -483,7 +496,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .defs dd { padding: 11px 0; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); line-height: 1.5; }
 .more { margin-top: 24px; }
 .more a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--teal); font-weight: 600; text-decoration: none; }
-.more a:hover span { text-decoration: underline; }
+@media (hover: hover) { .more a:hover span { text-decoration: underline; } }
 
 /* ── the waitlist ─────────────────────────────────────────────────────── */
 .join { background: var(--wash); }
@@ -511,7 +524,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .eos-b { margin-top: 14px; }
 .eos-l { display: grid; gap: 2px; }
 .eos-l a { display: inline-flex; align-items: center; gap: 5px; min-height: 40px; color: var(--muted); text-decoration: none; font-size: 1rem; }
-.eos-l a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .eos-l a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; } }
 .eos-ext { opacity: .6; }
 .eos-fam a { display: grid; grid-template-columns: 22px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 10px; align-items: center; min-height: 52px; padding: 6px 0; }
 .eos-mk { grid-row: 1 / 3; display: inline-flex; }
@@ -519,17 +532,19 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .eos-fd { font-size: 13px; color: var(--soft); line-height: 1.3; }
 .eos-mail, .c-mail { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .eos-mail a, .c-mail a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); font-weight: 600; text-decoration: none; font-size: 1rem; overflow-wrap: anywhere; }
-.eos-mail a:hover, .c-mail a:hover { text-decoration: underline; }
+@media (hover: hover) { .eos-mail a:hover, .c-mail a:hover { text-decoration: underline; } }
 .copyb { width: 44px; height: 44px; flex: none; border-radius: 10px; display: grid; place-items: center; border: 1px solid var(--line); color: var(--soft); background: var(--bg); transition: color 160ms, border-color 160ms; }
-.copyb:hover { color: var(--teal); border-color: var(--teal); }
+@media (hover: hover) { .copyb:hover { color: var(--teal); border-color: var(--teal); } }
 .eos-fine { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin-top: 8px; max-width: 46ch; }
 .stamps { margin-top: 16px; gap: 8px; }
 .stamps .soc-i { position: relative; width: 44px; height: 44px; min-width: 0; padding: 0; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--ink) 32%, transparent); color: var(--muted); background: transparent; transform: rotate(var(--rot, 0deg)); transition: background 200ms, color 200ms, border-color 200ms, transform 200ms; }
 .stamps .soc-i::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; border: 1px dashed currentColor; opacity: .45; }
-.stamps .soc-i:hover, .stamps .soc-i:focus-visible, .stamps .soc-i:active { background: var(--teal); border-color: var(--teal); color: var(--bg); transform: rotate(-6deg) scale(1.06); }
+.stamps .soc-i:focus-visible, .stamps .soc-i:active { background: var(--teal); border-color: var(--teal); color: var(--bg); transform: rotate(-6deg) scale(1.06); }
+@media (hover: hover) { .stamps .soc-i:hover { background: var(--teal); border-color: var(--teal); color: var(--bg); transform: rotate(-6deg) scale(1.06); } }
 .stamps .soc-i:nth-child(2n) { --rot: 3deg; } .stamps .soc-i:nth-child(3n) { --rot: -4deg; }
 .stamps .soc-t { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translate(-50%, 4px); padding: 5px 8px; border-radius: 6px; background: var(--ink); color: var(--bg); font-family: var(--font-mono); font-size: 11px; letter-spacing: .02em; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 150ms, transform 150ms; }
-.stamps .soc-i:hover .soc-t, .stamps .soc-i:focus-visible .soc-t { opacity: 1; transform: translate(-50%, 0); }
+.stamps .soc-i:focus-visible .soc-t { opacity: 1; transform: translate(-50%, 0); }
+@media (hover: hover) { .stamps .soc-i:hover .soc-t { opacity: 1; transform: translate(-50%, 0); } }
 .stamps.is-labelled .soc-i { width: auto; height: 44px; padding: 0 14px 0 10px; border-radius: 999px; gap: 8px; transform: none; }
 .stamps.is-labelled .soc-t { position: static; opacity: 1; transform: none; background: none; color: inherit; padding: 0; font-family: var(--font-body); font-size: 13.5px; pointer-events: auto; }
 .eos-sign { margin-top: 44px; padding-top: 36px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 32px 40px; align-items: center; }
@@ -555,8 +570,9 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 
 /* headings that copy their own link */
 .h-link { position: absolute; left: -44px; top: 50%; margin-top: -20px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; color: var(--soft); opacity: 0; transition: opacity 150ms, color 150ms; }
-h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
-.h-link:hover { color: var(--teal); }
+.h-link:focus-visible { opacity: 1; }
+@media (hover: hover) { h2:hover .h-link { opacity: 1; } }
+@media (hover: hover) { .h-link:hover { color: var(--teal); } }
 
 /* ── the other pages ──────────────────────────────────────────────────── */
 .phead { padding: clamp(40px, 6vw, 80px) 0 clamp(28px, 4vw, 48px); border-bottom: 1px solid var(--line); }
@@ -617,14 +633,14 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
 .shell .browser { scroll-snap-align: start; }
 .rooms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .room { display: grid; gap: 8px; align-content: start; padding: 24px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: transform 200ms, box-shadow 200ms; }
-.room:hover { transform: translateY(-3px); box-shadow: var(--sh-2); }
+@media (hover: hover) { .room:hover { transform: translateY(-3px); box-shadow: var(--sh-2); } }
 .room.is-here { border-color: var(--teal); background: var(--wash); }
 .room-mk { display: inline-flex; margin-bottom: 6px; }
 .room-n { font-family: var(--font-display); font-size: 24px; letter-spacing: -0.015em; font-variation-settings: 'opsz' 48; }
-.room-here { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); vertical-align: middle; }
+.room-here { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); vertical-align: middle; }
 .room-d { color: var(--muted); font-size: .9rem; line-height: 1.45; }
 .room-o { display: inline-flex; gap: 6px; align-items: center; color: var(--teal); font-size: 13px; font-weight: 600; }
-.room-u { font-family: var(--font-mono); font-size: 11px; color: var(--soft); letter-spacing: .04em; }
+.room-u { font-family: var(--font-mono); font-size: 12px; color: var(--soft); letter-spacing: .04em; }
 .proof { display: grid; gap: 12px; }
 .proof li { display: flex; gap: 10px; font-size: 1rem; color: var(--muted); max-width: 70ch; line-height: 1.55; }
 .proof .ic-cohort { color: var(--teal); margin-top: 4px; }
@@ -662,6 +678,172 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
 .left-w > .strip-l { display: none; }
 .left-cap { display: none; margin-top: 12px; }
 .left-cap-p { display: none; }
+
+
+/* ══ THE WORKING DEMO ═════════════════════════════════════════════════════
+   Everything below dresses a shared primitive or a new instrument. Nothing
+   here declares a --t-* or a --c-*: those belong to canvas.css/faces.css and
+   are written on .face[data-product], which every <main> here carries. Every
+   descendant that reaches a mockup is written `X *:is(…)`, because
+   build.mjs squeeze() eats the space before a colon. */
+
+/* ── the page index: the shift, as a strip of stamps ─────────────────── */
+.pidx { display: flex; align-items: center; gap: 14px; width: var(--wrap-w); margin: 0 auto; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.pidx-k { flex: none; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); font-weight: 500; }
+.pidx-r { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0; }
+.pidx-a { display: inline-flex; align-items: baseline; gap: 7px; min-height: var(--tap); padding: 0 11px; border-radius: 999px; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; transition: color 160ms, background 160ms; }
+.pidx-h { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: var(--soft); }
+@media (hover: hover) { .pidx-a:hover { color: var(--teal); background: var(--wash); } }
+.pidx-a[aria-current] { background: var(--wash); color: var(--teal); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--teal) 34%, transparent); }
+.pidx-a[aria-current] .pidx-h { color: var(--accent-ink); }
+.pidx-all { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+@media (hover: hover) { .pidx-all:hover { border-color: var(--teal); } }
+
+/* ── sample data, said out loud beside every instrument ──────────────── */
+/* No nowrap: at 320 the hero's own badge is 347px of 13px mono and it was
+   the one thing on the page that ran past the glass. It wraps; the dot
+   stays on the first line. */
+.demo-b { display: inline-flex; align-items: flex-start; gap: 6px; max-width: 100%; font-family: var(--font-mono); font-size: 11px; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.demo-b::before { content: ""; width: 6px; height: 6px; margin-top: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* ── a refusal is an address ─────────────────────────────────────────── */
+/* 26px with a mouse, 44 with a thumb. Eleven of these on two routes: at a
+   flat 44 they added 242px of desktop page for a control a mouse can hit
+   at 26. responsive.css's coarse-pointer net only reaches nav/header/
+   footer/sheet lists, so this one asks for the floor by name. */
+.ref-a { display: inline-flex; align-items: center; min-height: 26px; margin-top: 4px; padding: 0 9px 0 0; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--soft); border-radius: 8px; transition: color 160ms; }
+@media (pointer: coarse) { .ref-a { min-height: var(--tap); } }
+.ref-a:focus-visible { color: var(--teal); }
+@media (hover: hover) { .ref-a:hover { color: var(--teal); } }
+.ref-l li:target { background: var(--wash); border-radius: 10px; }
+.ref-l li:target .ref-a { color: var(--teal); }
+
+/* ── the boundary, as a map rather than a gap ────────────────────────── */
+.bmap { margin-top: 30px; }
+.bmap-l { margin-top: 14px; border-top: 1px solid var(--line); }
+.bmap-r { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.bmap-w { font-size: .95rem; color: var(--muted); }
+.bmap-w::before { content: "It does not "; color: var(--soft); }
+.bmap-to { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: border-color 160ms; }
+@media (hover: hover) { .bmap-to:hover { border-color: var(--teal); } }
+.bmap-to.is-none { color: var(--soft); border-style: dashed; background: none; }
+
+/* ── a correction, drawn: the addendum sits under the original ───────── */
+.adden { margin-top: 0; padding: 20px 22px; border: 1px dashed var(--line); border-radius: 18px; }
+.adden-r { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 18px; padding: 12px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+.adden-r p { grid-column: 2; font-size: .95rem; color: var(--ink); line-height: 1.5; }
+.adden-r .stamp-a { grid-column: 2; color: var(--teal); }
+.adden-k { grid-row: 1 / 3; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); padding-top: 2px; }
+.adden-r.is-add { border-color: color-mix(in srgb, var(--teal) 46%, var(--line)); background: var(--wash); }
+.adden-j { display: grid; place-items: center; height: 26px; color: var(--teal); }
+.adden-f { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; font-size: .9rem; color: var(--soft); line-height: 1.5; }
+.adden-f .ic-cohort { flex: none; margin-top: 2px; color: var(--accent-ink); }
+
+/* ── the four words, and the three inks ──────────────────────────────── */
+.legend { margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.stleg, .inks { padding: 20px 22px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+.stleg-l, .inks-l { display: grid; gap: 8px; }
+.stleg-i, .inks-i { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 4px 16px; align-items: baseline; }
+.stleg-i dd, .inks-i dd { font-size: .9rem; color: var(--muted); line-height: 1.5; }
+.stleg .st-a { font-size: 13px; min-height: 26px; }
+.inks-i dt { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; }
+.inks-i dt i { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+.inks-i[data-ink="teal"] dt i { background: var(--teal); }
+.inks-i[data-ink="coral"] dt i { background: var(--accent); }
+.inks-i[data-ink="ink"] dt i { background: var(--ink); }
+
+/* ── the ledger: what is live and what is not ────────────────────────── */
+.standing, .grammar { border-top: 1px solid var(--line); }
+.ledg { border-top: 1px solid var(--line); }
+.ledg-r { display: grid; grid-template-columns: 116px 190px minmax(0, 1fr); gap: 6px 22px; align-items: baseline; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.ledg-s { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; }
+.ledg-s i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.ledg-r[data-live="yes"] .ledg-s { color: var(--teal); } .ledg-r[data-live="yes"] .ledg-s i { background: var(--teal); }
+.ledg-r[data-live="part"] .ledg-s { color: var(--accent-ink); } .ledg-r[data-live="part"] .ledg-s i { background: var(--accent); }
+.ledg-r[data-live="no"] .ledg-s { color: var(--soft); } .ledg-r[data-live="no"] .ledg-s i { background: var(--soft); opacity: .55; }
+.ledg-w { font-size: 1.02rem; font-weight: 600; }
+.ledg-y { font-size: .92rem; color: var(--muted); line-height: 1.5; }
+
+/* ── the wedge, and the one thing it misses ──────────────────────────── */
+.wedge { margin-top: 30px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.wedge-l { counter-reset: wg; display: grid; gap: 10px; margin-top: 4px; }
+.wedge-l li { counter-increment: wg; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 12px; }
+.wedge-l li::before { content: counter(wg, decimal-leading-zero); grid-row: 1 / 3; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--teal); padding-top: 4px; }
+.wedge-l b { font-size: 1.02rem; }
+.wedge-l span { font-size: .92rem; color: var(--muted); line-height: 1.5; }
+.limit { border-style: dashed; }
+.limit h3 { color: var(--accent-ink); }
+
+/* ── the other rooms, and the ladder out of them ─────────────────────── */
+.family { border-top: 1px solid var(--line); }
+.grad { margin-top: 30px; padding: 22px 24px; border-radius: 20px; background: var(--wash); }
+.grad-l { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 14px; }
+.grad-s { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; position: relative; }
+.grad-s + .grad-s::before { content: "→"; position: absolute; left: -17px; top: 4px; color: var(--teal); opacity: .7; }
+.grad-n { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); font-family: var(--font-mono); font-size: 12px; color: var(--teal); }
+.grad-s b { display: block; font-size: .98rem; }
+.grad-s span { display: block; margin-top: 3px; font-size: .88rem; color: var(--muted); line-height: 1.45; }
+.grad .cap { margin-top: 16px; }
+
+/* ── previous and next, at the bottom of the sheet ───────────────────── */
+.eos-pn { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.eos-pn-a { display: grid; gap: 3px; align-content: start; min-height: var(--tap); padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg); text-decoration: none; color: var(--ink); transition: border-color 200ms, transform 200ms; }
+@media (hover: hover) { .eos-pn-a:hover { border-color: var(--teal); transform: translateY(-2px); } }
+.eos-pn-a[data-pn="next"] { text-align: right; }
+.eos-pn-a.is-end { border-style: dashed; opacity: .4; }
+.eos-pn-k { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+.eos-pn-a b { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.018em; }
+.eos-pn-g { font-size: .88rem; color: var(--soft); line-height: 1.4; }
+
+/* ── the shift sheet learns the five screens ─────────────────────────── */
+.ssheet-sc { display: grid; gap: 8px; }
+.ssheet-scr { display: flex; flex-wrap: wrap; gap: 6px; }
+.ssheet-scr a { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); text-decoration: none; color: var(--muted); font-size: 15px; font-weight: 500; }
+@media (hover: hover) { .ssheet-scr a:hover { border-color: var(--teal); color: var(--teal); } }
+.ssheet-scr b { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--teal); }
+
+/* ── the palette's screen rows ───────────────────────────────────────── */
+.pal-r[data-kind="screen"] { grid-template-columns: 22px minmax(0, 1fr) auto; }
+.pal-no { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; color: var(--accent-ink); }
+
+/* ── the first ten minutes, each on the screen that does it ──────────── */
+/* It is a link inside a sentence — "Sign the 08:00 pass  [the MAR]" — so it
+   is drawn as one. The pill it used to be measured 62x26 and 89x26 at 320
+   and 390: a control shape under both the 44px tap floor and the shape's
+   own promise. An inline link in prose is exempt from the tap floor because
+   it really is prose, and this is the markup that makes that true. */
+.ftn-s { display: inline; padding: 0; border: 0; border-radius: 0; background: none; color: var(--teal); font-size: inherit; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
+@media (hover: hover) { .ftn-s:hover { color: var(--ink); text-decoration-thickness: 2px; } }
+
+/* ── /screens: the strip, the pins and the addresses ─────────────────── */
+.sstrip .head { margin-bottom: 20px; }
+/* A rail can only make a card “current” if that card can reach the left
+   edge, and at 1440 three cards fit, so the last two never could: a link
+   to /screens#strip-cohort-residents scrolled it into view but the strip
+   still read 03 Incident. Trailing room equal to the empty part of the
+   rail fixes it, and max() keeps it at the plain gutter on a phone, where
+   one card already fills the strip. 480px is a card plus its gap. */
+.sstrip .fs-rail { padding-inline-end: max(calc(var(--gutter) + env(safe-area-inset-right, 0px)), calc(100% - 480px)); }
+.dl-l { border-top: 1px solid var(--line); }
+.dl-i { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 8px 18px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.dl-i b { font-size: .98rem; }
+.dl-u { font-family: var(--font-mono); font-size: 12.5px; color: var(--soft); overflow-wrap: anywhere; }
+
+/* ── the seven states of the pass ────────────────────────────────────── */
+.pass { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; counter-reset: ps; }
+.pass-s { position: relative; counter-increment: ps; display: grid; gap: 4px; align-content: start; padding: 14px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.pass-s b { font-size: .98rem; }
+.pass-s > span { font-size: .88rem; color: var(--muted); line-height: 1.45; }
+.pass-s[data-stop] { border-color: color-mix(in srgb, var(--accent) 52%, var(--line)); }
+.pass-b { justify-self: start; margin-top: 4px; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* ── the shared demo primitives, in this face ────────────────────────── */
+.fs-t, .swx-c { font-family: var(--font-display); }
+.swx-c { font-family: var(--font-body); }
+.fs-pl { text-transform: uppercase; letter-spacing: .1em; font-size: 15px; }
+.swx-tabs { background: var(--card); }
+.cal-i { border: 1px solid transparent; border-radius: 12px; padding: 8px 10px; }
+.cal-pin { font-family: var(--font-mono); }
 
 /* ── narrower ─────────────────────────────────────────────────────────── */
 @media (max-width: 1200px) {
@@ -797,6 +979,54 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .sim-reset, .air-add, .air-sw, .tl-at
   { font-size: var(--fs-read); }
   .company-l, .tl-at { letter-spacing: .02em; }
+
+  /* ── THE WORKING DEMO, ON A LAP AND A PHONE ────────────────────────
+     Every new instrument collapses to one column here, and every new
+     name joins one of the two floor lists above rather than restating a
+     px value of its own. */
+  .legend, .wedge, .eos-pn, .bmap-r, .dl-i { grid-template-columns: minmax(0, 1fr); }
+  .bmap-r { gap: 6px; }
+  .bmap-to { justify-self: start; }
+  .eos-pn-a[data-pn="next"] { text-align: left; }
+  /* one column here, so the dashed end-stop is no longer holding a column
+     open — it is just an empty box under the thumb. */
+  .eos-pn-a.is-end { display: none; }
+  .ledg-r { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .grad-l { grid-template-columns: 1fr 1fr; }
+  .grad-s + .grad-s::before { display: none; }
+  .stleg-i, .inks-i { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .adden-r { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .adden-r p, .adden-r .stamp-a, .adden-k { grid-column: 1; grid-row: auto; }
+  /* ── the index, on a phone, is the time rail the header gives up ────
+     Wrapped, the thirteen stops ran six rows and 350px — a third of the
+     screen spent on a table of contents. As one snapped rail it is 114px,
+     it reads as the rail the header hides below 900, and the stop you are
+     reading still marks itself as you scroll. It bleeds to the glass by
+     reversing the gutter, never by 100vw. */
+  .pidx { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 10px; }
+  .pidx-k { grid-column: 1; grid-row: 1; }
+  .pidx-all { grid-column: 2; grid-row: 1; }
+  .pidx-r { grid-column: 1 / -1; grid-row: 2; flex-wrap: nowrap; gap: 6px;
+            overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
+            margin-inline: calc(-1 * (var(--gutter) + env(safe-area-inset-left, 0px))) calc(-1 * (var(--gutter) + env(safe-area-inset-right, 0px)));
+            padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px)) calc(var(--gutter) + env(safe-area-inset-right, 0px));
+            scroll-padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px)); }
+  .pidx-r::-webkit-scrollbar { display: none; }
+  .pidx-a { flex: none; scroll-snap-align: start; }
+  .dl-u { grid-column: 1; }
+
+  /* the label voice — 13px and the tracking down with it */
+  .pidx-k, .pidx-h, .demo-b, .adden-k, .ledg-s, .eos-pn-k,
+  .grad-n, .pass-b, .ssheet-scr b, .pal-no
+  { font-size: var(--fs-label); letter-spacing: var(--track-label); }
+
+  /* the prose floor — 15px, because every one of these is reading matter
+     and half of them are a leaf inside <li> or <dd>, which the gate reads
+     as prose whatever the string length */
+  .ledg-y, .bmap-w, .wedge-l span, .stleg-i dd, .inks-i dd, .adden-r p,
+  .adden-f, .eos-pn-g, .grad-s span, .pass-s > span, .dl-u, .ref-a, .ftn-s,
+  .pidx-a, .pidx-all
+  { font-size: var(--fs-read); }
 }
 @media (max-width: 640px) {
   /* MOBILE-SPEC §0: a leaf inside <li> is prose to the gate whatever its length,
@@ -941,6 +1171,173 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
      The rest is js/pages/cohort.js, which left the first disclosure open. */
   .eos-head { margin-bottom: var(--sp-5); }
   .eos-sign { margin-top: var(--sp-5); padding-top: var(--sp-5); gap: var(--sp-5); }
+
+  /* ══ THE HAND-TYPED AIR ═══════════════════════════════════════════════
+     The shared tier took --sec-y, --sp-4..8, --hdr and the heading ramp
+     down by a fifth and moved the matched phone page 4.6%. It could not
+     move what is written here: every number below is a literal px value
+     this sheet typed for a desktop column, and on a 390pt screen the sum
+     of them is the page. Each one is re-solved at four fifths of itself,
+     rounded to a whole pixel, and NOTHING that a finger presses or an eye
+     reads moves: 15px prose, 16px inputs, 44x44 taps, 48px list rows,
+     12px any label, and every product screen at the zoom it already had.
+
+     Leading is the other half of it. Prose is 37-54% of this page at 390
+     and it is held at 15-16px by the floor, so the only air left inside a
+     paragraph is between its lines. responsive.css already states 1.45 as
+     the phone value and declares it at ZERO specificity so a page rule
+     still wins — which means every 1.5 / 1.55 / 1.6 this sheet typed is
+     still winning, at ~34 characters a line. They come to 1.45 here, on
+     this sheet's own names, one rule. */
+
+  /* ── the hero ─────────────────────────────────────────────────────── */
+  .hero { padding: 18px 0 32px; }
+  .lede { margin-top: 19px; }
+  .ctas { margin-top: 24px; }
+  .now { margin-top: 17px; padding: 8px 12px; }
+  .hero .fine { margin-top: 13px; }
+  .strip { margin-top: 22px; }
+  .strip-c s { padding: 13px 14px; }
+  .head { margin-bottom: 24px; }
+  .sub { margin-top: 11px; }
+  .sec-dev { margin-top: 21px; }
+
+  /* ── the shift ────────────────────────────────────────────────────── */
+  .tl-i { padding: 14px 0; }
+  .sim, .air { margin-top: 11px; padding: 11px 13px; gap: 8px; }
+  .tl-note { margin-top: 10px; }
+  .air-l li { padding: 6px 10px; }
+  .keys-in { padding: 18px 19px 21px; }
+  .keys-l dd { margin-bottom: 8px; }
+
+  /* ── the two stops ────────────────────────────────────────────────── */
+  .gate-f, .gate-b { padding: 22px 22px 19px 24px; gap: 8px; }
+  .gate-cta { padding-top: 10px; }
+  .pull { margin-top: 32px; }
+  .machines { margin-top: 26px; }
+  .machine { padding: 13px 0; }
+
+  /* ── the manifesto and the boundary map ───────────────────────────── */
+  .ref-l li { padding: 14px 0; }
+  .ref-a { margin-top: 2px; }
+  .notstored { margin-top: 29px; padding: 17px 20px; }
+  .bmap { margin-top: 24px; }
+  .bmap-l { margin-top: 11px; }
+  .bmap-r { padding: 8px 0; }
+  .boundary { margin-top: 0; }
+
+  /* ── the record ───────────────────────────────────────────────────── */
+  .cmp-w { margin-bottom: 32px; }
+  .cmp-cap { margin-top: 10px; }
+  .ev-b, .note, .room { padding: 15px 17px; }
+  .note p { margin-top: 8px; }
+  .quote { padding: 10px 12px; }
+  .ev-cl { margin-top: 11px; }
+  .adden { padding: 14px 15px; }
+  .adden-r { padding: 10px 12px; }
+  .adden-f { margin-top: 10px; }
+  .legend { margin-top: 16px; gap: var(--sp-4); }
+  .stleg, .inks { padding: 16px 17px; }
+  .stleg-l, .inks-l { gap: 6px; }
+
+  /* ── roles, the house, the ledger, the rooms ──────────────────────── */
+  .role { padding: 15px 17px; gap: 6px; }
+  .role-r { margin-top: 6px; padding-top: 10px; }
+  .closing { margin-top: 22px; }
+  .house .ctas { margin-top: 22px; }
+  .house-k { margin-top: 26px; }
+  .house-k li { padding: 11px 0; }
+  .door-card { padding: 19px 17px 16px; }
+  .ledg-r { padding: 12px 0; }
+  .wedge { margin-top: 24px; gap: var(--sp-4); }
+  .wedge-l { gap: 8px; }
+  .grad { margin-top: 24px; padding: 17px 18px; }
+  .grad-l { grid-template-columns: minmax(0, 1fr); gap: 11px; margin-top: 11px; }
+  .grad .cap { margin-top: 12px; }
+  .pass { margin-top: 19px; gap: 8px; }
+  .pass-s { padding: 11px 13px; }
+
+  /* ── the questions, pricing and the waitlist ──────────────────────── */
+  .faq-f { margin-top: 14px; }
+  .faq-i summary { padding: 17px 0; }
+  .faq-a { padding-bottom: 19px; }
+  .faq-none { padding: 17px 0; }
+  .hs-w { margin-bottom: 21px; }
+  .tier { padding: 16px 18px; }
+  .pricing .fine, .pplans .fine { margin-top: 14px; }
+  .subs { margin-top: 21px; }
+  .defs { margin-top: 10px; }
+  .defs dt, .defs dd { padding: 9px 0; }
+  .more { margin-top: 19px; }
+  .ten { margin-top: 26px; }
+  .ten ol { gap: 8px; }
+  .join-f { padding: 16px; }
+  .join-f .fine { margin-top: 11px; }
+  .trial { margin-top: 21px; padding: 16px 19px; }
+  .six { gap: 6px; margin-top: 10px; }
+
+  /* ── the other routes ─────────────────────────────────────────────── */
+  .phead { padding: 26px 0 19px; }
+  .frow { padding: 11px 0; }
+  .fmod { padding: 11px 13px 13px; }
+  .fgrid { gap: var(--sp-5); }
+  .mv-l li { padding: 10px 0; }
+  .fn-g { margin-top: 26px; }
+  .notnow { margin-top: 19px; padding: 17px 20px; }
+  .dot-l { gap: 5px; margin-top: 8px; }
+  .fnever .ctas, .sgates .ctas, .pjoin .ctas { margin-top: 26px; }
+  .proof { gap: 10px; }
+  .company .ctas { margin-top: 19px; }
+  .company-l { margin-top: 11px; }
+  .c-side { gap: 11px; }
+  .c-mail { margin-top: 6px; }
+  .c-side .fine { margin-top: 8px; }
+  .c-f { padding: 16px; }
+  .dl-i { padding: 6px 0; }
+  .sstrip .head { margin-bottom: 16px; }
+
+  /* ── the end-of-shift sheet ───────────────────────────────────────── */
+  .eos { padding: 45px 0 38px; }
+  .eos-d summary { min-height: var(--tap-row); }
+  .eos-b { padding-bottom: 16px; }
+  .eos-fine { margin-top: 6px; }
+  .stamps { margin-top: 13px; }
+  .eos-pn { margin-top: 26px; gap: 10px; }
+  .eos-pn-a { padding: 13px 15px; }
+  .pidx { padding: 10px 0; gap: 6px 10px; }
+  .pidx-a { padding: 0 9px; }
+
+  /* ── the shift sheet, denser, because it IS the phone navigation ──── */
+  .ssheet-in { gap: 17px; }
+  .ssheet-l a { min-height: 52px; font-size: 21px; padding: 6px 0; }
+  .ssheet-p { margin-top: 11px; }
+
+  .eyebrow { margin-bottom: 12px; }
+  .strip-l { margin-bottom: 7px; }
+  .tier-p { font-size: 27px; }
+  .gate-n { font-size: 35px; }
+  .ten li::before, .six li::before { font-size: 19px; }
+  .strip-c s { padding: 11px 13px; }
+  .q-g .head { margin-bottom: 6px; }
+  .role-on { min-height: 0; }
+  .fmod-h { margin-bottom: 5px; }
+  .frow-m { margin-top: 0; }
+  .eos-head { margin-bottom: var(--sp-4); }
+
+  .pv h3 { font-size: 21px; }
+  .field { gap: 5px; }
+
+  /* ── and the leading, once ────────────────────────────────────────── */
+  .sub, .lede, .fine, .cap, .closing, .hs-line, .note p, .ev-b p, .gate-p,
+  .role-d, .machine span, .house-k span, .notstored p, .faq-a p, .proof li,
+  .pv-c p, .frow-d, .mv-l span, .ref-l span:not(.ref-n), .defs dd, .trial p,
+  .ledg-y, .bmap-w, .wedge-l span, .stleg-i dd, .inks-i dd, .adden-r p,
+  .adden-f, .grad-s span, .pass-s > span, .tl-b p, .sim-hint, .tl-note,
+  .dl-u, .eos-pn-g, .eos-fine, .room-d, .air-l li, .faq-none, .pal-none
+  { line-height: 1.45; }
+
+  /* ── the two prose floors, for the names this sweep touches ───────── */
+  .ref-a, .ftn-s { font-size: var(--fs-read); }
 }
 @media (max-width: 400px) {
   .stampb { padding: 0 12px; font-size: 13px; }
@@ -973,4 +1370,104 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   html[data-print="manifesto"] .head { margin-bottom: 18px; }
   html[data-print="manifesto"] .ref-print { display: block; margin-top: 18px; font-family: var(--font-mono); font-size: 8pt; letter-spacing: .12em; text-transform: uppercase; color: #444; }
   @page { margin: 16mm; }
+}
+
+/* ══ AFTER THE HOSTILE REVIEW ═══════════════════════════════════════════
+   Five fixes that have to sit at the end of the sheet because four of them
+   override a rule in a shared stylesheet this page does not own. */
+
+/* ── 1 · hover does not stick to a thumb ──────────────────────────────
+   Every :hover rule in THIS sheet is now inside @media (hover: hover), so
+   a tap cannot leave one painted. Four more live in base.css, shells.css
+   and instruments-extra.css, which cohort.css loads after but does not own
+   — they are put back to their own base value here rather than edited
+   there. base.css already handles .btn's transform and shadow; the one it
+   misses is .btn.pri's background, which is the rule the review caught
+   sticking on "Join the list" (rgb(15,92,90) → rgb(11,63,62), and it only
+   cleared when you tapped somewhere else). */
+/* The touch neutralisers that were here are gone. They put base.css,
+   shells.css and instruments-extra.css :hover rules back to their own base
+   value on touch, because this sheet did not own those files. Those four
+   sheets now wrap every :hover in @media (hover: hover) at source, so on a
+   touch device the rules never apply and there is nothing to undo. Keeping
+   them would not be harmless: a :hover selector inside @media (hover: none)
+   still counts as an unguarded hover rule to the gate. */
+
+/* ── 2 · the shift sheet can be closed from anywhere in it ────────────
+   .ssheet is a full-screen scroller and .ssheet-x sat at the top of its
+   content: at scrollTop 732 the close button was at top:-716 and the
+   header's .tr-menu underneath it was covered by the sheet, so the sheet
+   could not be closed at all by touch once scrolled. The header sticks to
+   the top of the scroller instead. A phone has no Escape key, so this is
+   the only way out. */
+.ssheet-h {
+  position: sticky; top: calc(-1 * max(16px, env(safe-area-inset-top)));
+  z-index: 3; margin-inline: -20px; padding: 10px 20px;
+  background: var(--bg);
+  border-bottom: 1px solid transparent;
+}
+.ssheet-h::after {
+  content: ''; position: absolute; inset: auto 0 0; height: 1px;
+  background: var(--line); opacity: 0;
+}
+.ssheet[data-scrolled] .ssheet-h::after { opacity: 1; }
+.ssheet-x { flex: none; }
+
+/* ── 3 · the desktop shell is shown at a size it can be READ at ───────
+   .cal-stage caps a mock at --dm-room (460px), which put a 1024px app
+   window at zoom .449 and its 12px text at a 6.6px line box — a picture of
+   a screen, not a screen — while the copy claimed true size and sideways
+   panning, and at 1280 there was nothing to pan because it already fitted.
+   It renders at 1.0 wherever 1024px fits and at .8 on a phone, and
+   .shell-w (already a scroller) pans the rest.
+
+   The scroller is .shell-w, NOT .cal-stage: site.js place() sets each pin
+   as a percentage of the stage's own rect, so the stage has to stay the
+   unscrolled coordinate space or the pins drift as you pan. */
+#cal-desktop .cal-stage { justify-self: start; margin-inline: 0; }
+#cal-desktop .browser { --mock-z: .8; }
+@media (min-width: 1120px) { #cal-desktop .browser { --mock-z: 1; } }
+/* Measured after: 1024px layout at zoom 1.000 at 1280 and 1440 — true size,
+   and it fits, so there is nothing to pan and the copy no longer says there
+   is. At 390 responsive.css has already swapped the mock for the app's OWN
+   768px narrow build (one column, no rail, hamburger up), and that renders
+   at zoom .800 — 614px painted, panned inside .shell-w. The old number was
+   .449 of a 1024px layout: 6.6px text. */
+
+/* ── 4 · a scroller with nothing to scroll is not a scroller ──────────
+   The hero switcher has exactly two tabs and they measure 309px inside a
+   309px box at 390, so the overflow-x:auto instruments-extra.css gives the
+   general case is a horizontal scroll affordance that never has anything
+   behind it.
+
+   The min-width is load-bearing and was learned the hard way: dropping the
+   overflow at every width put 6px of #sw-hero-t1 past the right edge at
+   320 and gave the whole page 6px of sideways scroll, because two 150px
+   tabs do NOT fit a 280px box. The two tabs need 309px; the box is 278 at
+   320, 298 at 340 and 309 from 360 up, so below 360 the scroller is real
+   and it stays; from 360 up there is genuinely nothing behind it. */
+@media (min-width: 360px) { #sw-hero .swx-tabs { overflow-x: visible; } }
+
+/* ── 5 · the caption keeps its gutter at 320 ──────────────────────────
+   .swx-c is 46ch and centred; at 320 that resolved to 0.2px from the glass
+   (it is 35.2px at 390, so this is a 320-only failure). */
+/* A media query, not min(46ch, calc(100vw - 40px)): WebKit dropped that
+   declaration at parse time and fell straight back to instruments-extra's
+   bare 46ch. The selector is doubled because `.hero-dev .swx-c { 32ch }`
+   forty lines up is (0,2,0) and beats a bare `.swx-c` in a later media
+   query on specificity — 32ch measures 319.68px on that element, which is
+   the whole 320px glass minus 0.4 and is exactly what the gate caught. */
+@media (max-width: 380px) { .hero-dev .swx-c, .swx-c { max-width: calc(100vw - 40px); } }
+
+/* ── 6 · the palette has a trigger on a phone ─────────────────────────
+   .tr-tools was hidden whole at <=900, and it carried the palette's ONLY
+   opener: at 390 button.tr-k measured 0x0 and the shift sheet had no search
+   entry either, so "type a screen's name and land on it" was a desktop-only
+   feature. The tools come back; the day/night switch inside them goes,
+   because the shift sheet already carries one — so the header gains a
+   control rather than two. */
+@media (max-width: 900px) {
+  .tr-tools { display: flex; }
+  .tr-tools .shiftb { display: none; }
+  .tr-k { width: var(--tap); height: var(--tap); }
 }

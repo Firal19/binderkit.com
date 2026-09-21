@@ -32,7 +32,7 @@ export const FEATURES = [
     probe: [{ home: 'class="air-sw"' }, { home: 'class="air-out"' }, { js: 'data-pending' }] },
   { id: 'ch-10', name: 'The handoff composes itself', kind: 'motion',
     what: 'As the 18:45 step comes into view the sheet on the phone fills in line by line — MAR 18 of 18, Documentation 9 of 9 — driven by an IntersectionObserver.',
-    probe: [{ home: 'data-tour="handoff+compose"' }, { css: '.is-compose:not(.is-done)' }, { js: 'IntersectionObserver' }] },
+    probe: [{ home: 'data-compose-note' }, { css: '.is-compose:not(.is-done)' }, { js: "classList.add('is-compose')" }] },
   { id: 'ch-11', name: '⌘K — the product’s verbs', kind: 'navigation',
     what: 'A command palette listing the product’s own verbs — Sign a dose, File an incident, Start handover, Add an addendum — plus the stops and the pages; typeahead, arrow keys, Escape.',
     probe: [{ home: 'id="pal"' }, { home: 'Sign a dose' }, { js: 'e.metaKey' }, { js: 'pal-none' }] },
@@ -78,6 +78,126 @@ export const FEATURES = [
   { id: 'ch-25', name: 'The social stamps', kind: 'social',
     what: 'Eight round stamped glyphs in the footer that ink on hover or press, with the handle as a tooltip on desktop and as a label on phones.',
     probe: [{ home: 'class="soc stamps"' }, { css: '.stamps .soc-i:hover' }, { re: '(class="soc-i"[^>]*>[\\s\\S]*?){8}' }] },
+
+  /* ══ THE WORKING DEMO ═══════════════════════════════════════════════════
+     Twenty-five more, and the direction they were built to: a partner with
+     ninety seconds must be able to OPERATE the product inside the page and
+     leave knowing exactly what is and is not true. Ten of them are the
+     family backbone, drawn in this site's own metaphor — the shift; the
+     other fifteen come out of Cohort's own material and nowhere else.
+     PROBES. tools/check.mjs is substring matching over the built bytes —
+     four kinds: {home} and {html} read the HTML, {css} the stylesheet, {js}
+     the script. That means a probe can only prove that the BYTES a feature
+     needs are present; no probe here runs the page, and none of them can
+     tell a working film strip from a dead one.
+
+     What it CAN do, and did not before this round: every feature below
+     whose sentence describes a BEHAVIOUR now names the line of script that
+     performs it, so deleting the code breaks the build rather than passing
+     it quietly. Until this round ch-26…ch-50 carried 87 probes and not one
+     of them read the JS: site.js demos() — the film strip, the hero
+     switcher, the callout pins — could be deleted whole and check.mjs still
+     printed "50 features verified". It cannot now: nine of the twenty-five
+     carry fourteen {js} probes between them, and every one of those is a
+     line that exists only because the behaviour does. Four of the fourteen
+     sit INSIDE demos() rather than in a helper it calls, so deleting that
+     one function fails the build on ch-26, ch-27 and ch-28 instead of
+     passing it quietly. The other sixteen features are markup and
+     stylesheet, and their probes say so. */
+
+  { id: 'ch-26', name: 'The film strip of all five screens', kind: 'screen',
+    what: 'A full-bleed rail on /screens carrying every real surface — Today, the MAR pass, an incident, the handoff, the resident record — at the size it ships, snapped, draggable, arrow-key driven, each captioned with what it proves.',
+    probe: [{ route: 'screens' }, { html: 'id="strip-cohort-marpass"' }, { html: 'id="strip-cohort-residents"' }, { css: '.fs-rail{' },
+      { js: "live.textContent = (i + 1) + ' of ' + el.length + ', '" },
+      { js: "if (e.pointerType !== 'mouse' || e.button) return;" },
+      { js: "if (t && t.closest(RAIL)) t.scrollIntoView({ inline: 'start', block: 'nearest' });" }] },
+  { id: 'ch-27', name: 'A hero device whose screen changes', kind: 'screen',
+    what: 'The phone in the hero is a real tablist over the two ends of a shift — 06:55 Today and 18:45 Handoff. Every panel keeps its box in one grid cell, so changing screen moves nothing; with scripting off the screens simply stack.',
+    probe: [{ home: 'id="sw-hero"' }, { home: 'role="tabpanel"' }, { home: 'data-sw-to="1"' }, { home: 'class="swx-tab"' },
+      { js: 'const swSet = (box, i, move) => {' },
+      { js: "const boxes = $$('[data-switch]');" }] },
+  { id: 'ch-28', name: 'The allergy gate, pin by pin', kind: 'screen',
+    what: 'Four numbered pins over the real MAR-pass screen on /screens — the Six Rights dialog, the allergy stop, the interval stop and what an override costs. Each pin is measured from the element it quotes, so a stale selector leaves no orphan; pointing at a sentence lights the pin and the element together.',
+    probe: [{ html: 'id="cal-pass"' }, { html: 'data-sel=".sheet-h"' }, { html: 'class="cal-list"' }, { css: '.cal-pin[data-on]' },
+      { js: "pin.style.setProperty('--x', pct(q.left + q.width / 2 - b.left, b.width));" },
+      { js: 'const ro = new ResizeObserver((entries) => {' },
+      { js: "addEventListener('resize', place, { passive: true });" }] },
+  { id: 'ch-29', name: 'What is on this page', kind: 'navigation',
+    what: 'A strip of stops under the hero, each carrying the hour the shift gives it; the one you are reading marks itself as you scroll, and the last chip is the way to all five screens.',
+    probe: [{ home: 'class="pidx"' }, { home: 'class="pidx-all"' }, { css: '.pidx-a[aria-current]' }, { re: '(class="pidx-a"[\\s\\S]*?){12}' },
+      { js: "const navs = $$('[data-spy]').map((n) => {" }] },
+  { id: 'ch-30', name: 'Previous and next, across the eight routes', kind: 'navigation',
+    what: 'Every page ends with the page before it and the page after it, named, with the line that says what is there. No script: it works with JS off and it prints.',
+    probe: [{ home: 'class="eos-pn"' }, { home: 'data-pn="next"' }, { html: 'data-pn="prev"' }, { css: '.eos-pn{' }] },
+  { id: 'ch-31', name: 'Jump to a screen by name', kind: 'navigation',
+    what: 'The command palette lists the five product screens beside the verbs and the pages; typing “handoff” lands on that screen on /screens rather than at the top of a route.',
+    probe: [{ home: 'data-kind="screen"' }, { home: '/screens#strip-cohort-handoff' }, { css: '.pal-r[data-kind="screen"]' },
+      { js: 'if (it.name.startsWith(q)) return 3;' },
+      { css: '.tr-tools{display:flex}' }] },
+  { id: 'ch-32', name: 'The status ledger', kind: 'honesty',
+    what: 'Five rows saying what is live, what is partly true and what is not built — the site, the product, the pilot home, the prices and the door — each with the reason, and no row carrying a number the vault has not set.',
+    probe: [{ home: 'class="ledg"' }, { home: 'data-live="part"' }, { home: 'data-live="no"' }, { css: '.ledg-r[data-live="no"]' }] },
+  { id: 'ch-33', name: 'The family band', kind: 'family',
+    what: 'The other three rooms of the house — CareShop, Binderkit, Aidepost — each with its own mark, its own domain and its own standing, live and linked, with Cohort marked as the room you are in.',
+    probe: [{ home: 'class="room is-here"' }, { home: 'https://careshop.app' }, { home: 'https://binderkit.com' }, { home: 'https://aidepost.com' }, { css: '.room-mk' }] },
+  { id: 'ch-34', name: 'The graduation path', kind: 'family',
+    what: 'Four steps from one house to twenty: Cohort runs the shift, the export is generated in the client with redaction on, Provider Hub Oregon imports it directly because the record is already in its shape, and the roll-up begins.',
+    probe: [{ home: 'class="grad-l"' }, { home: 'data-grad="3"' }, { home: 'data-grad="4"' }, { css: '.grad-l{' }] },
+  { id: 'ch-35', name: 'Every screen has an address', kind: 'navigation',
+    what: 'A list of the five absolute deep links on /screens, each with a copy button; the link opens on that screen aligned to the start of the rail rather than wherever the browser lands.',
+    probe: [{ html: 'class="dl-l"' }, { html: 'data-copy="https://cohorthome.app/screens#strip-cohort-today"' }, { html: 'class="dl-u"' }, { css: '.dl-u{' },
+      { js: "const text = c.getAttribute('data-copy') || c.textContent.trim();" }] },
+
+  { id: 'ch-36', name: 'The boundary, as a map', kind: 'honesty',
+    what: 'The five things Cohort refuses to be, each naming the room that does hold it — and the one that names nowhere, because policing compliance is not a product in this family.',
+    probe: [{ home: 'class="bmap-l"' }, { home: 'class="bmap-to is-none"' }, { css: '.bmap-w::before' }] },
+  { id: 'ch-37', name: 'The pilot, with a falsifiable exit', kind: 'honesty',
+    what: 'The named AFH-DD in Eugene, the fourteen-consecutive-day exit criterion, and the line no real resident crosses until the customer business associate agreement is executed — as a ledger row and as one of the three checkable claims.',
+    probe: [{ home: 'The pilot home' }, { home: 'Fourteen consecutive days' }, { home: 'not executed' }] },
+  { id: 'ch-38', name: 'The four words this product owns', kind: 'honesty',
+    what: 'Due, Overdue, Given, Held — drawn in the product’s own state chips, verbatim from the state set, with the rule beside them: overdue is a deeper coral and nothing on this site is red.',
+    probe: [{ home: 'class="stleg"' }, { home: 'data-state="overdue"' }, { home: 'deeper coral' }, { css: '.stleg .st-a' }] },
+  { id: 'ch-39', name: 'The first ten minutes, on the screen that does it', kind: 'navigation',
+    what: 'Each of the five first actions carries the screen it happens on, as a link straight into that screen on /screens.',
+    probe: [{ home: 'class="ftn"' }, { home: 'class="ftn-s"' }, { css: '.ftn-s{' }] },
+  { id: 'ch-40', name: 'Sample data, said out loud', kind: 'honesty',
+    what: 'The two places on the front page where a rendered screen sits next to prose carry the same coral-dotted mark saying the screens use sample data — beside the hero device and under the shift timeline. /screens carries no badge and says it in prose instead, twice: once in the page lede and once in the strip’s own hint. The footer states it a third time in words.',
+    probe: [{ home: 'class="demo-b"' }, { home: 'The screens beside this use sample data' }, { css: '.demo-b::before' }] },
+  { id: 'ch-41', name: 'Every refusal is its own address', kind: 'navigation',
+    what: 'The eleven refusals each carry an id and a button that copies its absolute link; arriving on one lights that refusal.',
+    probe: [{ home: 'id="refuse-07"' }, { home: 'class="ref-a"' }, { home: 'https://cohorthome.app/#refuse-11' }, { css: '.ref-l li:target' },
+      { js: "toast(c.getAttribute('data-copied') || 'Copied');" }] },
+  { id: 'ch-42', name: 'A route that is nothing but the product', kind: 'page',
+    what: '/screens carries the whole product — the five-screen strip, the annotated pass, the desktop, and the addresses — where a 30 kB strip costs the front page’s byte budget nothing.',
+    probe: [{ route: 'screens' }, { home: 'href="/screens"' }, { html: 'Every screen, at the size it ships.' }] },
+  { id: 'ch-43', name: 'The same record, on the desktop, annotated', kind: 'screen',
+    what: 'Today on the desktop app, drawn at the size it can be read at: the 1024px window at full size on a desktop, and below 900px the app’s own 768px narrow build at 80%, panned sideways inside its own scroller rather than shrunk to fit. Three numbered pins: composed at read time, the allergy surfaced rather than enforced, and a stamp at the end of every row.',
+    probe: [{ html: 'id="cal-desktop"' }, { html: 'Today, on the desktop app' }, { html: 'data-sel=".tbl-a"' },
+      { html: 'class="shell-w"' }, { css: '#cal-desktop .browser{--mock-z:.8}' }] },
+  { id: 'ch-44', name: 'The five screens, in the shift sheet', kind: 'mobile',
+    what: 'The phone menu carries a numbered row of the five screens above the stops, so the product is one thumb-reach from every route.',
+    probe: [{ home: 'class="ssheet-sc"' }, { home: 'class="ssheet-scr"' }, { css: '.ssheet-scr a' },
+      { js: "const holders = $$('[data-page-index]');" },
+      { css: '.ssheet-h{position:sticky' }] },
+  { id: 'ch-45', name: 'Seven states, two of them stops', kind: 'interaction',
+    what: 'The medication pass drawn as its own state machine on /features — scheduled, Six Rights, allergy check, interval and ceiling, witness co-sign, signed, locked — with the two that can stop a caregiver marked and nothing else marked at all.',
+    probe: [{ html: 'class="pass"' }, { html: 'data-stop="2"' }, { css: '.pass-s[data-stop]' }] },
+  { id: 'ch-46', name: 'A correction is an addendum', kind: 'interaction',
+    what: 'The original entry and the addendum under it, both stamped, with the sentence that there is no third row: the state machine has no transition that edits or removes the first.',
+    probe: [{ home: 'class="adden"' }, { home: 'class="adden-r is-add"' }, { css: '.adden-r.is-add' }] },
+  { id: 'ch-47', name: 'Three inks, and what each one marks', kind: 'honesty',
+    what: 'The page’s own palette, named: teal for structure, coral for the one thing coral marks — late, unread or waiting on a decision — and ink for the record itself. A claim a reader can check against the pixels.',
+    probe: [{ home: 'class="inks"' }, { home: 'data-ink="coral"' }, { css: '.inks-i[data-ink="coral"] dt i' }] },
+  { id: 'ch-48', name: 'The keys reach the demo', kind: 'a11y',
+    what: 'The shortcut sheet documents the arrow keys and Home/End across the hero switcher and the film strip, which is where the shared rail and tablist behaviour already is.',
+    probe: [{ home: 'Move across the screens' }, { home: 'The first screen, and the last' }, { home: 'id="keys"' },
+      { js: 'const typing = (e) => /^(INPUT|TEXTAREA|SELECT)$/' }] },
+  { id: 'ch-49', name: 'The wedge, in three checkable lines', kind: 'honesty',
+    what: 'Two physical-harm gates and no third, an append-only record where a correction is an addendum, and a named pilot with a falsifiable exit — stated as the three things a partner can verify rather than as a claim about traction.',
+    probe: [{ home: 'class="wedge-l"' }, { home: 'Two gates, and no third' }, { css: '.wedge-l li::before' }] },
+  { id: 'ch-50', name: 'And the one thing it misses', kind: 'honesty',
+    what: 'Beside the wedge, the limitation: the allergy match is by normalised name and ingredient plus a manual flag, and it misses drug-class conflicts. The product says so on the stop rather than implying a completeness it does not have.',
+    probe: [{ home: 'class="note limit"' }, { home: 'drug-class conflicts' }, { css: '.limit{' }] },
 ];
 
 export default FEATURES;
