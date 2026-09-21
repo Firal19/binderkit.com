@@ -10,6 +10,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export const add = mutation({
   args: {
     email: v.string(),
+    phone: v.optional(v.string()),
     track: v.string(),
     houses: v.string(),
     product: v.string(),
@@ -21,6 +22,7 @@ export const add = mutation({
     if (!EMAIL.test(email)) throw new Error('bad email');
     const row = {
       email,
+      phone: (a.phone || '').slice(0, 40) || undefined,
       track: a.track.slice(0, 40),
       houses: a.houses.slice(0, 20),
       product: a.product.slice(0, 20),

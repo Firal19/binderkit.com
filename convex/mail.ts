@@ -7,14 +7,14 @@ const guard = (key: string) => { if (!process.env.WAITLIST_KEY || key !== proces
 /* A message from the contact form. Public because the form is public; it
    validates again because a public mutation is a public mutation. */
 export const contact = mutation({
-  args: { name: v.string(), email: v.string(), topic: v.string(), message: v.string(), product: v.string(), source: v.string(), at: v.number() },
+  args: { name: v.string(), email: v.string(), phone: v.optional(v.string()), topic: v.string(), message: v.string(), product: v.string(), source: v.string(), at: v.number() },
   handler: async (ctx, a) => {
     const email = a.email.trim().toLowerCase().slice(0, 254);
     if (!EMAIL.test(email)) throw new Error('bad email');
     const message = a.message.trim().slice(0, 4000);
     if (message.length < 4) throw new Error('empty');
     return await ctx.db.insert('messages', {
-      name: a.name.slice(0, 120), email, topic: a.topic.slice(0, 40), message,
+      name: a.name.slice(0, 120), email, phone: (a.phone || '').slice(0, 40) || undefined, topic: a.topic.slice(0, 40), message,
       product: a.product.slice(0, 20), source: a.source.slice(0, 300), at: a.at || Date.now(), answered: false,
     });
   },
