@@ -396,7 +396,7 @@
     el.setAttribute('aria-live', 'polite');
     el.innerHTML = `
       <div class="ckb-in">
-        <p class="ckb-t"><b>This page stores nothing until you say so.</b></p>
+        <p class="ckb-t"><b>Nothing is kept here until you say so — except the theme you picked.</b></p>
         <p class="ckb-p">Say yes and it keeps a draft of anything you start writing, so a refresh or a wrong tap does not lose it, and remembers you next time. Say no and it keeps one cookie recording that you said no — nothing else. <a href="/privacy#cookies">What is kept</a>.</p>
         <div class="ckb-b">
           <button class="btn pri" type="button" data-consent="all">Yes, remember</button>
