@@ -398,6 +398,7 @@
       <div class="ckb-in">
         <p class="ckb-t"><b>Nothing is kept here until you say so — except the theme you picked.</b></p>
         <p class="ckb-p">Say yes and it keeps a draft of anything you start writing, so a refresh or a wrong tap does not lose it, and remembers you next time. Say no and it keeps one cookie recording that you said no — nothing else. <a href="/privacy#cookies">What is kept</a>.</p>
+        <p class="ckb-p ckb-short">Keep a draft of what you write, and remember you next time? <a href="/privacy#cookies">What is kept</a>.</p>
         <div class="ckb-b">
           <button class="btn pri" type="button" data-consent="all">Yes, remember</button>
           <button class="btn" type="button" data-consent="min">No, only what it needs</button>
@@ -415,7 +416,11 @@
       const b = e.target.closest('[data-consent]');
       if (b) close(b.dataset.consent === 'all' ? 'all' : 'min');
     });
-    document.body.appendChild(el);
+    /* First in the DOM, so it is the first thing Tab reaches. It is fixed, so
+       document order costs nothing visually — and appending it last meant 92–106
+       Tab presses to answer it. Not focus-stealing: a dialog that grabs focus on
+       load interrupts a screen reader mid-sentence. */
+    document.body.prepend(el);
     root.classList.add('has-ckb');
     requestAnimationFrame(() => el.classList.add('is-in'));
   };
@@ -509,6 +514,10 @@
       const g = (n) => (f.elements[n] && f.elements[n].value || '').trim();
       const subject = `${g('topic') || 'Question'}${g('name') ? ` — ${g('name')}` : ''}`;
       const body = [g('message'), '', '—', g('name'), g('email'), g('phone')].filter(Boolean).join('\n');
+      /* This is a real send, so the draft must go the same way it does on the
+         fetch path — the privacy page promises it is deleted the moment the
+         message sends, and a mail-app send is a send. */
+      f.dispatchEvent(new CustomEvent('pho:sent', { bubbles: true, detail: { via: 'mailto' } }));
       location.href = `mailto:${b.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
   };
@@ -518,12 +527,22 @@
      opens with one call to action rather than two competing ones. */
   const fab = () => {
     const el = $('[data-fab]'); if (!el) return;
-    const hero = $('main section, main .hero');
+    /* Prefer the page's own first screen; fall back to the first section, and
+       then to a plain scroll distance. Whichever we get, also reveal once the
+       reader is simply a screen down — the previous version keyed on ONE
+       element's bottom edge and stayed invisible for the whole page wherever
+       that element was not the hero. */
+    const hero = $('#top') || $('main .hero') || $('main > section');
     const show = () => {
-      const past = hero ? hero.getBoundingClientRect().bottom < 40 : window.scrollY > 400;
-      el.classList.toggle('is-on', past);
+      const byHero = hero ? hero.getBoundingClientRect().bottom < 40 : false;
+      el.classList.toggle('is-on', byHero || window.scrollY > window.innerHeight * 0.9);
     };
     show();
+    /* Hidden by opacity alone, it still took a Tab stop and drew a focus ring
+       on something nobody can see. Keep it out of the tab order until it is up. */
+    const sync = () => el.setAttribute('tabindex', el.classList.contains('is-on') ? '0' : '-1');
+    sync();
+    new MutationObserver(sync).observe(el, { attributes: true, attributeFilter: ['class'] });
     addEventListener('scroll', show, { passive: true });
     addEventListener('resize', show, { passive: true });
   };

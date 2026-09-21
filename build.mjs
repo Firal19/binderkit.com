@@ -142,20 +142,14 @@ function squeezeJs(js) {
 const faces = read('css/faces.css');
 const facesForThis = faces.split('\n').filter((line) => !/\.face\[data-product="/.test(line) || line.includes(`data-product="${p.id}"`) || /^\.face \.lp-|^\.st-a/.test(line)).join('\n');
 
-/* faces.css keys its dark palette off [data-mode="dark"] ONLY — the board that
-   generates it has no prefers-color-scheme rule anywhere. But the page sheets go
-   dark under @media (prefers-color-scheme: dark) on html[data-mode="auto"], and
-   site.js deliberately LEAVES the root at "auto" so it can follow the OS. So a
-   visitor whose OS is dark got a dark page with every instrument still wearing
-   its light face: dark text on a dark ground, worst on aidepost's phone.
-   Derive the auto variant from the dark rules mechanically here, so faces.css
-   stays byte-identical to what the board writes. :not([data-mode="light"]) is
-   carried through, so a mock pinned light inside an auto page stays light. */
-const autoDark = facesForThis.split('\n')
-  .filter((line) => line.includes('[data-mode="dark"]'))
-  .map((line) => line.replace(/\[data-mode="dark"\]/g, '[data-mode="auto"]'))
-  .join('\n');
-const facesWithAuto = autoDark ? `${facesForThis}\n@media (prefers-color-scheme: dark){\n${autoDark}\n}` : facesForThis;
+/* faces.css keys its dark palette off [data-mode="dark"] only, and an earlier
+   pass derived an [data-mode="auto"] variant here to cover a visitor whose OS
+   is dark while site.js leaves the root at "auto". Measured: it changed 0 of 8
+   faces on every site, because render/instruments.js:829/1019 give EVERY .face
+   an explicit data-mode, so the derived selectors match nothing the un-gated
+   rules do not already match. Removed rather than left as a fix that is not
+   one — if a .face is ever emitted without data-mode, this is the place. */
+const facesWithAuto = facesForThis;
 
 /* ── the head ──────────────────────────────────────────────────────────── */
 const jsonLd = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;

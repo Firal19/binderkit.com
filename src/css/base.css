@@ -425,9 +425,30 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 }
 .ckb.is-in { opacity: 1; transform: none; }
 .ckb.is-out { opacity: 0; transform: translateY(12px); }
-/* on a phone it spans the gutter and stacks above the fab */
+/* The short line is the phone's whole explanation; declared BEFORE the phone
+   tier so the tier can turn it on (equal specificity, later rule wins). */
+.ckb-p.ckb-short { display: none; }
+
+/* On a phone the card gets SLIM, not just narrow. At 393x659 the full card was
+   181px tall and still sat across the hero's own buttons — desaudit's
+   tap.covered caught "Get early access" / "Start free" unpressable on all four.
+   One line, two answers on one row, sitting on the bottom bar. No fab lift:
+   .has-ckb hides the fab while this is up. */
 @media (max-width: 560px) {
-  .ckb { left: 14px; width: calc(100vw - 28px); bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px) + var(--tap, 44px) + 10px); }
+  .ckb {
+    left: 12px; width: calc(100vw - 24px);
+    bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 10px + env(safe-area-inset-bottom, 0px));
+  }
+  .ckb-in { padding: 11px 13px; }
+  /* The wide card’s headline carries the honest exception ("except the theme
+     you picked"); at 14px in a 345px card that is three lines and it was most
+     of the 169px height. On a phone the card asks the question and the link
+     carries the disclosure, which is one tap away and always current. */
+  .ckb-t { display: none; }
+  .ckb-p { display: none; }
+  .ckb-p.ckb-short { display: block; margin: 0 0 9px; font-size: 15px; }
+  .ckb-b { gap: 7px; }
+  .ckb-b .btn { min-height: 40px; padding: 0 12px; font-size: 14px; }
 }
 .ckb-in {
   padding: 16px 18px; border: 1px solid var(--line);
@@ -438,7 +459,10 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 /* 15px, not 13.5: this is prose inside a <p>, and the mobile gate holds
    prose to a 15px floor whatever its length. */
 .ckb-p { margin: 0 0 12px; font-size: 15px; line-height: 1.5; color: var(--muted); }
-.ckb-p a { color: var(--accent, var(--ink)); }
+/* --accent is a periwinkle on binderkit, and on the lamp’s cream card that is
+   2.78:1. Underline it and use the body ink, which every face keeps readable
+   on its own card. */
+.ckb-p a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
 .ckb-b { display: flex; flex-wrap: wrap; gap: 8px; }
 .ckb-b .btn { flex: 1 1 auto; min-height: var(--tap, 44px); }
 @media (prefers-reduced-motion: reduce) { .ckb { transition: none; } }
@@ -447,3 +471,13 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    write-to-us and any back-to-top stand down rather than stack three round
    things into one corner on a phone. */
 .has-ckb .fab, .has-ckb .totop { opacity: 0 !important; pointer-events: none !important; }
+/* aidepost mounts a demo notification in the same corner; while a real decision
+   is on screen a fake one is noise, and it was being covered anyway. */
+.has-ckb .ntf { opacity: 0 !important; pointer-events: none !important; }
+/* The card is fixed to the bottom, so the footer's own controls ended up
+   underneath it (desaudit tap.covered: "Share this page", "Privacy", the
+   Providerhub byline). Give the page enough extra run to scroll them clear.
+   Removed with the card, so it costs nothing after the choice is made.
+   html.has-ckb, not .has-ckb: responsive.css loads last and its
+   body:has(.tabs) rule ties on specificity and would win on order. */
+html.has-ckb body { padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 200px + env(safe-area-inset-bottom, 0px)); }

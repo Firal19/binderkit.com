@@ -11,7 +11,10 @@
 .steps-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-family: var(--t-numeral-face); font-size: calc(var(--t-body-size) - 1px); font-weight: 600; background: var(--c-wash); color: var(--c-teal-deep); }
 .steps-i[data-state="done"] .steps-n { background: var(--c-teal); color: var(--c-ground); }
 .steps-i[data-state="now"] { border-color: color-mix(in srgb, var(--t-accent) 45%, transparent); box-shadow: var(--c-sh2); }
-.steps-i[data-state="now"] .steps-n { background: var(--t-accent); color: var(--c-teal-deep); }
+/* --c-teal-deep is a pale sage on careshop, which on the amber active badge is
+   1.15:1 in dark and 1.39:1 in light — illegible in both. The badge ground is
+   the accent in every face, so name an ink dark enough for all of them. */
+.steps-i[data-state="now"] .steps-n { background: var(--t-accent); color: #17201F; }
 .steps-t { display: block; font-weight: 600; }
 .steps-d { display: block; font-size: calc(var(--t-body-size) - 1px); color: var(--c-soft); margin-top: 2px; }
 .steps-a.is-desk { max-width: 620px; }

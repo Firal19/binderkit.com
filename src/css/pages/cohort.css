@@ -337,9 +337,20 @@ html[data-mode="dark"] .gate-b .gate-cta { color: #0F5C5A; }
 .ref-print { display: none; }
 
 /* ── the record ───────────────────────────────────────────────────────── */
-.record { background: var(--teal-deep); color: var(--bg); --card: #16302E; --line: rgba(247, 243, 236, .14); --muted: #C9D6D2; --soft: #9DB0AB; --ink: var(--bg); --wash: #1E3A37; --teal: var(--mint); --focus: var(--mint); }
-html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #1A302E; }
-.record h2, .record h3 { color: var(--bg); }
+/* This section brings its own dark ground, so it must bring its own ink too:
+   var(--bg) is the PAGE ground and inverts under OS dark, which is what put
+   dark text on this dark band. Fixed here at the root rather than per rule. */
+.record { background: var(--teal-deep); color: #F9F4EC; --card: #16302E; --line: rgba(247, 243, 236, .14); --muted: #C9D6D2; --soft: #9DB0AB; --ink: #F9F4EC; --wash: #1E3A37; --teal: var(--mint); --focus: var(--mint); }
+/* .record keeps a dark ground in both modes, so its ink must stay light in
+   both. --ink was var(--bg), which in OS dark is the dark page ground — that
+   is how .cmp-lb ended up at 1.74:1 on its own chip. */
+html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #1A302E; --ink: #F9F4EC; }
+/* Same trap as .cmp-lb: .record keeps a dark ground in BOTH modes, so painting
+   with var(--bg) — the PAGE ground — puts dark on dark in OS dark. Measured
+   1.13:1 for the section headline and 1.23:1 for its h3s, i.e. invisible. The
+   html[data-mode="dark"] override cannot save it: site.js leaves the root at
+   "auto", so that selector never matches. Name the ink. */
+.record h2, .record h3 { color: #F9F4EC; }
 .record .eyebrow, .record .eyebrow::before { color: var(--mint); }
 .record .eyebrow::before { background-image: radial-gradient(circle, var(--mint) 1.6px, transparent 1.8px); }
 .cmp-w { margin-bottom: 40px; }
@@ -364,7 +375,11 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .cmp-h::before { bottom: 100%; } .cmp-h::after { top: 100%; }
 .cmp-l { position: absolute; z-index: 2; top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; pointer-events: none; }
 .cmp-la { left: 12px; background: rgba(23, 32, 31, .08); color: #3E4846; }
-.cmp-lb { right: 12px; background: rgba(247, 243, 236, .12); color: var(--bg); }
+/* This chip sits on .record, which keeps a dark ground in BOTH modes, so its
+   ink must be light in both. It cannot read a page token: var(--bg) is the
+   page ground (dark in OS dark, 1.74:1 here) and the html[data-mode="dark"]
+   override never fires because site.js leaves the root at "auto". Name it. */
+.cmp-lb { right: 12px; background: rgba(247, 243, 236, .12); color: #F9F4EC; }
 .cmp-cap { margin-top: 12px; font-size: .9rem; color: var(--soft); max-width: 70ch; }
 .ev { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .ev-b { padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; display: grid; align-content: start; gap: 10px; }

@@ -298,6 +298,9 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .step { display: grid; grid-template-rows: auto auto auto 1fr; gap: 10px; padding: 26px 26px 0; background: var(--bg); border: 1px solid var(--line); border-radius: 24px; overflow: hidden; }
 .step-n { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-weight: 700; }
 .step p { font-size: 15px; color: var(--muted); line-height: 1.55; }
+/* ...but not inside a mockup. A .face paints itself from --c-*; letting the
+   page’s --muted win there is how the phone went dark-on-dark in OS dark. */
+.step .face p { color: var(--c-muted); }
 .step .crop { margin: 12px -8px 0; height: 260px; overflow: hidden; display: flex; justify-content: center; align-self: end;
                -webkit-mask-image: linear-gradient(180deg, #000 0, #000 76%, transparent 100%);
                mask-image: linear-gradient(180deg, #000 0, #000 76%, transparent 100%); }
@@ -870,7 +873,10 @@ a.fam:hover { transform: translateY(-3px); }
   /* the toast belongs at the bottom of a phone. At top: 70px it landed on
      the h1 for the first nine seconds of every first visit — and because it
      is position: fixed it then sat on whatever you scrolled to. */
-  .ntf { top: auto; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom) + 10px);
+  /* The shared .fab is keyed to this same bottom edge, so a 44px link landed
+     inside this 62px toast and elementFromPoint returned the fab over the
+     toast’s own X. Sit above the fab: its tap height plus air. */
+  .ntf { top: auto; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom) + 10px + var(--tap, 44px) + 12px);
          transform: translate(-50%, 24px); }
   .ntf.is-on { transform: translate(-50%, 0); }
 
@@ -958,6 +964,10 @@ a.fam:hover { transform: translateY(-3px); }
   .chap ul { justify-content: flex-start; }
 }
 @media (max-width: 640px) {
+  /* Both sit inside list/prose context, so the gate holds them to 15px — and
+     "Who’s on tonight" is the line the whole footer is about. */
+  .tonight-k { font-size: 15px; }
+  .ft-copy { font-size: 15px; }
   /* Two columns put the widest child at 113-131px against the gate's 150px text
      floor. One column — and .offer-st must give up `grid-column: 2`, or it
      creates an IMPLICIT second track and the grid is still two columns wide. */
@@ -983,7 +993,9 @@ a.fam:hover { transform: translateY(-3px); }
   .board-u { flex-direction: column; align-items: stretch; }
   .tonight { border-radius: 16px; }
   .claim-c { padding: 20px 18px; border-radius: 18px; }
-  .claim-x { width: 40px; height: 40px; }
+  /* 40px is under the thumb floor, and this is the phone tier — the only place
+     where the sheet is opened by a thumb at all. Keep the 44 from :249. */
+  .claim-x { width: 44px; height: 44px; }
   .claim-a .btn { width: 100%; }
   .door { padding: 26px 22px; }
   .door.is-care { padding-left: 22px; }
@@ -1022,7 +1034,15 @@ a.fam:hover { transform: translateY(-3px); }
   .ts { padding: 18px 14px; }
   .ts-w { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
   .ts-bars { gap: 3px; min-width: 310px; }
-  .ts-d { height: 112px; }
+  /* Seven buttons across a 390 gutter land at 43.1px and 41.7px at 360/320 —
+     just under the thumb floor. Let the row scroll rather than shave the
+     target: a week is seven days and none of them may be unpressable. */
+  .ts-d { height: 112px; min-width: 44px; }
+  /* 7 x 44 + 6 gaps is 344px, which overflows a 320 gutter. Let the week
+     scroll sideways rather than shrink a day below the thumb floor or push
+     the document wider — the gutter rule already excludes scrollers. */
+  .ts-bars { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(44px, 1fr);
+             overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
   .ladder li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .wcard { grid-template-columns: minmax(0, 1fr); }
   .wcard-w { grid-column: 1; grid-row: auto; justify-self: start; }

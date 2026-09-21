@@ -53,10 +53,10 @@ ${header}
     : 'This page loads no analytics script, no advertising pixel and no third-party tag. Signing up takes you to the application, whose own terms and privacy notice are presented there in full.')}
 
     <h3 id="cookies">Cookies, and what is kept on your device</h3>
-    ${P('Before you answer, one thing can be kept: the theme or text size you picked, if you changed either. Everything else below waits for a yes, and saying no keeps nothing but the no.')}
+    ${P('Before you answer, one thing can be kept: the display choices you made with the controls in the header, if you used them. Everything else below waits for a yes, and saying no keeps nothing but the no.')}
     <dl class="pv-dl">
       <dt>pho-consent</dt><dd>A cookie holding your answer to that question and nothing else &mdash; the word <code>all</code> or the word <code>min</code>. It lasts a year so you are not asked on every visit, and it is set whichever way you answer, because a site that forgot your refusal would have to ask again.</dd>
-      <dt>pho-mode &middot; pho-text</dt><dd>Your dark-mode and text-size choices, kept in this browser's local storage so the page opens the way you left it. Not cookies, and never sent to a server.</dd>
+      <dt>pho-mode</dt><dd>Your dark-mode choice, and on Cohort your text-size choice as <code>pho-text</code>, kept in this browser's local storage so the page opens the way you left it. Not cookies, and never sent to a server.</dd>
       <dt>pho-draft</dt><dd><b>Only if you said yes.</b> A copy of whatever you have typed into a form and not yet sent, so a refresh or a wrong tap does not lose it. It stays in this browser, is never sent anywhere on its own, and is deleted the moment the message sends. Say no and it is never written.</dd>
     </dl>
     ${P('None of it identifies you to us, follows you to another site, or is shared with anyone. Clearing this browser’s site data removes all of it, and you are simply asked again.')}

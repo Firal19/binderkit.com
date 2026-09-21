@@ -87,8 +87,16 @@ const PROBE = (vw) => {
   const PROSE_MIN = 15, META_MIN = 12;
   const tinyBuckets = {};
   for (const el of document.querySelectorAll('body *')) {
-    if (el.children.length || !vis(el) || hidden(el) || inMock(el) || offscreen(el)) continue;
-    const t = (el.textContent || '').trim(); if (t.length < 4) continue;
+    /* Was `el.children.length ||` — which skipped any block whose text sits
+       beside even one inline child, i.e. most real prose. Read this element’s
+       OWN text nodes instead, so a <p> with a link in it is still measured. */
+    if (!vis(el) || hidden(el) || inMock(el) || offscreen(el)) continue;
+    /* This element's OWN text, not its descendants' — measuring a parent's
+       textContent at the parent's font-size is how you manufacture failures
+       for text that is actually set larger inside a child. */
+    const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim();
+    if (own.length < 4) continue;
+    const t = own;
     const px = parseFloat(getComputedStyle(el).fontSize);
     const isProse = t.length > 60 || Boolean(el.closest('p, li, dd, blockquote'));
     const min = isProse ? PROSE_MIN : META_MIN;

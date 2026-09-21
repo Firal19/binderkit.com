@@ -41,6 +41,24 @@ const js = jsFile ? fs.readFileSync(path.join(DIST, jsFile), 'utf8') : '';
 
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr', 'path', 'circle', 'rect', 'line', 'polygon', 'polyline', 'ellipse', 'use', 'stop']);
 
+/* Every topic a contact form offers must be one api/contact.js will accept.
+   aidepost renders “I’m a caregiver”; the API's allow-list did not contain it, so
+   thatselection was silently rewritten to “Question” and the routing signal was
+   lost with no error anywhere. This catches the next divergence at build time. */
+{
+  const api = fs.readFileSync(path.join(ROOT, 'api', 'contact.js'), 'utf8');
+  const m = api.match(/const TOPICS = new Set\(\[([^\]]*)\]\)/);
+  const allowed = new Set((m ? m[1] : '').split(',').map((t) => t.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean));
+  for (const [file, html] of Object.entries(pageBytes)) {
+    const sel = html.match(/<select[^>]*name="topic"[^>]*>([\s\S]*?)<\/select>/);
+    if (!sel) continue;
+    for (const o of sel[1].matchAll(/<option[^>]*>([^<]*)<\/option>/g)) {
+      const t = o[1].trim().replace(/&#39;|&apos;/g, "'").replace(/&amp;/g, '&');
+      if (t && !allowed.has(t)) note(fail, `${routeOf(file)}: the topic “${t}” is offered but api/contact.js will not accept it — it would be silently rewritten`);
+    }
+  }
+}
+
 for (const [file, html] of Object.entries(pageBytes)) {
   const at = routeOf(file);
   const where = (msg) => `${at}: ${msg}`;

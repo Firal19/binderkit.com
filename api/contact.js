@@ -12,7 +12,18 @@
 import { EMAIL, clean, configured, inbox, address, named, domainOf, send, letters } from '../lib/mail.js';
 
 const PRODUCTS = { cohort: 'Cohort', careshop: 'CareShop', binderkit: 'Binderkit', aidepost: 'Aidepost' };
-const TOPICS = new Set(['Question', 'Early access', 'Pricing', 'Security and privacy', 'Press', 'Something else']);
+/* The union of every topic any site renders. aidepost adds “I’m a caregiver”
+   (src/render/pages/aidepost/pages.js:8) and it is the signal that decides who
+   answers, so dropping it to “Question” silently lost the routing. check.mjs
+   asserts every rendered <option> appears here, so this cannot drift again. */
+/* Every topic any of the four sites renders. Sources:
+     aidepost  “I’m a caregiver”        render/pages/aidepost/pages.js
+     binderkit “Which track?”             render/pages/binderkit/contact.js
+     cohort    “The pilot”                render/pages/cohort/data.js
+     careshop  “A house wants to switch”  render/pages/careshop/write.js
+   tools/check.mjs reads this literal and fails the build if a rendered
+   <option> is missing from it, so it cannot drift again. */
+const TOPICS = new Set(['Question', 'Early access', 'Pricing', 'Security and privacy', 'Press', 'Something else', 'I’m a caregiver', 'Which track?', 'The pilot', 'A house wants to switch']);
 
 const json = (res, code, body) => {
   res.status(code);

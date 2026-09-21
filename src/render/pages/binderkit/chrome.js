@@ -110,7 +110,7 @@ export const citesBlock = () => `<dl class="cites" id="cites">
 /* ── the planner: the data, then the rule ─────────────────────────────── */
 const TRACKS = [
   { id: 'AFH-DD', auth: 'OAR 411-360', ok: true },
-  { id: 'AFH-APD', auth: 'OAR 411-050', notice: 'The AFH-APD library is not written yet. On this track the plan screen says so plainly, and you are not charged for what you cannot use. Its authority, when it is written: OAR 411-050 — 0745 Facility Records, which is the rule’s own name for that set, and 0750 resident records, twenty to twenty-four types.' },
+  { id: 'AFH-APD', auth: 'OAR 411-050', notice: 'The AFH-APD library is not in this release. On this track the plan screen says so plainly, and you are not charged for what you cannot use. Its authority, when it is written: OAR 411-050 — 0745 Facility Records, which is the rule’s own name for that set, and 0750 resident records, twenty to twenty-four types.' },
   { id: 'AFH-OHA', auth: 'OAR 309-040', notice: 'The AFH-OHA library is not written yet. On this track the plan screen says so plainly, and you are not charged for what you cannot use. Its authority, when it is written: OAR 309-040.' },
   { id: 'Agency', auth: 'OAR 411-325', notice: 'The agency library is one hundred and twenty-six items — the same thirty-two, plus ninety-four derived — with ninety-nine citations recorded, all of which must be re-verified against OAR 411-325 as amended 15 January 2026 before the first paying agency. This demonstration plans on the AFH-DD library only.' },
 ];
