@@ -59,9 +59,9 @@ html[data-text="lg"] body { font-size: 1rem; }
 /* ── type ─────────────────────────────────────────────────────────────── */
 .page { font-family: var(--font-body); font-size: 1rem; line-height: 1.55; color: var(--ink); }
 h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.028em; line-height: 1.03; font-variation-settings: 'opsz' 144; }
-h1 { font-size: clamp(42px, 5.6vw, 74px); }
+h1 { font-size: clamp(42px, 6.6vw, 118px); }
 h1 em { font-style: italic; font-weight: 400; color: var(--teal); }
-h2 { font-size: clamp(32px, 4vw, 46px); max-width: 22ch; position: relative; }
+h2 { font-size: clamp(32px, 4.4vw, 68px); max-width: 22ch; position: relative; }
 h3 { font-weight: 700; letter-spacing: -0.01em; font-size: 1.1rem; line-height: 1.3; }
 .sub { margin-top: 14px; font-size: clamp(1rem, 1.3vw, 1.12rem); line-height: 1.55; color: var(--muted); max-width: 60ch; }
 .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); font-weight: 500; }
@@ -192,19 +192,25 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 7px transparent; } }
 .now-d { color: var(--soft); }
 .hero .fine { margin-top: 16px; }
-.strip { margin-top: 34px; }
-.strip-c { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-.strip-c s { padding: 12px 14px; font-size: .95rem; color: var(--soft); border-right: 1px solid var(--line); border-top: 1px solid var(--line); text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; }
-.strip-c s:nth-child(-n+2) { border-top: 0; } .strip-c s:nth-child(2n) { border-right: 0; }
+.strip { grid-column: 1 / -1; margin-top: clamp(28px, 3vw, 48px); }
+.strip-c { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.strip-c s { padding: clamp(16px, 1.6vw, 26px) clamp(14px, 1.4vw, 22px); font-size: clamp(1rem, 1.35vw, 1.5rem); color: var(--soft); border-right: 1px solid var(--line); border-top: 1px solid var(--line); text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; }
+.strip-c s { border-top: 0; } .strip-c s:last-child { border-right: 0; }
 .hero-v { display: flex; justify-content: center; align-items: center; min-width: 0; }
 .hero-dev { position: relative; }
-.hero-dev .phone { --mock-z: .66; }
+.hero-dev .phone { --mock-z: .92; }
 .hero-dev .phone, .tour .phone { box-shadow: 0 40px 80px -40px rgba(14, 31, 30, .55), 0 12px 24px -16px rgba(14, 31, 30, .3), inset 0 0 0 2px #2A3130; }
 .float { position: absolute; z-index: 2; display: grid; gap: 3px; padding: 10px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--sh-2); font-size: 12.5px; color: var(--muted); animation: float 6s ease-in-out infinite; max-width: 200px; }
 .float .stamp-a { color: var(--teal); }
 .float-l { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
 .float b { font-weight: 600; color: var(--ink); font-size: 12.5px; }
-.f1 { left: -96px; top: 13%; } .f2 { right: -76px; top: 40%; animation-delay: -2s; } .f3 { left: -80px; bottom: 16%; animation-delay: -4s; }
+.f1 { left: -158px; top: 10%; } .f2 { right: -150px; top: 42%; animation-delay: -2s; } .f3 { left: -150px; bottom: 14%; animation-delay: -4s; }
+/* Those offsets are sized for the room a 1600 column leaves either side of a
+   .92 phone. Between 900 and 1200 the hero column narrows and .f2 ran 71px
+   past the viewport at 1024, and 7px at 1280. Below 900 they are hidden outright. */
+@media (max-width: 1360px) {
+  .f1 { left: -92px; } .f2 { right: -70px; } .f3 { left: -80px; }
+}
 @keyframes float { 50% { transform: translateY(-6px); } }
 
 /* ── the shift: a timeline and a phone that follows it ────────────────── */
@@ -217,7 +223,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .tour-stick { position: sticky; top: 92px; display: grid; justify-items: center; gap: 14px; }
 .crop { display: flex; justify-content: center; }
 .tour-p[hidden] { display: none; }
-.tour .phone { --mock-z: .64; }
+.tour .phone { --mock-z: .8; }
 .tour-cap { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--soft); }
 .tour-cap i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
 .tl { position: relative; display: grid; }
@@ -773,6 +779,10 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .company-l, .tl-at { letter-spacing: .02em; }
 }
 @media (max-width: 640px) {
+  /* MOBILE-SPEC §0: a leaf inside <li> is prose to the gate whatever its length,
+     so the 12px label floor does not apply to these — they need the 15px one. */
+  .frow-id, .frow .tg { font-size: 15px; }
+
   .ev, .strip-c, .rooms, .gates, .fgrid, .company, .eos-head, .eos-g { grid-template-columns: minmax(0, 1fr); }
 
   /* ── THE RHYTHM ────────────────────────────────────────────────────────

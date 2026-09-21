@@ -21,7 +21,7 @@ export const CHAPTERS = [
   { path: '/', title: 'Binderkit', sub: 'The front page', ctl: 'BK-LP' },
   { path: '/plan', title: 'The plan', sub: 'Five answers in, a shelf of binders out', ctl: 'BK-PL' },
   { path: '/library', title: 'The library', sub: 'Four tracks, four libraries', ctl: 'BK-LB' },
-  { path: '/pricing', title: 'Pricing', sub: 'The price is open', ctl: 'BK-PR' },
+  { path: '/pricing', title: 'Pricing', sub: 'Priced in the open', ctl: 'BK-PR' },
   { path: '/about', title: 'About', sub: 'Who makes Binderkit', ctl: 'BK-AB' },
   { path: '/contact', title: 'Contact', sub: 'Write to a person', ctl: 'BK-CT' },
   { path: '/privacy', title: 'Privacy', sub: 'What it holds, and what leaves it', ctl: 'BK-PV' },
@@ -227,7 +227,7 @@ export function planner(opts = {}) {
 export function sheet(opts = {}) {
   const plan = computePlan(PLAN_DATA, DEMO);
   const row = ([no, item, auth, tag, pl]) => `<li class="cp-r" data-ev="${esc(tag || 'none')}"><span class="cp-n">${esc(no)}</span><span class="cp-i">${esc(item)}</span><span class="cp-a">${cite(auth)}${ev(tag)}${place(pl)}</span></li>`;
-  return `<div class="cp ${opts.cls || ''}" data-sheet ${opts.print ? 'data-print-sheet' : ''} ${opts.label ? `role="img" aria-label="${esc(opts.label)}"` : ''}>
+  return `<div class="cp ${opts.cls || ''}" data-mock data-sheet ${opts.print ? 'data-print-sheet' : ''} ${opts.label ? `role="img" aria-label="${esc(opts.label)}"` : ''}>
   <div class="cp-t">${esc(S.paperTitle)}</div>
   <div class="cp-h"><span>Facility ______</span><span>Resident ______</span></div>
   <ol class="cp-rows" data-sheet-rows>${plan.rows.map(row).join('')}</ol>

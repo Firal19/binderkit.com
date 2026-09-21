@@ -55,7 +55,6 @@ function hero(cfg, p) {
         </div>
         <p class="now" data-now><span class="now-dot" aria-hidden="true"></span><span class="now-t">It is <b data-oregon>06:55</b> in Oregon.</span> <span class="now-d" data-due>The demo shift signs in at 06:55.</span></p>
         <p class="fine">Offline-safe. Two safety gates and nothing else that blocks. Every entry stamped “Logged by · at”.</p>
-        <div class="strip"><span class="strip-l">${esc(strip.label)}</span><div class="strip-c">${strip.cells.map((c) => `<s>${esc(c)}</s>`).join('')}</div></div>
       </div>
       <div class="hero-v">
         <div class="dev hero-dev">
@@ -65,6 +64,7 @@ function hero(cfg, p) {
           <span class="float f3" aria-hidden="true"><span class="float-l">the night handoff</span><b>${esc(today.handoff.receipt)}</b></span>
         </div>
       </div>
+      <div class="strip"><span class="strip-l">${esc(strip.label)}</span><div class="strip-c">${strip.cells.map((c) => `<s>${esc(c)}</s>`).join('')}</div></div>
     </div>
   </section>`;
 }

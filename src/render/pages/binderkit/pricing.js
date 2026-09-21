@@ -4,7 +4,7 @@ import { SIGNUP_FIVE, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../da
 import { header, footer, section, title, number, find, esc, ic } from './chrome.js';
 
 const SECS = number('BK-PR', [
-  { id: 'top', label: 'The price is open', tab: '' },
+  { id: 'top', label: 'Priced in the open', tab: '' },
   { id: 'tiers', label: 'Three tiers', tab: 'Tiers' },
   { id: 'signup', label: 'Signing up, in five steps', tab: 'Signing up' },
   { id: 'billing', label: 'If a payment fails', tab: 'Payment' },
@@ -13,7 +13,7 @@ const SECS = number('BK-PR', [
 const [TOP, TIERS, SIGNUP, BILLING, LAPSE] = SECS;
 
 const sellSwitch = () => `<div class="ptog" role="group" aria-label="How it is sold"><button class="tog" type="button" data-sell="sub" aria-pressed="true">Subscription</button><button class="tog" type="button" data-sell="once" aria-pressed="false">Single purchase</button></div>
-  <p class="sell-note" data-sell-note data-sub="If it is a subscription: per facility, renewing, with the three-day trial and one-tap cancel. Whether it is a subscription at all is still open." data-once="If it is a single purchase: per facility, once — a product used twice a year may want that rather than a subscription. No price is set yet.">If it is a subscription: per facility, renewing, with the three-day trial and one-tap cancel. Whether it is a subscription at all is still open.</p>`;
+  <p class="sell-note" data-sell-note data-sub="As a subscription: per facility, renewing, with the three-day trial and one-tap cancel." data-once="As a single purchase: per facility, once — a binder revised twice a year may want that rather than a subscription.">As a subscription: per facility, renewing, with the three-day trial and one-tap cancel.</p>`;
 
 function render(cfg, p) {
   const s = find('pricing');
@@ -39,4 +39,4 @@ ${section(LAPSE, `<h2 id="h-lapse">If you stop paying.</h2>
 ${footer(cfg, p, { page: 'pricing', tabs: SECS })}`;
 }
 
-export const pricingPage = { path: 'pricing', title: 'Pricing', description: 'Every price is open, and so is whether it is a subscription or a single purchase. Three tiers, a five-step signup, and what stays on if a payment fails.', render };
+export const pricingPage = { path: 'pricing', title: 'Pricing', description: 'Priced in the open: three tiers, as a subscription or a single purchase, a five-step signup, and what stays on if a payment fails.', render };

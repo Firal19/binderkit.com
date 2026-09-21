@@ -142,6 +142,21 @@ function squeezeJs(js) {
 const faces = read('css/faces.css');
 const facesForThis = faces.split('\n').filter((line) => !/\.face\[data-product="/.test(line) || line.includes(`data-product="${p.id}"`) || /^\.face \.lp-|^\.st-a/.test(line)).join('\n');
 
+/* faces.css keys its dark palette off [data-mode="dark"] ONLY — the board that
+   generates it has no prefers-color-scheme rule anywhere. But the page sheets go
+   dark under @media (prefers-color-scheme: dark) on html[data-mode="auto"], and
+   site.js deliberately LEAVES the root at "auto" so it can follow the OS. So a
+   visitor whose OS is dark got a dark page with every instrument still wearing
+   its light face: dark text on a dark ground, worst on aidepost's phone.
+   Derive the auto variant from the dark rules mechanically here, so faces.css
+   stays byte-identical to what the board writes. :not([data-mode="light"]) is
+   carried through, so a mock pinned light inside an auto page stays light. */
+const autoDark = facesForThis.split('\n')
+  .filter((line) => line.includes('[data-mode="dark"]'))
+  .map((line) => line.replace(/\[data-mode="dark"\]/g, '[data-mode="auto"]'))
+  .join('\n');
+const facesWithAuto = autoDark ? `${facesForThis}\n@media (prefers-color-scheme: dark){\n${autoDark}\n}` : facesForThis;
+
 /* ── the head ──────────────────────────────────────────────────────────── */
 const jsonLd = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 
@@ -196,7 +211,7 @@ fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 tokenGuard(`css/pages/${p.id}.css`, read(`css/pages/${p.id}.css`));
-const cssBody = squeeze(SHEETS.map((s) => (s === 'css/faces.css' ? facesForThis : read(s))).join('\n'));
+const cssBody = squeeze(SHEETS.map((s) => (s === 'css/faces.css' ? facesWithAuto : read(s))).join('\n'));
 const jsBody = squeezeJs([read('js/site.js'), has(`js/pages/${p.id}.js`) ? read(`js/pages/${p.id}.js`) : ''].join('\n'));
 const hash = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36).padStart(7, '0').slice(0, 7); };
 const cssName = `site.${hash(cssBody)}.css`;

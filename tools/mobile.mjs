@@ -39,7 +39,13 @@ function discoverRoutes(dist) {
 }
 
 const PROBE = (vw) => {
-  const MOCK = '.phone, .browser, .paper, .paper-sheet, .wk, .board-mock, .face, .ph, .screen, [data-mock]';
+  /* `.face` was in this list and it sits on <main class="page face canvas"> — the
+     page's OWN main. So every CHROME rule below (tap-target, tiny-text,
+     cramped-grid) skipped 63-81% of the page and the gate reported CLEAN while
+     measuring the header and the footer. The mock classes are what this is for;
+     .face is a theming hook, not a mock. Measured 2026-09-20: cohort 374/596
+     elements exempt, binderkit 66%, careshop 76%, aidepost 81%. */
+  const MOCK = '.phone, .browser, .paper, .paper-sheet, .wk, .board-mock, .ph, .screen, [data-mock]';
   const vis = el => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.05; };
   const sel = el => { let s = el.tagName.toLowerCase(); if (el.id) return s + '#' + el.id; const c = el.className && el.className.toString && el.className.toString().trim().split(/\s+/).filter(Boolean).slice(0,2).join('.'); return c ? s + '.' + c : s; };
   const where = el => { const s = el.closest('section, header, footer, main'); return s ? (s.id || sel(s)) : ''; };
@@ -95,6 +101,13 @@ const PROBE = (vw) => {
   let gl = Infinity, gr = Infinity, glEl = null, grEl = null;
   for (const el of document.querySelectorAll('p,h1,h2,h3,h4,li,dt,dd,td,th,label')) {
     if (!vis(el) || hidden(el) || inMock(el) || offscreen(el)) continue;
+    /* A gutter is the distance from the VIEWPORT edge, which only means anything
+       for content the viewport lays out. Inside a horizontal scroller the content
+       is meant to run past the edge — that is the affordance. cramped-grid below
+       already excludes scrollers via scrollerAncestor(); the gutter rule was the
+       one place it was not applied, and it flagged aidepost's week board, which
+       scrolls by design (.board-w: overflow-x auto, scroll-snap-type x). */
+    if (scrollerAncestor(el)) continue;
     const t = (el.textContent||'').trim(); if (t.length < 6) continue;
     const b = el.getBoundingClientRect(); if (b.width < 10 || b.width > vw) continue;
     if (b.left < gl) { gl = b.left; glEl = el; }

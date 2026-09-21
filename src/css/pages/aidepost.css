@@ -28,7 +28,7 @@ html { scroll-padding-top: calc(var(--hd-h) + 14px); }
 /* the chapter strip stacks under the header on /providers — above 900 only.
    Below it the strip is not mounted and --scroll-pad is derived from --hdr. */
 @media (min-width: 901px) { html:has(main[data-page="providers"]) { scroll-padding-top: calc(var(--hd-h) + 62px); } }
-.face[data-product="aidepost"] { --t-display: var(--font-display); --t-body-font: var(--font-body); --t-mono: var(--font-body); --t-label-transform: none; --c-ground: var(--bg); --c-card: var(--card); --t-accent: var(--orchid); --t-accent-text: var(--orchid-ink); --t-accent-soft: var(--orchid-soft); }
+.face[data-product="aidepost"] { --t-display: var(--font-display); --t-body-font: var(--font-body); --t-mono: var(--font-body); --t-label-transform: none; --t-accent: var(--orchid); --t-accent-text: var(--orchid-ink); --t-accent-soft: var(--orchid-soft); }
 
 /* ── tokens: the dark side (Night) ────────────────────────────────────── */
 html[data-mode="dark"] {
@@ -67,8 +67,8 @@ html[data-mode="dark"] {
 
 /* ── type ─────────────────────────────────────────────────────────────── */
 h1, h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.035em; line-height: .98; font-variation-settings: 'opsz' 96; }
-h1 { font-size: clamp(44px, 7.4vw, 100px); max-width: 12ch; }
-h2 { font-size: clamp(32px, 4.4vw, 52px); max-width: 20ch; }
+h1 { font-size: clamp(44px, 7.4vw, 124px); max-width: 12ch; }
+h2 { font-size: clamp(32px, 4.4vw, 68px); max-width: 20ch; }
 h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; font-size: 24px; line-height: 1.15; }
 .sub { margin-top: 16px; font-size: clamp(16px, 1.3vw, 18px); line-height: 1.6; color: var(--muted); max-width: 60ch; }
 .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; font-weight: 700; font-size: 13px; letter-spacing: .02em; color: var(--orchid-ink); }
@@ -194,6 +194,16 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 /* ── hero: headline, the board, two doors ─────────────────────────────── */
 .hero { padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(32px, 5vw, 64px); }
 .hero-t { max-width: 780px; }
+/* The headline capped at 780px left the right half of a 1440+ hero empty. The
+   board screen goes there — the product's own screen, at the size the standard
+   asks for. Below 1000 the grid collapses and the device leaves: the week board
+   under the hero already carries the same information on a phone. */
+.hero-g { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
+.hero-dw { display: flex; justify-content: center; min-width: 0; }
+@media (max-width: 1000px) {
+  .hero-g { grid-template-columns: minmax(0, 1fr); }
+  .hero-dw { display: none; }
+}
 .hero-live { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; min-height: 30px; font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 2vw, 24px); letter-spacing: -0.02em; color: var(--orchid-ink); }
 .hero-live::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--orchid); box-shadow: 0 0 0 4px var(--orchid-soft); flex: none; }
 .hero-live:empty { display: none; }
@@ -211,7 +221,7 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .board th.is-soon { color: var(--orchid-ink); }
 .board td { padding: 10px 6px; text-align: center; border-bottom: 1px solid var(--line); scroll-snap-align: start; }
 .board tr:last-child td, .board tr:last-child th { border-bottom: 0; }
-.cell { display: block; width: 100%; padding: 14px 6px; border-radius: 10px; font-weight: 600; font-size: 14px; background: var(--wash); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cell { display: block; width: 100%; min-width: 44px; padding: 14px 6px; border-radius: 10px; font-weight: 600; font-size: 14px; background: var(--wash); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cell-i { display: none; }
 .cell.is-open { background: var(--orchid); color: #1C1620; box-shadow: 0 14px 30px -14px rgba(212, 105, 159, .8); font-weight: 800; position: relative; cursor: pointer; transition: transform 160ms, box-shadow 160ms; }
 .cell.is-open:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -14px rgba(212, 105, 159, .9); }
@@ -291,7 +301,7 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .step .crop { margin: 12px -8px 0; height: 260px; overflow: hidden; display: flex; justify-content: center; align-self: end;
                -webkit-mask-image: linear-gradient(180deg, #000 0, #000 76%, transparent 100%);
                mask-image: linear-gradient(180deg, #000 0, #000 76%, transparent 100%); }
-.crop .phone { --mock-z: .66; border-radius: 42px 42px 0 0; box-shadow: 0 -8px 40px -20px rgba(23, 32, 31, .35); }
+.crop .phone { --mock-z: .8; border-radius: 42px 42px 0 0; box-shadow: 0 -8px 40px -20px rgba(23, 32, 31, .35); }
 
 /* ── the board, annotated, with spotlights ─────────────────────────────── */
 .boardsec .wrap { --max: 1480px; }
@@ -320,7 +330,7 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .ros-g { display: grid; grid-template-columns: 64px repeat(7, minmax(72px, 1fr)); gap: 8px; align-items: center; min-width: 620px; }
 .ros-d { font-weight: 700; font-size: 12.5px; color: var(--soft); text-align: center; }
 .ros-l { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
-.ros-c { min-height: 46px; border-radius: 10px; background: var(--wash); color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: transform 120ms, background 160ms; }
+.ros-c { min-height: 46px; min-width: 44px; border-radius: 10px; background: var(--wash); color: var(--muted); font-weight: 600; font-size: 13.5px; padding: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: transform 120ms, background 160ms; }
 .ros-c:active { transform: scale(.94); }
 .ros-c.is-open { background: var(--orchid); color: #1C1620; font-weight: 800; }
 .ros-i { display: none; }
@@ -376,7 +386,7 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 .hours { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .hrs-g { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
 .hrs-v { display: flex; justify-content: center; }
-.dev .phone { --mock-z: .62; box-shadow: 0 30px 60px -32px rgba(23, 32, 31, .5), inset 0 0 0 2px #2A3130; }
+.dev .phone { --mock-z: .82; box-shadow: 0 30px 60px -32px rgba(23, 32, 31, .5), inset 0 0 0 2px #2A3130; }
 .facts { margin-top: 28px; display: grid; gap: 12px; }
 .facts li { padding: 14px 0; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--muted); line-height: 1.55; }
 .facts li:last-child { border-bottom: 1px solid var(--line); }
@@ -675,7 +685,7 @@ html[data-side="caregiver"] .soc-pills .soc-i:hover { background: var(--orchid);
 .ch-g { margin-top: clamp(28px, 3vw, 44px); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
 .ch-g.is-phone { grid-template-columns: minmax(0, .55fr) minmax(0, 1.45fr); margin-top: 0; }
 .ch-dev { display: flex; justify-content: center; position: sticky; top: calc(var(--hd-h) + 64px); }
-.ch-dev .phone { --mock-z: .66; }
+.ch-dev .phone { --mock-z: .8; }
 .ch-side { display: grid; gap: 22px; }
 .ch-side .pull { margin-top: 0; }
 .flow h3, .trans h3 { font-size: 20px; margin-bottom: 14px; }
@@ -748,7 +758,7 @@ a.fam:hover { transform: translateY(-3px); }
 .contact-l li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
 .contact-l b { display: block; font-size: 15px; }
 .contact-l small { display: block; font-size: 13.5px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
-.contact-l .ft-copy { margin-top: 8px; min-height: 40px; }
+.contact-l .ft-copy { margin-top: 8px; }
 .contact-t .fine { margin-top: 16px; }
 .contact-f { padding: clamp(20px, 3vw, 30px); background: var(--card); border: 1px solid var(--line); border-radius: 22px; }
 
@@ -948,6 +958,13 @@ a.fam:hover { transform: translateY(-3px); }
   .chap ul { justify-content: flex-start; }
 }
 @media (max-width: 640px) {
+  /* Two columns put the widest child at 113-131px against the gate's 150px text
+     floor. One column — and .offer-st must give up `grid-column: 2`, or it
+     creates an IMPLICIT second track and the grid is still two columns wide. */
+  .offer { grid-template-columns: minmax(0, 1fr); }
+  .offer-st { grid-column: 1; grid-row: auto; justify-self: start; align-self: start; }
+  .offer-s { grid-column: 1; }
+
   h2 { font-size: clamp(26px, 7.4vw, 34px); }
   h1, h2 { line-height: 1.04; letter-spacing: -0.028em; }
   .hero { padding-top: 28px; }

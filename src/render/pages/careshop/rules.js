@@ -39,7 +39,7 @@ const REMOVED = [
   ['Attestations and weekly compliance snapshots', '“compliance theatre once the citations are gone”', 'not coming back'],
   ['An evidence package for an inspector', '“the same, in a binder”', 'surveyor PDFs, with a banner'],
   ['Resident clinical notes', 'protected information with no kitchen purpose', 'removed, and stays removed'],
-  ['Equipment and its inspection model', '“an extinguisher is not stock”', 'not coming back; a narrow inspection model is still open'],
+  ['Equipment and its inspection model', '“an extinguisher is not stock”', 'not coming back'],
   ['Per-tenant subdomains', '“the complexity buys nothing for a phone application”', 'removed; existing addresses redirect'],
 ];
 const NEVER = ['Careshop Pay', 'QR shelf labels', 'Any inspection model', 'Resident clinical notes', 'The per-tenant subdomain layer', 'In-app purchase'];

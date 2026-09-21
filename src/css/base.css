@@ -324,9 +324,17 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 /* ── the chassis every phone inherits, before a page names its metaphor ─
    Coarse pointer, no-hover, a short landscape. The width tiers all live in
    responsive.css, which loads last; nothing width-dependent belongs here. */
+/* ── the notch ──────────────────────────────────────────────────────────
+   viewport-fit=cover means the layout viewport runs under the status bar and
+   the Dynamic Island, and every face pins #top-bar at top: 0. No face sets a
+   height on the header itself — the inner wrap carries it — so padding here
+   grows the bar downward. env() is 0px wherever there is no inset. */
+#top-bar { padding-top: env(safe-area-inset-top, 0px); }
+
 @media (pointer: coarse) {
   .btn, .soc-i, .pho { min-height: 44px; }
   .btn.sm { min-height: 44px; padding: 0 16px; }
+  :root { -webkit-tap-highlight-color: transparent; }
   a, button { -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 18%, transparent); }
 }
 @media (hover: none) {

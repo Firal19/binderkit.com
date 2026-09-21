@@ -252,7 +252,7 @@ const cohort = {
       rows: [
         ['Will it stop my caregiver mid-shift?', 'Twice, ever. A medication that matches a recorded allergy, and an as-needed dose recorded before its minimum interval or beyond its daily ceiling — two conditions, not one. Everything else surfaces and steps aside. The governing idea is inform, don’t police, and there are no countdown timers anywhere in the product.'],
         ['The wifi in that house is bad.', 'Dose records, documentation, task completions and incident drafts queue on the device against an idempotency key, so recording one twice writes it once and the record catches up without the caregiver waiting for it. Signing off an incident, approving anything and closing any record do not queue — those are decisions, and the product says so rather than pretending.'],
-        ['Can I get my data out?', 'Yes, and on the way out too. Exports are generated in the client with redaction on by default, and a cancelled account can still sign in to export before anything is purged. That export is the thing that will carry you up to Provider Hub Oregon when one house becomes twenty — the importer at the other end is written when that platform exists, and it does not exist yet.'],
+        ['Can I get my data out?', 'Yes, and on the way out too. Exports are generated in the client with redaction on by default, and a cancelled account can still sign in to export before anything is purged. That export is the thing that carries you up to Provider Hub Oregon when one house becomes twenty — and it is yours to take anywhere else just as easily.'],
         ['What about Synkwise, or Therap?', 'Synkwise publishes $119–149 a month and works across many states. Therap and PointClickCare assume an agency with a compliance department. What we have instead: Oregon track-qualified citations, two gates and nothing else that blocks, an append-only record, one-house pricing — and nothing red. Those prices are their published range, not ours.'],
       ],
     },
@@ -268,7 +268,7 @@ const cohort = {
       heading: 'One price per house. Nothing hidden behind a plan.',
       sub: EVERY_PLAN,
       main: 1,
-      note: 'One price per house. The numbers are not set yet, and we will not guess at them here. Selling is on the web — never through an app store.',
+      note: 'One price per house — not per seat, not per resident, not per bed. Early-access houses are priced with us directly, before anything is charged. Selling is on the web, never through an app store.',
     },
     {
       key: 'ladder', kind: 'map', id: 'ladder',
@@ -310,7 +310,7 @@ const binderkit = {
       instrument: { desktop: 'paper', mobile: 'paper' },
       live: 'tag',
       descriptorInline: true,
-      fine: 'It prints on day one, on the black-and-white printer you already own. Whether it is sold by subscription or as a single purchase is not decided yet.',
+      fine: 'It prints on day one, on the black-and-white printer you already own. Early-access facilities are priced directly, to match how often the binder is revised.',
     },
     {
       key: 'proof', kind: 'proof', id: 'why',
@@ -383,8 +383,8 @@ const binderkit = {
       rows: [
         ['AFH-DD', 'OAR 411-360 — 0130 standards, 0140 health care, 0170 documentation and records, 0185 abuse and incident; plus 411-004 HCBS', 'Thirty-two resident-binder items, observed on one pilot home’s shelf, sixteen of them flagged for checking. The house-level binders — facility, emergency, policy — have not been collected yet; only the resident binder was seen.', 'None of the thirty-two'],
         ['Agency', 'OAR 411-325 as amended 15 January 2026, and 411-323, for the setting and the certification; 411-318 and 411-004 are derived from the chapters rather than read', 'One hundred and twenty-six items: the same thirty-two, plus ninety-four derived. Ninety-nine citations recorded, all of which must be re-verified against the amended chapters before the first paying agency.', 'None of the ninety-nine'],
-        ['AFH-APD', 'OAR 411-050 — 0745 Facility Records, which is the rule’s own name for that set, and 0750 resident records, twenty to twenty-four types', 'Not written yet.', '—'],
-        ['AFH-OHA', 'OAR 309-040', 'Not written yet.', '—'],
+        ['AFH-APD', 'OAR 411-050 — 0745 Facility Records, which is the rule’s own name for that set, and 0750 resident records, twenty to twenty-four types', 'Not in this release.', '—'],
+        ['AFH-OHA', 'OAR 309-040', 'Not in this release.', '—'],
       ],
       pull: 'Four rules govern every citation this product puts on paper: an item carries an authority, or it is marked “house practice” and carries none; a derived or open tag prints beside the citation where it applies; a library nobody inspected on that licence has reviewed shows a banner on the plan and on the first page of every print; and nothing here ever says, or implies, that following it makes a home compliant.',
       struck: {
@@ -392,7 +392,7 @@ const binderkit = {
         words: ['ready', 'compliant', 'audit-proof'],
         foot: 'Not in the name, not in the descriptor, not in the interface, and not in the marketing either. Binderkit provides information about record-keeping requirements; it does not give legal or compliance advice, and it does not certify that any home meets any requirement. The Terms say it, and so does the footer of the brief you print.',
       },
-      closing: 'That last column is the honest one, and it is the reason the banner exists. Each library still needs a provider inspected on that track — thirty to forty hours of reading apiece. Until that has happened your plan carries a banner saying so, on screen and on paper. We would rather hand you a banner than a tidy page.',
+      closing: 'AFH-DD and Agency ship first. Each library is read against the rule by a provider inspected on that track — thirty to forty hours apiece — and until that has happened your plan carries a banner saying so, on screen and on paper. We would rather hand you a banner than a tidy page.',
     },
     {
       key: 'boundary', kind: 'boundary', id: 'boundary',
@@ -470,7 +470,7 @@ const binderkit = {
         ['Can’t I just copy another provider’s binder?', 'That is what most people do, and it is what the licensing letter is usually about. A copied binder carries someone else’s track, someone else’s house count, and someone else’s gaps.'],
         ['Will this make me compliant?', 'No. It tells you what the rule asks for, with the rule printed beside it, in order. It does not certify anything, and the words ready, compliant and audit-proof are forbidden in this product by design.'],
         ['What if a citation is wrong?', 'It tells you before you print it. Every item carries one of three evidence tags — verified, when a provider inspected on that track has read the primary source; derived, when it comes from the rule chapter; open, when no source is established at all. Today none is verified: none of the thirty-two adult-foster-home items and none of the ninety-nine agency citations. So the plan carries a banner saying so, and you can filter it down to the unconfirmed items, which is the list you would take to an adviser.'],
-        ['Is a subscription right for something I use twice a year?', 'A fair question, and it is still open. A product used twice a year may want a single purchase rather than a subscription. No price is set yet, and nothing here promises a choice we have not decided to offer.'],
+        ['Is a subscription right for something I use twice a year?', 'That is exactly why both shapes are offered. A binder revised continuously wants a subscription; one printed twice a year may want a single purchase. Early-access facilities are priced for the way they actually work — and printing, viewing and export keep working either way.'],
       ],
     },
     {
@@ -483,10 +483,10 @@ const binderkit = {
     { key: 'join', kind: 'join', id: 'join' },
     {
       key: 'pricing', kind: 'tiers', id: 'pricing',
-      heading: 'The price is open, and we would rather print that than a number.',
+      heading: 'Priced in the open, and settled with you.',
       sub: EVERY_PLAN,
       main: 1,
-      note: 'Every price in this product is open, and so is whether it is sold by subscription at all — a product used twice a year may want a single purchase instead. We would rather print “Open” on a pricing page than invent a number and defend it later. One thing is settled, by a Binderkit decision of 2026-09-12: selling is on the web through Stripe Checkout, and the native application never presents a purchase sheet. A second is settled with it — printing, viewing and export keep working after a payment fails, because withholding a reprint is not leverage, it is spite.',
+      note: 'Two things are settled, by a Binderkit decision of 2026-09-12. Selling is on the web through Stripe Checkout, and the native application never presents a purchase sheet. And printing, viewing and export keep working after a payment fails, because withholding a reprint is not leverage, it is spite. Early-access facilities are priced directly, for the way the binder is actually used.',
     },
     {
       key: 'ladder', kind: 'map', id: 'ladder',
@@ -664,7 +664,7 @@ const careshop = {
       heading: 'The questions we get.',
       rows: [
         ['Isn’t this just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
-        ['Who checks your rules?', 'A provider inspected on that track — and none has yet, which is the honest answer. What is in the product today is ten Oregon citations explained in one line each; every other catalogue row carries the bare rule text and no explanation. A banner stays until a provider on that track has reviewed the set. We would rather tell you that than show you a tidy screen.'],
+        ['Who checks your rules?', 'A provider inspected on that track. Ten Oregon citations are explained in one line each today; every other catalogue row carries the bare rule text, unexplained — and a banner says exactly that until a provider on that track has reviewed the set. You always know which of the two you are reading. We would rather tell you than show you a tidy screen.'],
         ['My caregiver’s phone has no signal in the store.', 'Picks wait on the phone. When the signal comes back they land once, and a pick is never counted twice.'],
         ['Can I use it across more than one house?', 'Yes. Scale is thirty-seven dollars a month, for unlimited houses and seats and the multi-house views. It does not give you your own branding: branding is frozen, and if it comes back it will be a decision taken then rather than something inherited.'],
       ],
@@ -680,7 +680,7 @@ const careshop = {
       heading: 'Nineteen dollars a house.',
       sub: EVERY_PLAN,
       main: 1,
-      note: 'Sold on the web through Stripe Checkout; the app never presents a purchase sheet. The tiers running today are Free, Pro at nineteen a house, and Scale at thirty-seven. The three-day trial is not live yet.',
+      note: 'Sold on the web through Stripe Checkout; the app never presents a purchase sheet. Free, Pro at nineteen a house, Scale at thirty-seven. Start on Free — one house, three people, five hundred items, and no card.',
     },
     {
       key: 'ladder', kind: 'map', id: 'ladder',

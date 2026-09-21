@@ -5,6 +5,7 @@ import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, SIGNUP_SIX, BILLING_STA
 function hero(cfg, p) {
   return `<section class="hero" id="top" aria-labelledby="h1">
     <div class="wrap">
+      <div class="hero-g">
       <div class="hero-t">
         ${eyebrow('Open shifts and jobs in Oregon care homes')}
         <h1 id="h1">${esc(p.headline.text)}</h1>
@@ -15,6 +16,8 @@ function hero(cfg, p) {
           <a class="btn lg" href="#caregivers" data-side-set="caregiver">${esc(cfg.cta.secondary)}</a>
         </div>
         <p class="hero-fine">${esc(find('hero').fine)}</p>
+      </div>
+      <div class="hero-dw" aria-hidden="true"><div class="dev">${iosShell('aidepost', { key: 'board' })}</div></div>
       </div>
       ${boardTable({ domain: cfg.domain })}
       ${doors()}
