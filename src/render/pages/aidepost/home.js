@@ -91,6 +91,8 @@ function caregivers() {
       <div class="wallet-t">${eyebrow('Your wallet')}<h2 id="h-wallet">Your dates, in your pocket.</h2><p class="sub">Keep your own credential dates in one place, and carry them from one employer to the next. A notice at thirty days and at seven — to you, by name; to a manager, only as a count.</p>
         <ul class="care-l">${s.lines.slice(5).map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
       ${walletCards()}
+      <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'credentials' })}</div>
+        <p class="cap">The same dates on the provider’s side: surfaced with the shift, never used to remove anyone from the list.</p></div>
     </div>
   </section>
   <section class="sec care free-s" id="free" aria-labelledby="h-free" data-reveal data-phone="fold" data-gist="Free for ever — and the four things Aidepost will never do to a caregiver.">
@@ -98,6 +100,8 @@ function caregivers() {
       <div class="free-t">${eyebrow('Free, for ever')}<h2 id="h-free">You are not the product.</h2><p class="promise">${esc(s.promise)}</p>
         <div class="ctas">${s.ctas.map(([label, href], i) => `<a class="btn ${i === 0 ? 'pri' : ''} lg" href="${esc(href)}" data-cta="caregiver">${esc(label)}</a>`).join('')}</div>
         <p class="fine">${esc(s.fine)}</p></div>
+      <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'hire' })}</div>
+        <p class="cap">What a relief worker sees when a shift goes outward — the work, the distance, and nothing about a resident.</p></div>
       <ul class="free-l" aria-label="What Aidepost never does to a caregiver">
         <li>${ic('x', 18, { pin: 'open' })}<span><b>No background check</b> — the provider runs ORCHARDS; Aidepost holds a status she types.</span></li>
         <li>${ic('x', 18, { pin: 'open' })}<span><b>No rating</b> — attendance is showed, did not show, or late with a number of minutes. No stars, no comment, no free text.</span></li>

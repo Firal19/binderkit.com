@@ -46,6 +46,8 @@ function wallet() {
     <div class="wallet-t">${eyebrow('Your wallet')}${h2('wallet', 'Your dates, in your pocket.', 'A CPR card photo and its date. A notice at thirty days and at seven — to you, by name. A manager sees a count, never your name in the message. Renew, and the old record stays as history.')}
       <ul class="care-l"><li>${esc(find('caregiver').lines[0])}</li><li>${esc(find('caregiver').lines[2])}</li></ul></div>
     ${walletCards()}
+    <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'credentials' })}</div>
+      <p class="cap">The same dates on the provider’s side: surfaced with the shift, never used to remove anyone from the list.</p></div>
   </div>`));
 }
 
@@ -68,6 +70,8 @@ function free(cfg, p) {
   return fold('No organisation, no card, nothing to cancel — and the first ten minutes.', sec('free', 'care free-s', `<div class="wrap free-g">
     <div class="free-t">${eyebrow('Free, for ever')}${h2('free', 'You are not the product.')}<p class="promise">${esc(s.promise)}</p>
       <div class="ctas"><a class="btn pri lg" href="#join">${esc(s.ctas[0][0])}</a><a class="btn lg" href="/providers">${ic('house', 18, { pin: false })}I run a house, actually</a></div></div>
+    <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'hire' })}</div>
+      <p class="cap">What a relief worker sees when a shift goes outward — the work, the distance, and nothing about a resident.</p></div>
     <div class="free-first"><span class="strip-l">${ic('phone', 16, { pin: 'open' })}The first ten minutes</span><ol>${find('start').columns[1].steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol><p class="cap">${esc(find('start').columns[1].foot)}</p></div>
   </div>`));
 }

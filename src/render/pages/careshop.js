@@ -346,6 +346,8 @@ function start(cfg) {
   return sec('start', 'start', `<div class="wrap start-g">
     <div>${sticker('clock', 'The first ten minutes')}${h2('start', 'If the loop closes once, you trust it.')}</div>
     <ol class="ten">${s.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
+    <div class="sec-dev"><div class="dev">${iosShell('careshop', { key: 'today' })}</div>
+      <p class="cap">Where the first ten minutes end: Today, with the loop closed once.</p></div>
     <a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="start"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a>
   </div>`);
 }

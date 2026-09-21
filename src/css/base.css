@@ -243,12 +243,22 @@ b, strong { font-weight: 600; }
 .pho.is-dark .pho-tile { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .08); color: rgba(255, 255, 255, .9); }
 
 /* ── the privacy page, in whatever face the site wears ────────────────── */
-.pv-w { max-width: 760px; }
+/* BRIEF-round2 addendum: /privacy gets the same column, type scale and bands as
+   the rest of the site, and its h1 is >= 56px. The 760px wrapper left it at 53%
+   of a 1440 viewport and 40% of a 1920 one. The COLUMN widens; running prose
+   keeps its reading measure, which is the other half of the same rule. */
+.pv-w { max-width: none; }
+.pv p, .pv li, .pv dd { max-width: 70ch; }
+/* the definition lists are a grid, not prose — they fill the column */
+.pv-dl { display: grid; grid-template-columns: minmax(0, 22ch) minmax(0, 1fr); gap: 2px 28px; align-items: baseline; }
+.pv-dl dd { margin: 0 0 14px; }
+@media (max-width: 760px) { .pv-dl { grid-template-columns: minmax(0, 1fr); } .pv-dl dd { margin-bottom: 18px; } }
 .pv .head { margin-bottom: 32px; }
 /* min() rather than the raw token: the privacy page's 44px ceiling is a
    deliberate composition on a 760px column and is preserved to the pixel,
    while the floor now comes off the shared ramp. */
-.pv h1 { font-family: var(--font-display); font-size: min(var(--fs-h1), 44px); line-height: 1.1; letter-spacing: -0.02em; }
+/* the 44px cap put it under the standard's own >= 56px floor */
+.pv h1 { font-family: var(--font-display); font-size: max(56px, min(var(--fs-h1), 88px)); line-height: 1.1; letter-spacing: -0.02em; }
 .pv h3 { margin-top: 40px; margin-bottom: 10px; font-size: 22px; }
 .pv p { color: var(--muted); line-height: 1.6; margin-top: 10px; }
 .pv .fine { margin-top: 40px; }
@@ -481,3 +491,26 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    html.has-ckb, not .has-ckb: responsive.css loads last and its
    body:has(.tabs) rule ties on specificity and would win on order. */
 html.has-ckb body { padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 200px + env(safe-area-inset-bottom, 0px)); }
+
+/* ── a section's own screen ─────────────────────────────────────────────
+   BRIEF-round2 §1 lets a section carry six items OR one full-width instrument.
+   Several sections describe exactly one product screen, and showing it beats
+   padding the list with words — it is also what round two asked for: more of
+   the product on the page. The mock scales down on a phone and never overflows. */
+.sec-dev { margin-top: clamp(28px, 3.4vw, 52px); display: grid; justify-items: center; gap: 12px; }
+.sec-dev .dev { max-width: 100%; }
+/* Use canvas.css's own auto-fit contract rather than max-width, which cannot
+   clip a mock: --dw stays the intrinsic size and zoom does the fitting. Without
+   this a 1280px .browser blew the document out by 409px at 1024, and a phone by
+   92px at 320. --mock-room is the real room this block has: the column, or the
+   viewport minus its gutters, whichever is smaller. */
+.sec-dev .dev .phone, .sec-dev .dev .browser, .sec-dev .dev .paper,
+.sec-dev .dev .paper-sheet, .sec-dev .dev .wk,
+.sec-dev .phone, .sec-dev .browser, .sec-dev .paper, .sec-dev .paper-sheet, .sec-dev .wk {
+  --mock-room: min(var(--max, 1600px), calc(100vw - 2 * var(--gutter, 24px)));
+  --mock-z: var(--mock-fit);
+}
+/* 15px, not the label size: this is a sentence in a <p>, and the gate holds
+   prose to 15px whatever its length. */
+.sec-dev .cap { max-width: 56ch; text-align: center; font-size: 15px; color: var(--soft); }
+@media (max-width: 640px) { .sec-dev { margin-top: 26px; } }

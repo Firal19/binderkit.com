@@ -142,6 +142,8 @@ function stops() {
       ${gate(2, 'The PRN interval gate', 'An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.', 'Two conditions, not one — before the order’s minimum interval, or beyond its maximum in twenty-four hours. The stop shows when the last dose was given and when the next one is permitted.')}
     </div>
     <p class="pull">${esc(loop.pull)}</p>
+    <div class="sec-dev"><div class="dev">${iosShell('cohort', { key: 'marpass' })}</div>
+      <p class="cap">The allergy gate, as a caregiver meets it: the Six Rights dialog asking for a reason before it will sign.</p></div>
     <div class="machines"><span class="strip-l">Four records, and what each one will not do</span>
       ${loop.machines.map(([n, seq]) => `<div class="machine"><b>${esc(n)}</b><span>${esc(seq)}</span></div>`).join('')}
     </div>
@@ -195,6 +197,8 @@ function roles() {
       <div class="seg" role="group" aria-label="Who is holding the phone"><button type="button" data-shift="now" aria-pressed="true">Now</button><button type="button" data-shift="day" aria-pressed="false">Day <span>06:55–19:00</span></button><button type="button" data-shift="night" aria-pressed="false">Night</button></div>
     </div>
     <div class="role-g" data-roles>${s.rows.map(([r, who, does, dev]) => `<div class="role" data-day="${on[r][0]}" data-night="${on[r][1]}"><span class="role-n">${ic(r === 'caregiver' ? 'pill' : r === 'manager' ? 'pen' : 'house', 16)}${esc(r)}</span><span class="role-on" data-role-on></span><p class="role-w">${esc(who)}</p><p class="role-d">${esc(does)}</p><span class="role-r">${ic('clock', 14)}${esc(dev)}</span></div>`).join('')}</div>
+    <div class="sec-dev"><div class="dev">${iosShell('cohort', { key: 'residents' })}</div>
+      <p class="cap">The resident record as a caregiver sees it — contacts and allergies read-only, edited by a manager or the provider.</p></div>
     <p class="closing">${esc(s.closing)}</p>
   </div>`);
 }

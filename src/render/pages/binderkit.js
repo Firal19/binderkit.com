@@ -53,6 +53,8 @@ const hero = (cfg, p) => title(TOP, {
 
 const plan = () => section(PLAN, `${eyebrow('Question zero, then five')}${h2('plan', 'Five answers in. Five binders out.', 'Question zero is the licence track; it selects the library, and the library is everything. Then five questions, one per page. The same answers always produce the same plan, with the reasoning shown.')}
   ${planner()}
+  <div class="sec-dev"><div class="dev">${webShell('binderkit', { key: 'editor' })}</div>
+    <p class="cap">The same plan in the product: add, remove or reorder a tab, with the three guardrails answering in plain words.</p></div>
   <p class="cap">The whole chapter — every step from question zero to reset, with the three guardrails — is at <a href="/plan">The plan</a>.</p>`);
 
 function page() {
@@ -106,6 +108,8 @@ function versions() {
     <p class="replan" data-v-banner>A re-plan was offered and accepted: answer 1 changed. One tab added, one moved, nothing removed. v1 is kept, and its control number still prints the identical page.</p>
     <table class="lib ver" data-vtable data-v="2"><thead><tr><th scope="col">Version or item</th><th scope="col">Change</th><th scope="col">Why</th><th scope="col">Evidence</th><th scope="col">Date</th></tr></thead>
       <tbody>${v.map(([t, what, why, tag, when]) => `<tr data-change="${esc(what)}"><th scope="row" data-col="Version or item">${esc(t)}</th><td data-col="Change" class="chg">${esc(what)}</td><td data-col="Why">${/^OAR/.test(why) ? cite(why) : esc(why)}</td><td data-col="Evidence">${ev(tag)}</td><td data-col="Date"><code>${esc(when || '—')}</code></td></tr>`).join('')}</tbody></table>
+    <div class="sec-dev"><div class="dev">${webShell('binderkit', { key: 'versions' })}</div>
+      <p class="cap">The same two versions in the product: what changed, why, and the control number each page carries.</p></div>
     <div class="rules"><span class="strip-l">The rules that make a printed page trustworthy</span>
       <ol>${RULES.map((r) => `<li>${esc(r)}</li>`).join('')}</ol>
     </div>`);

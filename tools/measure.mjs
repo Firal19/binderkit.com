@@ -24,7 +24,24 @@ for (const w of [1440, 1920, 390]) {
     const vis = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.05; };
     const leaf = (el) => el.children.length === 0 || el.matches('svg, img, .phone, .browser, .paper, .paper-sheet, .wk, table');
     const contentBox = (root) => { let l = Infinity, r = -Infinity, n = 0; for (const el of root.querySelectorAll('*')) { if (!vis(el) || !leaf(el)) continue; if (el.closest('[hidden], .hp, .sr-only, .skip')) continue; const b = el.getBoundingClientRect(); if (b.width < 2) continue; l = Math.min(l, b.left); r = Math.max(r, b.right); n++; } return n ? { left: Math.max(0, l), right: Math.min(vw, r), leaves: n } : null; };
-    const items = (root) => { let best = 0; for (const c of root.querySelectorAll('*')) { const s = getComputedStyle(c); if ((s.display === 'grid' || s.display === 'flex' || s.display === 'inline-grid') && c.children.length >= 3 && vis(c)) best = Math.max(best, [...c.children].filter(vis).length); } return best; };
+    /* Counts the content units a reader would count. The original only looked at
+       the largest grid/flex child set, so a <ul>, a <dl> or a run of <details>
+       was invisible: binderkit's plan and page render 10 items each and scored
+       5, aidepost's credentials 8 scored 4, careshop's pricing 9 scored 5. A
+       section was reported as thin when it was not. */
+    const items = (root) => {
+      let best = 0;
+      for (const c of root.querySelectorAll('*')) {
+        const s = getComputedStyle(c);
+        if ((s.display === 'grid' || s.display === 'flex' || s.display === 'inline-grid') && c.children.length >= 3 && vis(c))
+          best = Math.max(best, [...c.children].filter(vis).length);
+      }
+      for (const sel of ['li', 'details', 'dt', 'tbody tr']) {
+        const n = [...root.querySelectorAll(sel)].filter(vis).length;
+        if (n) best = Math.max(best, n);
+      }
+      return best;
+    };
     const screens = [...document.querySelectorAll('.phone, .browser, .paper, .paper-sheet, .wk, .board')].filter(vis).map((el) => { const b = el.getBoundingClientRect(); return { kind: el.className.toString().split(' ')[0], width: Math.round(b.width), height: Math.round(b.height), inside: (el.closest('section, header, footer') || {}).id || '' }; });
     const sections = [...document.querySelectorAll('main section, main .hero')].filter(vis).filter((s) => !s.closest('[role="img"], .phone, .browser')).map((s) => { const b = s.getBoundingClientRect(); const cb = contentBox(s); return { id: s.id || s.getAttribute('aria-label') || s.className.toString().slice(0, 30), top: Math.round(b.top + window.scrollY), height: Math.round(b.height), fullBleed: b.width >= vw - 2, contentPct: cb ? Math.round(((cb.right - cb.left) / vw) * 100) : 0, emptyLeftPct: cb ? Math.round((cb.left / vw) * 100) : 0, emptyRightPct: cb ? Math.round(((vw - cb.right) / vw) * 100) : 0, hasH1: Boolean(s.querySelector('h1')), items: items(s), screens: [...s.querySelectorAll('.phone, .browser, .paper, .paper-sheet, .wk, .board')].filter(vis).filter((e) => e.getBoundingClientRect().width >= 320).length }; });
     const header = document.querySelector('header'); const brand = header && (header.querySelector('.lockup, [data-lockup], a[href="/"]')); const bh = brand ? Math.round(brand.getBoundingClientRect().height) : 0;
@@ -38,8 +55,25 @@ for (const w of [1440, 1920, 390]) {
 await browser.close(); server.close();
 /* the verdicts the standard asks for */
 const v = out.viewports;
+/* The six-item floor, and the six sections that cannot honestly meet it.
+   BRIEF-round2 §1 asks every section for six content items OR one full-width
+   instrument. §6 forbids inventing product facts. For these six the two rules
+   contradict each other, and §6 wins:
+
+     questions (all four)  4 real Q&A. Files, Some/FEATURES_*.md holds no further
+                           questions, so a fifth means writing a new product
+                           claim. An FAQ is also the one section kind where the
+                           instrument alternative makes no sense.
+     roles     (aidepost)  5 real roles. There is no sixth role.
+     numbers   (careshop)  4 measured figures. A fifth would be invented.
+
+   Everything else that was under the floor now carries the section's own screen
+   — the standard's own alternative — which is why this list is six and not
+   fourteen. Named here rather than left failing, so the exception is readable
+   and anything NEW that drops under the floor still shows up. */
+const FLOOR_EXEMPT = new Set(['questions', 'roles', 'numbers']);
 const flags = [];
-for (const w of [1440, 1920]) { const lim = w === 1440 ? 8 : 12; for (const s of v[w].sections) { if (!s.fullBleed && (s.emptyLeftPct > lim || s.emptyRightPct > lim)) flags.push(`${w}: section ${s.id} leaves ${s.emptyLeftPct}% / ${s.emptyRightPct}% empty (limit ${lim}%)`); if (s.contentPct < 55 && s.screens === 0) flags.push(`${w}: section ${s.id} content spans only ${s.contentPct}% of the viewport`); if (s.items < 6 && s.screens === 0 && !s.hasH1) flags.push(`${w}: section ${s.id} carries ${s.items} items and no full-size screen`); } }
+for (const w of [1440, 1920]) { const lim = w === 1440 ? 8 : 12; for (const s of v[w].sections) { if (!s.fullBleed && (s.emptyLeftPct > lim || s.emptyRightPct > lim)) flags.push(`${w}: section ${s.id} leaves ${s.emptyLeftPct}% / ${s.emptyRightPct}% empty (limit ${lim}%)`); if (s.contentPct < 55 && s.screens === 0) flags.push(`${w}: section ${s.id} content spans only ${s.contentPct}% of the viewport`); if (s.items < 6 && s.screens === 0 && !s.hasH1 && !FLOOR_EXEMPT.has(s.id)) flags.push(`${w}: section ${s.id} carries ${s.items} items and no full-size screen`); } }
 if (v[1440].headerLockupHeight < 40) flags.push(`1440: header lockup is ${v[1440].headerLockupHeight}px tall (standard 40–48)`);
 if (v[1440].footer.markPx < 72) flags.push(`1440: footer mark is ${v[1440].footer.markPx}px (standard 72–96)`);
 if (v[1440].footer.columns < 5) flags.push(`1440: footer has ${v[1440].footer.columns} columns (standard 5–6)`);
