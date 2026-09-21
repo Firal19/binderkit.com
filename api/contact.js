@@ -3,13 +3,18 @@
 // Takes { name, email, topic, message, product } from the contact form,
 // checks them, keeps one row in Convex, and sends two letters through Resend:
 // one to the family inbox with reply-to set to the writer — so answering is
-// an ordinary reply — and one receipt to the writer from this site's own
-// hello@ address, which is received by Resend and relayed to the same inbox.
+// an ordinary reply — and one receipt to the writer from the box that page
+// prints, which is received by Resend and relayed to the same inbox.
+//
+// The box is looked up in lib/boxes.js by domain plus the topic, which is
+// already validated against TOPICS below. It never comes from a request field:
+// lib/mail.js address() does not sanitise a local part.
 //
 // The row is the record; the mail is the nicety. With CONVEX_URL unset and
 // Resend unset the endpoint says 503 rather than pretending.
 
 import { EMAIL, clean, configured, inbox, address, named, domainOf, send, letters } from '../lib/mail.js';
+import { localPart, keyForTopic } from '../lib/boxes.js';
 
 const PRODUCTS = { cohort: 'Cohort', careshop: 'CareShop', binderkit: 'Binderkit', aidepost: 'Aidepost' };
 /* The union of every topic any site renders. aidepost adds “I’m a caregiver”
@@ -52,6 +57,8 @@ export default async function handler(req, res) {
 
   const domain = domainOf(req);
   const site = { name: PRODUCTS[product], domain };
+  /* the box this page prints — a closed lookup, keyed by the validated topic */
+  const local = localPart(domain, keyForTopic(domain, topic));
   const msg = { name, email, phone, topic, message, product, source: clean(req.headers.referer, 300) || `https://${domain}/`, at: Date.now() };
 
   let kept = false;
@@ -70,14 +77,14 @@ export default async function handler(req, res) {
 
   let sent = false;
   if (configured() && inbox()) {
-    const from = named(site.name, address('hello', domain));
+    const from = named(site.name, address(local, domain));
     const notice = letters.contactNotice(site, msg);
     const a = await send({ from, to: inbox(), replyTo: named(name || email, email), headers: { 'X-PHO-Site': domain, 'X-PHO-Kind': 'contact' }, tags: [{ name: 'kind', value: 'contact' }, { name: 'site', value: domain.replace(/\./g, '_') }], ...notice });
     sent = a.sent;
     const receipt = letters.contactReceipt(site, msg);
-    await send({ from, to: email, replyTo: address('hello', domain), tags: [{ name: 'kind', value: 'contact_receipt' }], ...receipt });
+    await send({ from, to: email, replyTo: address(local, domain), tags: [{ name: 'kind', value: 'contact_receipt' }], ...receipt });
   }
 
-  if (!kept && !sent) return json(res, 503, { ok: false, message: 'Our side is not ready to take a message yet — write to hello@' + domain + ' instead.' });
+  if (!kept && !sent) return json(res, 503, { ok: false, message: `Our side is not ready to take a message yet — write to ${address(local, domain)} instead.` });
   return json(res, 200, { ok: true, kept, sent });
 }

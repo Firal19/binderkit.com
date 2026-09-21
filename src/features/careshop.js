@@ -62,8 +62,8 @@ export const FEATURES = [
     what: 'A Print the list button prints the shop screen’s aisles as a clean checklist and nothing else — the page has a print stylesheet that hides the store.',
     probe: [{ home: 'class="btn" data-print' }, { home: 'class="print-list"' }, { css: '@media print' }, { css: '.print-list{display:block !important' }] },
   { id: 'cs-21', name: 'Write to a person, from the receipt', kind: 'footer',
-    what: 'The receipt prints hello@careshop.app with a Copy button, a Share button and a Write link, so the address is one tap away on every page.',
-    probe: [{ home: 'data-copy="hello@careshop.app"' }, { home: 'data-share data-share-title' }, { home: 'mailto:hello@careshop.app' }] },
+    what: 'The receipt prints kitchen@careshop.app with a Copy button, a Share button and a Write link, so the address is one tap away on every page.',
+    probe: [{ home: 'data-copy="kitchen@careshop.app"' }, { home: 'data-share data-share-title' }, { home: 'mailto:kitchen@careshop.app' }] },
   { id: 'cs-22', name: 'The live-dated receipt and the tear line', kind: 'footer',
     what: 'The receipt header carries today’s date and the time, the subtotal line reads the real price ladder, and the perforation is a link back to the top.',
     probe: [{ home: 'data-clock="date"' }, { home: 'SUBTOTAL' }, { home: 'Pro $19' }, { home: 'class="rc-tearlink" href="#main"' }] },
@@ -74,8 +74,8 @@ export const FEATURES = [
     what: 'On /rules the ten citations sit beside a legend; tap confirmed, inferred or unreviewed and a popover says what it means — one open at a time.',
     probe: [{ route: 'rules' }, { html: 'data-conf-legend' }, { html: 'OAR 411-050-0725' }, { js: '[data-conf-legend]' }] },
   { id: 'cs-25', name: 'The stickers, and the write page', kind: 'social',
-    what: 'Eight label-shaped social stickers peel on hover and on press; on /write they carry their handles beside the contact form with CareShop’s own topics.',
-    probe: [{ home: 'class="soc rc-soc"' }, { css: '.rc-soc .soc-i:hover' }, { route: 'write' }, { html: 'A house wants to switch' }, { js: 'is-peel' }] },
+    what: 'Eight label-shaped social stickers peel on hover and on press; on /write they carry their handles beside the contact form with CareShop’s own topics, under a slip whose first line is WRITE TO · KITCHEN@CARESHOP.APP.',
+    probe: [{ home: 'class="soc rc-soc"' }, { css: '.rc-soc .soc-i:hover' }, { route: 'write' }, { html: '<b>KITCHEN@CARESHOP.APP</b>' }, { html: 'A house wants to switch' }, { js: 'is-peel' }] },
 
   /* ══ THE WORKING DEMO ══════════════════════════════════════════════════
      Twenty-five more, and one test on every probe: REMOVE THE FEATURE AND

@@ -6,9 +6,14 @@ import { webShell, iosShell, filmStrip, callouts } from '../../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../data/page.js';
 import { PRODUCTS, MINIS } from '../../../data/brand.js';
 import { ic } from '../../icons/cohort.js';
+import CONFIGS from '../../../configs.js';
 import { header, footer } from './chrome.js';
 import { find, MODULES, MOVED, REMOVED, NOT_NOW, LARGER, REFUSALS, NOT_STORED, TOPICS, APP,
   SCREEN_ORDER, SCREEN_NOTES, SITE, STRIP, PASS } from './data.js';
+
+/* The page descriptions below are plain strings handed to build.mjs's head(),
+   so they cannot call hello(cfg) at render time; they read the same source. */
+const ADDR = hello(CONFIGS.cohort);
 
 const shell = (cfg, p, page, inner) => `${skip()}
 ${header(cfg, p, { page })}
@@ -228,7 +233,7 @@ function contactPage(cfg, p) {
         <div class="note">
           <span class="strip-l">Already on Cohort?</span>
           <p class="c-app"><a href="${APP}">${ic('house', 16)}Sign in to your house</a></p>
-          <p class="fine">New staff are added by an administrator, never by a sign-up page.</p>
+          <p class="fine">New staff are added by an administrator, never by a sign-up page. If nobody has added you, write to <a href="${mailto(cfg, `I’m staff — ${p.name}`)}">${esc(hello(cfg))}</a> — we cannot add you, but we will tell you who can.</p>
         </div>
       </aside>
     </div>`, { label: 'Write to us' })}`);
@@ -240,5 +245,5 @@ export const pages = [
   { path: 'pricing', title: 'Pricing', description: 'One price per house. The three-day trial, the six signup steps, what happens if a payment fails, and how many houses each plan covers.', render: pricingPage },
   { path: 'security', title: 'Security and privacy', description: 'What Cohort holds, how the record is held up, what leaves the house, and the two stops — in the same words as the product.', render: security },
   { path: 'about', title: 'About', description: 'Cohort is daily operations for Oregon care homes, made in Oregon by Providerhub Oregon.', render: about },
-  { path: 'contact', title: 'Contact', description: 'Write to a person. One inbox, answered from the same address.', render: contactPage },
+  { path: 'contact', title: 'Contact', description: `Write to a person at ${ADDR}. One inbox, one person reads it and answers.`, render: contactPage },
 ];

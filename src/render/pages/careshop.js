@@ -434,5 +434,5 @@ export const pages = [
   { path: 'shelf', title: 'The shelf', description: 'All eight CareShop screens at the size they ship, each captioned with what it proves — plus the buy queue at the till, annotated point by point.', render: shelfPage },
   { path: 'rules', title: 'The rules', description: 'The ten Oregon citations CareShop explains today, how sure we are about each, and what will not return.', render: rulesPage },
   { path: 'about', title: 'About', description: 'CareShop is live at careshop.app and used by real houses. Kitchen software for licensed Oregon care homes, by Provider Hub Oregon.', render: aboutPage },
-  { path: 'write', title: 'Write to us', description: 'One inbox. A question, a house that wants to switch, pricing, privacy — a person answers from the same address.', render: writePage },
+  { path: 'write', title: 'Write to us', description: 'One inbox at kitchen@careshop.app. A question, a house that wants to switch, pricing, privacy — one person reads it and answers.', render: writePage },
 ];

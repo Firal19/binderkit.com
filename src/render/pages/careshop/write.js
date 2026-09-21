@@ -9,13 +9,13 @@ export const TOPICS = ['Question', 'A house wants to switch', 'Pricing', 'Securi
 export function writePage(cfg, p) {
   const inner = `${pageHead('The till', CONTACT.heading, CONTACT.sub)}
 ${sec('form', 'write-s', `<div class="wrap write-g">
-  <div class="write-f">${contact(cfg, p, { topics: TOPICS, placeholder: 'Which house, which shelf, what happened — as much or as little as you like.', button: 'Send it', done: 'Sent. A receipt is on its way to you, and a person will answer from the same address.' })}</div>
+  <div class="write-f">${contact(cfg, p, { topics: TOPICS, placeholder: 'Which house, which shelf, what happened — as much or as little as you like.', button: 'Send it', done: 'Sent. A receipt is on its way to you, and a person will answer from the same inbox.' })}</div>
   <aside class="write-a">
     <div class="rc rc-aside">
       <div class="rc-top"><b class="rc-store">WHAT TO EXPECT</b></div>
       <div class="rc-lines">
+        <span class="rc-l"><span>WRITE TO</span><i aria-hidden="true"></i><b>${esc(hello(cfg).toUpperCase())}</b></span>
         <span class="rc-l"><span>READ BY</span><i aria-hidden="true"></i><b>A PERSON</b></span>
-        <span class="rc-l"><span>ANSWERED FROM</span><i aria-hidden="true"></i><b>${esc(hello(cfg).toUpperCase())}</b></span>
         <span class="rc-l"><span>TICKET NUMBER</span><i aria-hidden="true"></i><b>NONE</b></span>
         <span class="rc-l"><span>NEWSLETTER</span><i aria-hidden="true"></i><b>NONE</b></span>
       </div>
@@ -26,6 +26,7 @@ ${sec('form', 'write-s', `<div class="wrap write-g">
       ${sticker('mail', 'Or write straight to')}
       <a class="rc-addr" href="${mailto(cfg)}">${ic('mail', 18)}${esc(hello(cfg))}</a>
       <button type="button" class="rc-b" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 16)}Copy the address</button>
+      <p class="fine">Locked out at the shelf, or a count that is wrong — write here too, and say which house and which shelf.</p>
     </div>
   </aside>
 </div>`)}

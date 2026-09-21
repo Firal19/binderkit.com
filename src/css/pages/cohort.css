@@ -151,7 +151,10 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 @media (hover: hover) { .textb:hover { color: var(--teal); border-color: var(--teal); } }
 .textb[aria-pressed="true"] { color: var(--teal); border-color: var(--teal); }
 .ssheet-a { display: grid; gap: 10px; }
-.ssheet-f { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.ssheet-f { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.ssheet-fa { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; letter-spacing: 0; text-transform: none; font-weight: 600; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+@media (hover: hover) { .ssheet-fa:hover { text-decoration: underline; } }
+.ssheet-nl { margin-top: 6px; font-size: 13.5px; color: var(--muted); line-height: 1.5; max-width: 46ch; }
 
 /* the palette */
 .pal { position: fixed; inset: 0; z-index: 60; display: grid; align-content: start; justify-items: center; padding: min(14vh, 120px) 16px 16px; }

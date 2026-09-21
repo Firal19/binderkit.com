@@ -34,9 +34,21 @@ export const ICON = {
   moon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>',
 };
 
-/* ── the address every page prints, and the mailto that goes with it ──── */
-export const hello = (cfg) => `hello@${cfg.domain}`;
-export const mailto = (cfg, subject = '') => `mailto:${hello(cfg)}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
+/* ── the address a page prints, and the mailto that goes with it ────────
+   hello(cfg)               → the site's default box    shift@cohorthome.app
+   hello(cfg, 'caregivers') → a named box              caregiver@aidepost.com
+   mailto(cfg)              → bare mailto to the default box
+   mailto(cfg, subject)     → with a prefilled subject
+   mailto(cfg, subject, key) → both
+   The keys come from cfg.mail, which src/configs.js fills from lib/boxes.js.
+   An unknown key falls back to the site's default box, never to nothing.  */
+export const box    = (cfg, key = 'main') => ((cfg.mail && cfg.mail.boxes && (cfg.mail.boxes[key] || cfg.mail.boxes.main)) || 'hello');
+export const hello  = (cfg, key) => `${box(cfg, key)}@${cfg.domain}`;
+export const mailto = (cfg, subject = '', key) =>
+  `mailto:${hello(cfg, key)}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}`;
+/* what a route prints when nothing else says otherwise */
+export const boxAt     = (cfg, route) => ((cfg.mail && cfg.mail.routes) || {})[route] || 'main';
+export const subjectAt = (cfg, route) => ((cfg.mail && cfg.mail.subjects) || {})[route] || '';
 
 /* ── the plain header a page may start from ───────────────────────────── */
 export function nav(cfg, p, opts = {}) {
@@ -153,7 +165,7 @@ export function waitlist(cfg, p, copy = {}) {
 export const TOPICS = ['Question', 'Early access', 'Pricing', 'Security and privacy', 'Press', 'Something else'];
 export const CONTACT = {
   heading: 'Write to a person.',
-  sub: 'Every message lands in one inbox. You get an answer from the same address.',
+  sub: 'Every message lands in one inbox, and the person who reads it is the person who answers.',
   fields: {
     name: 'Your name', email: 'Your email', topic: 'What is it about?', message: 'Your message',
     phone: 'Phone (optional)',
@@ -162,11 +174,15 @@ export const CONTACT = {
   altNote: 'Sending from this page is one click and a receipt comes straight back. Sending from your own mail app leaves you a copy in Sent and lets you attach a file. Both reach the same person.',
   button: 'Send it',
   busy: 'Sending…',
-  done: 'Sent. A receipt is on its way to you, and a person will answer from the same address.',
+  done: 'Sent. A receipt is on its way to you, and a person will answer from the same inbox.',
   fine: 'One person reads it and answers.',
 };
+/* copy.box names a non-default box for this page — aidepost's /contact passes
+   nothing and starts on the default; its topic select rewrites data-to and the
+   closing line at runtime when the topic reads “I’m a caregiver”. */
 export function contact(cfg, p, copy = {}) {
   const opt = (v) => `<option value="${esc(v)}">${esc(v)}</option>`;
+  const to = hello(cfg, copy.box);
   return `<form class="form contact-f" id="contactform" method="post" action="/api/contact" novalidate data-done="${esc(copy.done || CONTACT.done)}" data-busy="${esc(CONTACT.busy)}">
     <input type="hidden" name="product" value="${esc(p.id)}">
     <label class="field"><span>${esc(CONTACT.fields.name)}</span><input type="text" name="name" autocomplete="name" placeholder="Your name"></label>
@@ -177,11 +193,11 @@ export function contact(cfg, p, copy = {}) {
     <p class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></p>
     <div class="send-two">
       <button class="btn pri lg" type="submit">${esc(copy.button || CONTACT.button)}</button>
-      <button class="btn lg send-alt" type="button" data-send-mail data-to="${esc(hello(cfg))}">${esc(CONTACT.altButton)}</button>
+      <button class="btn lg send-alt" type="button" data-send-mail data-to="${esc(to)}">${esc(CONTACT.altButton)}</button>
     </div>
     <p class="fine send-note">${esc(CONTACT.altNote)}</p>
     <p class="form-msg" role="status" aria-live="polite"></p>
-    <p class="fine contact-alt">Either way it reaches <a href="${mailto(cfg)}">${esc(hello(cfg))}</a> — same inbox, same person.</p>
+    <p class="fine contact-alt">Either way it reaches <a href="${mailto(cfg, '', copy.box)}">${esc(to)}</a> — same inbox, same person.</p>
   </form>`;
 }
 

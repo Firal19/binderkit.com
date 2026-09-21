@@ -65,7 +65,8 @@ function sheet(cfg, p, opts) {
         <a class="btn pri lg" href="${home ? '#join' : '/#join'}" data-cta="sheet">${esc(cfg.cta.primary)}</a>
         <a class="btn lg" href="${esc(APP)}">${esc(cfg.signIn.label)} to your house</a>
       </div>
-      <p class="ssheet-f">${esc(p.descriptor)} · ${esc(hello(cfg))}</p>
+      <p class="ssheet-f">${esc(p.descriptor)} · <a class="ssheet-fa" href="${mailto(cfg, `I’m staff — ${p.name}`)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy ${esc(hello(cfg))}">${ic('copy', 16)}</button></p>
+      <p class="ssheet-nl">No login yet? Only an administrator at your house can add you — write and a person will tell you who that is.</p>
     </div>
   </div>`;
 }

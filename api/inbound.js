@@ -1,6 +1,7 @@
 // POST /api/inbound — where every email to this domain arrives.
 //
-// Resend receives mail for hello@<domain> (and any other local part) and
+// Resend receives mail for EVERY local part at <domain> — this routes on the
+// domain alone and keeps the local part only as a label — and
 // calls this endpoint with an `email.received` event. The event is metadata
 // only, so this fetches the message, relays it whole to the one family inbox
 // with reply-to set to the original sender — replying from the inbox answers
@@ -16,6 +17,7 @@
 
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { received, send, letters, inbox, address, named, clean } from '../lib/mail.js';
+import { localPart } from '../lib/boxes.js';
 
 const PRODUCTS = { 'cohorthome.app': 'Cohort', 'careshop.app': 'CareShop', 'binderkit.com': 'Binderkit', 'aidepost.com': 'Aidepost', 'providerhub.us': 'Providerhub Oregon' };
 
@@ -64,7 +66,11 @@ export async function POST(request) {
 
   const d = event.data;
   const to = (Array.isArray(d.to) ? d.to : [d.to]).filter(Boolean).map((x) => String(x).toLowerCase());
-  const domain = (to.find((x) => PRODUCTS[x.split('@')[1]]) || to[0] || '@providerhub.us').split('@')[1];
+  const hit = to.find((x) => PRODUCTS[x.split('@')[1]]) || to[0] || '@providerhub.us';
+  const domain = hit.split('@')[1];
+  /* the local part actually written to — a label for the subject, so the one
+     person reading one inbox can see which door a message came through. */
+  const writtenTo = clean(hit.split('@')[0], 64);
   const site = { name: PRODUCTS[domain] || 'Providerhub Oregon', domain };
 
   const row = { emailId: String(d.email_id), messageId: clean(d.message_id, 300), from: clean(d.from, 254), to: to.join(', ').slice(0, 600), subject: clean(d.subject, 300), domain, at: Date.now(), relayed: false };
@@ -74,10 +80,13 @@ export async function POST(request) {
 
   let out = { sent: false };
   if (mail && inbox()) {
-    const letter = letters.relay(site, mail);
+    const letter = letters.relay(site, mail, writtenTo);
     const sender = (mail.headers && mail.headers.from) || mail.from;
     out = await send({
-      from: named(site.name, address('hello', domain)),
+      /* always the site's DEFAULT box: the relay is the inbox's own voice,
+         not a desk, and a caregiver's message relayed from caregiver@ would
+         read as though she were the sender. */
+      from: named(site.name, address(localPart(domain), domain)),
       to: inbox(),
       replyTo: sender,
       headers: { 'X-PHO-Site': domain, 'X-PHO-Kind': 'relay', ...(d.message_id ? { 'In-Reply-To': d.message_id, References: d.message_id } : {}) },

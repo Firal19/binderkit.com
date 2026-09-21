@@ -622,6 +622,10 @@ html[data-side="caregiver"] .pr .s-care, html.no-js .pr .s-care { display: grid;
 .ft-copy { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-weight: 700; font-size: 13px; color: var(--ink); }
 @media (hover: hover) { .ft-copy:hover { border-color: var(--ink); } }
 .ft-note { font-size: 12.5px; color: var(--soft); line-height: 1.45; }
+/* The address this route does not print, named beside the one it does. In
+   the phone footer it sits in a flex row with the copy button, where it has
+   to take a line of its own rather than trail off beside the note. */
+.ft-alt { flex-basis: 100%; margin: 0; }
 .ft-sun { display: grid; gap: 8px; justify-items: start; }
 .ft-sun .mk { --c-tile: var(--ink); --c-glyph: var(--bg); }
 .ft-sun-n { font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -0.03em; }

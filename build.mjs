@@ -20,6 +20,7 @@ import { spineViolations, calloutFaults } from './src/render/page.js';
 import { privacyPage } from './src/render/privacy.js';
 import { productOf, markLiteral, esc } from './src/kit.js';
 import { socialUrls } from './src/render/social.js';
+import { hello, mailto, boxAt, subjectAt } from './src/render/shared.js';
 import { CONFIG } from './src/config.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -190,14 +191,24 @@ ${extra}
 <body>`;
 }
 /* One floating way to write, on every page of every site. It is an <a href>
-   to the site's own hello@, so it works with scripting off, opens in a mail
+   to the box that page prints, so it works with scripting off, opens in a mail
    app, and can be middle-clicked. site.js reveals it past the first screen so
-   it never competes with the hero's own call to action. */
-const fab = (c) => `<a class="fab" href="mailto:hello@${c.domain}" data-fab aria-label="Write to hello@${c.domain}">`
-  + `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">`
-  + `<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>`
-  + `<span class="fab-t">Write to us</span></a>`;
-const tail = (js) => `${fab(CONFIG)}
+   it never competes with the hero's own call to action.
+
+   The route decides two things: which box (only aidepost's /caregivers forks)
+   and which subject the draft opens with. Below 640px base.css hides .fab-t,
+   so the aria-label is the only text a screen-reader user hears — which is why
+   it carries the product and the address and the visible label does not. */
+const fab = (c, prod, route) => {
+  const k = boxAt(c, route);
+  const s = subjectAt(c, route);
+  const to = hello(c, k);
+  return `<a class="fab" href="${mailto(c, s ? `${s} — ${prod.name}` : '', k)}" data-fab aria-label="Write to ${esc(prod.name)} — ${esc(to)}">`
+    + `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">`
+    + `<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>`
+    + `<span class="fab-t">Write to us</span></a>`;
+};
+const tail = (js, route) => `${fab(CONFIG, p, route)}
 <script src="/assets/${js}" defer></script>
 </body>
 </html>
@@ -239,7 +250,7 @@ write('assets/favicon.svg', markLiteral(p.id, CONFIG.og.tile, CONFIG.og.glyph, 3
 write('assets/mark.svg', markLiteral(p.id, CONFIG.og.tile, CONFIG.og.glyph, 64));
 
 const sameAs = socialUrls(p.id);
-const publisher = { '@type': 'Organization', name: 'Bareeda LLC', alternateName: 'Providerhub Oregon', url: 'https://providerhub.us', email: `hello@${CONFIG.domain}`, sameAs: socialUrls('pho') };
+const publisher = { '@type': 'Organization', name: 'Bareeda LLC', alternateName: 'Providerhub Oregon', url: 'https://providerhub.us', email: hello(CONFIG), sameAs: socialUrls('pho') };
 const ld = [
   {
     '@context': 'https://schema.org', '@type': 'SoftwareApplication',
@@ -252,7 +263,7 @@ const ld = [
 ];
 
 const body = render(CONFIG, p);
-write('index.html', head({ title: `${p.name} — ${p.descriptor}`, description: CONFIG.description, canonical: `${origin}/`, css: cssName, preload, extra: ld.map(jsonLd).join('\n') }) + body + tail(jsName));
+write('index.html', head({ title: `${p.name} — ${p.descriptor}`, description: CONFIG.description, canonical: `${origin}/`, css: cssName, preload, extra: ld.map(jsonLd).join('\n') }) + body + tail(jsName, '/'));
 
 /* the marketing pages the product's module exports */
 const routes = ['/'];
@@ -261,18 +272,18 @@ for (const pg of extraPages) {
   if (!slug || !/^[a-z0-9-]+(\/[a-z0-9-]+)*$/.test(slug)) { console.error(`  a page has a bad path: ${JSON.stringify(pg.path)}`); process.exit(1); }
   if (slug === 'privacy' || slug === 'api' || slug === 'assets') { console.error(`  a page module may not export ${slug}/`); process.exit(1); }
   const pageLd = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: pg.title, description: pg.description, url: `${origin}/${slug}`, isPartOf: { '@type': 'WebSite', name: p.name, url: origin }, publisher }, ...(pg.jsonLd ? [].concat(pg.jsonLd) : [])];
-  write(`${slug}/index.html`, head({ title: `${pg.title} — ${p.name}`, description: pg.description, canonical: `${origin}/${slug}`, css: cssName, preload, extra: pageLd.map(jsonLd).join('\n') }) + pg.render(CONFIG, p) + tail(jsName));
+  write(`${slug}/index.html`, head({ title: `${pg.title} — ${p.name}`, description: pg.description, canonical: `${origin}/${slug}`, css: cssName, preload, extra: pageLd.map(jsonLd).join('\n') }) + pg.render(CONFIG, p) + tail(jsName, `/${slug}`));
   routes.push(`/${slug}`);
 }
 
-write('privacy/index.html', head({ title: `Privacy — ${p.name}`, description: `What ${p.name} holds, where it lives, and what leaves it.`, canonical: `${origin}/privacy`, css: cssName, preload }) + privacyPage(CONFIG, chrome) + tail(jsName));
+write('privacy/index.html', head({ title: `Privacy — ${p.name}`, description: `What ${p.name} holds, where it lives, and what leaves it.`, canonical: `${origin}/privacy`, css: cssName, preload }) + privacyPage(CONFIG, chrome) + tail(jsName, '/privacy'));
 routes.push('/privacy');
 write('404.html', head({ title: `Not here — ${p.name}`, description: 'That page does not exist.', canonical: `${origin}/`, css: cssName, preload }) + `<a class="skip" href="#main">Skip to content</a>
 ${chrome.header ? chrome.header(CONFIG, p, { page: '404', title: 'Not here' }) : ''}
 <main id="main" class="page face canvas" data-product="${p.id}" data-mode="light">
   <section class="sec" aria-label="Not found" style="min-height:60vh;display:grid;align-content:center"><div class="wrap"><div class="head"><h1>That page is not here.</h1><p class="sub">It may have moved, or it may never have existed. The front page has everything.</p></div><div class="ctas"><a class="btn pri" href="/">${esc(p.name)}</a></div></div></section>
 </main>
-${chrome.footer ? chrome.footer(CONFIG, p, { page: '404' }) : ''}` + tail(jsName));
+${chrome.footer ? chrome.footer(CONFIG, p, { page: '404' }) : ''}` + tail(jsName, '/404'));
 
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${origin}/sitemap.xml\n`);
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>

@@ -11,10 +11,14 @@
 //
 // With CONVEX_URL unset the endpoint answers 503 and says so, and the page
 // tells the reader rather than pretending the row was kept. With Resend set,
-// the signer gets a receipt from hello@<domain> and the inbox gets a notice
-// whose reply-to is the signer, so answering them is an ordinary reply.
+// the signer gets a receipt from the box her page prints — aidepost's
+// “I’m a caregiver” selects caregiver@aidepost.com, everything else the site's
+// default — and the inbox gets a notice whose reply-to is the signer, so
+// answering them is an ordinary reply. The box is a closed lookup in
+// lib/boxes.js keyed by the already-validated “You are” value, never a field.
 
 import { configured, inbox, address, named, domainOf, send, letters } from '../lib/mail.js';
+import { localPart, keyForJoiner } from '../lib/boxes.js';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TRACKS = new Set(['APD', 'DD', 'OHA', 'Agency', 'Not licensed yet']);
@@ -95,10 +99,11 @@ export default async function handler(req, res) {
   if (configured()) {
     const domain = domainOf(req);
     const site = { name: NAMES[product], domain };
-    const from = named(site.name, address('hello', domain));
-    const r1 = await send({ from, to: email, replyTo: address('hello', domain), tags: [{ name: 'kind', value: 'waitlist_receipt' }], ...letters.waitlistReceipt(site, row) });
+    const local = localPart(domain, keyForJoiner(domain, row.houses));
+    const from = named(site.name, address(local, domain));
+    const r1 = await send({ from, to: email, replyTo: address(local, domain), tags: [{ name: 'kind', value: 'waitlist_receipt' }], ...letters.waitlistReceipt(site, row) });
     sent = r1.sent;
-    if (inbox()) await send({ from, to: inbox(), replyTo: email, headers: { 'X-PHO-Site': domain, 'X-PHO-Kind': 'waitlist' }, tags: [{ name: 'kind', value: 'waitlist' }, { name: 'site', value: domain.replace(/\./g, '_') }], ...letters.waitlistNotice(site, row) });
+    if (inbox()) await send({ from, to: inbox(), replyTo: named(email, email), headers: { 'X-PHO-Site': domain, 'X-PHO-Kind': 'waitlist' }, tags: [{ name: 'kind', value: 'waitlist' }, { name: 'site', value: domain.replace(/\./g, '_') }], ...letters.waitlistNotice(site, row) });
   }
 
   return json(res, 200, { ok: true, sent });

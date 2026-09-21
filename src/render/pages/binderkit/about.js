@@ -1,6 +1,6 @@
 // /about — Binderkit, and who makes it.
 
-import { byline } from '../../shared.js';
+import { byline, hello, mailto } from '../../shared.js';
 import { PRODUCTS } from '../../../data/brand.js';
 import { SIGNUP_FIVE } from '../../../data/page.js';
 import { header, footer, section, title, BOOK, atChapter, onThisPage, find, esc, ic } from './chrome.js';
@@ -22,7 +22,7 @@ ${section(FIRST, `<h2 id="h-first">It holds nothing about anyone.</h2><p class="
   <p class="closing">${esc(SIGNUP_FIVE.tail)}</p>
   <p class="fine">${esc(hero.fine)}</p>`)}
 ${section(MAKER, `<h2 id="h-maker">Who makes it.</h2><p class="sub">${esc(pho.name)} — ${esc(pho.descriptor.toLowerCase())}.</p>
-  <div class="maker">${byline()}<p class="fine">${esc(cfg.legalLine)} Write to <a href="mailto:hello@${esc(cfg.domain)}">hello@${esc(cfg.domain)}</a>, or use <a href="/contact">the contact page</a>.</p></div>`)}
+  <div class="maker">${byline()}<p class="fine">${esc(cfg.legalLine)} Write to <a href="${mailto(cfg, 'About Binderkit')}">${esc(hello(cfg))}</a>, or use <a href="/contact">the contact page</a>.</p></div>`)}
 </main>
 ${footer(cfg, p, { page: 'about', tabs: SECS })}`;
 }

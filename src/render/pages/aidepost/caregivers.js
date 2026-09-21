@@ -2,6 +2,7 @@
 // free for ever, and the rules that protect a worker.
 
 import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, walletCards, clockToy, timesheetToy, joinBlock, ixNav, pager } from './bits.js';
+import { hello, mailto, subjectAt } from '../../shared.js';
 
 const PROTECT = [
   ['No background check is run on you', 'The provider runs ORCHARDS herself. Aidepost holds only a status she types — never a result, never the content.'],
@@ -69,6 +70,7 @@ function free(cfg, p) {
   const s = find('caregiver');
   return fold('No organisation, no card, nothing to cancel — and the first ten minutes.', sec('free', 'care free-s', `<div class="wrap free-g">
     <div class="free-t">${eyebrow('Free, for ever')}${h2('free', 'You are not the product.')}<p class="promise">${esc(s.promise)}</p>
+      <p class="fine free-write">Write first, if you like — <a href="${mailto(cfg, `${subjectAt(cfg, '/caregivers')} — ${p.name}`, 'caregivers')}">${esc(hello(cfg, 'caregivers'))}</a>. You will never be charged, and we will never ask for a card.</p>
       <div class="ctas"><a class="btn pri lg" href="#join">${esc(s.ctas[0][0])}</a><a class="btn lg" href="/providers">${ic('house', 18, { pin: false })}I run a house, actually</a></div></div>
     <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'hire' })}</div>
       <p class="cap">What a relief worker sees when a shift goes outward — the work, the distance, and nothing about a resident.</p></div>
@@ -85,7 +87,10 @@ export const caregiversPage = {
   title: 'For caregivers',
   description: 'Shifts near you, tonight. Your own credential dates and hours, free for ever — and the rules that protect a worker: no ratings, no background checks, no charge.',
   render(cfg, p) {
-    return shell(cfg, p, { page: 'caregivers', ids: CAREGIVERS_IDS }, `<div class="dark-half is-page" data-dark-half>
+    /* box: 'caregivers' names this route's address explicitly. chrome.js
+       derives the same key from the route on its own, so the two agree and
+       neither depends on the stored side. */
+    return shell(cfg, p, { page: 'caregivers', ids: CAREGIVERS_IDS, box: 'caregivers' }, `<div class="dark-half is-page" data-dark-half>
 ${top(cfg, p)}
 ${ixNav(CARE_IX)}
 ${shifts()}

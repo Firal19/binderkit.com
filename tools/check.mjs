@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CONFIG } from '../src/config.js';
+import { hello } from '../src/render/shared.js';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = process.env.DIST ? path.resolve(process.env.DIST) : path.join(ROOT, 'dist');
@@ -164,7 +165,10 @@ if (!home.includes('id="joinform"') && !/href="(\/signup|https?:)/.test(home)) n
 const socHome = (home.match(/class="soc-i"/g) || []).length;
 if (socHome < 8) note(fail, `the front page shows ${socHome} social links; all eight platforms must be there`);
 if (!Object.values(pageBytes).some((h) => h.includes('id="contactform"'))) note(fail, 'no page carries the contact form');
-if (!home.includes('mailto:hello@')) note(fail, 'the front page never prints its hello@ address');
+/* Bound to the helper, not to a literal: the front page of every site prints
+   its default box, so this check follows the scheme instead of needing
+   maintenance every time it moves. */
+if (!home.includes('mailto:' + hello(CONFIG))) note(fail, `the front page never prints ${hello(CONFIG)}`);
 if (!/application\/ld\+json/.test(home)) note(fail, 'the head is missing application/ld+json');
 if (!home.includes('"sameAs"')) note(fail, 'the structured data carries no sameAs');
 if (!/<header\b/.test(home) || !/<footer\b/.test(home)) note(fail, 'the front page has no <header> or no <footer>');

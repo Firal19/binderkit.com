@@ -6,7 +6,7 @@
 // bottom split bar carries the mark as the pin between the halves. The
 // footer is the week: seven columns, Monday to Sunday, today lit "tonight".
 
-import { esc, mark, social, byline, hello, mailto } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, boxAt } from '../../shared.js';
 import { ic } from '../../icons/aidepost.js';
 
 export const PROVIDER_NAV = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['pricing', 'Pricing']];
@@ -176,6 +176,40 @@ export function header(cfg, p, opts = {}) {
 /* ── the footer: the week ─────────────────────────────────────────────── */
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+/* ── which address this page prints ───────────────────────────────────
+   THE ROUTE DECIDES, AND NOTHING ELSE. /caregivers prints
+   caregiver@aidepost.com; every other route prints the default box. It is
+   chosen here, at build time, from the page being rendered, so it is the
+   same on a phone with scripting off as it is anywhere else.
+   It is deliberately NOT tied to the two-sided switch: sides() reads
+   ap-side out of localStorage and lets a stored value beat the route, so a
+   provider who once tapped “I’m a caregiver” would be shown the caregiver
+   address on a page about pricing — which manufactures exactly the
+   wrong-place feeling this address change exists to remove. A stored flag
+   must never decide an address.
+   A page may still name its own box explicitly; /caregivers does, and both
+   paths agree. /privacy and 404.html arrive here with only opts.page, which
+   is why the route is derived rather than required. */
+const routeOfPage = (page) => (!page || page === 'home' ? '/' : `/${page}`);
+const writeKey = (cfg, opts) => opts.box || boxAt(cfg, routeOfPage(opts.page));
+
+/* The address, its copy button, and the two lines under it — one string,
+   used by the week column and by the phone footer, so the two branches can
+   never drift. The second line names the address that is NOT showing and
+   says it is the same inbox: two addresses read as two queues only if the
+   reader is never told otherwise, and this is a disclosure she can test by
+   sending two messages. */
+function writeCol(cfg, key) {
+  const to = hello(cfg, key);
+  const other = key === 'caregivers' ? hello(cfg) : hello(cfg, 'caregivers');
+  const alt = key === 'caregivers' ? `Running a house? ${other} — same inbox.` : `Caregivers: ${other} — same inbox.`;
+  return {
+    line: `<p class="ft-w"><a href="${mailto(cfg, '', key)}">${esc(to)}</a></p>`,
+    copy: `<button class="ft-copy" type="button" data-copy="${esc(to)}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button>`,
+    note: `<p class="ft-note">One inbox. A person answers.</p><p class="ft-note ft-alt">${esc(alt)}</p>`,
+  };
+}
+
 /* ── the footer a phone gets instead of the week ───────────────────────
    "Aidepost, laid out as a week" is a desktop metaphor. Seven day-columns
    is seven day-columns; below 900 the grid used to restack to 2-up, keep
@@ -191,14 +225,14 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
    Order, per the spec: identity · the address · two or three disclosures ·
    social · legal (which stays outside, shared with the desktop footer). */
-function phoneFoot(cfg, p, at, li) {
+function phoneFoot(cfg, p, at, li, w) {
   const group = (title, rows) => `<details class="ft-ph-d"><summary><b>${esc(title)}</b><span class="faq-x" aria-hidden="true"></span></summary>${li(rows)}</details>`;
   return `<div class="ft-ph">
     <div class="ft-ph-id">${mark(p.id, 40, { label: false })}<b class="ft-sun-n">${esc(p.name)}</b><span class="ft-sun-d">${esc(p.descriptor)}</span></div>
-    <p class="ft-w"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a></p>
+    ${w.line}
     <div class="ft-ph-act">
-      <button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button>
-      <p class="ft-note">One inbox. A person answers.</p>
+      ${w.copy}
+      ${w.note}
     </div>
     ${group('Product', [['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']])}
     ${group('Caregivers', [['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])}
@@ -210,13 +244,14 @@ function phoneFoot(cfg, p, at, li) {
 
 export function footer(cfg, p, opts = {}) {
   const at = linker(opts.ids);
+  const w = writeCol(cfg, writeKey(cfg, opts));
   const li = (rows) => `<ul class="ft-l">${rows.map(([h, t]) => `<li><a href="${esc(h)}">${esc(t)}</a></li>`).join('')}</ul>`;
   const cols = [
     ['Product', li([['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/pricing', 'Pricing']])],
     ['Caregivers', li([['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])],
     ['Company', li([['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['https://providerhub.us', 'providerhub.us']])],
     ['Oregon', li([['/about', 'About Aidepost'], ['/privacy', 'Privacy'], ['/contact', 'Write to a person'], ['https://providerhub.us', 'providerhub.us']])],
-    ['Write', `<p class="ft-w"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a></p><button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button><p class="ft-note">One inbox. A person answers.</p>`],
+    ['Write', `${w.line}${w.copy}${w.note}`],
     ['Social', social(p.id, { cls: 'soc-pills', size: 16, text: true, label: 'Aidepost on social' })],
     ['', `<div class="ft-sun">${mark(p.id, 80, { label: false })}<span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span>${byline(true)}</div>`],
   ];
@@ -235,7 +270,7 @@ export function footer(cfg, p, opts = {}) {
       <div class="ft-wk" data-scrollx role="group" aria-label="Aidepost, laid out as a week">
         ${cols.map(([title, body], i) => `<div class="ft-d${title ? '' : ' is-sun'}" data-day="${DAYS[i]}"><span class="ft-dn">${DAYS[i]}<i class="ft-tonight" aria-hidden="true">tonight</i></span>${title ? `<b class="ft-dt">${esc(title)}</b>` : ''}${body}</div>`).join('')}
       </div>
-      ${phoneFoot(cfg, p, at, li)}
+      ${phoneFoot(cfg, p, at, li, w)}
       <div class="ft-legal">
         <p>${esc(opts.fine || '')} ${esc(cfg.legalLine)}</p>
         <button class="ft-keys" type="button" aria-controls="keys" aria-expanded="false">${ic('keyboard', 18, { pin: false })}Keyboard shortcuts</button>

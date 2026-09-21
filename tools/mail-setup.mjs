@@ -16,8 +16,9 @@
 //   5  sets RESEND_API_KEY, RESEND_WEBHOOK_SECRET, MAIL_INBOX on each Vercel
 //      project, production and preview, through the REST API (upsert)
 //   6  with --dns, adds the MX records to Vercel DNS; otherwise prints them
-//   7  prints how to answer from the inbox AS hello@<domain> (Gmail "send as"
-//      over Resend SMTP), which is the last step and is done by a person
+//   7  prints how to answer from the inbox AS the address each page prints
+//      (Gmail "send as" over Resend SMTP) — five identities, the last step,
+//      and done by a person
 //
 // It never prints a key it minted except into the Vercel environment.
 
@@ -148,9 +149,12 @@ console.log(`
   Done${DRY ? ' (nothing changed — dry run)' : ''}. Redeploy each site once (vercel --prod) so the functions pick up the environment.
 
   To ANSWER from ${INBOX} as the site (Gmail → Settings → Accounts → “Send mail as”):
-     name      Cohort / CareShop / Binderkit / Aidepost
-     email     hello@<domain>
+     name      Cohort / CareShop / Binderkit / Aidepost / Aidepost
+     email     shift@cohorthome.app · kitchen@careshop.app · plan@binderkit.com · shifts@aidepost.com · caregiver@aidepost.com
      SMTP      smtp.resend.com   port 465 (SSL)   user: resend   password: that site's RESEND_API_KEY
-  Do it once per domain. Replies from the inbox then leave as hello@<domain>, and anything sent to
-  hello@<domain> comes back to ${INBOX} through the relay, with reply-to already set to the sender.
+  Five identities in all — one per site, plus Aidepost's caregiver address. Replies then leave as the
+  address the page prints. Anything sent to ANY local part at these domains, including the old hello@,
+  comes back to ${INBOX} through the relay, with reply-to already set to the sender, so hello@ keeps
+  working for ever and is simply never printed again. Until an identity exists, replies to that address
+  leave as the default one and nothing misroutes, because every local part is the same inbox.
 `);

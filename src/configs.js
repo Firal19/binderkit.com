@@ -2,6 +2,8 @@
 // look in css/pages/<id>.css; this is the small set of facts the shared
 // pieces need — the domain, the nav, the buttons, the head, the social card.
 
+import { BOXES, ROUTES, SUBJECTS } from '../lib/boxes.js';
+
 const LEGAL = '© 2026 Bareeda LLC · Providerhub Oregon · Oregon';
 
 export const CONFIGS = {
@@ -132,5 +134,12 @@ export const CONFIGS = {
     },
   },
 };
+
+/* Every config carries its own mail block, so no render module ever imports
+   the plumbing: cfg.mail = { boxes, routes, subjects }. One source of truth
+   in lib/boxes.js, shared with the API side. */
+for (const c of Object.values(CONFIGS)) {
+  c.mail = { boxes: BOXES[c.domain] || { main: 'hello' }, routes: ROUTES[c.domain] || {}, subjects: SUBJECTS[c.domain] || {} };
+}
 
 export default CONFIGS;

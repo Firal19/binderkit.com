@@ -373,6 +373,38 @@
     follow();
   };
 
+  /* ── the form's address follows the topic, and only the topic ───────
+     Everywhere else on this site the address is fixed by the ROUTE and
+     rendered at build time — /caregivers prints caregiver@aidepost.com,
+     every other route prints the default box — because a side remembered
+     from three weeks ago must never decide what a page says.
+     Inside the form it is different, and it is still not the stored side:
+     the topic select is a visible choice sitting in the same screen, and
+     api/contact.js derives the From address from that same topic. So the
+     mail-app button and the closing line follow the select, which keeps the
+     page and the inbox saying the same thing. Both addresses are rendered
+     onto the form's wrapper by the page, so there is no address literal
+     here; with scripting off the form keeps the default box it shipped
+     with, and every local part reaches the same inbox anyway. */
+  const topicBox = () => {
+    const form = $('#contactform'); if (!form) return;
+    const g = form.closest('[data-care-topic]'); if (!g) return;
+    const sel = form.elements.topic; if (!sel) return;
+    const btn = form.querySelector('[data-send-mail]');
+    const link = form.querySelector('.contact-alt a');
+    const paint = () => {
+      const to = sel.value === g.dataset.careTopic ? g.dataset.careTo : g.dataset.mainTo;
+      if (btn) btn.dataset.to = to;
+      if (link) { link.textContent = to; link.setAttribute('href', `mailto:${to}`); }
+    };
+    sel.addEventListener('change', paint);
+    /* topicSide() moves the select in code when the side changes, and a
+       programmatic change fires no change event. It registers its listener
+       first, so by the time this one runs the select is already set. */
+    document.addEventListener('ap:side', paint);
+    paint();
+  };
+
   /* "Open every section" is a button, not a link, so menus() does not close
      the sheet behind it — and a person who has just opened every section
      wants to see the page, not the menu. */
@@ -415,6 +447,6 @@
     all();
   };
 
-  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); heroSides(); topicSide(); openAllCloses(); stripEdges(); };
+  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
   boot();
 })();

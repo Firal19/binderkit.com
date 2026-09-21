@@ -5,7 +5,12 @@ import { contact, mailto, hello, byline } from '../../shared.js';
 import { PRODUCTS } from '../../../data/brand.js';
 
 /* ── pricing ──────────────────────────────────────────────────────────── */
-const AP_TOPICS = ['Question', 'Early access', 'I’m a caregiver', 'Pricing', 'Security and privacy', 'Press', 'Something else'];
+/* The one topic that carries the caregiver address. It is the same string
+   lib/boxes.js keys TOPIC_BOX on and api/contact.js validates, and it is
+   rendered onto the form's wrapper so the runtime rewrite in
+   src/js/pages/aidepost.js needs no address literal of its own. */
+const CARE_TOPIC = 'I’m a caregiver';
+const AP_TOPICS = ['Question', 'Early access', CARE_TOPIC, 'Pricing', 'Security and privacy', 'Press', 'Something else'];
 
 export const pricingPage = {
   path: 'pricing',
@@ -73,18 +78,16 @@ ${pager('/about')}`);
 export const contactPage = {
   path: 'contact',
   title: 'Contact',
-  description: 'Write to a person. One inbox, one person answers, from the same address.',
+  description: 'Write to a person. One address for houses, one for caregivers, one inbox.',
   render(cfg, p) {
-    return shell(cfg, p, { page: 'contact', ids: new Set(['top', 'contact']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Contact')}<h1 id="h1">Write to a person.</h1><p class="lede">Every message lands in one inbox. You get an answer from the same address.</p></div></section>
-${sec('contact', 'contact-s', `<div class="wrap contact-g">
+    return shell(cfg, p, { page: 'contact', ids: new Set(['top', 'contact']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('Contact')}<h1 id="h1">Write to a person.</h1><p class="lede">Every message lands in one inbox, and the person who reads it is the person who answers.</p></div></section>
+${sec('contact', 'contact-s', `<div class="wrap contact-g" data-care-topic="${esc(CARE_TOPIC)}" data-care-to="${esc(hello(cfg, 'caregivers'))}" data-main-to="${esc(hello(cfg))}">
   <div class="contact-t">
     <ul class="contact-l">
-      <li>${ic('mail', 20)}<span><b>${esc(hello(cfg))}</b><small>Same inbox, same person. </small><button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 16)}Copy</button></span></li>
-      <li>${ic('house', 20)}<span><b>I run a house</b><small>Pick “Early access” and say how many houses.</small></span></li>
-      <li>${ic('phone', 20, { pin: 'open' })}<span><b>I’m a caregiver</b><small>Pick “I’m a caregiver”. You will never be charged, and we will never ask for a card.</small></span></li>
-      <li>${ic('badge', 20)}<span><b>Press, security, privacy</b><small>Each has its own topic so it reaches the right person first.</small></span></li>
+      <li>${ic('phone', 20, { pin: 'open' })}<span><b><a href="${mailto(cfg, 'I’m a caregiver — ' + p.name, 'caregivers')}">${esc(hello(cfg, 'caregivers'))}</a></b><small>I’m a caregiver. You will never be charged, and we will never ask for a card.</small><button class="ft-copy" type="button" data-copy="${esc(hello(cfg, 'caregivers'))}" data-copied="Caregiver address copied" aria-label="Copy ${esc(hello(cfg, 'caregivers'))}">${ic('copy', 16)}Copy</button></span></li>
+      <li>${ic('house', 20)}<span><b><a href="${mailto(cfg, 'I run a house — ' + p.name)}">${esc(hello(cfg))}</a></b><small>I run a house, or anything else — early access, pricing, press, security, privacy.</small><button class="ft-copy" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy ${esc(hello(cfg))}">${ic('copy', 16)}Copy</button></span></li>
     </ul>
-    <p class="fine">No ticket, no bot, no newsletter. One person reads it and answers.</p>
+    <p class="fine">Two addresses, one inbox. No ticket, no bot, no newsletter. One person reads both and answers.</p>
   </div>
   ${contact(cfg, p, { topics: AP_TOPICS, placeholder: 'What would you like to know? If you run a house, say which track. If you are a caregiver, say roughly where.' })}
 </div>`)}
