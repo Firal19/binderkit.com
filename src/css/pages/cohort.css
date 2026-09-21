@@ -532,7 +532,10 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .eos-act .textb { min-height: 44px; font-size: 14px; }
 
 /* back to 06:55, and the slim early-access bar on phones */
-.totop { position: fixed; right: 18px; bottom: 18px; z-index: 44; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px 0 12px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; box-shadow: var(--sh-2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 250ms, transform 250ms; }
+.totop { position: fixed; right: 18px;
+  /* the shared .fab occupies this corner now, so the back-to-top sits on
+     top of it rather than under it — 44px tap + 10px of air. */
+  bottom: calc(var(--dock, 0px) + 18px + env(safe-area-inset-bottom, 0px) + var(--tap, 44px) + 10px); z-index: 44; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px 0 12px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; box-shadow: var(--sh-2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 250ms, transform 250ms; }
 .totop.is-on, .no-js .totop { opacity: 1; transform: none; pointer-events: auto; }
 
 /* headings that copy their own link */
@@ -715,7 +718,9 @@ h2:hover .h-link, .h-link:focus-visible { opacity: 1; }
   .eos-act { justify-content: center; }
   /* the shortcut clears the dock the body now reserves, and stands down
      while a sideways strip is on screen (js/pages/cohort.js totop()). */
-  .totop { bottom: calc(var(--dock) + env(safe-area-inset-bottom) + 12px); right: 12px; width: 44px; padding: 0; justify-content: center; }
+  /* the shared .fab takes this corner first, so stack above it: its own
+     44px plus 10px of air. Both are 44px circles at this width. */
+  .totop { bottom: calc(var(--dock) + env(safe-area-inset-bottom) + 12px + var(--tap, 44px) + 10px); right: 12px; width: 44px; padding: 0; justify-content: center; }
   body.is-locked .totop, .totop.is-away { opacity: 0; pointer-events: none; }
   .totop span { display: none; }
   .pal { padding-top: max(16px, env(safe-area-inset-top)); }

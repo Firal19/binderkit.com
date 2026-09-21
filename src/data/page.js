@@ -67,7 +67,7 @@ export const JOIN = {
   eyebrow: 'Early access',
   heading: 'Be in the first houses on it.',
   sub: 'Leave an email and we will tell you when it opens, what it costs, and how to get in. One message when there is something to say — nothing else, ever.',
-  fields: { email: 'Work email', houses: 'How many houses?', track: 'Licence track' },
+  fields: { email: 'Work email', houses: 'How many houses?', track: 'Licence track', phone: 'Phone (optional)' },
   tracks: ['APD', 'DD', 'OHA', 'Agency', 'Not licensed yet'],
   houseOptions: ['1', '2–3', '4–9', '10+', 'An agency'],
   button: 'Join the list',

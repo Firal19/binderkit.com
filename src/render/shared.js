@@ -140,6 +140,7 @@ export function waitlist(cfg, p, copy = {}) {
   return `<form class="form" id="joinform" method="post" action="/api/waitlist" novalidate data-done="${esc(copy.done || JOIN.done)}" data-busy="${esc(JOIN.busy)}">
     <input type="hidden" name="product" value="${esc(p.id)}">
     <label class="field is-wide"><span>${esc(JOIN.fields.email)}</span><input type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@yourhouse.com" spellcheck="false"></label>
+    <label class="field"><span>${esc(JOIN.fields.phone)}</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(503) 555-0142" spellcheck="false"></label>
     <label class="field"><span>${esc(JOIN.fields.track)}</span><select name="track">${JOIN.tracks.map(opt).join('')}</select></label>
     <label class="field"><span>${esc(copy.housesLabel || JOIN.fields.houses)}</span><select name="houses">${houses.map(opt).join('')}</select></label>
     <p class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></p>
@@ -153,7 +154,12 @@ export const TOPICS = ['Question', 'Early access', 'Pricing', 'Security and priv
 export const CONTACT = {
   heading: 'Write to a person.',
   sub: 'Every message lands in one inbox. You get an answer from the same address.',
-  fields: { name: 'Your name', email: 'Your email', topic: 'What is it about?', message: 'Your message' },
+  fields: {
+    name: 'Your name', email: 'Your email', topic: 'What is it about?', message: 'Your message',
+    phone: 'Phone (optional)',
+  },
+  altButton: 'Send from my email app',
+  altNote: 'Sending from this page is one click and a receipt comes straight back. Sending from your own mail app leaves you a copy in Sent and lets you attach a file. Both reach the same person.',
   button: 'Send it',
   busy: 'Sending…',
   done: 'Sent. A receipt is on its way to you, and a person will answer from the same address.',
@@ -165,12 +171,17 @@ export function contact(cfg, p, copy = {}) {
     <input type="hidden" name="product" value="${esc(p.id)}">
     <label class="field"><span>${esc(CONTACT.fields.name)}</span><input type="text" name="name" autocomplete="name" placeholder="Your name"></label>
     <label class="field"><span>${esc(CONTACT.fields.email)}</span><input type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@yourhouse.com" spellcheck="false"></label>
+    <label class="field"><span>${esc(CONTACT.fields.phone)}</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(503) 555-0142" spellcheck="false"></label>
     <label class="field is-wide"><span>${esc(CONTACT.fields.topic)}</span><select name="topic">${(copy.topics || TOPICS).map(opt).join('')}</select></label>
     <label class="field is-wide"><span>${esc(CONTACT.fields.message)}</span><textarea name="message" required rows="5" minlength="4" maxlength="4000" placeholder="${esc(copy.placeholder || 'What would you like to know?')}"></textarea></label>
     <p class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></p>
-    <button class="btn pri lg" type="submit">${esc(copy.button || CONTACT.button)}</button>
+    <div class="send-two">
+      <button class="btn pri lg" type="submit">${esc(copy.button || CONTACT.button)}</button>
+      <button class="btn lg send-alt" type="button" data-send-mail data-to="${esc(hello(cfg))}">${esc(CONTACT.altButton)}</button>
+    </div>
+    <p class="fine send-note">${esc(CONTACT.altNote)}</p>
     <p class="form-msg" role="status" aria-live="polite"></p>
-    <p class="fine contact-alt">Or write straight to <a href="${mailto(cfg)}">${esc(hello(cfg))}</a> — same inbox, same person.</p>
+    <p class="fine contact-alt">Either way it reaches <a href="${mailto(cfg)}">${esc(hello(cfg))}</a> — same inbox, same person.</p>
   </form>`;
 }
 

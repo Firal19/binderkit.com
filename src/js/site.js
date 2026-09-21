@@ -273,7 +273,7 @@
         const res = await fetch(f.action, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
         const data = await res.json().catch(() => ({}));
         if (res.ok) {
-          f.querySelectorAll('.field, button[type="submit"], .contact-alt').forEach((el) => el.remove());
+          f.querySelectorAll('.field, button[type="submit"], .contact-alt, .send-two, .send-note, .draft-b, .field-fix').forEach((el) => el.remove());
           f.classList.add('is-done');
           say('ok', f.dataset.done || 'Sent.');
           f.dispatchEvent(new CustomEvent('pho:sent', { bubbles: true, detail: data }));
@@ -363,8 +363,173 @@
     setInterval(tick, 15000);
   };
 
+
+  /* ── cookies, and the choice about them ───────────────────────────────
+     This family set no cookie at all until now, and both privacy pages said
+     so in those words. That is why the banner exists and why it is honest:
+     NOTHING is stored until someone chooses. "Only what it needs" keeps the
+     one cookie that records the choice itself, and nothing else. */
+  const cookie = {
+    get: (k) => (document.cookie.match(new RegExp('(?:^|; )' + k + '=([^;]*)')) || [])[1] || '',
+    set: (k, v, days) => {
+      const sec = location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `${k}=${encodeURIComponent(v)}; Max-Age=${Math.round(days * 86400)}; Path=/; SameSite=Lax${sec}`;
+    },
+    drop: (k) => { document.cookie = `${k}=; Max-Age=0; Path=/; SameSite=Lax`; },
+  };
+  const CONSENT = 'pho-consent';
+  const consented = () => cookie.get(CONSENT) === 'all';
+  /* Anything stored beyond the choice itself goes through here, so revoking
+     consent really does leave nothing behind. */
+  const keep = {
+    read: (k) => { try { return consented() ? localStorage.getItem(k) : null; } catch { return null; } },
+    write: (k, v) => { try { if (consented()) localStorage.setItem(k, v); } catch { /* private mode */ } },
+    drop: (k) => { try { localStorage.removeItem(k); } catch { /* private mode */ } },
+  };
+
+  const consent = () => {
+    if (cookie.get(CONSENT)) return;                       // already answered
+    const el = document.createElement('div');
+    el.className = 'ckb';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-label', 'Cookies');
+    el.setAttribute('aria-live', 'polite');
+    el.innerHTML = `
+      <div class="ckb-in">
+        <p class="ckb-t"><b>This page stores nothing until you say so.</b></p>
+        <p class="ckb-p">Say yes and it keeps a draft of anything you start writing, so a refresh or a wrong tap does not lose it, and remembers you next time. Say no and it keeps one cookie recording that you said no — nothing else. <a href="/privacy#cookies">What is kept</a>.</p>
+        <div class="ckb-b">
+          <button class="btn pri" type="button" data-consent="all">Yes, remember</button>
+          <button class="btn" type="button" data-consent="min">No, only what it needs</button>
+        </div>
+      </div>`;
+    const close = (choice) => {
+      cookie.set(CONSENT, choice, 365);
+      if (choice !== 'all') { keep.drop('pho-draft'); try { localStorage.removeItem('pho-draft'); } catch { /* private mode */ } }
+      el.classList.add('is-out');
+      root.classList.remove('has-ckb');
+      setTimeout(() => el.remove(), calm.matches ? 0 : 220);
+      if (choice === 'all') drafts();                       // start remembering now
+    };
+    el.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-consent]');
+      if (b) close(b.dataset.consent === 'all' ? 'all' : 'min');
+    });
+    document.body.appendChild(el);
+    root.classList.add('has-ckb');
+    requestAnimationFrame(() => el.classList.add('is-in'));
+  };
+
+  /* ── the draft: what you typed survives a refresh ────────────────────
+     Only with consent, only on this device, and cleared the moment it sends —
+     a half-written message about a house is not something to leave lying in
+     a browser. */
+  const DRAFT = 'pho-draft';
+  const drafts = () => {
+    const forms = $$('#contactform, #joinform');
+    if (!forms.length || !consented()) return;
+    let saved = null;
+    try { saved = JSON.parse(keep.read(DRAFT) || 'null'); } catch { saved = null; }
+    forms.forEach((f) => {
+      const fields = () => [...f.elements].filter((el) => el.name && el.name !== 'company' && el.type !== 'hidden' && el.type !== 'submit');
+      if (saved && saved.id === f.id && saved.at && Date.now() - saved.at < 1000 * 60 * 60 * 24 * 14) {
+        const has = Object.entries(saved.v || {}).some(([, v]) => String(v).trim());
+        if (has) {
+          const bar = document.createElement('p');
+          bar.className = 'draft-b';
+          bar.innerHTML = `<span>You started this before. <button type="button" class="lk" data-draft="use">Put it back</button> · <button type="button" class="lk" data-draft="drop">Start fresh</button></span>`;
+          bar.addEventListener('click', (e) => {
+            const b = e.target.closest('[data-draft]'); if (!b) return;
+            if (b.dataset.draft === 'use') fields().forEach((el) => { if (saved.v[el.name] != null) el.value = saved.v[el.name]; });
+            else keep.drop(DRAFT);
+            bar.remove();
+          });
+          f.prepend(bar);
+        }
+      }
+      let t = 0;
+      f.addEventListener('input', () => {
+        clearTimeout(t);
+        t = setTimeout(() => {
+          const v = {}; fields().forEach((el) => { if (el.value) v[el.name] = el.value; });
+          if (Object.keys(v).length) keep.write(DRAFT, JSON.stringify({ id: f.id, at: Date.now(), v }));
+        }, 400);
+      });
+      f.addEventListener('pho:sent', () => keep.drop(DRAFT));
+    });
+  };
+
+  /* ── the email, checked while you type ───────────────────────────────
+     Not a blocker: a quiet line under the field that offers the spelling you
+     probably meant. Typing an address wrong is the commonest reason a reply
+     never arrives, and the person never finds out. */
+  const DOMAINS = ['gmail.com', 'googlemail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'me.com', 'aol.com', 'comcast.net', 'live.com', 'msn.com', 'proton.me', 'protonmail.com'];
+  const near = (a, b) => {
+    if (Math.abs(a.length - b.length) > 2) return 99;
+    const d = []; for (let i = 0; i <= a.length; i++) d[i] = [i];
+    for (let j = 0; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[a.length][b.length];
+  };
+  const emailCheck = () => {
+    $$('input[type="email"]').forEach((el) => {
+      const f = el.closest('form'); if (!f) return;
+      let hint = null;
+      const clear = () => { if (hint) { hint.remove(); hint = null; } };
+      el.addEventListener('blur', () => {
+        clear();
+        const v = el.value.trim().toLowerCase();
+        if (!v || !v.includes('@')) return;
+        const dom = v.split('@')[1] || '';
+        if (!dom || DOMAINS.includes(dom)) return;
+        const best = DOMAINS.map((d) => [d, near(dom, d)]).sort((a, b) => a[1] - b[1])[0];
+        if (!best || best[1] > 2) return;
+        hint = document.createElement('p');
+        hint.className = 'field-fix';
+        hint.innerHTML = `Did you mean <button type="button" class="lk" data-fix="${esc(v.split('@')[0] + '@' + best[0])}">${esc(v.split('@')[0] + '@' + best[0])}</button>?`;
+        hint.addEventListener('click', (e) => {
+          const b = e.target.closest('[data-fix]'); if (!b) return;
+          el.value = b.dataset.fix; clear(); el.focus();
+        });
+        el.insertAdjacentElement('afterend', hint);
+      });
+      el.addEventListener('input', clear);
+    });
+  };
+  const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  /* ── the other way to send: your own mail app ────────────────────────
+     Same inbox either way. What this buys you is a copy in your own Sent
+     folder and the ability to attach something, which a web form cannot do. */
+  const sendByMail = () => {
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-send-mail]'); if (!b) return;
+      const f = b.closest('form'); if (!f) return;
+      const g = (n) => (f.elements[n] && f.elements[n].value || '').trim();
+      const subject = `${g('topic') || 'Question'}${g('name') ? ` — ${g('name')}` : ''}`;
+      const body = [g('message'), '', '—', g('name'), g('email'), g('phone')].filter(Boolean).join('\n');
+      location.href = `mailto:${b.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  };
+
+
+  /* The floating write-to-us appears once the hero is behind you, so the page
+     opens with one call to action rather than two competing ones. */
+  const fab = () => {
+    const el = $('[data-fab]'); if (!el) return;
+    const hero = $('main section, main .hero');
+    const show = () => {
+      const past = hero ? hero.getBoundingClientRect().bottom < 40 : window.scrollY > 400;
+      el.classList.toggle('is-on', past);
+    };
+    show();
+    addEventListener('scroll', show, { passive: true });
+    addEventListener('resize', show, { passive: true });
+  };
+
   window.PHO = { $, $$, calm, toast, root, EMAIL };
-  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); document.dispatchEvent(new CustomEvent('pho:ready')); };
+  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); consent(); drafts(); emailCheck(); sendByMail(); fab(); document.dispatchEvent(new CustomEvent('pho:ready')); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

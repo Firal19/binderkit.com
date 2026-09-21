@@ -276,6 +276,15 @@
      background of its own, so the page showed through behind the logo. */
   .bar { background: var(--bg); }
 
+  /* The floating write-to-us sits above whatever this face mounts at the
+     bottom. --dock covers cohort (48) and careshop (60); binderkit calls its
+     bar --footbar-h (52) and aidepost calls its own --bar-h (64), and both
+     leave --dock at 0, so all three names are added and the unset ones
+     resolve to 0px. */
+  .fab {
+    bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px));
+  }
+
   /* MOBILE-SPEC §7.8 — "the last line clears the dock". The pages that mount a
      dock pad the body by exactly --dock, which is the dock's own height, so the
      last line ENDS where the dock BEGINS: zero air. At 320 the social handles

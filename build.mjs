@@ -194,7 +194,16 @@ ${extra}
 </head>
 <body>`;
 }
-const tail = (js) => `<script src="/assets/${js}" defer></script>
+/* One floating way to write, on every page of every site. It is an <a href>
+   to the site's own hello@, so it works with scripting off, opens in a mail
+   app, and can be middle-clicked. site.js reveals it past the first screen so
+   it never competes with the hero's own call to action. */
+const fab = (c) => `<a class="fab" href="mailto:hello@${c.domain}" data-fab aria-label="Write to hello@${c.domain}">`
+  + `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">`
+  + `<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>`
+  + `<span class="fab-t">Write to us</span></a>`;
+const tail = (js) => `${fab(CONFIG)}
+<script src="/assets/${js}" defer></script>
 </body>
 </html>
 `;

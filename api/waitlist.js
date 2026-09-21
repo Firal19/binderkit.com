@@ -48,6 +48,8 @@ export default async function handler(req, res) {
   if (clean(body.company, 200)) return json(res, 200, { ok: true });
 
   const email = clean(body.email, 254).toLowerCase();
+
+  const phone = clean(body.phone, 40);
   if (!EMAIL.test(email)) return json(res, 400, { ok: false, message: 'That email does not look right.' });
 
   const track = TRACKS.has(clean(body.track, 40)) ? clean(body.track, 40) : 'Not licensed yet';
@@ -64,6 +66,7 @@ export default async function handler(req, res) {
 
   const row = {
     email,
+    phone,
     track,
     houses,
     product,

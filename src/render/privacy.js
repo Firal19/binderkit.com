@@ -49,8 +49,17 @@ ${header}
 
     <h3>This website</h3>
     ${P(primary.startsWith('/#') || primary === '#join'
-    ? 'If you join the early-access list, this site stores the email address you typed, the licence track and the house count you picked, the product you were reading about, and the time you sent it. Nothing else — there is no analytics script, no advertising pixel, no third-party tag and no cookie on this page. We write to you once, when the product opens. Reply to that message and we delete the row.'
-    : 'This page sets no cookie and loads no analytics script, advertising pixel or third-party tag. Signing up takes you to the application, whose own terms and privacy notice are presented there in full.')}
+    ? 'If you join the early-access list, this site stores the email address you typed, a phone number if you gave one, the licence track and the house count you picked, the product you were reading about, and the time you sent it. There is no analytics script, no advertising pixel and no third-party tag on this page. We write to you once, when the product opens. Reply to that message and we delete the row.'
+    : 'This page loads no analytics script, no advertising pixel and no third-party tag. Signing up takes you to the application, whose own terms and privacy notice are presented there in full.')}
+
+    <h3 id="cookies">Cookies, and what is kept on your device</h3>
+    ${P('This site stored nothing on your device until it started asking. It asks once, and nothing beyond the answer itself is kept unless you say yes.')}
+    <dl class="pv-dl">
+      <dt>pho-consent</dt><dd>A cookie holding your answer to that question and nothing else &mdash; the word <code>all</code> or the word <code>min</code>. It lasts a year so you are not asked on every visit, and it is set whichever way you answer, because a site that forgot your refusal would have to ask again.</dd>
+      <dt>pho-mode &middot; pho-text</dt><dd>Your dark-mode and text-size choices, kept in this browser's local storage so the page opens the way you left it. Not cookies, and never sent to a server.</dd>
+      <dt>pho-draft</dt><dd><b>Only if you said yes.</b> A copy of whatever you have typed into a form and not yet sent, so a refresh or a wrong tap does not lose it. It stays in this browser, is never sent anywhere on its own, and is deleted the moment the message sends. Say no and it is never written.</dd>
+    </dl>
+    ${P('None of it identifies you to us, follows you to another site, or is shared with anyone. Clearing this browser&rsquo;s site data removes all of it, and you are simply asked again.')}
 
     <h3>Your rights</h3>
     ${P('You can export everything the product holds for your organisation, at any time, from inside the product — and after a cancellation you can still sign in to export before anything is purged. Ask us to delete a record and we delete it; the audit log of who did what is retained, because a record that can be quietly removed is not an audit log.')}

@@ -33,6 +33,7 @@ export default async function handler(req, res) {
   const email = clean(body.email, 254).toLowerCase();
   const message = clean(body.message, 4000);
   const name = clean(body.name, 120);
+  const phone = clean(body.phone, 40);
   const topic = TOPICS.has(clean(body.topic, 40)) ? clean(body.topic, 40) : 'Question';
   const product = PRODUCTS[clean(body.product, 20)] ? clean(body.product, 20) : 'cohort';
   if (!EMAIL.test(email)) return json(res, 400, { ok: false, message: 'That email does not look right.' });
@@ -40,7 +41,7 @@ export default async function handler(req, res) {
 
   const domain = domainOf(req);
   const site = { name: PRODUCTS[product], domain };
-  const msg = { name, email, topic, message, product, source: clean(req.headers.referer, 300) || `https://${domain}/`, at: Date.now() };
+  const msg = { name, email, phone, topic, message, product, source: clean(req.headers.referer, 300) || `https://${domain}/`, at: Date.now() };
 
   let kept = false;
   const url = process.env.CONVEX_URL;

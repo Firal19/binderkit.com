@@ -344,3 +344,106 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 /* The short-landscape block moved to responsive.css. It is a width query
    (<=900) and it must be declared AFTER the phone tier redeclares --sec-y
    on :root, or its deliberately tight 28px stops winning. */
+
+/* ── the intake additions ───────────────────────────────────────────────
+   A phone field, a second way to send, a draft that survives a refresh, an
+   email spell-check, a cookie choice, and one floating way to write. Every
+   colour below is a face variable; nothing here names a hue. */
+
+/* the small grey line under an optional field */
+.field-h { display: block; margin-top: 5px; font-size: var(--fs-label, 12px); color: var(--soft); font-weight: 400; }
+
+/* an inline button that reads as a link — used by the draft bar and the
+   email suggestion, both of which are offers rather than commands */
+.lk {
+  display: inline; padding: 0; border: 0; background: none; color: var(--accent, var(--ink));
+  font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.lk:hover, .lk:focus-visible { color: var(--ink); }
+
+/* “did you mean gmail.com?” — never blocks, only offers */
+.field-fix {
+  margin: 6px 0 0; font-size: var(--fs-label, 12.5px); color: var(--muted);
+  display: flex; align-items: center; gap: 6px; min-height: var(--tap, 44px);
+}
+
+/* “you started this before” */
+.draft-b {
+  grid-column: 1 / -1; margin: 0 0 4px; padding: 10px 14px;
+  border: 1px solid var(--line); border-radius: var(--r, 12px);
+  background: var(--wash, var(--card)); color: var(--muted);
+  font-size: var(--fs-label, 13px); display: flex; align-items: center; min-height: var(--tap, 44px);
+}
+
+/* the two ways to send, side by side above 520 and stacked below it */
+.send-two { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
+.send-two > .btn { flex: 1 1 12rem; }
+.send-note {
+  grid-column: 1 / -1; margin: 2px 0 0; max-width: 62ch;
+  font-size: var(--fs-label, 12.5px); color: var(--soft);
+}
+@media (max-width: 520px) { .send-two > .btn { flex: 1 1 100%; } }
+
+/* ── the floating way to write ────────────────────────────────────────
+   Bottom-right, clear of the dock and the home indicator. It is a link, not
+   a button, so it works with scripting off and can be opened in a new tab. */
+.fab {
+  position: fixed; z-index: 43;
+  right: clamp(14px, 2.4vw, 26px);
+  bottom: calc(var(--dock, 0px) + clamp(14px, 2.4vw, 26px) + env(safe-area-inset-bottom, 0px));
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: var(--tap, 44px); padding: 0 18px;
+  border-radius: var(--r-btn, 999px); border: 1px solid var(--line);
+  background: var(--btn, var(--ink)); color: var(--btn-ink, var(--bg));
+  font-weight: 650; font-size: 15px; text-decoration: none; white-space: nowrap;
+  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, .5);
+  transition: transform 140ms cubic-bezier(.25, 1, .5, 1), box-shadow 140ms ease, opacity 180ms ease;
+}
+.fab:hover { transform: translateY(-1px); box-shadow: 0 16px 36px -16px rgba(0, 0, 0, .55); }
+.fab:active { transform: none; }
+.fab svg { flex: none; }
+/* it appears once you are past the first screen, so it never competes with
+   the hero's own call to action */
+.fab { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.fab.is-on, .no-js .fab { opacity: 1; transform: none; pointer-events: auto; }
+/* below 430 the label goes and the mark carries it, so it never crowds a dock */
+@media (max-width: 430px) {
+  .fab { padding: 0; width: var(--tap, 44px); justify-content: center; }
+  .fab .fab-t { display: none; }
+}
+@media print { .fab, .ckb { display: none !important; } }
+
+/* ── the cookie choice ───────────────────────────────────────────────── */
+.ckb {
+  /* bottom-LEFT on purpose: centred, it sat across the contact form's own send
+     buttons, and the floating write-to-us owns the right corner. */
+  position: fixed; z-index: 60; left: clamp(14px, 2.4vw, 26px);
+  bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px));
+  width: min(460px, calc(100vw - 28px));
+  transform: translateY(12px); opacity: 0;
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(.25, 1, .5, 1);
+}
+.ckb.is-in { opacity: 1; transform: none; }
+.ckb.is-out { opacity: 0; transform: translateY(12px); }
+/* on a phone it spans the gutter and stacks above the fab */
+@media (max-width: 560px) {
+  .ckb { left: 14px; width: calc(100vw - 28px); bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px) + var(--tap, 44px) + 10px); }
+}
+.ckb-in {
+  padding: 16px 18px; border: 1px solid var(--line);
+  border-radius: var(--r, 14px); background: var(--card); color: var(--body, var(--ink));
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, .55);
+}
+.ckb-t { margin: 0 0 4px; font-size: 15px; color: var(--ink); }
+/* 15px, not 13.5: this is prose inside a <p>, and the mobile gate holds
+   prose to a 15px floor whatever its length. */
+.ckb-p { margin: 0 0 12px; font-size: 15px; line-height: 1.5; color: var(--muted); }
+.ckb-p a { color: var(--accent, var(--ink)); }
+.ckb-b { display: flex; flex-wrap: wrap; gap: 8px; }
+.ckb-b .btn { flex: 1 1 auto; min-height: var(--tap, 44px); }
+@media (prefers-reduced-motion: reduce) { .ckb { transition: none; } }
+
+/* While the cookie card is up it is the only decision on screen. The floating
+   write-to-us and any back-to-top stand down rather than stack three round
+   things into one corner on a phone. */
+.has-ckb .fab, .has-ckb .totop { opacity: 0 !important; pointer-events: none !important; }

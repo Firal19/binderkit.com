@@ -8,6 +8,7 @@ import { v } from 'convex/values';
 export default defineSchema({
   waitlist: defineTable({
     email: v.string(),
+    phone: v.optional(v.string()),
     track: v.string(),
     houses: v.string(),
     product: v.string(),
@@ -20,6 +21,7 @@ export default defineSchema({
   messages: defineTable({
     name: v.string(),
     email: v.string(),
+    phone: v.optional(v.string()),
     topic: v.string(),
     message: v.string(),
     product: v.string(),
