@@ -5,7 +5,7 @@
 // resting state rendered, the deck is a list, the flip cards are <details>.
 // js/pages/aidepost.js upgrades each one by class.
 
-import { esc, skip, sec, h2, eyebrow, waitlist, faq } from '../../shared.js';
+import { esc, skip, sec, h2, eyebrow, waitlist, faq, openNote } from '../../shared.js';
 import { iosShell, webShell, SURFACES } from '../../instruments.js';
 import { PAGES, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../../data/page.js';
 import { ic } from '../../icons/aidepost.js';
@@ -288,6 +288,7 @@ export function tierBlock(p) {
       <button class="pr-b is-care" type="button" data-side-set="caregiver" aria-pressed="false">Caregivers</button>
     </div>
     <div class="tiers s-prov">${rows.map(tier).join('')}</div>
+    <div class="s-prov">${openNote(p)}</div>
     <div class="tier-care s-care"><span class="tier-n">${ic('free', 18, { pin: 'open' })}Caregiver</span><span class="tier-p">$0, for ever</span><span class="tier-d">No organisation, no card. Your credential dates are yours and travel with you.</span></div>
   </div>`;
 }

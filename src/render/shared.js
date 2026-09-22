@@ -208,7 +208,25 @@ export const faq = (rows) => `<div class="faq">${rows.map(([q, a], i) => `<detai
 </details>`).join('')}</div>`;
 
 /* ── pricing, from the vault ──────────────────────────────────────────── */
+/* Which tiers the register has not decided, said plainly. Exported because
+   binderkit/pricing.js and aidepost/bits.js each keep their own copy of the
+   "Open -> Early access" substitution, and the line has to reach all three. */
+export function openNote(p) {
+  const open = p.pricing.rows.filter(([, price]) => /^Open/.test(price)).map(([name]) => name);
+  return open.length
+    ? `<p class="tier-open">${esc(open.join(' and '))} ${open.length > 1 ? 'are' : 'is'} not priced yet.</p>`
+    : '';
+}
+
 export function tiers(p, main = 1, soonLabel = 'Early access') {
+  /* A row whose price reads "Open (#n)" is one the register has NOT decided. The
+     page used to print soonLabel there and stop, which reads as a plan you can
+     buy rather than a price that does not exist yet — the page overstating what
+     the data says. The register's own note cannot be printed verbatim (it cites
+     the decision number and a prior internal figure), so the line below is
+     derived from the rows themselves: which tiers are open, said plainly. A
+     product whose prices ARE set, like CareShop, emits nothing extra. */
+  const note = openNote(p);
   return `<div class="tiers">${p.pricing.rows.map(([name, price, d], i) => {
     const soon = /^Open/.test(price);
     return `<div class="tier ${i === main ? 'is-main' : ''}">
@@ -216,7 +234,7 @@ export function tiers(p, main = 1, soonLabel = 'Early access') {
       <span class="tier-p ${soon ? 'is-soon' : ''}">${esc(soon ? soonLabel : price)}</span>
       <span class="tier-d">${esc(d)}</span>
     </div>`;
-  }).join('')}</div>`;
+  }).join('')}</div>${note}`;
 }
 
 /* ── the plain foot a page may start from ─────────────────────────────── */

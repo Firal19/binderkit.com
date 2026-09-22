@@ -316,9 +316,36 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .stops { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .gates { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .gate-w { perspective: 1600px; }
-.gate { position: relative; width: 100%; display: grid; text-align: left; transform-style: preserve-3d; transition: transform 640ms cubic-bezier(.22, 1, .36, 1); border-radius: 22px; color: var(--ink); }
-.gate.is-flipped { transform: rotateY(180deg); }
-.gate-f, .gate-b { grid-area: 1 / 1; padding: 28px 28px 24px 30px; border-radius: 22px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: grid; align-content: start; gap: 10px; position: relative; overflow: hidden; }
+/* NO 3D HERE, AND THAT IS DELIBERATE — read this before "restoring" the flip.
+   This card used rotateY + backface-visibility and WebKit painted the BACK face,
+   still mirrored, on top of the front: on /#stops every line read backwards, at
+   1440 and on the phone once the fold was open. Chromium rendered it correctly,
+   so it survived months of Chrome-only checking. Falsified while fixing it:
+   it is NOT the <button> (a <div role="button"> renders identically broken), NOT
+   the grid item being unpositioned, NOT overflow: hidden on the faces, NOT where
+   perspective sits, and NOT the 3D context being on a form control. aidepost's
+   .flip works in the same WebKit build and the difference could not be isolated.
+   So the turn is done in 2D, which every engine renders the same way. */
+.gate { position: relative; width: 100%; display: grid; text-align: left; border-radius: 22px; color: var(--ink); }
+/* The back face MUST be positioned. WebKit does not honour backface-visibility
+   on a non-positioned grid item whose parent establishes the 3D context, so it
+   composited the back face — still rotated — on top of the front: on
+   cohorthome.app/#stops in Safari, "WHAT THE OVERRIDE RECORDS · STOP 1" and
+   every line under it painted mirrored, at 1440 and on the phone once the fold
+   was open. Chromium paints it correctly, so a Chrome-only pass calls it clean.
+   aidepost's .flip-b (aidepost.css:519) has always had position: absolute and
+   its five #roles cards render correctly in the same WebKit build — this is
+   that same shape, applied here. The front keeps the grid cell and sizes the
+   card; min-height carries the back, which is the longer of the two faces. */
+/* Both faces stay in the same grid cell, so the card sizes to the TALLER of the
+   two and the longer back copy is never clipped. Only one is visible at a time;
+   visibility (not opacity alone) keeps the hidden one out of the a11y tree and
+   out of the tab order. */
+.gate-f, .gate-b { grid-area: 1 / 1; padding: 28px 28px 24px 30px; border-radius: 22px; display: grid; align-content: start; gap: 10px; overflow: hidden; position: relative;
+  transition: transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 160ms linear, visibility 0s linear 300ms; }
+.gate-b { transform: scaleX(.86); opacity: 0; visibility: hidden; }
+.gate.is-flipped .gate-f { transform: scaleX(.86); opacity: 0; visibility: hidden; }
+.gate.is-flipped .gate-b { transform: none; opacity: 1; visibility: visible; transition-delay: 0s, 0s, 0s; }
 .gate-f { background: var(--wash); }
 .gate-f::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
 .gate-b { background: var(--teal-deep); color: var(--bg); transform: rotateY(180deg); }
@@ -610,7 +637,12 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .fg2 .gate-n { font-size: 36px; }
 .fg2 .note p { margin-top: 0; }
 .fm-g { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-.mv-l li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: .95rem; }
+/* ONE column, because there is only one child. .ref-l's 34px track holds a
+   .ref-n number; .mv-l has no equivalent, so the 64px track was a leftover
+   and the lone <div> landed in it: four spans pinned to 64px on /features at
+   every desktop width, 12 words over 8 lines, hyphen-breaking "clock- / in/out".
+   Give the track back rather than inventing a marker to fill it. */
+.mv-l li { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: .95rem; }
 .mv-l li:last-child { border-bottom: 1px solid var(--line); }
 .mv-l span { display: block; font-size: .85rem; color: var(--soft); margin-top: 3px; line-height: 1.5; }
 .mv-l em { font-style: normal; color: var(--teal); font-weight: 600; }

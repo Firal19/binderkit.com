@@ -446,6 +446,14 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    tier so the tier can turn it on (equal specificity, later rule wins). */
 .ckb-p.ckb-short { display: none; }
 
+/* The line under a tier grid naming the tiers the register has not priced.
+   --fs-read, NOT --fs-meta: this is a <p>, and the kit holds any text inside
+   p/li/dd/blockquote to 15px whatever its length. --fs-meta is 14px and it
+   tripped type.floors on cohort, binderkit and aidepost the moment it shipped —
+   and the reflow put binderkit's .ctl on a fractional baseline, which the gate
+   reported as a 286x44 tap BLOCKER. One wrong token, four findings. */
+.tier-open { margin: 10px 0 0; font-size: var(--fs-read, 15px); color: var(--muted); }
+
 /* These two sat AFTER the phone tier below, so at equal specificity the wide
    values won and the tier's `gap: 7px` / `min-height: 40px` never applied.
    Measured at 320: the two answers wrapped onto two rows and the card stood

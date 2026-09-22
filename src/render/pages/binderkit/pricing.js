@@ -2,6 +2,7 @@
 
 import { SIGNUP_FIVE, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../data/page.js';
 import { header, footer, section, title, BOOK, atChapter, onThisPage, find, esc, ic } from './chrome.js';
+import { openNote } from '../../shared.js';
 
 const SECS = BOOK['/pricing'];
 const [TOP, TIERS, SIGNUP, BILLING, LAPSE] = SECS;
@@ -20,7 +21,7 @@ ${header(cfg, p, { page: 'pricing', tabs: SECS.filter((x) => x.tab) })}
 ${title(TOP, { eyebrow: 'Chapter · Pricing', h1: s.heading, lede: EVERY_PLAN, ctas: `<a class="btn pri lg" href="/#join" data-cta="pricing">${esc(cfg.cta.primary)}</a><a class="btn lg" href="#tiers">${ic('scale', 18)}<span>The tiers</span></a>`, index: onThisPage(SECS) })}
 ${section(TIERS, `<h2 id="h-tiers">Three tiers.</h2><p class="sub">${esc(s.note)}</p>
   ${sellSwitch()}
-  <div class="tiers">${p.pricing.rows.map(([name, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-n">${esc(name)}</span><span class="tier-p ${/^Open/.test(price) ? 'is-soon' : ''}">${esc(soon(price))}</span><span class="tier-d">${esc(d)}</span></div>`).join('')}</div>`)}
+  <div class="tiers">${p.pricing.rows.map(([name, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-n">${esc(name)}</span><span class="tier-p ${/^Open/.test(price) ? 'is-soon' : ''}">${esc(soon(price))}</span><span class="tier-d">${esc(d)}</span></div>`).join('')}</div>${openNote(p)}`)}
 ${section(SIGNUP, `<h2 id="h-signup">${esc(SIGNUP_FIVE.heading)}</h2>
   <ol class="ten is-wide">${SIGNUP_FIVE.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
   <p class="closing">${esc(SIGNUP_FIVE.tail)}</p>
