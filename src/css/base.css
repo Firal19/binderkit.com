@@ -425,9 +425,16 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 
 /* ── the cookie choice ───────────────────────────────────────────────── */
 .ckb {
-  /* bottom-LEFT on purpose: centred, it sat across the contact form's own send
-     buttons, and the floating write-to-us owns the right corner. */
-  position: fixed; z-index: 60; left: clamp(14px, 2.4vw, 26px);
+  /* bottom-RIGHT above the phone tier. It was bottom-LEFT, on the reasoning that
+     "the floating write-to-us owns the right corner" — but .has-ckb below hides
+     the fab, the back-to-top AND aidepost's notification while this card is up,
+     so that corner is empty exactly when this card needs it. Bottom-left put a
+     460x231 card over the hero's primary CTA on ALL FOUR sites at 1440x900:
+     "Get early access" / "Start free" measured 9,100-12,000px2 of overlap and
+     elementFromPoint returned the card, so the one button the page exists for
+     could not be clicked until the banner was answered. The CTAs live in the
+     left and centre columns; the right corner clears them. */
+  position: fixed; z-index: 60; left: auto; right: clamp(14px, 2.4vw, 26px);
   bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px));
   width: min(460px, calc(100vw - 28px));
   transform: translateY(12px); opacity: 0;
@@ -455,7 +462,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    .has-ckb hides the fab while this is up. */
 @media (max-width: 560px) {
   .ckb {
-    left: 12px; width: calc(100vw - 24px);
+    left: 12px; right: auto; width: calc(100vw - 24px);
     bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 10px + env(safe-area-inset-bottom, 0px));
   }
   .ckb-in { padding: 11px 13px; }
