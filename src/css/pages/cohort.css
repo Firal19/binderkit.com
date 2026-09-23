@@ -131,7 +131,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .tr-menu { display: none; width: 44px; height: 44px; border-radius: 12px; place-items: center; color: var(--ink); margin-right: -8px; }
 
 /* the shift sheet — the phone's menu */
-.ssheet { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow: auto; padding: max(16px, env(safe-area-inset-top)) 0 calc(28px + env(safe-area-inset-bottom)); animation: rise 320ms cubic-bezier(.22, 1, .36, 1); }
+.ssheet { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow: auto; padding: max(16px, var(--sat)) 0 calc(28px + var(--sab)); animation: rise 320ms cubic-bezier(.22, 1, .36, 1); }
 .ssheet[hidden] { display: none; }
 @keyframes rise { from { transform: translateY(22px); opacity: 0; } to { transform: none; opacity: 1; } }
 .ssheet-in { width: min(560px, 100% - 40px); margin: 0 auto; display: grid; gap: 22px; }
@@ -176,7 +176,7 @@ html[data-mode="dark"] .shiftb-n { display: inline-flex; }
 .pal-none { padding: 18px 16px; color: var(--soft); font-size: 14.5px; }
 
 /* the phone tab bar */
-.tabs { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; height: calc(var(--tabs) + env(safe-area-inset-bottom)); padding: 0 6px env(safe-area-inset-bottom); background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); border-top: 1px solid var(--line); grid-template-columns: repeat(5, 1fr); }
+.tabs { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; height: calc(var(--tabs) + var(--sab)); padding: 0 6px var(--sab); background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); border-top: 1px solid var(--line); grid-template-columns: repeat(5, 1fr); }
 .tab-s { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 64px; text-decoration: none; color: var(--soft); font-size: 10.5px; font-weight: 500; letter-spacing: .01em; }
 .tab-s[aria-current] { color: var(--teal); font-weight: 600; }
 .tab-s[aria-current]::before { content: ""; position: absolute; top: 0; left: 50%; width: 28px; height: 3px; margin-left: -14px; border-radius: 0 0 3px 3px; background: var(--teal); }
@@ -595,7 +595,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .totop { position: fixed; right: 18px;
   /* the shared .fab occupies this corner now, so the back-to-top sits on
      top of it rather than under it — 44px tap + 10px of air. */
-  bottom: calc(var(--dock, 0px) + 18px + env(safe-area-inset-bottom, 0px) + var(--tap, 44px) + 10px); z-index: 44; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px 0 12px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; box-shadow: var(--sh-2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 250ms, transform 250ms; }
+  bottom: calc(var(--dock, 0px) + 18px + var(--sab) + var(--tap, 44px) + 10px); z-index: 44; display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px 0 12px; border-radius: 999px; background: var(--ink); color: var(--bg); text-decoration: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; box-shadow: var(--sh-2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 250ms, transform 250ms; }
 .totop.is-on, .no-js .totop { opacity: 1; transform: none; pointer-events: auto; }
 
 /* headings that copy their own link */
@@ -858,7 +858,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
    still read 03 Incident. Trailing room equal to the empty part of the
    rail fixes it, and max() keeps it at the plain gutter on a phone, where
    one card already fills the strip. 480px is a card plus its gap. */
-.sstrip .fs-rail { padding-inline-end: max(calc(var(--gutter) + env(safe-area-inset-right, 0px)), calc(100% - 480px)); }
+.sstrip .fs-rail { padding-inline-end: max(calc(var(--gutter) + var(--sar)), calc(100% - 480px)); }
 .dl-l { border-top: 1px solid var(--line); }
 .dl-i { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 8px 18px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .dl-i b { font-size: .98rem; }
@@ -952,10 +952,10 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      while a sideways strip is on screen (js/pages/cohort.js totop()). */
   /* the shared .fab takes this corner first, so stack above it: its own
      44px plus 10px of air. Both are 44px circles at this width. */
-  .totop { bottom: calc(var(--dock) + env(safe-area-inset-bottom) + 12px + var(--tap, 44px) + 10px); right: 12px; width: 44px; padding: 0; justify-content: center; }
+  .totop { bottom: calc(var(--dock) + var(--sab) + 12px + var(--tap, 44px) + 10px); right: 12px; width: 44px; padding: 0; justify-content: center; }
   body.is-locked .totop, .totop.is-away { opacity: 0; pointer-events: none; }
   .totop span { display: none; }
-  .pal { padding-top: max(16px, env(safe-area-inset-top)); }
+  .pal { padding-top: max(16px, var(--sat)); }
   .pal-r { grid-template-columns: 22px minmax(0, 1fr); }
   .pal-s { grid-column: 2; text-align: left; }
   /* the heading deep link. Above 1240 it is an absolutely-positioned mouse
@@ -1043,9 +1043,9 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .pidx-all { grid-column: 2; grid-row: 1; }
   .pidx-r { grid-column: 1 / -1; grid-row: 2; flex-wrap: nowrap; gap: 6px;
             overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
-            margin-inline: calc(-1 * (var(--gutter) + env(safe-area-inset-left, 0px))) calc(-1 * (var(--gutter) + env(safe-area-inset-right, 0px)));
-            padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px)) calc(var(--gutter) + env(safe-area-inset-right, 0px));
-            scroll-padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px)); }
+            margin-inline: calc(-1 * (var(--gutter) + var(--sal))) calc(-1 * (var(--gutter) + var(--sar)));
+            padding-inline: calc(var(--gutter) + var(--sal)) calc(var(--gutter) + var(--sar));
+            scroll-padding-inline: calc(var(--gutter) + var(--sal)); }
   .pidx-r::-webkit-scrollbar { display: none; }
   .pidx-a { flex: none; scroll-snap-align: start; }
   .dl-u { grid-column: 1; }
@@ -1153,7 +1153,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      rule is written against cohort's own dock, by name. */
   :root { --dock: var(--tabs); }
   .tabs { display: grid; }
-  body:has(.tabs) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
+  body:has(.tabs) { padding-bottom: calc(var(--dock) + var(--sab)); }
 
   /* ── the fold, in cohort's voice ──────────────────────────────────────
      base.css gives the summary row its shape and js/site.js builds it.
@@ -1384,8 +1384,8 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      still a phone and it still wants the tab bar. Short and shallow, so the
      bar is 48px and the page reserves exactly that. */
   :root { --dock: 48px; }
-  .tabs { display: grid; height: 48px; padding-bottom: env(safe-area-inset-bottom); }
-  body:has(.tabs) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
+  .tabs { display: grid; height: 48px; padding-bottom: var(--sab); }
+  body:has(.tabs) { padding-bottom: calc(var(--dock) + var(--sab)); }
   .tour { position: static; }
 }
 
@@ -1436,7 +1436,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
    the top of the scroller instead. A phone has no Escape key, so this is
    the only way out. */
 .ssheet-h {
-  position: sticky; top: calc(-1 * max(16px, env(safe-area-inset-top)));
+  position: sticky; top: calc(-1 * max(16px, var(--sat)));
   z-index: 3; margin-inline: -20px; padding: 10px 20px;
   background: var(--bg);
   border-bottom: 1px solid transparent;
@@ -1506,3 +1506,8 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .tr-tools .shiftb { display: none; }
   .tr-k { width: var(--tap); height: var(--tap); }
 }
+
+/* The allergy gate's own limitation, stated beside the gate it qualifies.
+   It lived in #standing until that section was deleted on 2026-09-21; it is
+   a fact about the product, not about the roadmap, so it belongs here. */
+.limit-note { grid-column: 1 / -1; margin: 6px 0 0; max-width: 62ch; color: var(--muted); font-size: .95rem; line-height: 1.55; }

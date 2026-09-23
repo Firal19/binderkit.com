@@ -223,7 +223,7 @@ const cohort = {
         { label: 'What leaves the device', text: 'Errors are scrubbed before the report leaves your phone: the request body is dropped, and any string matching a protected field name is stripped out with it. Analytics count per house per day, never per resident. Links are opaque short slugs. Exports are generated in your browser with redaction on by default, and turning redaction off for the licensing file is itself recorded.' },
       ],
       closingBlocks: [
-        { text: 'Twenty-one of Cohort’s thirty tables hold protected health information, three hold personal information and six are public. It lives only in Convex, under a vendor business associate agreement, and travels only to a signed-in phone — no server renders a resident, which is what keeps the hosting company outside the boundary. You accept a Customer business associate agreement at signup, at step four, alongside Terms, Privacy and the auto-renewal disclosure: four separate checkboxes, each with its document and its version, and the card step will not load until all four exist.' },
+        { text: 'Fourteen of Cohort’s nineteen tables hold protected health information, two hold personal information and three are public. It lives only in Convex, under a vendor business associate agreement, and travels only to a signed-in phone — no server renders a resident, which is what keeps the hosting company outside the boundary. You accept a Customer business associate agreement at signup, at step five, alongside Terms, Privacy and the auto-renewal disclosure: four separate checkboxes, each with its document and its version, and the card step will not load until all four exist.' },
         { heading: 'One setting, two kinds of house', text: 'A house is either solo or team, and that one switch drives the controlled-count and the witness rules. A house with one caregiver on shift cannot produce a witness, and requiring one would make the product unusable or make people lie — so in a solo house a witness-flagged dose is recorded with the absence noted, in those words: “solo — no witness”.' },
         { heading: 'What is kept, and what goes', text: 'Nothing is deleted while you are a customer. The shortest retention in the product is ninety days, on the list of who is on today. You can export at any time without asking anyone — a ZIP with a JSON file per table and every file you uploaded, readable without this product. On the way out: export, then a hold, then a hard delete of the organisation and every resident record and file. The audit log is kept for the statutory period.' },
       ],
@@ -286,7 +286,7 @@ const cohort = {
       footer: 'Lands on Professional or Enterprise, when care plans are authored in-system, nursing assessments arrive, or you start billing the state.',
       closing: 'Your staff keep the same three words. That is the point of the ladder.',
     },
-    { key: 'family', kind: 'band', id: 'family', heading: 'One house. Four rooms. One ladder.', byline: 'by Provider Hub Oregon' },
+    { key: 'family', kind: 'band', id: 'family', heading: 'Where this goes next.', byline: 'by Provider Hub Oregon' },
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
@@ -357,7 +357,7 @@ const binderkit = {
       device: 'tabs',
       nodes: [
         { label: 'Question zero', note: 'Your licence track, asked before anything else and shown again on the plan so a wrong choice is visible rather than buried. Four cards, each described in two plain sentences saying what that licence is rather than what its chapter number is. It selects the library, and the libraries differ in almost every item. If your track has no library yet the plan screen says so plainly, and you are not charged for what you cannot use.' },
-        { label: 'Five questions', note: 'How many people live here · do you employ staff other than yourself · do you provide transportation · do you handle residents’ money · is this home part of a certified agency. One per screen, each saying why it is asked and what it will change, so that answering is a decision rather than a form. On the agency track the fifth becomes how many homes you operate, because each library brings its own questions.' },
+        { label: 'Five questions', note: 'Staff other than the provider · does the provider live in the home · how many residents the home is licensed for · any residents on one-to-one support · who keeps the policy binder' },
         { label: 'The plan', note: 'Typically five binders — resident, staff file, facility, emergency, policy — though the library decides. Every item is required, conditional or suggested: required items can be moved and never removed, conditional items carry the answer that produced them, suggested items are labelled as good practice and can go. The plan also tells you how many physical binders and how many dividers to buy.' },
         { label: 'Print', note: 'The contents page, the tab dividers, the brief and the procedure, each carrying your facility code, the version and a control number. Printing every binder’s every artefact in one go is the one bulk action there is. Every print writes a row — version, control number, artefact, who and when — and the file is kept, so any past control number reproduces the identical sheet.' },
         { label: 'Edit, guarded', note: 'Five edits and no others: reorder tabs, rename a tab’s label while the item and its authority stay as they are, move an item to another tab of the same binder, add an item of your own, remove a suggested one. Every edit is attributed and makes a version. There is no bulk edit, because each edit is a judgement about one item.', accent: true },
@@ -429,7 +429,7 @@ const binderkit = {
       sub: 'Zero is a property of this product rather than something missing from it, and most of what follows is a consequence.',
       blocks: [
         { label: 'What it holds', text: 'No protected health information anywhere: no rows, no tables, no fields. Nine product tables, all of them organisational — your facilities, your answers, your plans, your versions, your prints. Seven platform tables hold account information about the people who sign in: users, memberships, invites, notification preferences, support tickets, and the platform’s own admin and impersonation records. None of them is about a resident.' },
-        { label: 'No business associate agreement', text: 'Which is why signing up is five steps rather than six: account, licence track, organisation and first facility, the legal set with its documents inline, card. There is no agreement to sign for protected information because the product receives none — which is not the same as there being nothing to protect, as the counterweight below says.' },
+        { label: 'No business associate agreement', text: 'Which is why signing up is five steps rather than six: account, licence track, organisation and first facility, the legal set with its documents inline, card. There is no agreement to sign for protected information because the product receives none — which is not the same as there being nothing to protect.' },
         { label: 'The key', text: 'A plan is keyed by your facility code — made from the facility name’s initials and a number when you create it, never changed, and never containing a person’s name. It is in the footer of every artefact and in every notification, and nowhere else, because every printed page needs an identifier that is not somebody’s name and not your address.' },
         { label: 'What a notification says', quote: 'WH-1: your plan has a new version.', text: 'One of four, and there is no fifth: your plan has a new version, the library has been updated, your trial ends tomorrow, your export is ready. The content is a facility code, a track name, a version number, an amount, or a link. There is no push notification at all — nothing in this product is urgent enough to interrupt you.' },
         { label: 'Printing', text: 'Generated as a PDF inside the product and then downloaded or shared, never handed to the browser’s print dialog. The identity line prints blank and you complete it by hand.' },
@@ -500,7 +500,7 @@ const binderkit = {
       footer: 'Lands on Basic or Professional — the tier is a proposal rather than a decision — when you want the documents stored: the review cycle, uploads, expiry tracking. The trigger is assumed, not observed.',
       pull: 'The thing it will not do is the thing that graduates you.',
     },
-    { key: 'family', kind: 'band', id: 'family', heading: 'One house. Four rooms. One ladder.', byline: 'by Provider Hub Oregon' },
+    { key: 'family', kind: 'band', id: 'family', heading: 'Where this goes next.', byline: 'by Provider Hub Oregon' },
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
@@ -558,7 +558,7 @@ const careshop = {
     {
       key: 'loop', kind: 'loop', id: 'loop',
       heading: 'The loop closes by itself.',
-      sub: 'Six stations drawn, and the count is both the first and the last: count, queue, approve, shop, receipt, stock, cook, and count again. The house’s own data moves around them without anyone re-typing it.',
+      sub: 'Seven stations drawn, six of them screens, and the count is both the first and the last: count, queue, approve, shop, receipt, stock, cook, and count again. The house’s own data moves around them without anyone re-typing it.',
       device: 'arc',
       nodes: [
         { label: 'The count', note: 'A physical walk, one zone at a time in the house’s own walk order, each item showing its previous count and a keypad. Pausable and resumable without losing entries; items not reached are left unchanged rather than zeroed. The walk-through is the audit.' },
@@ -695,7 +695,7 @@ const careshop = {
       ],
       footer: 'Lands on Professional, when purchasing is integrated with billing, vendor management arrives, or you want the full compliance programme — a trigger we assume rather than one we have watched happen.',
     },
-    { key: 'family', kind: 'band', id: 'family', heading: 'One house. Four rooms. One ladder.', byline: 'by Provider Hub Oregon' },
+    { key: 'family', kind: 'band', id: 'family', heading: 'Where this goes next.', byline: 'by Provider Hub Oregon' },
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',
@@ -942,7 +942,7 @@ const aidepost = {
       ],
       footer: 'Lands on Enterprise, when payroll integration or agency-scale scheduling across many sites arrives.',
     },
-    { key: 'family', kind: 'band', id: 'family', heading: 'One house. Four rooms. One ladder.', byline: 'by Provider Hub Oregon', second: true },
+    { key: 'family', kind: 'band', id: 'family', heading: 'Where this goes next.', byline: 'by Provider Hub Oregon', second: true },
     {
       key: 'foot', kind: 'foot', id: 'foot',
       by: 'by Provider Hub Oregon',

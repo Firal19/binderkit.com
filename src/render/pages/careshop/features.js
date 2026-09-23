@@ -92,7 +92,7 @@ ${sec('seats', 'fse-s', `<div class="wrap">
 </div>`)}
 ${fold(sec('elsewhere', 'fel-s', `<div class="wrap fel-g">
   <div>
-    <div class="head">${h2('elsewhere', 'Next door, not here.', 'The kitchen is one room of four. These belong to a sibling, and the ladder moves your data there without re-typing.')}</div>
+    <div class="head">${h2('elsewhere', 'Not in this product.', 'CareShop runs the kitchen. These sit outside it, deliberately.')}</div>
     <ul class="mv-l">${next.items.map(([t]) => `<li><div><b>${esc(t)}</b></div></li>`).join('')}</ul>
   </div>
   <div>
@@ -101,7 +101,7 @@ ${fold(sec('elsewhere', 'fel-s', `<div class="wrap fel-g">
   </div>
 </div>`), 'What the loop does not do.')}
 ${sec('test', 'test-s', `<div class="wrap">
-  <div class="head">${sticker('scale', 'The boundary test')}${h2('test', boundary.strip.cells[0], 'The question is in Settings, in the product. Three of the four answers send you next door, and that is the point: a room with walls is a room you can finish.')}</div>
+  <div class="head">${sticker('scale', 'The boundary test')}${h2('test', boundary.strip.cells[0], 'The question is in Settings, in the product. Only one of the four answers is this product’s, and that is the point: a product with walls is a product you can finish.')}</div>
   <ul class="own">${OWNERS.map(([q, who, a]) => `<li class="own-i${who === 'careshop' ? ' is-here' : ''}"><span class="own-q">${esc(q)}</span><span class="own-w">${who === 'careshop' ? `${ic('check', 18)}<b>${esc(byId[who].name)}</b>` : `${ic('arrow', 18)}<b>Not here</b>`}</span><span class="own-a">${esc(a)}</span></li>`).join('')}</ul>
   <p class="demo-f">${esc(boundary.strip.foot)}</p>
 </div>`)}

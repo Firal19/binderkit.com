@@ -12,7 +12,7 @@ export const FEATURES = [
     probe: [{ home: 'aria-controls="drawer"' }, { home: 'class="drawer" id="drawer" hidden' }, { css: '.drawer-sheet{' }, { css: '@keyframes rise' }] },
   { id: 'cs-04', name: 'The bottom tally bar', kind: 'mobile',
     what: 'A thin fixed bar on phones: the store chip, "You are in: <aisle>" that follows your scroll, and Start free under the thumb.',
-    probe: [{ home: 'class="tally-bar" id="tally-bar"' }, { home: 'data-where' }, { js: '[data-where]' }, { css: 'env(safe-area-inset-bottom)' }] },
+    probe: [{ home: 'class="tally-bar" id="tally-bar"' }, { home: 'data-where' }, { js: '[data-where]' }, { css: 'var(--sab)' }] },
   { id: 'cs-05', name: 'Lights: the pantry light-pull', kind: 'dark',
     what: 'The mode switch is a light-pull cord; pull it and the lights go off in the pantry — a deep clay-black ground with warm paper type, remembered.',
     probe: [{ home: 'class="cord" type="button" data-mode-toggle' }, { css: ':root[data-mode="dark"]' }, { css: '.cord:hover .cord-pull' }] },

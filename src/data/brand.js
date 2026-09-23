@@ -29,7 +29,7 @@ export const PRODUCTS = [
     proof: [
       'Four applications on providerhub.us: the Customer app, Super Admin, External Portals and the Job Board.',
       'Twenty-seven modules designed; production is rebuilt from the specs, not patched from the sandbox.',
-      'Every mini graduates by export → import; her data is already in PHO’s shape.',
+      'Each product graduates by export → import; the record is already in PHO’s shape.',
     ],
     pricing: { unit: 'organisation + house', rows: [['Aspiring', '$99 one-time', 'Pre-licensed; credits toward a subscription'], ['Basic', '$129 / mo', 'One-house AFH · 5 users'], ['Professional', '$299 / mo', 'Two- to three-house AFH · 25 users'], ['Enterprise', '$350+ / mo', 'Multi-house operators and agencies']], note: 'Locked (#60–69). +$50 per additional house · $25 per job-board hire · no trial (D13).' },
   },

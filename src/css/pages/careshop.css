@@ -580,7 +580,7 @@ a.rc-l[aria-current]::before { content: "▸ "; color: var(--rc-terra); }
 .drawer { position: fixed; inset: 0; z-index: 60; }
 .drawer[hidden] { display: none; }
 .drawer-scrim { position: absolute; inset: 0; background: rgba(var(--sh), .55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); animation: fade 200ms ease; }
-.drawer-sheet { --rc-pad: 22px; position: absolute; left: 0; right: 0; bottom: 0; max-height: 88dvh; overflow: auto; overscroll-behavior: contain; border-radius: var(--r4) var(--r4) 0 0; padding: 22px 22px calc(28px + env(safe-area-inset-bottom)); box-shadow: var(--e4); animation: rise 340ms var(--ease); }
+.drawer-sheet { --rc-pad: 22px; position: absolute; left: 0; right: 0; bottom: 0; max-height: 88dvh; overflow: auto; overscroll-behavior: contain; border-radius: var(--r4) var(--r4) 0 0; padding: 22px 22px calc(28px + var(--sab)); box-shadow: var(--e4); animation: rise 340ms var(--ease); }
 .drawer-sheet::before, .drawer-sheet::after { display: none; }
 .drawer-close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: var(--r1); color: var(--rc-ink); background: color-mix(in srgb, var(--rc-ink) 8%, transparent); box-shadow: inset 0 0 0 1px var(--rc-edge); cursor: pointer; transition: background 160ms ease; }
 @media (hover: hover) { .drawer-close:hover { background: color-mix(in srgb, var(--rc-ink) 14%, transparent); } }
@@ -597,10 +597,10 @@ a.rc-l[aria-current]::before { content: "▸ "; color: var(--rc-terra); }
    footer is a sibling of <main>, and while .page carried the reservation
    the slip's last two lines sat underneath the bar on all seven routes.
    --dock is 0px above 900, where the bar is not mounted. */
-body:has(.tally-bar) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
+body:has(.tally-bar) { padding-bottom: calc(var(--dock) + var(--sab)); }
 
 /* ── the tally bar, phones only ───────────────────────────────────────── */
-.tally-bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px 14px calc(8px + env(safe-area-inset-bottom)); min-height: 60px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(150%) blur(16px); -webkit-backdrop-filter: saturate(150%) blur(16px); border: 0; box-shadow: 0 -1px 0 var(--e-line), 0 -18px 34px -26px rgba(var(--sh), .5); }
+.tally-bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px 14px calc(8px + var(--sab)); min-height: 60px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(150%) blur(16px); -webkit-backdrop-filter: saturate(150%) blur(16px); border: 0; box-shadow: 0 -1px 0 var(--e-line), 0 -18px 34px -26px rgba(var(--sh), .5); }
 .tb-store { width: 44px; height: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: var(--r1); background: var(--card); box-shadow: var(--e2); }
 .tb-store .mk { --c-tile: var(--sage); --c-glyph: var(--on-sage); }
 .tb-where { display: grid; min-width: 0; }
@@ -1923,7 +1923,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
      rail instead would paint it over the dock's primary CTA.
      A sticky box honours BOTH offsets: bottom keeps it clear of the dock
      until the page has scrolled, top pins it under the header after that. */
-  .rail { bottom: calc(var(--dock) + 8px + env(safe-area-inset-bottom, 0px)); }
+  .rail { bottom: calc(var(--dock) + 8px + var(--sab)); }
   .strip-l, .sign-a, .res-r em, .st-no span, .reg b, .room-o, .door-f,
   .conf, .tier-n, .tier-flag, .scan-h, .scan-r, .q-stage, .stamp, .sp-a,
   .pv .head .eyebrow, .rc-h, .rc-sub { letter-spacing: .08em; }
@@ -2144,7 +2144,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .rc-tearlink span { display: none; }
   .rc-inst { transform: none; }
   .cite { grid-template-columns: 28px minmax(0, 1fr); } .cite .conf { grid-column: 2; justify-self: start; } .cite-w { grid-column: 2; }
-  .drawer-sheet { padding: 18px 18px calc(24px + env(safe-area-inset-bottom)); }
+  .drawer-sheet { padding: 18px 18px calc(24px + var(--sab)); }
   .unit, .sortb { margin-left: 0; }
   .shows .show, .chip, .q-btn, .rc-b, .unit-b, .kbtn, .scan-btn, .door-c { min-height: 44px; }
 
@@ -2868,4 +2868,16 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .ftab th, .ftab td { padding: 10px 13px; }
   .mv-l li { padding: 10px 13px; }
   .ref-l li { padding: 9px 0; }
+}
+
+/* The loop strip is the one phone rail with no peeking item at all: seven
+   stations, three visible, 54% off-screen and nothing saying so. Same
+   trailing fade the .rail above already uses. */
+@media (max-width: 900px) {
+  .loop-strip {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
+    scroll-padding-inline-end: 44px;
+  }
+  .loop-strip[data-scroll-end] { -webkit-mask-image: none; mask-image: none; }
 }

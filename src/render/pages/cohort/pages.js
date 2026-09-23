@@ -67,7 +67,7 @@ function features(cfg, p) {
       <p class="more"><a href="/#stops">${ic('gate', 16)}<span>See the two stops on the front page</span>${ic('right', 16)}</a></p>
     </div>`))}
     ${fold('And what came out on purpose', sec('moved', 'fmoved', `<div class="wrap fm-g">
-      <div><div class="head">${h2('moved', 'Not in this product.', 'Cohort keeps the residents’ record. Scheduling, the kitchen, and binders live elsewhere.')}</div>${moved(MOVED)}</div>
+      <div><div class="head">${h2('moved', 'Not in this product.', 'Cohort keeps the residents’ record. Scheduling and the kitchen are not in it.')}</div>${moved(MOVED)}</div>
       <div><div class="head">${h2('removed', 'Taken out on purpose.', 'One of them would have been a third hard gate. The product stops a caregiver twice, and no more.')}</div>${moved(REMOVED)}</div>
     </div>`))}
     ${fold('Eleven refusals, with reasons', sec('never', 'fnever', `<div class="wrap">

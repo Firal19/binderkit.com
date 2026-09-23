@@ -45,7 +45,7 @@ export const HOME = number('BK-LP', [
   { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each of them may see.' },
   { id: 'questions', label: 'Questions', tab: 'Questions', gist: 'The four we are actually asked, answered in full.' },
   { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: 'Every plan sees every screen; nothing is silently blocked.' },
-  { id: 'family', label: 'One house, four rooms', tab: 'Family', foldName: 'The family', gist: 'The other three products, and the platform a mini graduates into.' },
+  { id: 'family', label: 'Where this goes next', tab: 'Ladder', foldName: 'The ladder', gist: 'The platform a facility graduates into, and how the plan gets there.' },
   { id: 'join', label: 'Join', tab: 'Join' },
 ]);
 
@@ -59,7 +59,7 @@ export const BOOK = {
   '/screens': number('BK-SC', [
     { id: 'top', label: 'The plates', tab: '' },
     { id: 'five-plates', hid: 'plates', label: 'Five plates', tab: 'Plates' },
-    { id: 'annotated', label: 'The guarded editor, annotated', tab: 'Annotated', foldName: 'Annotated', gist: 'Four numbered callouts, each lighting the thing it quotes.' },
+    { id: 'annotated', label: 'The guarded editor, at desk size', tab: 'Desk size', foldName: 'At desk size', gist: 'The same refusals, on the shell a provider actually plans in.' },
     { id: 'sample', label: 'What is real on these plates', tab: 'Sample', foldName: 'What is real', gist: 'Sample data throughout, and the reason it is safe to publish.' },
   ]),
   '/plan': number('BK-PL', [
@@ -79,7 +79,7 @@ export const BOOK = {
   ]),
   '/pricing': number('BK-PR', [
     { id: 'top', label: 'Priced in the open', tab: '' },
-    { id: 'tiers', label: 'Three tiers', tab: 'Tiers' },
+    { id: 'tiers', label: 'The tiers', tab: 'Tiers' },
     { id: 'signup', label: 'Signing up, in five steps', tab: 'Signing up' },
     { id: 'billing', label: 'If a payment fails', tab: 'Payment' },
     { id: 'lapse', label: 'If you stop paying', tab: 'Lapse' },

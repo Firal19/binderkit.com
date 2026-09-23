@@ -144,7 +144,7 @@ function why() {
   const s = find('proof');
   return section(WHY, `${eyebrow('The case, in three')}${h2('why', 'Why this is the one that can ship first.', 'Two of these are structural facts about the product rather than promises about it, and both can be checked on this page.')}
     <div class="art-g proof-g">${s.items.map(([t, d], i) => `<div class="art proof" data-proof="${i + 1}"><span class="art-n proof-n">${String(i + 1).padStart(2, '0')}</span><b>${esc(t)}</b><span>${esc(d)}</span></div>`).join('')}</div>
-    <p class="closing">No business associate agreement, because the product receives no protected information — which is why signing up is five steps rather than six, and why this is the mini with no legal gate in front of its first customer.</p>`);
+    <p class="closing">No business associate agreement, because the product receives no protected information — which is why signing up is five steps rather than six, and why there is no legal gate in front of the first customer.</p>`);
 }
 
 /* ── 03 · every surface, switched by its own index tab ────────────────── */
@@ -191,7 +191,7 @@ function library() {
     <table class="lib"><thead><tr>${s.cols.map((c) => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead>
       <tbody>${s.rows.map((row) => `<tr><th scope="row" data-col="${esc(s.cols[0])}">${esc(row[0])}</th>${row.slice(1).map((c, i) => `<td data-col="${esc(s.cols[i + 1])}" class="${i === 0 ? 'is-auth' : ''}">${i === 0 ? `<code>${esc(c)}</code>` : esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>
     <p class="closing">${esc(s.closing)}</p>
-    <div class="tags"><span class="strip-l">Four words, and every item on every page is one of them</span>
+    <div class="tags"><span class="strip-l">Three words, and every item that carries an authority is one of them</span>
       <div class="tag-g words is-4">${words.map(([k, label, , what]) => `<div data-word="${esc(k)}"><i class="ev is-${esc(k)}">${esc(label)}</i><span>${esc(what)}</span></div>`).join('')}</div>
     </div>
     ${citesBlock()}
@@ -251,10 +251,10 @@ function nothing() {
   return section(NOTHING, `${eyebrow('The defining constraint')}${h2('nothing', 'It holds nothing about anyone.', 'Six rules hold that in place, and each one is load-bearing. It is why the signup has five steps instead of six, and why there is no business associate agreement to sign.')}
   <ol class="six" data-ledger>${HOLDS_NOTHING.map(([t, d]) => `<li>${TICK}<div><b>${esc(t)}</b> <span>${esc(d)}</span></div></li>`).join('')}</ol>
   <div class="bd-g">
-    <div class="bd-c"><span class="strip-l">${esc(next.label)} — it belongs to a sibling</span>
+    <div class="bd-c"><span class="strip-l">${esc(next.label)} — not this product</span>
       <ul class="next">${next.items.map(([t, id, note]) => `<li data-next="${esc(id)}"><b class="next-t">${esc(t)}</b><span>${esc(byId[id] ? byId[id].short : id)}</span><small>${esc(note)}</small></li>`).join('')}</ul>
     </div>
-    <div class="bd-c bd-never"><span class="strip-l">${esc(never.label)} — not by a sibling either</span>
+    <div class="bd-c bd-never"><span class="strip-l">${esc(never.label)} — not here and not in Provider Hub Oregon</span>
       <ol class="refused">${never.items.slice(0, 5).map(([t]) => `<li>${esc(t)}</li>`).join('')}</ol>
       <span class="cap">${esc(never.items[never.items.length - 1][0])}</span>
     </div>
@@ -312,7 +312,7 @@ function family() {
   const room = (x, cls = '') => `<li class="room ${cls}" data-fam="${esc(x.id)}"><span class="room-m" aria-hidden="true">${mark(x.id, 30, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
     <div><b>${esc(x.name)}</b><span>${esc(x.descriptor)} — ${esc(x.owns.toLowerCase())}.</span></div>
     <a class="room-l" href="https://${esc(x.domain)}" rel="noopener">${esc(x.domain)}</a></li>`;
-  return section(FAMILY, `${eyebrow('The family')}${h2('family', f.heading, 'Binderkit owns the paperwork and nothing else. When a provider outgrows it, the plan and its versions are already in the shape the enterprise platform reads.')}
+  return section(FAMILY, `${eyebrow('The ladder')}${h2('family', f.heading, 'Binderkit owns the paperwork and nothing else. When a provider outgrows it, the plan and its versions are already in the shape the enterprise platform reads.')}
     <ul class="rooms">${room(pho, 'is-house')}</ul>
     <div class="grad"><span class="strip-l">${esc(l.heading)}</span>
       <p class="sub">${esc(pho.proof[2])}</p>

@@ -131,7 +131,7 @@ html[data-side="caregiver"] .sw-b[aria-pressed="true"] { color: #1C1620; }
 .hd-menu[aria-expanded="true"] { background: var(--wash); }
 
 /* ── the split sheet (phones) ─────────────────────────────────────────── */
-.sheet { position: fixed; top: 60px; left: 0; right: 0; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); z-index: 39; display: grid; grid-template-rows: minmax(0, 1fr) auto; background: var(--bg); color: var(--ink); }
+.sheet { position: fixed; top: 60px; left: 0; right: 0; bottom: calc(var(--bar-h) + var(--sab)); z-index: 39; display: grid; grid-template-rows: minmax(0, 1fr) auto; background: var(--bg); color: var(--ink); }
 .sheet[hidden] { display: none; }
 .sheet-g { display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
 .sheet-half { padding: 22px 16px 24px; overflow-y: auto; background: var(--bg); color: var(--ink); }
@@ -141,13 +141,13 @@ html[data-side="caregiver"] .sw-b[aria-pressed="true"] { color: #1C1620; }
 .sheet-n a { display: flex; align-items: center; min-height: 48px; padding: 4px 0; font-size: 16px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--line); color: var(--ink); }
 .sheet-n a.sheet-deep { margin-top: 14px; border: 0; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 12px; background: var(--ink); color: var(--bg); font-size: 14.5px; }
 .sheet-half.is-care .sheet-deep { background: var(--orchid); color: #1C1620; }
-.sheet-f { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; padding-bottom: max(10px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--bg); }
+.sheet-f { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; padding-bottom: max(10px, var(--sab)); border-top: 1px solid var(--line); background: var(--bg); }
 .sheet-p { display: flex; gap: 2px; flex-wrap: wrap; }
 .sheet-p a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-decoration: none; }
 .sheet-x { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--wash); color: var(--ink); flex: none; }
 
 /* ── the bottom split bar (phones) ────────────────────────────────────── */
-.bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 38; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); height: calc(var(--bar-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -10px 30px -20px rgba(0, 0, 0, .5); }
+.bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 38; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); height: calc(var(--bar-h) + var(--sab)); padding-bottom: var(--sab); box-shadow: 0 -10px 30px -20px rgba(0, 0, 0, .5); }
 .bar-h { display: flex; min-width: 0; overflow: hidden; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 14.5px; min-height: var(--bar-h); transition: background 200ms; }
 .bar-h.is-prov { background: #F7F3EC; color: #17201F; padding-right: 18px; }
 .bar-h.is-care { background: #1C1620; color: #F7F3EC; padding-left: 18px; }
@@ -1077,7 +1077,7 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .pho { min-height: 44px; }
   .sheet-f .badge-t { display: grid; min-height: 44px; margin-left: auto; }
   .bar { display: grid; }
-  .page { padding-bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); }
+  .page { padding-bottom: calc(var(--bar-h) + var(--sab)); }
   .ft { padding-bottom: 32px; }
   .ntf { top: 70px; }
   .step-g, .cred-g, .hrs-g, .care-g, .q-g, .join-g, .subs, .hrs-toys, .wallet-g, .free-g, .pay-g, .post-g, .two-g, .write-g, .contact-g, .hero-cg { grid-template-columns: minmax(0, 1fr); }
@@ -1131,7 +1131,7 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .ft-keys { display: none; }
   /* the last line has to clear the fixed split bar, which .page's own
      reservation cannot do for it: .page ends before <footer> begins. */
-  .ft { padding-top: 32px; padding-bottom: calc(var(--bar-h) + env(safe-area-inset-bottom) + 20px); }
+  .ft { padding-top: 32px; padding-bottom: calc(var(--bar-h) + var(--sab) + 20px); }
 
   /* the toast belongs at the bottom of a phone. At top: 70px it landed on
      the h1 for the first nine seconds of every first visit — and because it
@@ -1139,7 +1139,7 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   /* The shared .fab is keyed to this same bottom edge, so a 44px link landed
      inside this 62px toast and elementFromPoint returned the fab over the
      toast’s own X. Sit above the fab: its tap height plus air. */
-  .ntf { top: auto; bottom: calc(var(--bar-h) + env(safe-area-inset-bottom) + 10px + var(--tap, 44px) + 12px);
+  .ntf { top: auto; bottom: calc(var(--bar-h) + var(--sab) + 10px + var(--tap, 44px) + 12px);
          transform: translate(-50%, 24px); }
   .ntf.is-on { transform: translate(-50%, 0); }
 

@@ -44,7 +44,7 @@ const NOT = [
   ['The boundary sentence in Settings', 'Two wordings ship today and one of them has to be retired: whether CareShop runs the kitchen and the household, or the household.'],
 ];
 
-const LADDER_LINE = 'Every mini graduates by export → import; her data is already in PHO’s shape.';
+const LADDER_LINE = 'CareShop graduates by export → import; your kitchen record is already in PHO’s shape.';
 
 export function aboutPage(cfg, p) {
   const pho = byId.pho;

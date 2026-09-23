@@ -13,7 +13,7 @@ import { STATE_SETS } from '../../data/states.js';
 import { ic } from '../icons/cohort.js';
 import { header, footer, SCREENS } from './cohort/chrome.js';
 import { DAY, hid, tourKey, REFUSALS, NOT_STORED, HOUSE_KEYS, APP, find,
-  BOUNDARY, GRADUATION, INKS, SITE, screenHref } from './cohort/data.js';
+  BOUNDARY, GRADUATION, INKS, LIMIT, SITE, screenHref } from './cohort/data.js';
 import { pages } from './cohort/pages.js';
 
 export { header, footer, pages };
@@ -72,7 +72,7 @@ const INDEX = [
   ['grammar', '', 'The grammar'],
   ['roles', '', 'Who holds it'],
   ['house', '', 'Your house'],
-  ['family', '', 'The other rooms'],
+  ['family', '', 'The ladder'],
   ['questions', '', 'Questions'],
   ['pricing', '', 'Pricing'],
   ['join', '19:00', 'Join'],
@@ -192,6 +192,7 @@ function stops() {
       ${gate(1, 'The allergy gate', 'A medication that matches a recorded allergy. The Six Rights dialog asks for a reason before it will sign, and a manager is told.', 'The stop names the allergen, its severity, its reaction and where the information came from. The limitation is stated rather than hidden: the match is by name and ingredient plus a manual flag, and it misses drug-class conflicts.')}
       ${gate(2, 'The PRN interval gate', 'An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.', 'Two conditions, not one — before the order’s minimum interval, or beyond its maximum in twenty-four hours. The stop shows when the last dose was given and when the next one is permitted.')}
     </div>
+    <p class="limit-note">${esc(LIMIT)}</p>
     <p class="pull">${esc(loop.pull)}</p>
     <p class="more"><a href="/screens#cal-pass">${ic('screens', 16)}<span>The allergy gate, pin by pin — the Six Rights dialog asking for a reason before it will sign</span>${ic('right', 16)}</a></p>
     <div class="machines"><span class="strip-l">Four records, and what each one will not do</span>
@@ -209,11 +210,9 @@ function refuses() {
     </div>
     <ol class="ref-l">${REFUSALS.map(([t, why], i) => { const n = String(i + 1).padStart(2, '0'); return `<li id="refuse-${n}"><span class="ref-n">${n}</span><div><b>${esc(t)}</b><span>${esc(why)}</span><button type="button" class="ref-a" data-copy="${SITE}/#refuse-${n}" data-copied="Link to refusal ${n} copied" aria-label="Copy a link to refusal ${n}">#refuse-${n}</button></div></li>`; }).join('')}</ol>
     <div class="notstored"><span class="strip-l">Not stored, by design</span><p>${NOT_STORED.map(esc).join(' · ')}.</p></div>
-    <div class="bmap"><span class="strip-l">And where each of those lives instead</span>
-      <p class="boundary">Cohort keeps the residents’ record. Five things it will not be, and the room that is.</p>
-      <ul class="bmap-l">${BOUNDARY.map(([what, id, who, href]) => `<li class="bmap-r"><span class="bmap-w">${esc(what)}</span>${href
-        ? `<a class="bmap-to" href="${esc(href)}" rel="noopener" data-room="${esc(id)}">${esc(who)}</a>`
-        : `<span class="bmap-to is-none">${esc(who)}</span>`}</li>`).join('')}</ul>
+    <div class="bmap"><span class="strip-l">And the boundary around them</span>
+      <p class="boundary">Cohort keeps the residents’ record. Five things it will not do.</p>
+      <ul class="bmap-l">${BOUNDARY.map(([what]) => `<li class="bmap-r"><span class="bmap-w">${esc(what)}</span></li>`).join('')}</ul>
     </div>
     <p class="ref-print" aria-hidden="true">Cohort · What it will not do · cohorthome.app · by Providerhub Oregon</p>
   </div>`);
@@ -336,9 +335,9 @@ function family(cfg, p) {
   return sec('family', 'family', `<div class="wrap">
     <div class="head">${eyebrow('The ladder')}${h2('family', 'Where a house goes next.', 'Cohort runs one house. When an operator outgrows it, the record is already in the shape the enterprise platform reads.')}</div>
     <div class="grad">
-      <span class="strip-l">And the ladder out of the room</span>
+      <span class="strip-l">The ladder out</span>
       <ol class="grad-l">${GRADUATION.map(([t, d], i) => `<li class="grad-s" data-grad="${i + 1}"><span class="grad-n" aria-hidden="true">${i + 1}</span><div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join('')}</ol>
-      <p class="cap">Every mini graduates into Provider Hub Oregon by export → import; her data is already in PHO’s shape. The export is also hers to take anywhere else.</p>
+      <p class="cap">Cohort graduates into Provider Hub Oregon by export → import; the record is already in PHO’s shape. The export is also hers to take anywhere else.</p>
     </div>
   </div>`);
 }
@@ -423,7 +422,7 @@ ${record()}
 ${fold('Addenda, four words and three inks', grammar())}
 ${fold('Who is holding the phone', roles())}
 ${fold('The same record, on the web', house())}
-${fold('The other three rooms, and the ladder', family(cfg, p))}
+${fold('The ladder out of one house', family(cfg, p))}
 ${fold('Wi-fi, exports, the stops', questions())}
 ${pricing(cfg, p)}
 ${join(cfg, p)}

@@ -31,6 +31,15 @@ html {
    same way. This sheet owns `--fs-*`, `--sp-*`, `--bp-*` and the five
    furniture names below, and nothing else. */
 :root {
+  /* The safe-area insets, resolved once. Called inline from 20 selectors
+     before, and 8 of those had no fallback: inside calc()/max() an env()
+     the engine does not know invalidates the WHOLE declaration, so the
+     padding vanished instead of degrading to zero. Declared here with a
+     0px fallback, every other sheet uses var() and cannot reintroduce it. */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
   /* documentation only — @media cannot read a custom property */
   --bp-wide: 1200px; --bp-lap: 900px; --bp-phone: 640px; --bp-narrow: 400px;
 
@@ -60,7 +69,7 @@ html {
   --max: 1600px;
   /* --wrap-w, not --measure: careshop.css:64 already owns --measure for the
      62ch READING measure, which is the better claim on that name. */
-  --wrap-w: min(var(--max), calc(100% - 2 * var(--gutter) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  --wrap-w: min(var(--max), calc(100% - 2 * var(--gutter) - var(--sal) - var(--sar)));
   --sec-y: clamp(48px, 7vw, 104px);
 
   /* ── thumbs: a finger does not change size with the viewport ─────── */
@@ -308,14 +317,14 @@ body.is-locked { overflow: hidden; }
 .soc-g { flex: none; }
 .soc-t { font-size: 14px; }
 
-.toast { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 70; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; padding: 12px 18px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 14.5px; font-weight: 600; box-shadow: 0 16px 40px -20px rgba(0, 0, 0, .5); transition: opacity 180ms ease, transform 180ms cubic-bezier(.22, 1, .36, 1); }
+.toast { position: fixed; left: 50%; bottom: max(20px, var(--sab)); z-index: 70; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; padding: 12px 18px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 14.5px; font-weight: 600; box-shadow: 0 16px 40px -20px rgba(0, 0, 0, .5); transition: opacity 180ms ease, transform 180ms cubic-bezier(.22, 1, .36, 1); }
 .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
 
 /* Room for a bottom bar, with nothing to remember to emit: a site puts
    class="dock" on its fixed bottom bar and this is paid, on every route,
    automatically. --dock is 0px until a page declares it, so a site that
    has no dock pays only the safe-area inset. */
-body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom, 0px)); }
+body:has(.dock) { padding-bottom: calc(var(--dock) + var(--sab)); }
 
 /* ── the fold: shape only — no colour, no border, no font family ──────
    Below 640 a long page opens as an index. responsive.css decides when
@@ -339,7 +348,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    the Dynamic Island, and every face pins #top-bar at top: 0. No face sets a
    height on the header itself — the inner wrap carries it — so padding here
    grows the bar downward. env() is 0px wherever there is no inset. */
-#top-bar { padding-top: env(safe-area-inset-top, 0px); }
+#top-bar { padding-top: var(--sat); }
 
 @media (pointer: coarse) {
   .btn, .soc-i, .pho { min-height: 44px; }
@@ -400,7 +409,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 .fab {
   position: fixed; z-index: 43;
   right: clamp(14px, 2.4vw, 26px);
-  bottom: calc(var(--dock, 0px) + clamp(14px, 2.4vw, 26px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--dock, 0px) + clamp(14px, 2.4vw, 26px) + var(--sab));
   display: inline-flex; align-items: center; gap: 9px;
   min-height: var(--tap, 44px); padding: 0 18px;
   border-radius: var(--r-btn, 999px); border: 1px solid var(--line);
@@ -435,7 +444,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
      could not be clicked until the banner was answered. The CTAs live in the
      left and centre columns; the right corner clears them. */
   position: fixed; z-index: 60; left: auto; right: clamp(14px, 2.4vw, 26px);
-  bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 14px + var(--sab));
   width: min(460px, calc(100vw - 28px));
   transform: translateY(12px); opacity: 0;
   transition: opacity 220ms ease, transform 220ms cubic-bezier(.25, 1, .5, 1);
@@ -471,7 +480,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
 @media (max-width: 560px) {
   .ckb {
     left: 12px; right: auto; width: calc(100vw - 24px);
-    bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 10px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 10px + var(--sab));
   }
   .ckb-in { padding: 11px 13px; }
   /* The wide card’s headline carries the honest exception ("except the theme
@@ -521,7 +530,7 @@ body:has(.dock) { padding-bottom: calc(var(--dock) + env(safe-area-inset-bottom,
    Removed with the card, so it costs nothing after the choice is made.
    html.has-ckb, not .has-ckb: responsive.css loads last and its
    body:has(.tabs) rule ties on specificity and would win on order. */
-html.has-ckb body { padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 200px + env(safe-area-inset-bottom, 0px)); }
+html.has-ckb body { padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + 200px + var(--sab)); }
 
 /* ── a section's own screen ─────────────────────────────────────────────
    BRIEF-round2 §1 lets a section carry six items OR one full-width instrument.
@@ -545,3 +554,35 @@ html.has-ckb body { padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px
    prose to 15px whatever its length. */
 .sec-dev .cap { max-width: 56ch; text-align: center; font-size: 15px; color: var(--soft); }
 @media (max-width: 640px) { .sec-dev { margin-top: 26px; } }
+
+/* ── press, on a finger ───────────────────────────────────────────────────
+   Two defects the desaudit physics and craftbar gates found on all four
+   sites, fixed together because they are the same moment.
+
+   1 · 29 controls per home page were long-press selectable, so holding one
+       on iOS popped the text-selection handles over a button. Controls are
+       not prose; they do not get selected.
+   2 · `.btn:active` REMOVED the hover lift instead of giving a pressed
+       state, so a tap produced no feedback of its own. A press should move
+       the thing you pressed.
+
+   Declared last on purpose: base.css sets `.btn:active { transform: none }`
+   at :209, and at equal specificity the later rule is the one that lands.
+   See the source-order note in the kit's own CSS traps. */
+.btn, button, [role="button"], summary, .chip, .tab, .sign, .room, .fam, .dl, .printb, .ctl, .rb {
+  -webkit-user-select: none; user-select: none;
+}
+/* the text a control CONTAINS is still selectable where that is the point —
+   a copyable address, a code, a citation — so those opt back in. `.ctl` is
+   NOT one of them: it is the control itself, and listing it here overrode
+   the rule above at equal specificity because it is declared later. */
+.btn code, button code, [role="button"] code, .cite, [data-copy] code {
+  -webkit-user-select: text; user-select: text;
+}
+@media (hover: none) {
+  .btn:active, button:active, [role="button"]:active { transform: scale(.985); }
+  .btn.pri:active { filter: brightness(.96); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn:active, button:active, [role="button"]:active { transform: none; }
+}

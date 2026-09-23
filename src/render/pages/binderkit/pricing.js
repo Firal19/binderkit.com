@@ -19,7 +19,7 @@ function render(cfg, p) {
 ${header(cfg, p, { page: 'pricing', tabs: SECS.filter((x) => x.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">
 ${title(TOP, { eyebrow: 'Chapter · Pricing', h1: s.heading, lede: EVERY_PLAN, ctas: `<a class="btn pri lg" href="/#join" data-cta="pricing">${esc(cfg.cta.primary)}</a><a class="btn lg" href="#tiers">${ic('scale', 18)}<span>The tiers</span></a>`, index: onThisPage(SECS) })}
-${section(TIERS, `<h2 id="h-tiers">Three tiers.</h2><p class="sub">${esc(s.note)}</p>
+${section(TIERS, `<h2 id="h-tiers">The tiers.</h2><p class="sub">${esc(s.note)}</p>
   ${sellSwitch()}
   <div class="tiers">${p.pricing.rows.map(([name, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-n">${esc(name)}</span><span class="tier-p ${/^Open/.test(price) ? 'is-soon' : ''}">${esc(soon(price))}</span><span class="tier-d">${esc(d)}</span></div>`).join('')}</div>${openNote(p)}`)}
 ${section(SIGNUP, `<h2 id="h-signup">${esc(SIGNUP_FIVE.heading)}</h2>

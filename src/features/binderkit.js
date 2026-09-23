@@ -66,7 +66,7 @@ export const FEATURES = [
     probe: [{ css: 'scroll-snap-type:x mandatory' }, { home: 'class="tabs-cta"' }, { js: 'list.scrollTo(' }] },
   { id: 'bk-18', name: 'The foot bar on phones', kind: 'mobile',
     what: 'A slim fixed bar above the safe area carries Print, the page number “p. n / N” driven by scroll, and Join — the two primary actions under a thumb.',
-    probe: [{ home: 'class="footbar"' }, { home: 'data-page-n' }, { js: 'data-page-n' }, { css: 'env(safe-area-inset-bottom)' }] },
+    probe: [{ home: 'class="footbar"' }, { home: 'data-page-n' }, { js: 'data-page-n' }, { css: 'var(--sab)' }] },
   { id: 'bk-19', name: 'The magnifier on phones', kind: 'mobile',
     what: 'A contents page cannot be read at 390 pixels, so on a phone a Magnify stamp — or a tap on the sheet — opens it at true size in a pannable view.',
     probe: [{ home: 'class="sheet-tap"' }, { js: "'.cp.is-hero, .cp.is-page'" }, { home: 'class="lens-scroll" data-scrollx' }] },

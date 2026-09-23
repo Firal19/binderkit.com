@@ -65,7 +65,7 @@ ${sec('words', 'words', `<div class="wrap words-g">
 </div>`)}
 ${sec('ladder', 'ladder-s', `<div class="wrap grd-g">
   <div><div class="head head-r"><div>${eyebrow('The ladder')}${h2('ladder', esc(find('ladder').heading), esc(find('ladder').sub))}</div>${deepLink('/about#ladder', 'the graduation map')}</div>
-    <p class="fine">Every mini graduates the same way: one export, one import, and the same table shapes on the other side — org, house, licence track, staff, shift, credential. The code and the interface do not travel; they are rebuilt on ${esc(umbrella.name)}’s own design. The map below is the claim, stated as a claim.</p></div>
+    <p class="fine">Aidepost graduates the same way: one export, one import, and the same table shapes on the other side — org, house, licence track, staff, shift, credential. The code and the interface do not travel; they are rebuilt on ${esc(umbrella.name)}’s own design. The map below is the claim, stated as a claim.</p></div>
   ${gradLadder()}
 </div>`)}
 ${ixNav([['two', 'Two sides', 'both'], ['boundary', 'What we will not do', 'both'], ['words', 'The four words', 'both'], ['ladder', 'The ladder', 'both'], ['write', 'Write to a person', 'both']])}

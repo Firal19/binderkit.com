@@ -141,9 +141,9 @@
   scrollbar-color: var(--dm-hair) transparent;
 }
 .is-bleed .fs-rail {
-  margin-inline: calc(-1 * (var(--gutter) + env(safe-area-inset-left, 0px))) calc(-1 * (var(--gutter) + env(safe-area-inset-right, 0px)));
-  padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px)) max(calc(var(--gutter) + env(safe-area-inset-right, 0px)), calc(100% - var(--fs-card, 420px)));
-  scroll-padding-inline: calc(var(--gutter) + env(safe-area-inset-left, 0px));
+  margin-inline: calc(-1 * (var(--gutter) + var(--sal))) calc(-1 * (var(--gutter) + var(--sar)));
+  padding-inline: calc(var(--gutter) + var(--sal)) max(calc(var(--gutter) + var(--sar)), calc(100% - var(--fs-card, 420px)));
+  scroll-padding-inline: calc(var(--gutter) + var(--sal));
 }
 .fs-rail.is-drag { scroll-snap-type: none; cursor: grabbing; user-select: none; }
 /* No :focus-visible rule here or on .swx-p: both carry tabindex, so
@@ -325,7 +325,7 @@
      sideways scroll to escape into — the fit IS the floor here, and it
      lands at .97 on a 390pt phone and 1.0 on a 430. */
   .swx-stage, .cal-stage {
-    margin-inline: calc(-1 * (var(--gutter) + env(safe-area-inset-left, 0px))) calc(-1 * (var(--gutter) + env(safe-area-inset-right, 0px)));
+    margin-inline: calc(-1 * (var(--gutter) + var(--sal))) calc(-1 * (var(--gutter) + var(--sar)));
   }
   .swx, .cal-wrap { --dm-cap: calc(100vw - var(--sp-3)); }
   .fs-rail { gap: var(--sp-4); padding-bottom: var(--sp-3); }
@@ -336,4 +336,30 @@
   .swx-tab { padding: 0 13px; }
   .cal-wrap { gap: var(--sp-3); }
   .cal-i { padding: 8px 9px; }
+}
+
+/* ── a rail must show that it is a rail ───────────────────────────────────
+   Measured on the phone across all four sites: of 28 horizontal rails, three
+   showed NO peeking item at all and five more peeked 5-7px, which is
+   invisible. A visitor then believes they have seen the whole index when
+   74-87% of it is off-screen.
+
+   The fix is the one careshop.css already uses on .rail (:1510) and .doors-r
+   (:2044): fade the trailing edge, so the rail says "there is more" without
+   depending on where an item happens to land. Applied here to the shared
+   instrument rails; a rail that has scrolled to its end drops the mask via
+   [data-scroll-end], set by the same scroll listener the snap rails use. */
+@media (max-width: 900px) {
+  .fs-jump, .ix-l, .dir-l-o, .sj-l, .pidx-r, .fs-rail {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
+    scroll-padding-inline-end: 44px;
+  }
+  .fs-jump[data-scroll-end], .ix-l[data-scroll-end], .dir-l-o[data-scroll-end],
+  .sj-l[data-scroll-end], .pidx-r[data-scroll-end], .fs-rail[data-scroll-end] {
+    -webkit-mask-image: none; mask-image: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fs-jump, .ix-l, .dir-l-o, .sj-l, .pidx-r, .fs-rail { scroll-behavior: auto; }
 }

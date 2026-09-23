@@ -173,11 +173,11 @@ const stripJump = () => `<nav class="sj" aria-label="Jump straight to one screen
 </nav>`;
 
 /* ── the family ───────────────────────────────────────────────────────── */
-const familySec = (p) => fold('Four rooms, one ladder — and what each one takes off Aidepost’s plate.', sec('family', 'family', `<div class="wrap">
-  <div class="head">${eyebrow('The family')}${h2('family', esc(find('family').heading), 'Aidepost holds the workforce and nothing else. The other three rooms are real products at real addresses, and one of them is live today. The state printed beside each one is that product’s own, read from the family register — none of it is an Aidepost number.')}</div>
+const familySec = (p) => fold('Where this goes next — the enterprise layer Aidepost graduates into.', sec('family', 'family', `<div class="wrap">
+  <div class="head">${eyebrow('The ladder')}${h2('family', esc(find('family').heading), 'Aidepost holds the workforce and nothing else. When an operator outgrows one house, the roster, the credentials and the hours are already in the shape the enterprise platform reads.')}</div>
   ${familyBand()}
   ${doesNotList(p)}
-  <p class="fine"><a href="/about#ladder">Every mini graduates into Provider Hub Oregon by export → import, and her data is already in PHO’s shape — the map ${ic('arrow', 14, { pin: false })}</a></p>
+  <p class="fine"><a href="/about#ladder">Aidepost graduates into Provider Hub Oregon by export → import, and her data is already in PHO’s shape — the map ${ic('arrow', 14, { pin: false })}</a></p>
 </div>`));
 
 export const HOME_IX = [
@@ -190,7 +190,7 @@ export const HOME_IX = [
   ['wallet', 'Your wallet', 'care'],
   ['free', 'Free, for ever', 'care'],
   ['refuses', 'What we refuse', 'both'],
-  ['family', 'The four rooms', 'both'],
+  ['family', 'Where this goes next', 'both'],
   ['questions', 'Questions', 'both'],
   ['pricing', 'Pricing', 'both'],
   ['join', 'Join', 'both'],

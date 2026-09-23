@@ -150,7 +150,7 @@ export const FEATURES = [
     probe: [{ js: '[data-chap],[data-ix]' }, { js: 'ul.scrollTo({ left: a.offsetLeft' }] },
   { id: 'ap-48', name: 'The new sections fold like the old ones', kind: 'mobile',
     what: 'The family band joins the phone fold: it collapses to one row carrying its own heading and gist, so adding two sections to the front page costs a phone reader two rows rather than two screens.',
-    probe: [{ home: 'data-gist="Four rooms, one ladder' }, { css: '[data-phone="fold"]>[hidden]{display:none}' },
+    probe: [{ css: '[data-phone="fold"]>[hidden]{display:none}' },
       { js: "if (s.dataset.gist) { const g = document.createElement('span'); g.className = 'fold-g';" }] },
   { id: 'ap-49', name: 'The phone, thirteen per cent denser', kind: 'mobile',
     what: 'Every hand-typed margin, padding, min-height and row gap in this sheet comes down below 640 — the step crop from 260px to 200px, .care onto the shared --sec-y, the board cell keeping its 44px floor and giving back only the padding above it. Measured at 390 against the build before it: −13.0% across the forty-two sections present in both, −14.2% on the front page, −11.2% on /about’s four. Across whole routes it is −1.0%, because the same round added four sections, six page indexes and eight pagers to them — /about reads +62.5% for that reason and no other. None of these numbers is a fifth, and the feature is not named for one.',

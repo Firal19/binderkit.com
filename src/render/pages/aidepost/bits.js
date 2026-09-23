@@ -453,7 +453,7 @@ export function doesNotList(p) {
     const who = m ? m[2] : '';
     const hit = ROOM.find(([name]) => who.includes(name));
     const q = hit ? byId[hit[1]] : null;
-    return `<li><b>${esc(what.charAt(0).toUpperCase() + what.slice(1))}</b>${who ? `<span>${q ? `<a href="https://${esc(q.domain)}" rel="noopener">${esc(who)}</a>` : esc(who)}</span>` : ''}</li>`;
+    return `<li><b>${esc(what.charAt(0).toUpperCase() + what.slice(1))}</b>${who && !ROOM.some(([name]) => who.includes(name)) ? `<span>${esc(who)}</span>` : ''}</li>`;
   }).join('')}</ul>`;
 }
 

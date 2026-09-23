@@ -142,7 +142,7 @@ ${title(TOP, {
 ${section(PLATES, `<h2 id="h-plates">Five plates.</h2><p class="sub">Snap through them with a finger, a trackpad or the arrow keys. Every plate carries its own address, so one screen can be sent on its own.</p>
   ${plates('plates', ORDER)}
   <p class="cap">The order is the product’s own: question zero, the binder it produces, the editing it permits, the version that results, the print that ends it.</p>`)}
-${section(ANNOTATED, `<h2 id="h-annotated">The guarded editor, annotated.</h2><p class="sub">Four numbered callouts on the desktop shell. Point at one and it lights the thing it quotes.</p>
+${section(ANNOTATED, `<h2 id="h-annotated">The guarded editor, at desk size.</h2><p class="sub">The same refusals, on the shell a provider actually plans in.</p>
   ${annotated(webShell('binderkit', { key: 'editor' }), EDITOR_PINS, { id: 'cal-plates', label: 'What the guarded editor does' })}
   <p class="refusal">“This item is required by section 0170. You can move it, but it can’t come out.”</p>
   <p class="cap">That sentence is the product’s voice, set down in the design register. It never says “not allowed”.</p>`)}
