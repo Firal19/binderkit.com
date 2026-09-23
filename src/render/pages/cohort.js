@@ -10,11 +10,10 @@ import { esc, skip, waitlist, faq, tiers, sec, h2, eyebrow, mark } from '../shar
 import { iosShell, SURFACES, screenSwitch } from '../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../data/page.js';
 import { STATE_SETS } from '../../data/states.js';
-import { MINIS } from '../../data/brand.js';
 import { ic } from '../icons/cohort.js';
 import { header, footer, SCREENS } from './cohort/chrome.js';
 import { DAY, hid, tourKey, REFUSALS, NOT_STORED, HOUSE_KEYS, APP, find,
-  LEDGER, WEDGE, LIMIT, BOUNDARY, GRADUATION, INKS, SITE, screenHref } from './cohort/data.js';
+  BOUNDARY, GRADUATION, INKS, SITE, screenHref } from './cohort/data.js';
 import { pages } from './cohort/pages.js';
 
 export { header, footer, pages };
@@ -73,7 +72,6 @@ const INDEX = [
   ['grammar', '', 'The grammar'],
   ['roles', '', 'Who holds it'],
   ['house', '', 'Your house'],
-  ['standing', '', 'Where this is'],
   ['family', '', 'The other rooms'],
   ['questions', '', 'Questions'],
   ['pricing', '', 'Pricing'],
@@ -186,10 +184,10 @@ function stops() {
   const loop = find('loop');
   const gate = (n, title, front, back) => `<div class="gate-w"><button type="button" class="gate" aria-pressed="false" data-flip aria-label="${esc(title)} — turn the card over">
       <span class="gate-f"><span class="gate-n">${n}</span><span class="gate-t">${esc(title)}</span><span class="gate-p">${esc(front)}</span><span class="gate-cta">${ic('handoff', 15)}What the override records</span></span>
-      <span class="gate-b"><span class="strip-l">What the override records · stop ${n}</span><span class="gate-p is-strong">Choosing Override means typing a reason of at least ten characters. The reason is recorded on the dose, written to the audit log, and the manager is told.</span><span class="gate-p">${esc(back)}</span><span class="gate-cta">${ic('handoff', 15)}Turn back</span></span>
+      <span class="gate-b"><span class="strip-l">What the override records · stop ${n}</span><span class="gate-p">${esc(back)}</span><span class="gate-cta">${ic('handoff', 15)}Turn back</span></span>
     </button></div>`;
   return sec('stops', 'stops', `<div class="wrap">
-    <div class="head">${eyebrow('Inform, don’t police')}${h2('stops', 'Two stops. Nothing else.', 'Both were chosen because the harm of not stopping is physical. An override is recorded with a reason; then the pass proceeds. There is no third gate, and there are no countdown timers.')}</div>
+    <div class="head">${eyebrow('Inform, don’t police')}${h2('stops', 'Two stops. Nothing else.', 'Both were chosen because the harm of not stopping is physical. An override means typing a reason of at least ten characters; the reason is recorded on the dose, written to the audit log, and the manager is told, and then the pass proceeds. There is no third gate, and there are no countdown timers.')}</div>
     <div class="gates">
       ${gate(1, 'The allergy gate', 'A medication that matches a recorded allergy. The Six Rights dialog asks for a reason before it will sign, and a manager is told.', 'The stop names the allergen, its severity, its reaction and where the information came from. The limitation is stated rather than hidden: the match is by name and ingredient plus a manual flag, and it misses drug-class conflicts.')}
       ${gate(2, 'The PRN interval gate', 'An as-needed dose given too soon after the last one. The minimum interval is on the order; the clock is the record’s, not a countdown.', 'Two conditions, not one — before the order’s minimum interval, or beyond its maximum in twenty-four hours. The stop shows when the last dose was given and when the next one is permitted.')}
@@ -330,44 +328,13 @@ function house() {
   </div>`);
 }
 
-/* ── where this actually is ────────────────────────────────────────────
-   The ledger is the whole investment case stated as facts a partner can
-   check, and every row that is not live says so in the same breath. No
-   metric, no customer, no number that is not in the vault. */
-function standing() {
-  const WORD = { yes: 'Live', no: 'Not yet', part: 'Partly' };
-  return sec('standing', 'standing', `<div class="wrap">
-    <div class="head">${eyebrow('No metrics, because there are none')}${h2('standing', 'Where this actually is, line by line.', 'Three of the four products in this family are pre-launch and this is one of them. Everything below is checkable; nothing below is a projection.')}</div>
-    <div class="ledg" role="table" aria-label="What is live and what is not">
-      ${LEDGER.map(([live, what, why]) => `<div class="ledg-r" role="row" data-live="${live}"><span class="ledg-s" role="cell"><i aria-hidden="true"></i>${WORD[live]}</span><b class="ledg-w" role="cell">${esc(what)}</b><span class="ledg-y" role="cell">${esc(why)}</span></div>`).join('')}
-    </div>
-    <div class="wedge">
-      <div class="wedge-t"><span class="strip-l">What is defensible, and how you would check it</span>
-        <ol class="wedge-l">${WEDGE.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
-      </div>
-      <div class="note limit"><h3>And the one it misses</h3><p>${esc(LIMIT)}</p></div>
-    </div>
-  </div>`);
-}
-
 /* ── the other three rooms, and the ladder out of them ─────────────────
    The family band and the graduation path: one house on Cohort becomes
    twenty on Provider Hub Oregon by export → import, because her record is
    already in PHO's shape. */
 function family(cfg, p) {
-  const room = (x) => `<a class="room" href="https://${esc(x.domain)}" rel="noopener">
-      <span class="room-mk">${mark(x.id, 34, { label: false })}</span>
-      <span class="room-n">${esc(x.name)}</span>
-      <span class="room-d">${esc(x.descriptor)}. Owns ${esc(x.domainWord)}.</span>
-      <span class="room-o">${ic('ext', 14)}${esc(x.status)}</span>
-      <span class="room-u">${esc(x.domain)}</span>
-    </a>`;
   return sec('family', 'family', `<div class="wrap">
-    <div class="head">${eyebrow('One house, four rooms')}${h2('family', 'Cohort is one room of four.', 'Each one is a small, complete product a provider can buy on its own. Cohort holds the residents; the other three hold the workforce, the household and the paperwork.')}</div>
-    <div class="rooms">
-      <span class="room is-here"><span class="room-mk">${mark('cohort', 34, { label: false })}</span><span class="room-n">${esc(p.name)}<span class="room-here">You are here</span></span><span class="room-d">${esc(p.descriptor)}. Owns ${esc(p.domainWord)}.</span><span class="room-o">${ic('now', 14)}${esc(p.status)}</span><span class="room-u">${esc(p.domain)}</span></span>
-      ${MINIS.filter((x) => x.id !== 'cohort').map(room).join('')}
-    </div>
+    <div class="head">${eyebrow('The ladder')}${h2('family', 'Where a house goes next.', 'Cohort runs one house. When an operator outgrows it, the record is already in the shape the enterprise platform reads.')}</div>
     <div class="grad">
       <span class="strip-l">And the ladder out of the room</span>
       <ol class="grad-l">${GRADUATION.map(([t, d], i) => `<li class="grad-s" data-grad="${i + 1}"><span class="grad-n" aria-hidden="true">${i + 1}</span><div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join('')}</ol>
@@ -431,11 +398,11 @@ function join(cfg, p) {
 }
 
 /* WHAT DOES *NOT* FOLD, and why.
-   #standing (the status ledger) and #pricing (no number, open decision #8)
-   are the two sections that say what is not true yet. Both were folded for
-   one round and both are open again: a disclosure behind a tap is a
-   disclosure a phone reader does not make, and the phone is the device
-   this site is read on.
+   #pricing does not fold. It is the section a reader came to find, and a
+   disclosure behind a tap is a disclosure a phone reader does not make —
+   and the phone is the device this site is read on. (#standing, the status
+   ledger, used to be the other one; it was deleted on 2026-09-21 along with
+   the rest of the build-status copy, so the pair is now a single.)
 
    There is a measurement trap under this too. tools density.mjs measures
    section[id].getBoundingClientRect() with the folds SHUT, so newly folding
@@ -456,7 +423,6 @@ ${record()}
 ${fold('Addenda, four words and three inks', grammar())}
 ${fold('Who is holding the phone', roles())}
 ${fold('The same record, on the web', house())}
-${standing()}
 ${fold('The other three rooms, and the ladder', family(cfg, p))}
 ${fold('Wi-fi, exports, the stops', questions())}
 ${pricing(cfg, p)}

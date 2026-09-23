@@ -1,6 +1,6 @@
 // aidepost.com — the front page. The light half, then the page turns over.
 
-import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, spec, find, S, STEPS, BOUNDARY, shell, boardTable, doors, rosterToy, credTimeline, timesheetToy, clockToy, distanceToy, walletCards, deck, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav, pager, ledger, familyBand, doesNotList, deepLink, screensOf } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, spec, find, S, STEPS, BOUNDARY, shell, boardTable, doors, rosterToy, credTimeline, timesheetToy, clockToy, distanceToy, walletCards, deck, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav, pager, familyBand, doesNotList, deepLink, screensOf } from './bits.js';
 
 function hero(cfg, p) {
   return `<section class="hero" id="top" aria-labelledby="h1">
@@ -172,15 +172,6 @@ const stripJump = () => `<nav class="sj" aria-label="Jump straight to one screen
   <a class="sj-all" href="/screens">Open the strip ${ic('arrow', 16, { pin: false })}</a>
 </nav>`;
 
-/* ── the ledger ───────────────────────────────────────────────────────
-   A pre-launch product that states its own state is doing the one thing a
-   deck cannot fake. Every row is read from brand.js or data/page.js. */
-const ledgerSec = (p) => fold('What is live, what is not, and the one question we have not closed.', sec('ledger', 'ledger', `<div class="wrap">
-  <div class="head head-r"><div>${eyebrow('Stated plainly')}${h2('ledger', 'What is true today.', 'Aidepost is pre-launch and this page says so in every row. No row reports an Aidepost customer, a pilot, a metric or a raise, because there is not one to report.')}</div>${deepLink('/#ledger', 'the status ledger')}</div>
-  ${ledger(p)}
-  <p class="pull">Providers pay. Caregivers never do — so the side that is hardest to buy is the side that costs nothing to reach.</p>
-</div>`));
-
 /* ── the family ───────────────────────────────────────────────────────── */
 const familySec = (p) => fold('Four rooms, one ladder — and what each one takes off Aidepost’s plate.', sec('family', 'family', `<div class="wrap">
   <div class="head">${eyebrow('The family')}${h2('family', esc(find('family').heading), 'Aidepost holds the workforce and nothing else. The other three rooms are real products at real addresses, and one of them is live today. The state printed beside each one is that product’s own, read from the family register — none of it is an Aidepost number.')}</div>
@@ -199,14 +190,13 @@ export const HOME_IX = [
   ['wallet', 'Your wallet', 'care'],
   ['free', 'Free, for ever', 'care'],
   ['refuses', 'What we refuse', 'both'],
-  ['ledger', 'What is true today', 'both'],
   ['family', 'The four rooms', 'both'],
   ['questions', 'Questions', 'both'],
   ['pricing', 'Pricing', 'both'],
   ['join', 'Join', 'both'],
 ];
 
-export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'refuses', 'roles', 'ledger', 'family', 'questions', 'pricing', 'join', 'claim']);
+export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'refuses', 'roles', 'family', 'questions', 'pricing', 'join', 'claim']);
 
 export function home(cfg, p) {
   return shell(cfg, p, { page: 'home', ids: HOME_IDS }, `${hero(cfg, p)}
@@ -220,7 +210,6 @@ ${caregivers()}
 ${rules()}
 ${refuses()}
 ${roles()}
-${ledgerSec(p)}
 ${familySec(p)}
 ${questions()}
 ${pricing(cfg, p)}

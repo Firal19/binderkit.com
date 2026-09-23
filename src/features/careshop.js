@@ -129,9 +129,6 @@ export const FEATURES = [
   { id: 'cs-36', name: 'The stock take: live, and not live', kind: 'honesty',
     what: 'Two columns on /about: eight things running in houses today, and seven that are specified, priced or promised and are not in the product — the trial, the citation confidence field, five of the eight purchasing rules, the customer BAA.',
     probe: [{ route: 'about' }, { html: 'class="take-g"' }, { html: 'Not in the product · 7' }, { css: '.take-c.is-off .take-l{' }] },
-  { id: 'cs-37', name: 'The three rooms next door', kind: 'family',
-    what: 'Cohort, Binderkit and Aidepost with their marks, what each owns, their real status — draft, not built — and a live link to each. CareShop is named as the only one of the four you can buy today.',
-    probe: [{ route: 'about' }, { html: 'class="fam-a"' }, { html: 'class="fam-s" data-kind="draft"' }, { css: '.fam-s[data-kind="live"]' }] },
   { id: 'cs-38', name: 'The ladder out of the kitchen', kind: 'family',
     what: 'What the kitchen holds, mapped row by row onto the module of Provider Hub Oregon that absorbs it: export → import, one login, nothing re-typed and nothing stranded.',
     probe: [{ route: 'about' }, { html: 'class="ldr"' }, { html: 'class="grad-f"' }, { css: '.ldr-r{' }] },
@@ -145,11 +142,11 @@ export const FEATURES = [
     what: 'The same five things sorted the two ways a person walks them — the house’s zones and the shop’s aisles — with the third axis defined and deliberately not listed, because the product never derives one from another.',
     probe: [{ route: 'stock' }, { html: 'name="careshop-axis"' }, { html: 'class="axes-l"' }, { html: '19 aisles' }] },
   { id: 'cs-42', name: 'The twelve governing rules', kind: 'honesty',
-    what: 'The product’s own constitution, each rule with a chip saying whether it is in the product today, being repaired in the rebuild, or specified and not built. Four of the twelve are not in force and say so — three being repaired, one specified and not built — and the count is read off the list rather than typed.',
+    what: 'The product’s own constitution, each rule with a chip saying whether it is in the product today, being repaired, or specified and not built. Four of the twelve are not in force and say so — three being repaired, one specified and not built — and the count is read off the list rather than typed.',
     probe: [{ route: 'rules' }, { html: 'class="gov"' }, { html: 'The curation rule' }, { html: 'being repaired' },
       /* both places the count ships. If a rule's state changes these fail
          and the sentence has to be re-read, which is the point. */
-      { html: 'Four of the twelve are not fully in force' }, { html: '>4 not in force<' }] },
+      { html: '>4 not in force<' }] },
   { id: 'cs-43', name: 'What leaves the house', kind: 'honesty',
     what: 'A message out of the system carries a house code and a count and never a resident, a diet, an allergen or an item name — because there is no free-text body parameter anywhere in it. Two of the twenty-two templates send today.',
     probe: [{ route: 'rules' }, { html: 'id="h-egress"' }, { html: 'A message carries a code and a count.' }] },

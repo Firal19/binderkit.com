@@ -355,9 +355,11 @@ const join = (s, ctx) => {
 
 /* ── 12 · pricing, from the vault and nowhere else ─────────────────────── */
 const tiers = (s, ctx) => {
-  // A tier whose number is not set yet says so in a smaller voice: two
-  // display-size “Early access” lines side by side read as a placeholder.
-  const rows = ctx.p.pricing.rows.map(([n, price, d]) => [n, /^Open/.test(price) ? 'Early access' : price, d, /^Open/.test(price)]);
+  // A tier whose number is not set yet says so in a smaller voice, and says
+  // the true thing: "Early access" in the price slot reads as a plan you can
+  // buy, not as a price that does not exist. Two display-size lines side by
+  // side would also read as a placeholder, hence .is-soon.
+  const rows = ctx.p.pricing.rows.map(([n, price, d]) => [n, /^Open/.test(price) ? 'Not priced yet' : price, d, /^Open/.test(price)]);
   const notes = s.notes ? `<div class="lp-subs">${s.notes.map((n) => `<div class="lp-note"><h3>${esc(n.heading)}</h3><p>${esc(n.text)}</p></div>`).join('')}</div>` : '';
   return sec(s, ctx, `<div class="lp-tiers">${rows.map(([name, price, d, soon], i) => `<div class="lp-tier ${i === s.main ? 'is-main' : ''}">
       <span class="lp-tier-n">${esc(name)}</span>

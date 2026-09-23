@@ -173,12 +173,13 @@ export const WEDGE = [
 ];
 export const LIMIT = 'The allergy match is by normalised name and ingredient plus a manual flag. It misses drug-class conflicts, and the product says so on the stop rather than implying a completeness it does not have.';
 
-/* the boundary, from brand.js doesNot — each refusal with the room that
-   does hold it, so a refusal is a map rather than a gap. */
+/* the boundary, from brand.js doesNot. A refusal names what Cohort will not
+   hold. The sibling products are no longer named on the public page; only
+   Provider Hub Oregon, which is the platform a house graduates into. */
 export const BOUNDARY = [
-  ['schedule staff, track clock-in or hold credentials', 'aidepost', 'Aidepost', 'https://aidepost.com'],
-  ['run the kitchen', 'careshop', 'CareShop', 'https://careshop.app'],
-  ['generate binders', 'binderkit', 'Binderkit', 'https://binderkit.com'],
+  ['schedule staff, track clock-in or hold credentials', '', '', ''],
+  ['run the kitchen', '', '', ''],
+  ['generate binders', '', '', ''],
   ['hold resident funds, author ISPs or bill the state', 'pho', 'Provider Hub Oregon', 'https://providerhub.us'],
   ['police compliance', '', 'Nowhere. It is not a product.', ''],
 ];

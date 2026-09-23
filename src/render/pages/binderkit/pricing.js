@@ -14,7 +14,7 @@ function render(cfg, p) {
   atChapter('/pricing');
   const s = find('pricing');
   const lapse = find('evidence').blocks.find((b) => b.label === 'If you stop paying');
-  const soon = (price) => (/^Open/.test(price) ? 'Early access' : price);
+  const soon = (price) => (/^Open/.test(price) ? 'Not priced yet' : price);
   return `<a class="skip" href="#main">Skip to content</a>
 ${header(cfg, p, { page: 'pricing', tabs: SECS.filter((x) => x.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">

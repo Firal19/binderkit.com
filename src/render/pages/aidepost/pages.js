@@ -60,7 +60,7 @@ ${sec('two', 'two-s', `<div class="wrap two-g">${closing.map((b) => `<div class=
 ${sec('boundary', 'bound', `<div class="wrap"><div class="head">${h2('boundary', 'What Aidepost will not do.')}</div><p class="boundary">${esc(BOUNDARY)}</p></div>`)}
 ${sec('words', 'words', `<div class="wrap words-g">
   <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth colour.', 'Every state in Aidepost is one of these four, and coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
-    <p class="fine">Expired deliberately borrows Cohort’s coral rather than inventing a fifth colour for the family. The vault states it; this page does not pretend it was our idea.</p></div>
+    </div>
   ${stateLegend()}
 </div>`)}
 ${sec('ladder', 'ladder-s', `<div class="wrap grd-g">

@@ -48,7 +48,7 @@ export const PRODUCTS = [
     nav: [{ group: 'The house', items: ['Today', 'Residents', 'MAR', 'Documentation', 'Incidents', 'Tasks'] }, { group: 'Organisation', items: ['People & access', 'Settings'] }],
     firstTen: ['Name the house.', 'Add one resident with an allergy.', 'Enter one medication order.', 'Sign one dose behind the Six Rights dialog and see “Logged by · at” appear.'],
     proof: ['The pilot home is named — an AFH-DD in Eugene — and the exit criterion is fourteen consecutive days of medication passes without paper; no real resident may enter until the agreement is executed.', 'Two physical-harm gates — a medication that matches a recorded allergy, an as-needed dose given too soon — and nothing else that blocks.', 'Append-only: corrections are addenda under the original; nothing is deleted.'],
-    doesNot: ['schedule staff, track clock-in or hold credentials (Aidepost)', 'run the kitchen (CareShop)', 'generate binders (Binderkit)', 'hold resident funds, author ISPs or bill the state (PHO)', 'police compliance (nowhere)'],
+    doesNot: ['schedule staff, track clock-in or hold credentials', 'run the kitchen', 'generate binders', 'hold resident funds, author ISPs or bill the state (PHO)', 'police compliance (nowhere)'],
     pricing: { unit: 'house', rows: [['3-day trial', 'Card on file', 'Everything Pro shows; one-tap cancel'], ['Pro', 'Open (#8)', 'AFH operator, up to 3 houses'], ['Scale', 'Open (#8)', 'Agency or multi-home: roll-ups, agency roles, exports']], note: 'Prices are not set yet. The prior $10 per house may survive as the metered add-on.' },
   },
   {
@@ -66,7 +66,7 @@ export const PRODUCTS = [
     nav: [{ group: 'The kitchen', items: ['Today', 'Cook', 'Stock', 'Shop', 'Menu'] }, { group: 'Organisation', items: ['Houses', 'Residents', 'Reserves', 'Compliance', 'Settings'] }],
     firstTen: ['Add a zone and scan five items from the pantry.', 'Set a par on one and watch it become a buy request.', 'Add a resident with a tree-nut allergy and see the menu warn.', 'Open Today and see what the house needs — restock, expiry, dinner.'],
     proof: ['Live at careshop.app and used by real houses; a caregiver scans groceries into it at the store today.', 'Ten Oregon citations are explained in the product today and every other catalogue row carries the bare rule text. A banner stays on a rule set no provider has reviewed.', 'Residents stay a label, never a name: diet tags, allergens, one texture level.'],
-    doesNot: ['store diagnoses, medications, incidents or clinical notes (Cohort)', 'schedule anyone (Aidepost)', 'print the tab where a reserve record goes (Binderkit)', 'store a tray note, or rank one house against another (never)'],
+    doesNot: ['store diagnoses, medications, incidents or clinical notes', 'schedule anyone', 'print the tab where a reserve record goes', 'store a tray note, or rank one house against another (never)'],
     pricing: { unit: 'house', rows: [['Free', '$0', 'One house, three people, five hundred items'], ['Pro', '$19 / mo', 'Up to five houses'], ['Scale', '$37 / mo', 'Unlimited houses, cross-house spend, catalogue import and copying between houses']], note: 'Sold on the web. Free, Pro at $19, Scale at $37.' },
   },
   {
@@ -84,7 +84,7 @@ export const PRODUCTS = [
     nav: [{ group: 'The binders', items: ['Plan', 'Binders', 'Versions', 'Notes'] }, { group: 'Organisation', items: ['Facilities', 'Settings'] }],
     firstTen: ['Pick the licence track.', 'Answer five questions.', 'See the plan and why each binder exists.', 'Print the resident-binder contents page and hold it.'],
     proof: ['Zero PHI by design: identity fields blank and hand-filled, plans keyed by a facility code — so it needs no BAA and can ship first.', 'Deterministic: the same answers always produce the same plan, with the reasoning shown.', 'Every item prints its authority citation and its evidence tag; derived items say so until verified.'],
-    doesNot: ['store documents or scans (PHO M06, later)', 'record policy acknowledgments or credential dates (Aidepost)', 'hold emergency stock (CareShop)', 'certify readiness or score compliance (nowhere)'],
+    doesNot: ['store documents or scans (PHO M06, later)', 'record policy acknowledgments or credential dates', 'hold emergency stock', 'certify readiness or score compliance (nowhere)'],
     pricing: { unit: 'facility', rows: [['3-day trial', 'Card on file', 'Prints on day one'], ['Pro', 'Open (#9)', 'Or a single purchase — used twice a year'], ['Scale', 'Open (#9)', 'Multi-facility, the agency library, shared viewer seats']], note: 'Whether Binderkit is a subscription or a single purchase is not decided yet.' },
   },
   {
@@ -102,7 +102,7 @@ export const PRODUCTS = [
     nav: [{ group: 'The workforce', items: ['Shifts', 'Staff', 'Credentials', 'Onboarding', 'Timesheets', 'Posts'] }, { group: 'Organisation', items: ['Houses', 'Settings'] }],
     firstTen: ['Add six staff and their CPR dates.', 'See the one that expires Friday turn coral.', 'Build next week’s roster.', 'See Saturday night open — offer it to own staff, then post outward.'],
     proof: ['Two-sided: providers buy it; caregivers use it free, without an organisation or a card.', 'Credentials are surfaced, never enforced: thirty-day and seven-day notices; expired turns coral on the roster.', 'A shift never describes a person: the shift schema has no field that can reference a resident.'],
-    doesNot: ['run payroll or background checks (the provider does; Aidepost records status and dates)', 'describe a resident in a posting (never)', 'hold resident care, MAR or incidents (Cohort)', 'write the house rules (Binderkit)'],
+    doesNot: ['run payroll or background checks (the provider does; Aidepost records status and dates)', 'describe a resident in a posting (never)', 'hold resident care, MAR or incidents', 'write the house rules'],
     pricing: { unit: 'house + per post', rows: [['3-day trial', 'Card on file', 'Posting available on every tier, including the trial'], ['Pro', 'Open (#8)', 'Directory, credentials, roster, clock-in, timesheets'], ['Scale', 'Open (#8)', 'Unlimited houses; agency roles and CBTP items'], ['Job post', 'One charge per post', 'Publishes the listing when paid']], note: 'Caregivers pay nothing. Providers buy Aidepost.' },
   },
 ];

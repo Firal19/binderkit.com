@@ -135,8 +135,8 @@ function screens(cfg, p) {
       <p class="more"><a href="/#shift">${ic('clock', 16)}<span>Or watch them in order, across one shift</span>${ic('right', 16)}</a></p>
     </div>`))}
     ${sec('sjoin', 'sjoin', `<div class="wrap">
-      <div class="head">${eyebrow('Early access')}${h2('sjoin', 'That is the product.', 'Five screens, two stops, one record that cannot be quietly changed. It is not built yet and the first house is named; both of those are on the front page in the same words.')}</div>
-      <div class="ctas"><a class="btn pri lg" href="/#join">${ic('stamp', 18)}${esc(cfg.cta.primary)}</a><a class="btn lg" href="/#standing">${ic('ledger', 18)}What is live, and what is not</a></div>
+      <div class="head">${eyebrow('Early access')}${h2('sjoin', 'That is the product.', 'Five screens, two stops, one record that cannot be quietly changed.')}</div>
+      <div class="ctas"><a class="btn pri lg" href="/#join">${ic('stamp', 18)}${esc(cfg.cta.primary)}</a></div>
     </div>`)}`);
 }
 
@@ -202,7 +202,7 @@ function about(cfg, p) {
   return shell(cfg, p, 'about', `
     ${phead('About', 'Daily operations for Oregon care homes.', p.lede)}
     ${sec('standing', 'astand', `<div class="wrap">
-      <div class="head">${h2('standing', 'Not open yet, and plain about it.', 'The first house is named. Real residents do not enter until the customer agreement is signed.')}</div>
+      <div class="head">${h2('standing', 'What Cohort is built on.', 'Three things the product holds to, and how you would check each one.')}</div>
       <ul class="proof">${p.proof.map((t) => `<li>${ic('check', 16)}<span>${esc(t)}</span></li>`).join('')}</ul>
     </div>`)}
     ${sec('company', 'acompany', `<div class="wrap company">

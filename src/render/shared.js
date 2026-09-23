@@ -218,7 +218,7 @@ export function openNote(p) {
     : '';
 }
 
-export function tiers(p, main = 1, soonLabel = 'Early access') {
+export function tiers(p, main = 1, soonLabel = 'Not priced yet') {
   /* A row whose price reads "Open (#n)" is one the register has NOT decided. The
      page used to print soonLabel there and stop, which reads as a plan you can
      buy rather than a price that does not exist yet — the page overstating what

@@ -34,9 +34,9 @@ const find = (k) => spec.sections.find((s) => s.key === k);
    that two wordings of the sentence ship today and one has to go. */
 const OWNERS = [
   ['What the house buys, stores, cooks or holds in reserve', 'careshop', 'Here. The household is this product’s whole domain.'],
-  ['A resident’s care — diagnoses, medications, incidents, notes', 'cohort', 'Cohort. CareShop holds diet tags, allergens and one texture level, and nothing clinical.'],
-  ['The roster, a shift, a credential date', 'aidepost', 'Aidepost. A shift never describes a resident, and CareShop schedules nobody.'],
-  ['What goes in a binder, and in what order', 'binderkit', 'Binderkit. It prints the tab a reserve record goes in; CareShop holds the reserve.'],
+  ['A resident’s care — diagnoses, medications, incidents, notes', '', 'Not here. CareShop holds diet tags, allergens and one texture level, and nothing clinical.'],
+  ['The roster, a shift, a credential date', '', 'Not here. A shift never describes a resident, and CareShop schedules nobody.'],
+  ['What goes in a binder, and in what order', '', 'Not here. CareShop holds the reserve; the binder tab it goes in is printed elsewhere.'],
 ];
 
 /* ── the five origins. Each one is shown with the buy-queue line it
@@ -93,16 +93,16 @@ ${sec('seats', 'fse-s', `<div class="wrap">
 ${fold(sec('elsewhere', 'fel-s', `<div class="wrap fel-g">
   <div>
     <div class="head">${h2('elsewhere', 'Next door, not here.', 'The kitchen is one room of four. These belong to a sibling, and the ladder moves your data there without re-typing.')}</div>
-    <ul class="mv-l">${next.items.map(([t, who]) => `<li><div><b>${esc(t)}</b>${who ? `<span>${esc(who)}</span>` : ''}</div></li>`).join('')}</ul>
+    <ul class="mv-l">${next.items.map(([t]) => `<li><div><b>${esc(t)}</b></div></li>`).join('')}</ul>
   </div>
   <div>
     <div class="head">${h2('never', 'Refused on principle.', 'Each one with the reason given for it. The same list prints on the front page.')}</div>
     <ol class="ref-l">${never.items.map(([t], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b></div></li>`).join('')}</ol>
   </div>
-</div>`), 'What the loop does not do, and who does it instead.')}
+</div>`), 'What the loop does not do.')}
 ${sec('test', 'test-s', `<div class="wrap">
   <div class="head">${sticker('scale', 'The boundary test')}${h2('test', boundary.strip.cells[0], 'The question is in Settings, in the product. Three of the four answers send you next door, and that is the point: a room with walls is a room you can finish.')}</div>
-  <ul class="own">${OWNERS.map(([q, who, a]) => `<li class="own-i${who === 'careshop' ? ' is-here' : ''}"><span class="own-q">${esc(q)}</span><span class="own-w">${who === 'careshop' ? ic('check', 18) : ic('arrow', 18)}<b>${esc(byId[who].name)}</b></span><span class="own-a">${esc(a)}</span></li>`).join('')}</ul>
+  <ul class="own">${OWNERS.map(([q, who, a]) => `<li class="own-i${who === 'careshop' ? ' is-here' : ''}"><span class="own-q">${esc(q)}</span><span class="own-w">${who === 'careshop' ? `${ic('check', 18)}<b>${esc(byId[who].name)}</b>` : `${ic('arrow', 18)}<b>Not here</b>`}</span><span class="own-a">${esc(a)}</span></li>`).join('')}</ul>
   <p class="demo-f">${esc(boundary.strip.foot)}</p>
 </div>`)}
 ${sec('origins', 'origins-s', `<div class="wrap">

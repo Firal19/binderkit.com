@@ -33,7 +33,7 @@ import { screensPage, annotated, NOTES, ORDER, EDITOR_PINS } from './binderkit/s
 export { header, footer };
 export const pages = [screensPage, planPage, libraryPage, pricingPage, aboutPage, contactPage];
 
-const [TOP, WHY, SCREENS, PLAN, PAGE, LIBRARY, EDITOR, VERSIONS, PLATES, NOTHING, STATE, ROLES, QUESTIONS, PRICING, FAMILY, JOINS] = HOME;
+const [TOP, WHY, SCREENS, PLAN, PAGE, LIBRARY, EDITOR, VERSIONS, PLATES, NOTHING, ROLES, QUESTIONS, PRICING, FAMILY, JOINS] = HOME;
 const S = SURFACES.binderkit;
 
 export const ARTEFACTS = [
@@ -269,25 +269,6 @@ function nothing() {
   <p class="boundary">Binderkit plans and prints your binders. It does not store documents, track what is filed, record reviews, or certify readiness.</p>`);
 }
 
-/* ── 11 · the state of the work ───────────────────────────────────────── */
-const state = (p) => section(STATE, `${eyebrow('Stated plainly')}${h2('state', 'What is built, what is not, and what is not decided.', `The vault’s own line for this product is “${p.status}”. What is hard here is content, not code — and counting it is cheaper than claiming it.`)}
-  <dl class="ledger stat">${WORK.map(([k, t, kind, d]) => `<div data-state-row="${esc(k)}"><dt>${esc(t)} <i class="stat-l is-${esc(kind)}">${esc(kind === 'live' ? 'live' : kind === 'draft' ? 'drafted' : kind === 'none' ? 'not written' : 'not decided')}</i></dt><dd>${esc(d)}</dd></div>`).join('')}</dl>
-  <div class="counts"><span class="strip-l">Counts, not claims</span>
-    <dl class="count-g">${COUNTS.map(([k, t, n]) => `<div><dt>${esc(t)}</dt><dd data-count="${esc(k)}">${esc(n)}</dd></div>`).join('')}</dl>
-    <span class="cap">There is no state-mandated count of resident documents. The thirty-two is one home’s binder, recorded as an observation, and no screen, no printed page and no page of this site presents it as a requirement.</span>
-  </div>
-  <div class="tbls"><span class="strip-l">What the product holds, counted</span>
-    <dl class="count-g is-wide">${TABLES.map(([k, t, n, d]) => `<div><dt>${esc(t)}</dt><dd data-tbl="${esc(k)}">${esc(n)}</dd><span>${esc(d)}</span></div>`).join('')}</dl>
-  </div>
-  <div class="ctlw"><span class="strip-l">The control number, taken apart</span>
-    <dl class="ctlx">${CTLX.map(([k, name, part, what]) => `<div data-part="${k}"><dt><code>${esc(part)}</code> ${esc(name)}</dt><dd>${esc(what)}</dd></div>`).join('')}</dl>
-    <span class="cap">Facility code · binder · plan version · print sequence, on every page of every artefact — which is how a provider with two contents pages on her desk knows which is current. The short numbers on the sheet above, RB-0417 and RB-0418, are this demonstration’s abbreviation of that form.</span>
-  </div>
-  <div class="notif"><span class="strip-l">Four notifications, and there is no fifth</span>
-    <ol class="arrow">${NOTIFS.map(([k, t]) => `<li data-notif="${esc(k)}">${esc(t)}</li>`).join('')}</ol>
-    <span class="cap">The content is a facility code, a track name, a version number, an amount, or a link. There is no push notification at all — nothing in this product is urgent enough to interrupt you.</span>
-  </div>`);
-
 function roles() {
   const s = find('roles');
   return section(ROLES, `${eyebrow('Who does what')}${h2('roles', s.heading, s.sub)}
@@ -311,7 +292,7 @@ export const sellSwitch = () => `<div class="ptog" role="group" aria-label="How 
 
 function pricing(cfg, p) {
   const s = find('pricing');
-  const soon = (price) => (/^Open/.test(price) ? 'Early access' : price);
+  const soon = (price) => (/^Open/.test(price) ? 'Not priced yet' : price);
   return section(PRICING, `${eyebrow('Pricing')}${h2('pricing', s.heading, EVERY_PLAN)}
     ${sellSwitch()}
     <div class="tiers">${p.pricing.rows.map(([name, price, d], i) => `<div class="tier ${i === 1 ? 'is-main' : ''}"><span class="tier-n">${esc(name)}</span><span class="tier-p ${/^Open/.test(price) ? 'is-soon' : ''}">${esc(soon(price))}</span><span class="tier-d">${esc(d)}</span></div>`).join('')}</div>
@@ -330,10 +311,9 @@ function family() {
   const pho = byId.pho;
   const room = (x, cls = '') => `<li class="room ${cls}" data-fam="${esc(x.id)}"><span class="room-m" aria-hidden="true">${mark(x.id, 30, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
     <div><b>${esc(x.name)}</b><span>${esc(x.descriptor)} — ${esc(x.owns.toLowerCase())}.</span></div>
-    <span class="room-d">${esc(x.status)}</span>
     <a class="room-l" href="https://${esc(x.domain)}" rel="noopener">${esc(x.domain)}</a></li>`;
-  return section(FAMILY, `${eyebrow('The family')}${h2('family', f.heading, 'Four small products a provider can buy on a Tuesday, and one platform they lead to. Binderkit owns the paperwork and nothing else.')}
-    <ul class="rooms">${PRODUCTS.filter((x) => x.kind === 'mini').map((x) => room(x, x.id === 'binderkit' ? 'is-this' : '')).join('')}${room(pho, 'is-house')}</ul>
+  return section(FAMILY, `${eyebrow('The family')}${h2('family', f.heading, 'Binderkit owns the paperwork and nothing else. When a provider outgrows it, the plan and its versions are already in the shape the enterprise platform reads.')}
+    <ul class="rooms">${room(pho, 'is-house')}</ul>
     <div class="grad"><span class="strip-l">${esc(l.heading)}</span>
       <p class="sub">${esc(pho.proof[2])}</p>
       <ol class="toc is-ladder">${l.rows.map(([k, v], i) => `<li data-grad="${esc((v.match(/M[0-9]+/) || ['x'])[0])}"><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(k)}</span><span class="toc-l" aria-hidden="true"></span><span class="toc-n is-text">${esc(v)}</span></li>`).join('')}</ol>
@@ -366,7 +346,6 @@ ${editor()}
 ${versions()}
 ${platesSec()}
 ${nothing()}
-${state(p)}
 ${roles()}
 ${questions(cfg)}
 ${pricing(cfg, p)}

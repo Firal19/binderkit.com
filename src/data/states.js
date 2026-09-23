@@ -30,6 +30,6 @@ export const STATE_SETS = {
     ['covered', 'Covered', 'settled', 'A person is on it, by name.'],
     ['open', 'Open', 'attention', 'Nobody is on it yet — offer it to own staff, then post outward.'],
     ['pending', 'Pending', 'offered', 'Offered and awaiting an answer.'],
-    ['expired', 'Expired', 'borrowed', 'An expired credential turns coral on the roster — the vault states it, so Aidepost borrows Cohort’s accent here rather than inventing a fifth colour.'],
+ ['expired', 'Expired', 'borrowed', 'An expired credential turns coral on the roster — the vault states it. '],
   ],
 };

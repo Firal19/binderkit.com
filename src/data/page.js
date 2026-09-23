@@ -401,8 +401,8 @@ const binderkit = {
         {
           label: 'Next door', kind: 'next', items: [
             ['Keep the document itself, or take any upload', 'pho', 'Provider Hub Oregon, the Digital Binder'],
-            ['Record a policy acknowledgment or a credential date', 'aidepost', 'Binderkit prints the tab the policy goes in; Aidepost records the signature'],
-            ['Hold emergency stock against a bed count', 'careshop', 'Binderkit prints the tab the reserve record goes in'],
+            ['Record a policy acknowledgment or a credential date', '', 'Binderkit prints the tab the policy goes in. The signature is recorded outside this product.'],
+            ['Hold emergency stock against a bed count', '', 'Binderkit prints the tab the reserve record goes in.'],
           ],
         },
         {
@@ -600,9 +600,9 @@ const careshop = {
       cols: [
         {
           label: 'Next door', kind: 'next', items: [
-            ['Store diagnoses, medications, incidents or clinical notes', 'cohort'],
-            ['Schedule anyone', 'aidepost'],
-            ['Print the tab where a reserve record goes', 'binderkit'],
+            ['Store diagnoses, medications, incidents or clinical notes', ''],
+            ['Schedule anyone', ''],
+            ['Print the tab where a reserve record goes', ''],
           ],
         },
         {
@@ -781,7 +781,7 @@ const aidepost = {
         ['Credential → expiring → expired', 'recorded with its dates and marked self-attested, because that is what it is → a thirty-day notice → a seven-day notice → a notice on the day → expired, named on the roster and on the eligibility list, and the shift can still be assigned → renewed as a new record superseding the prior one, which stays with its dates. Credential history is never collapsed. An expiry before its issue date is refused; an expiry in the past is accepted, because that is a true and useful fact.'],
         ['Application → hire', 'a post is drafted, invisible to everyone outside your organisation → the per-post charge is paid, because an unpaid posting stays a draft → published, and reachable without an account → an application arrives carrying her profile, her recorded credentials as self-attested and her answers, one per person per posting → screened → offered → accepted → a staff record is created and the invitation attaches the account she already has → the onboarding checklist opens for that house’s track. Applications are never ranked or scored, and hiring is never a bulk action.'],
         ['Clock-in → timesheet', 'clock in at the house, offline if she must, on an idempotency key of user, shift, action and client timestamp → clock out, or the entry is marked incomplete two hours after the shift ends and you both see it → hours by day → a week → an indication at forty hours, and none daily → approve one person at a time, which locks the week → export CSV. A clock event is never edited or deleted; a correction is a new record referencing the original, and both remain visible.'],
-        ['Policy acknowledgment', 'Binderkit produces the policy text and Aidepost never authors, edits or templates it → you register which version is current → each person signs by typing her name and confirming, and the signature records who, when, which version and the IP → a new version resets the outstanding signatures and keeps the ones made against prior versions, so it stays provable who agreed to what and when.'],
+        ['Policy acknowledgment', 'Aidepost never authors, edits or templates the policy text → you register which version is current → each person signs by typing her name and confirming, and the signature records who, when, which version and the IP → a new version resets the outstanding signatures and keeps the ones made against prior versions, so it stays provable who agreed to what and when.'],
       ],
     },
     {
@@ -809,8 +809,8 @@ const aidepost = {
       cols: [
         {
           label: 'Next door', kind: 'next', items: [
-            ['Hold resident care, the MAR or incidents', 'cohort', null],
-            ['Write the house rules', 'binderkit', 'Binderkit produces the policy text; Aidepost registers the version and records the signature'],
+            ['Hold resident care, the MAR or incidents', '', null],
+            ['Write the house rules', '', 'Aidepost registers the version and records the signature; it never authors the text.'],
           ],
         },
         {
@@ -909,7 +909,7 @@ const aidepost = {
         ['Why not just post in the Facebook group?', 'A Facebook group does not know who holds a current CPR card, cannot record that the shift was offered to your own staff first, and leaves you no timesheet at the end of the week.'],
         ['Will it stop me scheduling someone whose CPR has lapsed?', 'No. It will tell you at thirty days, at seven days, and on the roster itself. Credentials are surfaced, never enforced. The decision stays yours, because it is yours.'],
         ['Will my staff be poached?', 'Shifts are never public. Only a job post is public, and only when you publish it and pay for it.'],
-        ['How much is a post?', 'One charge per post, and it publishes when it is paid. Posting is available on every plan, including the trial. The amount is set at launch.'],
+        ['How much is a post?', 'One charge per post, and it publishes when it is paid. Posting is available on every plan, including the trial.'],
       ],
     },
     {
@@ -927,7 +927,7 @@ const aidepost = {
       heading: 'Providers pay. Caregivers never do.',
       sub: EVERY_PLAN,
       main: 1,
-      note: 'A subscription — up to three houses on Pro, unlimited on Scale — plus one charge for each job post. Amounts are set at launch. Sold on the web through Stripe Checkout; the native application never presents a purchase sheet.',
+      note: 'A subscription — up to three houses on Pro, unlimited on Scale — plus one charge for each job post. Sold on the web through Stripe Checkout; the native application never presents a purchase sheet.',
     },
     {
       key: 'ladder', kind: 'map', id: 'ladder',

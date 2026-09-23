@@ -120,7 +120,6 @@ ${sec('banner', 'banner-s', `<div class="wrap aisle-g">
 ${fold(sec('twelve', 'twelve-s', `<div class="wrap">
   <div class="head">${sticker('book', 'The product’s own constitution')}${h2('twelve', 'Twelve rules it applies to itself.', 'None of these is a regulation. They are the rules CareShop is built to — and the third column says, for each one, whether the product enforces it today, whether the rebuild is repairing it, or whether it exists only in the specification.')}</div>
   <ol class="gov">${TWELVE.map(([t, d, state]) => `<li class="gov-i"><span class="gov-t"><b>${esc(t)}</b><span class="st" data-state="${esc(RULE_STATE[state])}"><i aria-hidden="true"></i>${esc(state)}</span></span><p>${esc(d)}</p></li>`).join('')}</ol>
-  <p class="demo-f">${NUM[NOT_IN_FORCE.length]} of the twelve are not fully in force today and they are marked as such rather than described in the present tense: ${NUM[REPAIRING].toLowerCase()} being repaired in the rebuild, ${NUM[SPECIFIED].toLowerCase()} specified and not built at all. That is the same posture the citation layer takes: you always know which of the two you are reading.</p>
 </div>`), 'Twelve rules the product applies to itself, and which are in force.')}
 ${fold(sec('egress', 'egress-s', `<div class="wrap">
   <div class="head">${sticker('mail', 'What leaves the house')}${h2('egress', 'A message carries a code and a count.', 'The hardest thing to keep out of a kitchen product is a resident’s name in an email. It is kept out structurally: there is no free-text body parameter anywhere in the system.')}</div>

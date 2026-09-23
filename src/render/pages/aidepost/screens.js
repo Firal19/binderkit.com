@@ -111,7 +111,7 @@ ${sec('strip', 'strp', `<div class="wrap">
 </div>`)}
 ${sec('words', 'words', `<div class="wrap words-g">
   <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth colour.', 'Every state in Aidepost is one of these. Coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
-    <p class="fine">Expired deliberately borrows Cohort’s coral rather than inventing a fifth colour for the family. The vault states it; this page does not pretend it was our idea.</p></div>
+    </div>
   ${stateLegend()}
 </div>`)}
 ${sec('hiring', 'hiring', `<div class="wrap">

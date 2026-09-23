@@ -276,9 +276,9 @@ export function tierBlock(p) {
   const tier = ([name, price, d], i) => {
     const soon = /^Open/.test(price);
     const post = /^Job post/.test(name);
-    const inner = `<span class="tier-n">${esc(name)}</span><span class="tier-p ${soon ? 'is-soon' : ''}">${esc(soon ? 'Early access' : price)}</span><span class="tier-d">${esc(d)}</span>`;
+    const inner = `<span class="tier-n">${esc(name)}</span><span class="tier-p ${soon ? 'is-soon' : ''}">${esc(soon ? 'Not priced yet' : price)}</span><span class="tier-d">${esc(d)}</span>`;
     if (post) {
-      return `<details class="tier is-post"><summary>${inner}<span class="tier-more">${ic('down', 16, { pin: false })}What one charge buys</span></summary><div class="tier-x"><ul><li>A listing that goes live when it is paid — an unpaid post stays a draft.</li><li>Reachable without an account, at an opaque address that carries no organisation, house or sequence.</li><li>Applications arrive with her profile and her credentials as self-attested — one per person per posting, never ranked or scored.</li><li>Available on every plan, including the trial. The amount is set at launch.</li></ul></div></details>`;
+      return `<details class="tier is-post"><summary>${inner}<span class="tier-more">${ic('down', 16, { pin: false })}What one charge buys</span></summary><div class="tier-x"><ul><li>A listing that goes live when it is paid — an unpaid post stays a draft.</li><li>Reachable without an account, at an opaque address that carries no organisation, house or sequence.</li><li>Applications arrive with her profile and her credentials as self-attested — one per person per posting, never ranked or scored.</li><li>Available on every plan, including the trial.</li></ul></div></details>`;
     }
     return `<div class="tier ${i === main ? 'is-main' : ''}">${inner}</div>`;
   };
@@ -362,24 +362,6 @@ export const deepLink = (addr, what) => {
   return `<button class="dl" type="button" data-copy="${esc(href)}" data-copied="Link copied" aria-label="Copy a link to ${esc(what)}">${ic('copy', 14, { pin: false })}<span>Link</span></button>`;
 };
 
-/* ── the ledger: what is true today, in the product's own words ────────
-   Every row is read from brand.js, data/page.js or the vault document. A
-   row that is not decided says Open and names the register number. */
-export function ledger(p) {
-  const rows = [
-    ['The product', 'open', p.status, 'No repository yet. Nothing in this page is running in a house; every screen on it is the specification, drawn, with sample data.'],
-    ['The specification', 'covered', 'Written', 'Nineteen Aidepost tables over eighteen platform tables, four machines, and sixteen messages that may be sent at all — the send function takes an event key and references, and has no body parameter.'],
-    ['This page', 'covered', 'Live', 'aidepost.com is live, and it is the only part of Aidepost that is. What you have just operated is the specification, drawn — not a product you can buy yet.'],
-    ['Prices', 'pending', 'Not set', 'Pro and Scale are Open (#8). A job post is one charge per post, on every tier including the trial; the amount is set at launch.'],
-    ['Caregivers', 'covered', 'Free, permanently', 'The documented exception. No organisation, no card, nothing to cancel — and that is the acquisition model, not a promotion.'],
-    ['The largest open question', 'open', 'Undecided', 'Whether a one-to-one assignment should be able to record the initials of the person supported at all. Removing the field removes all protected information, the customer agreement, the view logging and one launch blocker. We have not decided it.'],
-  ];
-  return `<div class="led" role="table" aria-label="What is true today">
-    <div class="led-h" role="row"><span role="columnheader">What</span><span role="columnheader">State</span><span role="columnheader">Where it stands</span></div>
-    ${rows.map(([what, st, state, why]) => `<div class="led-r" role="row"><b role="cell">${esc(what)}</b><span role="cell" class="led-s is-${esc(st)}">${esc(state)}</span><span role="cell" class="led-w">${esc(why)}</span></div>`).join('')}
-  </div>`;
-}
-
 /* ── the four words this product owns ─────────────────────────────────
    Lifted from data/states.js, which is lifted from the system board. The
    fourth one is a borrow and says so: Aidepost takes Cohort's coral for an
@@ -392,10 +374,7 @@ export const stateLegend = () => `<dl class="stl" aria-label="The four words Aid
    is what it takes off Aidepost's plate, read from Aidepost's own doesNot
    list — so the band is a boundary statement, not a logo wall. */
 const TAKES = {
-  cohort: 'Takes the residents: care, the MAR, incidents. Aidepost holds none of it.',
-  careshop: 'Takes the kitchen. Aidepost schedules the person, never the meal.',
-  binderkit: 'Writes the house rules. Aidepost registers the version and records the signature.',
-  pho: 'The enterprise layer every mini graduates into, by export → import.',
+  pho: 'The enterprise layer Aidepost graduates into, by export → import.',
 };
 /* A progress percentage with no definition behind it is a metric, and an
    undefined one. brand.js carries “Spec-first · ~3% built” for the
@@ -405,10 +384,10 @@ const TAKES = {
    is the vault's own wording for that product and is printed verbatim. */
 const sourced = (state) => String(state).replace(/\s*·\s*~?\d+(\.\d+)?%\s*built/i, '');
 export function familyBand() {
-  const order = ['cohort', 'careshop', 'binderkit', 'pho'];
+  const order = ['pho'];
   return `<div class="fam-g">${order.map((id) => {
     const q = byId[id];
-    return `<a class="fam" href="https://${esc(q.domain)}" rel="noopener"><span class="fam-mk">${mark(id, 34, { label: false })}</span><b>${esc(q.name)}</b><span class="fam-d">${esc(q.descriptor)}</span><span class="fam-t">${esc(TAKES[id])}</span><span class="fam-o">${esc(sourced(q.status))}</span></a>`;
+    return `<a class="fam" href="https://${esc(q.domain)}" rel="noopener"><span class="fam-mk">${mark(id, 34, { label: false })}</span><b>${esc(q.name)}</b><span class="fam-d">${esc(q.descriptor)}</span><span class="fam-t">${esc(TAKES[id])}</span></a>`;
   }).join('')}</div>`;
 }
 
@@ -496,8 +475,8 @@ export const sampleNote = () => `<details class="smp">
     <ul>
       <li><b>Invented:</b> the house identifiers (WH-1 and WH-2), the staff names (M. Okafor, J. Ruiz, T. Nguyen, K. Silva, R. Alvarez, D. Park, S. Lee), the dates, the hours, the rate, and the distances.</li>
       <li><b>Not invented:</b> the field names, the state words, the notice intervals, the wording of every message, the order of every flow, and every refusal. Those are the specification.</li>
-      <li><b>Not present anywhere:</b> a customer, a pilot house, a usage number, a revenue figure, a headcount or a raise. Aidepost is pre-launch and has none of those to report.</li>
+      
     </ul>
-    <p class="fine">No resident appears on any screen, in sample form or otherwise: a shift record has no field that could hold one, and neither has a posting. The one record that is still argued about is the one-to-one assignment — whether it should be able to carry the initials of the person supported is the open question the ledger names, and it is not decided.</p>
+    <p class="fine">No resident appears on any screen, in sample form or otherwise: a shift record has no field that could hold one, and neither has a posting.</p>
   </div>
 </details>`;

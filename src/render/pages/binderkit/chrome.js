@@ -42,7 +42,6 @@ export const HOME = number('BK-LP', [
   { id: 'versions', label: 'Versions', tab: 'Versions', gist: 'An answer changes, the plan regenerates, and the diff is shown.' },
   { id: 'plates', label: 'Two plates', tab: 'Plates', foldName: 'Two plates', gist: 'Print and the guarded editor, at the size they ship.' },
   { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a person out, and the boundary they draw.' },
-  { id: 'state', label: 'The state of the work', tab: 'State', foldName: 'The state of the work', gist: 'What is written, what is not, and what is not decided.' },
   { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each of them may see.' },
   { id: 'questions', label: 'Questions', tab: 'Questions', gist: 'The four we are actually asked, answered in full.' },
   { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: 'Every plan sees every screen; nothing is silently blocked.' },
@@ -230,7 +229,8 @@ export const cite = (text) => {
 };
 export const citesBlock = () => `<dl class="cites" id="cites">
   <span class="strip-l">The citations on this page, and what each one is</span>
-  ${CITES.map(([c, name, what]) => `<div class="cite-r" data-cite-row="${esc(c)}"><dt><code>${esc(c)}</code> <b>${esc(name)}</b></dt><dd>${esc(what)} <span class="cite-ev">${esc(EV_LINE)}</span></dd></div>`).join('')}
+  ${CITES.map(([c, name, what]) => `<div class="cite-r" data-cite-row="${esc(c)}"><dt><code>${esc(c)}</code> <b>${esc(name)}</b></dt><dd>${esc(what)}</dd></div>`).join('')}
+  <p class="cite-ev">${esc(EV_LINE)}</p>
 </dl>`;
 
 /* ── the planner: the data, then the rule ─────────────────────────────── */

@@ -12,7 +12,7 @@
 // make that legible rather than to hide it in a footnote.
 
 import { esc, sec, h2, hello, mailto, byline, mark } from '../../shared.js';
-import { byId, MINIS } from '../../../data/brand.js';
+import { byId } from '../../../data/brand.js';
 import { PAGES } from '../../../data/page.js';
 import { ic } from '../../icons/careshop.js';
 import { page, pageHead, sticker, directory } from './parts.js';
@@ -49,16 +49,15 @@ const LADDER_LINE = 'Every mini graduates by export → import; her data is alre
 export function aboutPage(cfg, p) {
   const pho = byId.pho;
   const ladder = find('ladder');
-  const siblings = MINIS.filter((m) => m.id !== 'careshop');
 
   const inner = `${pageHead('About the store', 'The kitchen software for care homes.', `${p.proof[0]} ${p.lede}`)}
-${directory([['live', 'What is true today', '3 proofs'], ['ledger', 'Live, and not live', '8 and 7'], ['family', 'The three rooms next door', '3 marks'], ['grad', 'The ladder out of the kitchen', '5 rows'], ['who', 'Who makes this', '1 answer']], { title: 'On this page' })}
+${directory([['live', 'What is true today', '3 proofs'], ['ledger', 'Live, and not live', '8 and 7'], ['grad', 'The ladder out of the kitchen', '5 rows'], ['who', 'Who makes this', '1 answer']], { title: 'On this page' })}
 ${sec('live', 'live', `<div class="wrap">
   <div class="head">${sticker('store', 'Live at careshop.app')}${h2('live', 'What is true today.', p.toneLine)}</div>
   <ul class="proofs">${p.proof.map((t, i) => `<li>${ic(['store', 'book', 'person'][i], 20)}<p>${esc(t)}</p></li>`).join('')}</ul>
 </div>`)}
 ${sec('ledger', 'ledger-s', `<div class="wrap">
-  <div class="head">${sticker('receipt', 'The stock take')}${h2('ledger', 'What is live, and what is not.', 'Three of the four products in this family are pre-launch. This one is not — and the honest version of that sentence needs a second column beside it. Everything on the right is specified, priced or promised somewhere, and is not in the product today.')}</div>
+  <div class="head">${sticker('receipt', 'The stock take')}${h2('ledger', 'What is live, and what is not.', 'Everything on the left is in the product today. Everything on the right is specified, priced or promised somewhere, and is not.')}</div>
   <div class="take-g">
     <div class="take-c is-on">
       <span class="strip-l">${ic('check', 16)}On the shelf · ${LIVE.length}</span>
@@ -70,17 +69,6 @@ ${sec('ledger', 'ledger-s', `<div class="wrap">
     </div>
   </div>
   <p class="closing">A count is not a grade, and neither is this. It is the same ledger discipline the product applies to a shelf, applied to itself: on hand is what is on hand.</p>
-</div>`)}
-${sec('family', 'family-s', `<div class="wrap">
-  <div class="head">${sticker('house', 'One house. Four rooms. One ladder.')}${h2('family', 'Three more rooms, next door.', `CareShop runs the household. It does not keep residents’ care records, schedule staff, or build binders — three sibling products do, and each one is a small, complete product a provider can buy on its own.`)}</div>
-  <ul class="fam">${siblings.map((m) => `<li class="fam-i"><a class="fam-a" href="https://${esc(m.domain)}" rel="noopener">
-    <span class="fam-mk">${mark(m.id, 44, { label: false })}</span>
-    <span class="fam-t"><b>${esc(m.name)}</b><span class="fam-o">${esc(m.owns)}</span></span>
-    <span class="fam-d">${esc(m.descriptor)}</span>
-    <span class="fam-s" data-kind="${esc(m.statusKind)}">${esc(m.status)}</span>
-    <span class="fam-u">${esc(m.domain)}${ic('arrow', 14)}</span>
-  </a></li>`).join('')}</ul>
-  <p class="demo-f">${esc(siblings.map((m) => `${m.name} — ${m.status.toLowerCase()}`).join(' · '))}. CareShop is the one that is live, and the only one of the four you can buy today.</p>
 </div>`)}
 ${sec('grad', 'grad-s', `<div class="wrap">
   <div class="head">${sticker('box', 'The ladder')}${h2('grad', ladder.heading, `${LADDER_LINE} ${ladder.sub}`)}</div>
