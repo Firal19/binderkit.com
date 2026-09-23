@@ -30,7 +30,7 @@ const NOTES = {
   buy: {
     tab: 'Buy queue',
     cap: 'All houses · what is short, who asked, who approved, and the cheapest shop on the price list.',
-    proves: 'Five origins and no sixth — a menu shortfall, an expiry, a par breach, a reserve gap, or a person’s ask — and every request carries exactly one, preserved through to purchase. Where a purchasing rule decided, the rule is recorded in place of an approver.',
+    proves: 'Five origins and no sixth — a menu shortfall, an expiry, a par breach, a reserve gap, or a resident’s diet tag — and every request carries exactly one, preserved through to purchase. Where a purchasing rule decided, the rule is recorded in place of an approver.',
   },
   menu: {
     tab: 'The week’s menu',
@@ -126,7 +126,7 @@ ${sec('till', 'till-s', `<div class="wrap">
   <p class="demo-f">${esc(q.side.label)}. ${esc(q.side.text)}</p>
 </div>`, { label: 'The buy queue, annotated' })}
 ${sec('labels', 'labels-s', `<div class="wrap">
-  <div class="head">${sticker('tag', 'The four labels')}${h2('labels', 'Four words, and no fifth.', 'Every item in the store wears exactly one of them. They are the only states this product marks, and they are the same four on every screen above.')}</div>
+  <div class="head">${sticker('tag', 'The four labels')}${h2('labels', 'Four words, and no fifth.', 'Every item in the store wears exactly one of them. Four words for the state of an item. Three of them are on the screens above; a reserve gap is marked separately.')}</div>
   <ul class="labels-l">${stateRows.map(([key, word, , note]) => `<li class="labels-i"><span class="st" data-state="${esc(key)}"><i aria-hidden="true"></i>${esc(word)}</span><p>${esc(note)}</p></li>`).join('')}</ul>
 </div>`, { label: 'The four state words' })}
 ${sec('keys', 'keys-s', `<div class="wrap">

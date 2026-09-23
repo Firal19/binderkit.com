@@ -118,7 +118,7 @@ ${sec('banner', 'banner-s', `<div class="wrap aisle-g">
   <div class="aisle-d">${sticker('tag', 'The banner')}${h2('banner', 'Until a provider has reviewed the set, every screen says so.', buy.banner)}<p class="st-p">${esc(who[1])}</p><div class="shows">${showMe('Bottled water', 'An inferred citation')}${showMe('Applesauce', 'A confirmed one')}</div></div>
 </div>`)}
 ${fold(sec('twelve', 'twelve-s', `<div class="wrap">
-  <div class="head">${sticker('book', 'The product’s own constitution')}${h2('twelve', 'Twelve rules it applies to itself.', 'None of these is a regulation. They are the rules CareShop is built to — and the third column says, for each one, whether the product enforces it today, whether the rebuild is repairing it, or whether it exists only in the specification.')}</div>
+  <div class="head">${sticker('book', 'The product’s own constitution')}${h2('twelve', 'Twelve rules it applies to itself.', 'None of these is a regulation. They are the rules CareShop is built to — and each rule carries its state beside its name: in the product, being repaired, or specified and not built.')}</div>
   <ol class="gov">${TWELVE.map(([t, d, state]) => `<li class="gov-i"><span class="gov-t"><b>${esc(t)}</b><span class="st" data-state="${esc(RULE_STATE[state])}"><i aria-hidden="true"></i>${esc(state)}</span></span><p>${esc(d)}</p></li>`).join('')}</ol>
 </div>`), 'Twelve rules the product applies to itself, and which are in force.')}
 ${fold(sec('egress', 'egress-s', `<div class="wrap">
@@ -135,7 +135,7 @@ ${fold(sec('posture', 'posture', `<div class="wrap">
   <div class="res-l is-page">${depth.rows.map(([t, w, where]) => `<div class="res-r"><span class="res-k">${ic('tag', 16)}<b>${esc(t)}</b></span><span>${esc(w)}</span><em>${esc(where)}</em></div>`).join('')}</div>
 </div>`), 'A citation explains a rule. It is never a finding about a house.')}
 ${fold(sec('removed', 'removed', `<div class="wrap">
-  <div class="head">${sticker('x', 'Removed, and never')}${h2('removed', 'What came out, and what will not go in.', 'A compliance layer was built, shipped, used by nobody, and taken out. What came back is a confidence mark on every citation — an explanation of a rule, never a finding about a house.')}</div>
+  <div class="head">${sticker('x', 'Removed, and never')}${h2('removed', 'What came out, and what will not go in.', 'A compliance layer was built, shipped, used by nobody, and taken out. What is specified in its place is a confidence mark on every citation — an explanation of a rule, never a finding about a house — and it is not built yet.')}</div>
   <div class="void">
     <span class="rc-h">VOID</span>
     ${REMOVED.map(([t, why, now]) => `<div class="void-r"><b>${esc(t)}</b><span>${esc(why)}</span><em>${esc(now)}</em></div>`).join('')}

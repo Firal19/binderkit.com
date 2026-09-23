@@ -96,7 +96,7 @@ ${fold(sec('elsewhere', 'fel-s', `<div class="wrap fel-g">
     <ul class="mv-l">${next.items.map(([t]) => `<li><div><b>${esc(t)}</b></div></li>`).join('')}</ul>
   </div>
   <div>
-    <div class="head">${h2('never', 'Refused on principle.', 'Each one with the reason given for it. The same list prints on the front page.')}</div>
+    <div class="head">${h2('never', 'Refused on principle.', 'Each one with the reason given for it.')}</div>
     <ol class="ref-l">${never.items.map(([t], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b></div></li>`).join('')}</ol>
   </div>
 </div>`), 'What the loop does not do.')}

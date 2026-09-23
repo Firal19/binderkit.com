@@ -110,7 +110,7 @@ ${sec('strip', 'strp', `<div class="wrap">
   <div class="strp-u">${sampleNote()}${firstTen(p)}</div>
 </div>`)}
 ${sec('words', 'words', `<div class="wrap words-g">
-  <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth colour.', 'Every state in Aidepost is one of these. Coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
+  <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth.', 'Every state in Aidepost is one of these. Coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
     </div>
   ${stateLegend()}
 </div>`)}

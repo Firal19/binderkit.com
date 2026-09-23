@@ -38,8 +38,8 @@ const find = (k) => spec.sections.find((s) => s.key === k);
 const STATS = [
   ['$', '14.20', 2, 'at risk on the shelf today', 'Every dated item, most urgent first, and the value totalled at the foot.', 'demo data'],
   ['', '3 × 5', 0, 'days × beds is the reserve target', 'Arithmetic, not a shrug. The bed count is typed by a human.', 'demo data'],
-  ['', '5', 0, 'origins for a buy request. No sixth.', 'A menu shortfall, an expiry, a par breach, a reserve gap, or a caregiver’s ask.', 'in the product'],
-  ['', '6', 0, 'front doors, one contract', 'The shelf, the scanner, Today, a workbook, the catalogue, a shared run — all write the same request.', 'in the product'],
+  ['', '5', 0, 'origins for a buy request. No sixth.', 'A menu shortfall, an expiry, a par breach, a reserve gap, or a resident’s diet tag.', 'in the product'],
+  ['', '6', 0, 'front doors, one contract', 'The shelf, the scanner, Today, a workbook import, the catalogue, the system — all write the same request.', 'in the product'],
 ];
 
 /* the seven stations on the ring, each a link to the aisle it lives in */
@@ -387,7 +387,7 @@ function start(cfg) {
   return sec('start', 'start', `<div class="wrap start-g">
     <div>${sticker('clock', 'The first ten minutes')}${h2('start', 'If the loop closes once, you trust it.')}</div>
     <ol class="ten">${s.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
-    <div class="sec-dev"><p class="cap">Where the first ten minutes end: Today, with the loop closed once — the same screen at the top of this page, and the first of the eight on the shelf.</p>
+    <div class="sec-dev"><p class="cap">Where the first ten minutes end: Today, with the loop closed once — the same screen at the top of this page.</p>
       <a class="more" href="/shelf">${ic('shelf', 16)}All eight screens, full size</a></div>
     <a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="start"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a>
   </div>`);

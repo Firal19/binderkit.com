@@ -37,7 +37,7 @@ const LIVE = [
 const NOT = [
   ['The three-day trial', 'Not live. The tiers running today are Free, Pro and Scale, and there is no trial in the product at all. It is named here rather than sold.'],
   ['The confidence on a citation', 'Specified, not built. The field that would print confirmed or inferred beside a citation does not exist in the product yet.'],
-  ['Five of the eight purchasing rules', 'Three run today. The receipt requirement, the trip cap, the substitution mode and price-at-pickup are not applied yet.'],
+  ['Four of the eight purchasing rules', 'Four run today. The receipt requirement, the trip cap, the substitution mode and price-at-pickup are not applied yet.'],
   ['The customer business associate agreement', 'CareShop holds residents’ diet tags, texture and allergens. A customer BAA belongs with that, and it is not in place yet. We are telling you because you would find out.'],
   ['Reading the till roll on the device', 'In the specification, not in the product. A pick is marked purchased by hand with the real store and the real cost.'],
   ['Fatal Four on residents', 'On items today. The per-resident tags and the coverage reading per house are designed and not built.'],
@@ -81,7 +81,7 @@ ${sec('grad', 'grad-s', `<div class="wrap">
 </div>`)}
 ${sec('who', 'who', `<div class="wrap who-in">
   ${sticker('person', 'Who makes this')}
-  ${h2('who', 'Made in Oregon.', `${pho.descriptor}. For Oregon houses.`)}
+  ${h2('who', 'Provider Hub Oregon makes it.', `${pho.descriptor}. For Oregon houses.`)}
   <div class="who-r">${byline()}<a class="btn" href="https://providerhub.us" rel="noopener">${ic('store', 18)}providerhub.us</a><a class="btn" href="${mailto(cfg)}">${ic('mail', 18)}${esc(hello(cfg))}</a><a class="btn pri" href="/write">${ic('receipt', 18)}Write to a person</a></div>
 </div>`)}`;
   return page(cfg, p, 'about', inner);

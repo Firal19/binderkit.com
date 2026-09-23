@@ -181,7 +181,7 @@ function security(cfg, p) {
       <div class="ev-cl">${ev.closingBlocks.map((b) => `<div class="note">${b.heading ? `<h3>${esc(b.heading)}</h3>` : '<h3>Where it lives, and the agreement</h3>'}<p>${esc(b.text)}</p></div>`).join('')}</div>
     </div>`)}
     ${fold('One incident, and what left', sec('left', 'sleft', `<div class="wrap">
-      <div class="head">${eyebrow('What left the house')}${h2('left', 'An incident, and everything that left the house because of it.', 'Filed, notified with a house code and nothing else, reviewed, signed off, locked — and the email, the push and the analytics beside it.')}</div>
+      <div class="head">${eyebrow('What left the house')}${h2('left', 'An incident, and everything that left the house because of it.', 'Filed, notified with a house code and nothing else, reviewed, signed off, locked — and the push beside it.')}</div>
       <div class="left-ph" aria-hidden="true">${iosShell('cohort', { key: 'incident' })}</div>
       <div class="left-w">
         <span class="strip-l">The same incident, on the desktop</span>
@@ -202,7 +202,7 @@ function about(cfg, p) {
   return shell(cfg, p, 'about', `
     ${phead('About', 'Daily operations for Oregon care homes.', p.lede)}
     ${sec('standing', 'astand', `<div class="wrap">
-      <div class="head">${h2('standing', 'What Cohort is built on.', 'Three things the product holds to, and how you would check each one.')}</div>
+      <div class="head">${h2('standing', 'What Cohort is built on.', 'Three things the product holds to.')}</div>
       <ul class="proof">${p.proof.map((t) => `<li>${ic('check', 16)}<span>${esc(t)}</span></li>`).join('')}</ul>
     </div>`)}
     ${sec('company', 'acompany', `<div class="wrap company">

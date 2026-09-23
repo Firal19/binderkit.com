@@ -648,7 +648,7 @@ const careshop = {
     {
       key: 'roles', kind: 'roles', id: 'roles',
       heading: 'Six people, and one of them has no account.',
-      sub: 'The person doing the shopping is often not the person with the licence. That is the whole reason for the last two rows.',
+      sub: 'The person doing the shopping is often not the person with the licence. That is the whole reason for the buyer flag and the row with no account.',
       cols: ['Role', 'Who', 'In CareShop, they', 'Device'],
       rows: [
         ['provider', 'The licence holder; an agency’s Executive Director', 'Set purchasing policy, approve, see spend across houses, manage the catalogue, review the rule set, manage billing', 'Phone + laptop'],
@@ -909,7 +909,7 @@ const aidepost = {
         ['Why not just post in the Facebook group?', 'A Facebook group does not know who holds a current CPR card, cannot record that the shift was offered to your own staff first, and leaves you no timesheet at the end of the week.'],
         ['Will it stop me scheduling someone whose CPR has lapsed?', 'No. It will tell you at thirty days, at seven days, and on the roster itself. Credentials are surfaced, never enforced. The decision stays yours, because it is yours.'],
         ['Will my staff be poached?', 'Shifts are never public. Only a job post is public, and only when you publish it and pay for it.'],
-        ['How much is a post?', 'One charge per post, and it publishes when it is paid. Posting is available on every plan, including the trial.'],
+        ['How much is a post?', 'One charge per post, and it publishes when it is paid. Posting is available on every plan, including the trial. The amount is not set yet.'],
       ],
     },
     {

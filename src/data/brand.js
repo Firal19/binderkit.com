@@ -102,7 +102,7 @@ export const PRODUCTS = [
     nav: [{ group: 'The workforce', items: ['Shifts', 'Staff', 'Credentials', 'Onboarding', 'Timesheets', 'Posts'] }, { group: 'Organisation', items: ['Houses', 'Settings'] }],
     firstTen: ['Add six staff and their CPR dates.', 'See the one that expires Friday turn coral.', 'Build next week’s roster.', 'See Saturday night open — offer it to own staff, then post outward.'],
     proof: ['Two-sided: providers buy it; caregivers use it free, without an organisation or a card.', 'Credentials are surfaced, never enforced: thirty-day and seven-day notices; expired turns coral on the roster.', 'A shift never describes a person: the shift schema has no field that can reference a resident.'],
-    doesNot: ['run payroll or background checks (the provider does; Aidepost records status and dates)', 'describe a resident in a posting (never)', 'hold resident care, MAR or incidents', 'write the house rules'],
+    doesNot: ['run payroll or background checks (the provider does; Aidepost records status and dates)', 'describe a resident in a posting (never)', 'hold resident care, MAR or incidents (not here)', 'write the house rules (not here)'],
     pricing: { unit: 'house + per post', rows: [['3-day trial', 'Card on file', 'Posting available on every tier, including the trial'], ['Pro', 'Open (#8)', 'Directory, credentials, roster, clock-in, timesheets'], ['Scale', 'Open (#8)', 'Unlimited houses; agency roles and CBTP items'], ['Job post', 'One charge per post', 'Publishes the listing when paid']], note: 'Caregivers pay nothing. Providers buy Aidepost.' },
   },
 ];

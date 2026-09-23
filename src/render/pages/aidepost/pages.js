@@ -59,7 +59,7 @@ export const aboutPage = {
 ${sec('two', 'two-s', `<div class="wrap two-g">${closing.map((b) => `<div class="two-b"><h2 id="${b === closing[0] ? 'h-two' : 'h-two-b'}">${esc(b.heading)}</h2><p>${esc(b.text)}</p></div>`).join('')}</div>`)}
 ${sec('boundary', 'bound', `<div class="wrap"><div class="head">${h2('boundary', 'What Aidepost will not do.')}</div><p class="boundary">${esc(BOUNDARY)}</p></div>`)}
 ${sec('words', 'words', `<div class="wrap words-g">
-  <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth colour.', 'Every state in Aidepost is one of these four, and coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
+  <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth.', 'Every state in Aidepost is one of these four, and coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
     </div>
   ${stateLegend()}
 </div>`)}
