@@ -4,22 +4,19 @@
 // html[data-side], which swaps the nav set, the CTA label and the tone. On a
 // phone the menu is a split sheet — light half, dark half — and a fixed
 // bottom split bar carries the mark as the pin between the halves. The
-// footer is the week: seven columns, Monday to Sunday, today lit "tonight".
+// footer keeps the week as a rail with tonight lit, over four clean columns.
 
-import { esc, mark, social, byline, hello, mailto, boxAt } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, boxAt, nextFloat } from '../../shared.js';
 import { ic } from '../../icons/aidepost.js';
 
-export const PROVIDER_NAV = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['pricing', 'Pricing']];
-export const CAREGIVER_NAV = [['caregivers', 'Shifts near you'], ['wallet', 'Your wallet'], ['free', 'Free, for ever']];
+/* each nav item carries a small glyph from the badge set */
+export const PROVIDER_NAV = [['board', 'The board', 'board'], ['credentials', 'Credentials', 'badge'], ['hours', 'Hours', 'clock'], ['pricing', 'Pricing', 'tag']];
+export const CAREGIVER_NAV = [['caregivers', 'Shifts near you', 'distance'], ['wallet', 'Your wallet', 'wallet'], ['free', 'Free, for ever', 'free']];
 export const PAGE_LINKS = [['/providers', 'Providers'], ['/caregivers', 'Caregivers'], ['/screens', 'The screens'], ['/pricing', 'Pricing'], ['/about', 'About'], ['/contact', 'Contact']];
 
-/* ── the ring of routes, and the pager across it ──────────────────────
-   Both used to live in bits.js. They are here because /privacy is drawn by
-   the kit's shared render/privacy.js — a file this site does not own and
-   three other sites read — and the only part of that page Aidepost supplies
-   is this footer. bits.js imports this file, so putting the ring on the
-   chrome side keeps the import graph a line rather than a loop; bits.js
-   re-exports all three and every page module still imports them from there. */
+/* ── the ring of routes, and the next one after this page ─────────────
+   The two-card previous/next block is gone; a small floating "Next · X"
+   (shared nextFloat) takes its place at the end of every footer. */
 export const ROUTES = [
   ['/', 'Both sides', 'The whole argument on one page', 'both'],
   ['/providers', 'For providers', 'The board, credentials, hours, hiring', 'prov'],
@@ -31,23 +28,11 @@ export const ROUTES = [
   ['/privacy', 'Privacy', 'What Aidepost holds, and what it does not', 'both'],
 ];
 export const routeIx = (path) => ROUTES.findIndex(([h]) => h === path);
-
-/* prev/next across the ring. Not a carousel: the first route has no
-   previous and says so by not drawing one, because a pager that wraps
-   silently teaches a reader that the order is not real. The last route has
-   no next for the same reason — but it does have a previous, and /privacy
-   shipped with neither, which is a dead end rather than a stated edge. */
-export function pager(path) {
+export const nextOf = (path) => {
   const i = routeIx(path);
-  if (i < 0) return '';
-  const cell = (n, dir) => {
-    const [href, title, gist, side] = n;
-    return `<a class="pg-i is-${dir}" href="${esc(href)}" data-side-hint="${esc(side)}" rel="${dir}"><span class="pg-k">${ic(dir === 'prev' ? 'left' : 'right', 16, { pin: false })}${dir === 'prev' ? 'Back to' : 'Next'}</span><b>${esc(title)}</b><span class="pg-g">${esc(gist)}</span></a>`;
-  };
-  const prev = i > 0 ? cell(ROUTES[i - 1], 'prev') : '';
-  const next = i < ROUTES.length - 1 ? cell(ROUTES[i + 1], 'next') : '';
-  return `<nav class="pg" aria-label="The rest of the site, in order">${prev}${next}<span class="pg-of">${i + 1} of ${ROUTES.length}</span></nav>`;
-}
+  const n = i < 0 ? null : ROUTES[i + 1];
+  return n ? { href: n[0], label: n[1], gist: n[2] } : null;
+};
 
 /* Where you are, said in the header on a phone, where there is no nav rail
    to infer it from. */
@@ -101,31 +86,34 @@ function keysCard() {
   </div>`;
 }
 
+/* ── the notification: one push, on the side you are on ───────────────
+   It slides in from the right edge when the board comes into view. The
+   provider's version is the message a manager gets when a shift is still
+   open at 24 hours; the caregiver's is what a relief worker sees when a
+   shift near her goes outward. Each explains itself in one line. */
 function notification() {
   return `<div class="ntf" id="ntf" hidden role="status" aria-live="polite">
-    <button class="ntf-b" type="button" data-ntf-open><span class="ntf-i">${ic('bell', 18, { pin: 'open' })}</span><span class="ntf-t"><span class="ntf-k">Aidepost · now</span><span class="ntf-m">WH-1: Sat night is open.</span></span></button>
+    <button class="ntf-b" type="button" data-ntf-open>
+      <span class="ntf-i">${ic('bell', 18, { pin: 'open' })}</span>
+      <span class="ntf-t">
+        <span class="ntf-k">Aidepost · now</span>
+        <span class="ntf-m s-prov">WH-1: Sat night is still open.</span>
+        <span class="ntf-m s-care">A shift near you: Sat night · 6.2 mi.</span>
+        <span class="ntf-w s-prov">The push a manager gets 24 hours out. Tap to see how it gets covered.</span>
+        <span class="ntf-w s-care">The push a relief caregiver gets when a shift goes outward. Tap to see it.</span>
+      </span>
+    </button>
     <button class="ntf-x" type="button" aria-label="Dismiss" data-ntf-close>${ic('x', 18, { pin: false })}</button>
   </div>`;
 }
 
-/* THE PAGE INDEX CARRIES NO data-open-all, AND THAT IS THE WHOLE FIX.
-   site.js:203 delegates open-all with `e.target.closest('[data-open-all]')`.
-   While the attribute sat on the .sheet-ix HOLDER, every row inside it was an
-   ancestor match: tapping "The questions we get." expanded all ten sections
-   underneath the anchor the browser had already resolved, and landed the
-   reader 12,858px from the heading they asked for. Only row one looked right,
-   by accident. The attribute belongs on the button and nowhere else — site.js
-   sets it there itself (`all.dataset.openAll = ''`) and falls back to the
-   identical label string, so removing it here costs nothing and fixes the one
-   control that earns the right to fold ten of thirteen sections.
-   Do not reintroduce it to give the button a custom label. */
 export function header(cfg, p, opts = {}) {
   const page = opts.page || 'home';
   const at = linker(opts.ids);
-  const set = (rows, side) => `<ul class="nav-set" data-set="${side}">${rows.map(([id, label]) => `<li><a href="${at(id)}">${esc(label)}</a></li>`).join('')}</ul>`;
+  const set = (rows, side) => `<ul class="nav-set" data-set="${side}">${rows.map(([id, label, icon]) => `<li><a href="${at(id)}">${ic(icon || 'board', 15, { pin: side === 'caregiver' ? 'open' : 'ink', cls: 'nav-ic' })}<span>${esc(label)}</span></a></li>`).join('')}</ul>`;
   const provHref = page === 'home' ? '#providers' : page === 'providers' ? '#top' : '/providers';
   const careHref = page === 'home' ? '#caregivers' : page === 'caregivers' ? '#top' : '/caregivers';
-  const sheetLinks = (rows) => rows.map(([id, label]) => `<a href="${at(id)}">${esc(label)}</a>`).join('');
+  const sheetLinks = (rows) => rows.map(([id, label, icon]) => `<a href="${at(id)}">${ic(icon || 'board', 18, { pin: false })}${esc(label)}</a>`).join('');
 
   return `<header class="hd" id="top-bar" data-page="${esc(page)}">
     <div class="wrap hd-in">
@@ -139,7 +127,7 @@ export function header(cfg, p, opts = {}) {
       </div>
       <nav class="hd-nav" aria-label="Sections" data-spy>${set(PROVIDER_NAV, 'provider')}${set(CAREGIVER_NAV, 'caregiver')}</nav>
       <div class="hd-r">
-        <button class="hd-k" type="button" aria-controls="pal" aria-expanded="false" aria-label="Search" data-focus=".pal-in">${ic('search', 18, { pin: false })}</button>
+        <button class="hd-k" type="button" aria-controls="pal" aria-expanded="false" aria-label="Search, and the verbs (⌘K)" data-focus=".pal-in">${ic('search', 18, { pin: false })}</button>
         <a class="btn pri sm hd-cta" href="${at('join')}" data-cta="nav"><span class="s-prov"><span class="l-long">${esc(cfg.cta.primary)}</span><span class="l-short">${esc(cfg.cta.nav)}</span></span><span class="s-care"><span class="l-long">${esc(cfg.cta.secondary)}</span><span class="l-short">Find shifts</span></span></a>
         ${modeBadge()}
         <button class="hd-menu" type="button" aria-controls="sheet" aria-expanded="false" aria-label="Open menu" data-label-close="Close menu" data-lock data-focus=".sheet-n a">${ic('menu', 22, { pin: false })}<span class="hd-menu-l" aria-hidden="true">Menu</span></button>
@@ -150,11 +138,11 @@ export function header(cfg, p, opts = {}) {
       <div class="sheet-g">
         <div class="sheet-half is-prov" data-side-half="provider">
           <span class="sheet-k">${ic('house', 20)}I run a house</span>
-          <nav class="sheet-n" aria-label="For providers">${sheetLinks(PROVIDER_NAV)}<a class="sheet-deep" href="/providers">${ic('arrow', 18, { pin: false })}Providers, at depth</a></nav>
+          <nav class="sheet-n" aria-label="For providers">${sheetLinks(PROVIDER_NAV)}<a href="/providers" class="sheet-deep">${ic('arrow', 18, { pin: false })}Providers, at depth</a></nav>
         </div>
         <div class="sheet-half is-care" data-side-half="caregiver">
           <span class="sheet-k">${ic('phone', 20)}I’m a caregiver</span>
-          <nav class="sheet-n" aria-label="For caregivers">${sheetLinks(CAREGIVER_NAV)}<a class="sheet-deep" href="/caregivers">${ic('arrow', 18, { pin: false })}Caregivers, at depth</a></nav>
+          <nav class="sheet-n" aria-label="For caregivers">${sheetLinks(CAREGIVER_NAV)}<a href="/caregivers" class="sheet-deep">${ic('arrow', 18, { pin: false })}Caregivers, at depth</a></nav>
         </div>
       </div>
       <div class="sheet-ix msheet-g" data-page-index><span class="msheet-k">In this page</span></div>
@@ -173,58 +161,25 @@ export function header(cfg, p, opts = {}) {
   </nav>`;
 }
 
-/* ── the footer: the week ─────────────────────────────────────────────── */
+/* ── the footer: the week as a rail, four columns, the sign-off ─────── */
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-/* ── which address this page prints ───────────────────────────────────
-   THE ROUTE DECIDES, AND NOTHING ELSE. /caregivers prints
-   caregiver@aidepost.com; every other route prints the default box. It is
-   chosen here, at build time, from the page being rendered, so it is the
-   same on a phone with scripting off as it is anywhere else.
-   It is deliberately NOT tied to the two-sided switch: sides() reads
-   ap-side out of localStorage and lets a stored value beat the route, so a
-   provider who once tapped “I’m a caregiver” would be shown the caregiver
-   address on a page about pricing — which manufactures exactly the
-   wrong-place feeling this address change exists to remove. A stored flag
-   must never decide an address.
-   A page may still name its own box explicitly; /caregivers does, and both
-   paths agree. /privacy and 404.html arrive here with only opts.page, which
-   is why the route is derived rather than required. */
+/* which address this page prints: THE ROUTE DECIDES, never the stored side */
 const routeOfPage = (page) => (!page || page === 'home' ? '/' : `/${page}`);
 const writeKey = (cfg, opts) => opts.box || boxAt(cfg, routeOfPage(opts.page));
 
-/* The address, its copy button, and the two lines under it — one string,
-   used by the week column and by the phone footer, so the two branches can
-   never drift. The second line names the address that is NOT showing and
-   says it is the same inbox: two addresses read as two queues only if the
-   reader is never told otherwise, and this is a disclosure she can test by
-   sending two messages. */
 function writeCol(cfg, key) {
   const to = hello(cfg, key);
   const other = key === 'caregivers' ? hello(cfg) : hello(cfg, 'caregivers');
-  const alt = key === 'caregivers' ? `Running a house? ${other} — same inbox.` : `Caregivers: ${other} — same inbox.`;
+  const alt = key === 'caregivers' ? `Running a house? ${other}` : `Caregivers: ${other}`;
   return {
     line: `<p class="ft-w"><a href="${mailto(cfg, '', key)}">${esc(to)}</a></p>`,
-    copy: `<button class="ft-copy" type="button" data-copy="${esc(to)}" data-copied="Address copied">${ic('copy', 18)}Copy the address</button>`,
-    note: `<p class="ft-note">One inbox. A person answers.</p><p class="ft-note ft-alt">${esc(alt)}</p>`,
+    copy: `<button class="ft-copy" type="button" data-copy="${esc(to)}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(to)} and open your mail app">${ic('mail', 18)}Write to us</button>`,
+    note: `<p class="ft-note">One inbox. A person answers.</p><p class="ft-note ft-alt">${esc(alt)} — same inbox.</p>`,
   };
 }
 
-/* ── the footer a phone gets instead of the week ───────────────────────
-   "Aidepost, laid out as a week" is a desktop metaphor. Seven day-columns
-   is seven day-columns; below 900 the grid used to restack to 2-up, keep
-   all 21 links and all seven day labels, and destroy the one thing that
-   made them mean anything — 1,850px of footer on every one of seven routes,
-   which is 50% of /about and 55% of /contact. So the week is not reflowed:
-   it is replaced, by its own branch, gated in CSS at <=900. The desktop
-   week above survives byte-for-byte and so does the 901–1280 swipe strip.
-
-   "Oregon" is dropped here and only here: its four destinations are
-   Company's four, exactly — 4 of the 21 links were pure repeats. Every
-   destination on the week is still one tap away in this footer.
-
-   Order, per the spec: identity · the address · two or three disclosures ·
-   social · legal (which stays outside, shared with the desktop footer). */
+/* the footer a phone gets: identity, the address, three groups, social */
 function phoneFoot(cfg, p, at, li, w) {
   const group = (title, rows) => `<details class="ft-ph-d"><summary><b>${esc(title)}</b><span class="faq-x" aria-hidden="true"></span></summary>${li(rows)}</details>`;
   return `<div class="ft-ph">
@@ -236,9 +191,8 @@ function phoneFoot(cfg, p, at, li, w) {
     </div>
     ${group('Product', [['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']])}
     ${group('Caregivers', [['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])}
-    ${group('Company', [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['https://providerhub.us', 'providerhub.us']])}
+    ${group('Company', [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']])}
     ${social(p.id, { cls: 'soc-pills', size: 16, label: 'Aidepost on social, again' })}
-    ${byline(true)}
   </div>`;
 }
 
@@ -247,34 +201,29 @@ export function footer(cfg, p, opts = {}) {
   const w = writeCol(cfg, writeKey(cfg, opts));
   const li = (rows) => `<ul class="ft-l">${rows.map(([h, t]) => `<li><a href="${esc(h)}">${esc(t)}</a></li>`).join('')}</ul>`;
   const cols = [
-    ['Product', li([['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/pricing', 'Pricing']])],
+    ['Product', li([['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']])],
     ['Caregivers', li([['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])],
-    ['Company', li([['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['https://providerhub.us', 'providerhub.us']])],
-    ['Oregon', li([['/about', 'About Aidepost'], ['/privacy', 'Privacy'], ['/contact', 'Write to a person'], ['https://providerhub.us', 'providerhub.us']])],
-    ['Write', `${w.line}${w.copy}${w.note}`],
-    ['Social', social(p.id, { cls: 'soc-pills', size: 16, text: true, label: 'Aidepost on social' })],
-    ['', `<div class="ft-sun">${mark(p.id, 80, { label: false })}<span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span>${byline(true)}</div>`],
+    ['Company', li([['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']])],
+    ['Write', `${w.line}${w.copy}${w.note}${social(p.id, { cls: 'soc-pills', size: 16, text: true, label: 'Aidepost on social' })}`],
   ];
-  /* /privacy is the eighth route and the only one whose <main> this site
-     does not render, so it was the only one that ended with no way on or
-     back. The pager is emitted here, between </main> and the footer: it is
-     a <nav> and a sibling of main, which is where a "the rest of the site"
-     nav is allowed to sit, and .pg reads only :root tokens so it paints the
-     same there as it does inside main on the other seven. */
-  return `${opts.page === 'privacy' ? pager('/privacy') : ''}<footer class="ft" id="foot">
+  const next = nextOf(routeOfPage(opts.page));
+  return `<footer class="ft" id="foot">
     <div class="wrap">
       <div class="ft-top">
-        <p class="ft-line">${ic('board', 20)}<span>Tonight is <b data-clock="day">the day</b>. <span class="ft-today"></span></span></p>
+        <p class="ft-line">${ic('board', 20)}<span>Tonight is <b data-clock="day">the day</b>.</span></p>
+        <ol class="ft-week" aria-label="This week, with tonight lit">${DAYS.map((d) => `<li class="ft-day" data-day="${d}"><span>${d}</span><i class="ft-tonight" aria-hidden="true">tonight</i></li>`).join('')}</ol>
         <button class="btn sm ft-print" type="button" data-print>${ic('print', 18, { pin: false })}Print the roster</button>
       </div>
-      <div class="ft-wk" data-scrollx role="group" aria-label="Aidepost, laid out as a week">
-        ${cols.map(([title, body], i) => `<div class="ft-d${title ? '' : ' is-sun'}" data-day="${DAYS[i]}"><span class="ft-dn">${DAYS[i]}<i class="ft-tonight" aria-hidden="true">tonight</i></span>${title ? `<b class="ft-dt">${esc(title)}</b>` : ''}${body}</div>`).join('')}
+      <div class="ft-g">
+        ${cols.map(([title, body]) => `<div class="ft-c"><b class="ft-dt">${esc(title)}</b>${body}</div>`).join('')}
       </div>
       ${phoneFoot(cfg, p, at, li, w)}
-      <div class="ft-legal">
-        <p>${esc(opts.fine || '')} ${esc(cfg.legalLine)}</p>
-        <button class="ft-keys" type="button" aria-controls="keys" aria-expanded="false">${ic('keyboard', 18, { pin: false })}Keyboard shortcuts</button>
+      <div class="ft-sign">
+        <div class="ft-sun">${mark(p.id, 44, { label: false })}<span><span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span></span></div>
+        <div class="ft-by">${byline(true)}<p class="ft-legal">${esc(opts.fine || '')} ${esc(cfg.legalLine)}</p></div>
       </div>
     </div>
+    <button class="ft-keys" type="button" aria-controls="keys" aria-expanded="false" aria-label="Keyboard shortcuts" data-fab-side>${ic('keyboard', 18, { pin: false })}<span>Keys</span></button>
+    ${next ? nextFloat(next) : ''}
   </footer>`;
 }

@@ -1,18 +1,18 @@
 // /caregivers — the dark page. Shifts near you, the wallet, your hours,
 // free for ever, and the rules that protect a worker.
 
-import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, walletCards, clockToy, timesheetToy, joinBlock, ixNav, pager } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, distanceToy, fitQuiz, walletCards, clockToy, timesheetToy, joinBlock, ixNav } from './bits.js';
 import { hello, mailto, subjectAt } from '../../shared.js';
 
 const PROTECT = [
-  ['No background check is run on you', 'The provider runs ORCHARDS herself. Aidepost holds only a status she types — never a result, never the content.'],
-  ['No opinion about you exists anywhere', 'Attendance is exactly one of showed, did not show, or late with a number of minutes. No rating, no comment, no free text. There is no field in the schema for an opinion about a person.'],
-  ['Your pay is never computed here', 'Hours are exported as hours. One arithmetic error becomes a wage claim, so the product does not do arithmetic on your pay.'],
-  ['You are never charged', 'The supply side is free, permanently. No organisation, no card, nothing to cancel.'],
-  ['No address before a relationship exists', 'A shift shows the work, the time and the distance. The house’s address arrives when you are confirmed.'],
-  ['Your hours record cannot be deleted', 'It is a legal record. A correction is a new record beside the original, and both stay visible.'],
-  ['What one employer records stays theirs', 'Attendance facts are never shared between employers. You see your own facts and can correct everything recorded about you.'],
-  ['You are asked which side you are on once', 'In plain language, and never again. Your side is remembered; your schedule is the first screen.'],
+  ['No background check is run on you', 'The house runs it. Aidepost holds a status and a date, never a result.'],
+  ['No opinion about you exists anywhere', 'Attendance is showed, did not show, or late by a number of minutes. No rating, no comment.'],
+  ['Your pay is never computed here', 'Hours are exported as hours.'],
+  ['You are never charged', 'No organisation, no card, nothing to cancel.'],
+  ['No address before a relationship exists', 'A shift shows the work, the time and the distance. The address arrives when you are confirmed.'],
+  ['Your hours cannot be deleted', 'A correction sits beside the original, and both stay visible.'],
+  ['What one employer records stays theirs', 'Attendance facts are never shared between employers.'],
+  ['You are asked which side you are on once', 'Your side is remembered; your schedule is the first screen.'],
 ];
 
 function top(cfg, p) {
@@ -39,7 +39,8 @@ function shifts() {
       <div class="care-card"><h3>What a listing says</h3><ul class="tick"><li>${ic('check', 16)}The work, the schedule in words, the rate</li><li>${ic('check', 16)}The credentials asked for — surfaced, not required</li><li>${ic('check', 16)}The distance from you</li></ul><h3>What it never says</h3><ul class="tick is-x"><li>${ic('x', 16, { pin: 'open' })}A resident, or anything about one</li><li>${ic('x', 16, { pin: 'open' })}Another caregiver</li><li>${ic('x', 16, { pin: 'open' })}A house’s address, before a relationship exists</li></ul></div>
       <p class="fine">${esc(find('caregiver').lines[6])}</p>
     </div>
-  </div>`);
+  </div>
+  <div class="wrap">${fitQuiz()}</div>`);
 }
 
 function wallet() {
@@ -73,7 +74,7 @@ function free(cfg, p) {
       <p class="fine free-write">Write first, if you like — <a href="${mailto(cfg, `${subjectAt(cfg, '/caregivers')} — ${p.name}`, 'caregivers')}">${esc(hello(cfg, 'caregivers'))}</a>. You will never be charged, and we will never ask for a card.</p>
       <div class="ctas"><a class="btn pri lg" href="#join">${esc(s.ctas[0][0])}</a><a class="btn lg" href="/providers">${ic('house', 18, { pin: false })}I run a house, actually</a></div></div>
     <div class="sec-dev"><div class="dev">${iosShell('aidepost', { key: 'hire' })}</div>
-      <p class="cap">What a relief worker sees when a shift goes outward — the work, the distance, and nothing about a resident.</p></div>
+      <p class="cap">What a relief caregiver sees when a shift goes outward: the work, the distance, and nothing about a resident.</p></div>
     <div class="free-first"><span class="strip-l">${ic('phone', 16, { pin: 'open' })}The first ten minutes</span><ol>${find('start').columns[1].steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol><p class="cap">${esc(find('start').columns[1].foot)}</p></div>
   </div>`));
 }
@@ -99,7 +100,6 @@ ${hours()}
 ${protect()}
 ${free(cfg, p)}
 ${sec('join', 'join care-join', joinBlock(cfg, p))}
-${pager('/caregivers')}
 </div>`);
   },
 };

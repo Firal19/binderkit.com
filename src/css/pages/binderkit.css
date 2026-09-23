@@ -76,12 +76,12 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 
 /* ── type ─────────────────────────────────────────────────────────────── */
 h1, h2 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; line-height: 1.06; font-variation-settings: 'opsz' 72; }
-h1 { font-size: var(--fs-h1); }
+h1 { font-size: clamp(34px, 1.55rem + 2.7vw, 66px); }
 /* 42px at 1440, to the pixel, as before — but the old hand-typed
    clamp(30px, 3.6vw, 42px) never left its 30px floor below an 833px
    viewport, so across the whole iPhone range the h2 sat within 13% of the
    h1 and at 320 it outranked it. The token curve keeps the step. */
-h2 { font-size: var(--fs-h2); max-width: 24ch; }
+h2 { font-size: min(var(--fs-h2), 42px); max-width: 26ch; }
 h3 { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; line-height: 1.25; }
 code, .ctl { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .02em; }
 .sub { margin-top: 14px; font-size: 17px; line-height: 1.6; color: var(--muted); max-width: 62ch; }
@@ -109,7 +109,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .doc-b { min-width: 0; }
 .sec { border-top: 1px solid var(--rule); }
 .hero { padding-top: clamp(28px, 5vw, 64px); padding-bottom: clamp(40px, 6vw, 88px); }
-@media (min-width: 901px) { .page, .foot { padding-right: 44px; } }
+@media (min-width: 901px) { .page, .foot { padding-right: 72px; } }
 
 /* ── the top rule ─────────────────────────────────────────────────────── */
 .rule { position: sticky; top: 0; z-index: 40; background: var(--bg); border-bottom: 1px solid var(--rule); }
@@ -139,19 +139,19 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
    when something is actually folded, so it never exists on a desktop. */
 .fold-lead { display: none; }
 
-/* ── the index tabs: a column on the right edge, a strip on a phone ────── */
+/* ── the index tabs: a column on the right edge ─────────────────────────
+   Each tab carries its word and its number, the way an index tab is
+   printed, so the column reads as a contents list at rest. The current
+   section's tab is inked and pulled out; hovering pulls one out. */
 .tabs { position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 35; }
 .tabs-l { display: grid; gap: 3px; }
-.dtab { display: grid; grid-template-columns: 0fr auto; align-items: center; height: 44px; border: 1px solid var(--rule); border-right: 0; border-radius: 3px 0 0 3px; background: var(--bg); color: var(--muted); text-decoration: none; overflow: hidden; transition: grid-template-columns 260ms cubic-bezier(.2, .8, .2, 1), transform 220ms cubic-bezier(.2, .8, .2, 1), background 160ms, color 160ms; }
-.dtab-l { min-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transition: opacity 160ms, padding 260ms; }
-.dtab-n { width: 40px; text-align: center; font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
-.dtab:focus-visible { grid-template-columns: 1fr auto; color: var(--ink); }
-.dtab:focus-visible .dtab-l { opacity: 1; padding-left: 14px; }
-@media (hover: hover) {
-  .dtab:hover { grid-template-columns: 1fr auto; color: var(--ink); }
-  .dtab:hover .dtab-l { opacity: 1; padding-left: 14px; }
-}
+.dtab { display: grid; grid-template-rows: auto auto; justify-items: center; align-content: center; gap: 3px; width: 74px; height: 46px; padding: 0 6px 0 8px; border: 1px solid var(--rule); border-right: 0; border-radius: 3px 0 0 3px; background: var(--bg); color: var(--muted); text-decoration: none; overflow: hidden; transition: transform 220ms cubic-bezier(.2, .8, .2, 1), background 160ms, color 160ms, border-color 160ms; }
+.dtab-l { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; line-height: 1; }
+.dtab-n { font-family: var(--font-mono); font-size: 12px; font-weight: 500; line-height: 1; color: var(--soft); }
+.dtab:focus-visible { color: var(--ink); border-color: var(--ink); transform: translateX(-4px); }
+@media (hover: hover) { .dtab:hover { color: var(--ink); border-color: var(--ink); transform: translateX(-4px); } }
 .dtab[aria-current="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); transform: translateX(-6px); }
+.dtab[aria-current="true"] .dtab-n { color: var(--bg); }
 .tabs-cta { display: none; }
 
 /* ── the contents sheet: chapters and sections, with leaders ──────────── */
@@ -179,6 +179,10 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .hero-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .92fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
 .hero-in:not(.has-aside) { grid-template-columns: minmax(0, 1fr); }
 .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+.hero .ctas { align-items: center; gap: 10px 18px; margin-top: 26px; }
+.lnk { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; font-size: 15px; color: var(--ink); text-decoration: none; }
+.lnk svg { transition: transform 160ms cubic-bezier(.2, .8, .2, 1); }
+@media (hover: hover) { .lnk:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } .lnk:hover svg { transform: translateX(3px); } }
 .hero .fine { margin-top: 16px; }
 .hero-v { min-width: 0; }
 .desk { position: relative; padding: 36px 28px 0 0; }
@@ -215,7 +219,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .cp-count[hidden] { display: none; }
 .cp-f { margin-top: auto; padding-top: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
 .cp-mark { display: none; }
-.cp[data-track]::after { content: "This sheet shows the AFH-DD demonstration; the " attr(data-track) " library is not written yet."; display: block; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; color: var(--peri-ink); border-top: 1px dashed var(--peri); padding-top: 8px; }
+.cp[data-track]::after { content: "This sheet shows the AFH-DD plan. The " attr(data-track) " library is coming next."; display: block; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; color: var(--peri-ink); border-top: 1px dashed var(--peri); padding-top: 8px; }
 
 /* ── the planner ──────────────────────────────────────────────────────── */
 .planner { margin-top: 34px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
@@ -328,11 +332,19 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .tag-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .tag-g > div { display: grid; gap: 8px; font-size: 14.5px; color: var(--muted); line-height: 1.5; }
 .tag-g .ev { margin-left: 0; justify-self: start; }
-.cites { display: grid; gap: 0; border-top: 1px solid var(--rule); padding-top: 14px; }
-.cite-r { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 0 20px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.cite-r dt { font-size: 14px; } .cite-r dt b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 17px; }
-.cite-r dd { font-size: 14px; color: var(--muted); line-height: 1.5; }
-.cite-ev { display: block; margin-top: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--peri-ink); }
+.cites { display: grid; gap: 24px; border-top: 1px solid var(--rule); padding-top: 16px; }
+.cite-g { display: grid; gap: 4px; }
+.cite-gt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 4px; }
+.cite-gt b { font-family: var(--font-display); font-weight: 500; font-size: 20px; letter-spacing: -0.01em; }
+.cite-gt span { font-size: 13.5px; color: var(--soft); }
+.cite-l { display: grid; }
+.cite-r { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 4px 20px; padding: 11px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.cite-r dt { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.cite-r dt b { min-width: 0; }
+.cite-r dt code { flex: none; padding: 2px 7px; border: 1px solid var(--rule); border-radius: 2px; font-size: 12px; color: var(--ink); background: var(--card); }
+.cite-r dt b { font-weight: 600; font-size: 15px; }
+.cite-r dd { font-size: 15px; color: var(--muted); line-height: 1.5; }
+.cite-f { font-size: 13.5px; color: var(--soft); line-height: 1.5; max-width: 70ch; }
 .struck { margin-top: 40px; padding: 26px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
 .struck p { display: flex; gap: 28px; flex-wrap: wrap; }
 .struck.is-page { border-top: 0; padding-top: 10px; }
@@ -407,7 +419,13 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 /* ── pricing ───────────────────────────────────────────────────────────── */
 .sell-note { margin-top: 14px; font-size: 14.5px; color: var(--muted); line-height: 1.55; max-width: 70ch; }
 .tiers { margin-top: 26px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.tier { padding: 24px 24px 24px 0; display: flex; flex-direction: column; gap: 6px; }
+.tier { position: relative; padding: 24px 24px 24px 0; display: flex; flex-direction: column; gap: 6px; }
+.tier-flag { position: absolute; top: -11px; left: 24px; padding: 3px 8px; background: var(--ink); color: var(--bg); font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; line-height: 1.4; }
+.tier-p small { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; color: var(--muted); margin-left: 6px; }
+[data-sell-p][hidden] { display: none; }
+.signup-line { margin-top: 22px; padding-top: 16px; border-top: 1px dotted var(--line); font-size: 15px; line-height: 1.6; color: var(--muted); max-width: 80ch; }
+.signup-line b { color: var(--ink); font-weight: 600; }
+.signup-line a { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .tier + .tier { border-left: 1px solid var(--line); padding-left: 24px; }
 .tier.is-main { background: var(--wash); padding-left: 24px; margin-left: -1px; }
 .tier-n { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
@@ -490,18 +508,24 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .maker { margin-top: 26px; display: grid; gap: 16px; }
 .maker .fine a { color: var(--ink); }
 
-/* ── the footer: a contents page ───────────────────────────────────────── */
-.foot { padding: clamp(48px, 6vw, 96px) 0 48px; border-top: 1px solid var(--rule); color: var(--muted); }
-.foot-h { font-family: var(--font-display); font-size: clamp(34px, 4vw, 52px); letter-spacing: -0.02em; margin-bottom: 28px; }
-.foot-g { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px 64px; }
-.foot .toc a { min-height: 44px; }
-.colophon { margin-top: 48px; padding: 28px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; justify-items: center; gap: 14px; text-align: center; }
-.colo-t { font-family: var(--font-display); font-size: 16px; line-height: 1.6; max-width: 60ch; color: var(--muted); }
+/* ── the footer: the chapters, a colophon, the address ─────────────────── */
+.foot { padding-block: clamp(48px, 6vw, 96px) 48px; border-top: 1px solid var(--rule); color: var(--muted); }
+.foot-top { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.45fr); gap: 32px 64px; align-items: start; }
+.foot-h { font-family: var(--font-display); font-size: clamp(30px, 3.2vw, 42px); letter-spacing: -0.02em; margin-bottom: 10px; color: var(--ink); }
+.foot-sub { font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 30ch; }
+.foot-sub b { color: var(--ink); font-weight: 600; }
+.foot-toc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 44px; }
+.foot .toc a { min-height: 48px; }
+.foot-mid { margin-top: 44px; padding-top: 30px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.45fr); gap: 32px 64px; align-items: start; }
+.colophon { display: grid; gap: 14px; justify-items: start; }
+.colo-t { font-family: var(--font-display); font-size: 15.5px; line-height: 1.55; max-width: 30ch; color: var(--muted); }
 .colo-ctl { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
-.stamps-row { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; }
+.foot-write .strip-l { margin-bottom: 10px; }
+.stamps-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .stamp { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 3px; background: var(--card); color: var(--ink); font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; text-decoration: none; transition: background 120ms, color 120ms; }
 @media (hover: hover) { .stamp:hover { background: var(--ink); color: var(--bg); } }
-.soc.stamps { margin-top: 12px; gap: 8px; }
+.foot-note { margin-top: 10px; font-size: 13.5px; color: var(--soft); line-height: 1.5; }
+.soc.stamps { margin-top: 14px; gap: 8px; }
 .stamps .soc-i { width: 44px; height: 44px; min-width: 44px; padding: 0; border: 1px solid var(--rule); border-radius: 3px; background: var(--card); color: var(--muted); position: relative; }
 .stamps .soc-i::before, .stamps .soc-i::after { content: ""; position: absolute; left: 3px; width: 3px; height: 3px; border-radius: 50%; border: 1px solid var(--rule); background: var(--bg); }
 .stamps .soc-i::before { top: 12px; } .stamps .soc-i::after { bottom: 12px; }
@@ -509,7 +533,7 @@ kbd { display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px soli
 .stamps .soc-t { display: none; font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
 .stamps.is-text .soc-i { width: auto; padding: 0 12px 0 14px; gap: 10px; }
 .stamps.is-text .soc-t { display: inline; }
-.foot-b { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; }
+.foot-b { margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; }
 .foot-fine { font-size: 13.5px; line-height: 1.6; max-width: 72ch; color: var(--muted); }
 
 /* ── the foot bar on phones, and the dialogs ───────────────────────────── */
@@ -628,20 +652,6 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 .toc.here a[aria-current="true"] .toc-t { font-weight: 600; }
 .toc.here a[aria-current="true"] .here-n { color: var(--peri-ink); }
 
-/* ── leaf back, leaf forward ───────────────────────────────────────────
-   Two real links and no script: a binder is a book, and a book has a page
-   before this one and a page after it. */
-.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 34px;
-  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.pager-a { display: grid; gap: 3px; padding: 16px 20px 18px 0; min-height: var(--tap-row);
-  align-content: center; text-decoration: none; color: var(--ink); }
-.pager-a.is-next { text-align: right; padding: 16px 0 18px 20px; border-left: 1px solid var(--line); }
-.pager-a.is-none { border-left: 1px solid var(--line); }
-.pager-k { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
-.pager-t { font-family: var(--font-display); font-weight: 500; font-size: 20px; letter-spacing: -0.01em; }
-.pager-n { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; color: var(--muted); }
-@media (hover: hover) { .pager-a:hover .pager-t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
-
 /* ── the three proofs ──────────────────────────────────────────────────
    The same four-across rule the printed artefacts use, at three. */
 .art-g.proof-g { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 30px; }
@@ -741,8 +751,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 .tabs { max-height: calc(100dvh - 24px); overflow: hidden auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 @media (min-width: 901px) and (max-height: 880px) and (pointer: fine) {
-  .dtab { height: 36px; }
-  .dtab-n { width: 34px; }
+  .dtab { height: 40px; gap: 2px; }
 }
 
 /* ── the annotated shell's room ────────────────────────────────────────
@@ -853,7 +862,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 }
 
 /* ── narrower ──────────────────────────────────────────────────────────── */
-@media (max-width: 1140px) { .cite-r { grid-template-columns: 200px minmax(0, 1fr); } }
+@media (max-width: 1140px) { .cite-r { grid-template-columns: 300px minmax(0, 1fr); } }
 @media (max-width: 1040px) {
   .art-g, .gates { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .art:nth-child(3), .gates li:nth-child(3) { border-left: 0; padding-left: 0; }
@@ -938,26 +947,27 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
      — stays, with its leader dots and its control numbers intact.
      Gated on .js because with scripting off the sheet never opens and this
      footer is the only navigation a phone has. */
-  .js .foot-here { display: none; }
   .foot .ctl { display: none; }
-  .foot-g { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .foot-top, .foot-mid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .foot-toc { grid-template-columns: minmax(0, 1fr); }
   .foot .toc-l { display: block; }
   /* the footer heading was clamp(34px, 4vw, 52px) — 34px on a phone, above
      every section heading on the page it closes. It joins the ladder. */
   .foot-h { font-size: var(--fs-h2); margin-bottom: var(--sp-4); }
-  .colophon { margin-top: var(--sp-6); padding: var(--sp-5) 0; gap: var(--sp-3); }
+  .colophon { gap: 10px; }
+  .foot-mid { margin-top: var(--sp-6); padding-top: var(--sp-5); }
   .colo-mark svg { width: 56px; height: 56px; }
   /* The stamps and the social handles stay a wrapping flex row. Two fixed
      tracks look tidier in a mock and burst at 320: "@binderkit" in a 13px
      mono pill wants 186px and a half of a 320px wrap is 136. A grid cannot
      pack by content; flex-wrap can, and these are pills of four different
      lengths. Measured: 148px and 200px, and both fit. */
-  .stamps-row { margin-top: var(--sp-4); }
+
   /* Share and Print are the third copy of themselves down here: Print is in
      the footbar that is fixed to the bottom of the screen right now, Share
      is in the head of the contents sheet. What the stamps row is FOR on a
      phone is the address and the one button that copies it. */
-  .foot .stamps-row [data-share], .foot .stamps-row [data-print] { display: none; }
+  .foot .stamps-row [data-share] { display: none; }
   .foot-b { margin-top: var(--sp-5); }
   .footbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 38; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: calc(var(--footbar-h) + var(--sab)); padding: 0 12px var(--sab); background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--rule); }
   .fb-b { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 14px; border-radius: 3px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); text-decoration: none; justify-self: start; }
@@ -1057,7 +1067,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
    470px rail would be taller than its whole viewport. 620px of height is
    an iPad in portrait and a small desktop window; it is never a phone. */
 @media (min-width: 641px) and (max-width: 900px) and (min-height: 620px) {
-  .page, .foot { padding-right: 44px; }
+  .page, .foot { padding-right: 72px; }
   .tabs { display: block; }
   .tabs-l { display: grid; gap: 3px; overflow: visible; padding: 0; }
 }
@@ -1222,7 +1232,7 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .preg-tab, .preg-pl, .tryg-g { letter-spacing: .04em; }
   /* not prose — chrome, a list row's number, a pager's kicker — so the
      12px floor applies and 13 is where a mono label starts being read. */
-  .count-g dt, .ctlx dt, .pager-k, .pager-n, .stat-l, .here-n, .fb-w
+  .count-g dt, .ctlx dt, .stat-l, .here-n, .fb-w
   { font-size: var(--fs-label); letter-spacing: var(--track-label); }
   .stat-l { padding: 1px 6px; }
   /* The control number in the margin is a button now — it copies the
@@ -1455,15 +1465,10 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
   .fs-i { padding-left: var(--sp-3); }
 
   /* ── leaf back, leaf forward ─────────────────────────────────────── */
-  .pager { margin-bottom: 26px; grid-template-columns: minmax(0, 1fr); }
-  .pager-a { padding: 11px 0; }
-  .pager-a.is-next { text-align: left; padding: 11px 0; border-left: 0; border-top: 1px solid var(--line); }
-  .pager-a.is-none { display: none; }
-  .pager-t { font-size: 18px; }
 
   /* ── the footer, the colophon and the dialogs ────────────────────── */
   .foot { padding-top: 36px; }
-  .foot-g { gap: 22px; }
+  .foot-top, .foot-mid { gap: 18px; }
   .soc.stamps { margin-top: 10px; }
   .keys-in { padding: 14px 16px 16px; }
   .cmd-l { padding: 6px; }
@@ -1500,4 +1505,46 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
      fit, which at 320 is exactly what happens. Kept as the landing place
      for anything this site does need to shorten below 400. */
   .preg-i { grid-template-columns: 26px minmax(0, 1fr); }
+}
+
+/* ── the numbered pins, finished ─────────────────────────────────────────
+   A pin sits just above and to the right of the element it names, with a
+   small pointer down to it, so it never covers the words it points at.
+   Hovering a pin lights its sentence; a lit pin inks. */
+.cal-pin { width: 24px; height: 24px; border-radius: 2px; transform: translate(-25%, -130%); background: var(--bg); color: var(--ink); border: 1px solid var(--ink); box-shadow: 0 0 0 2px var(--bg), 0 10px 20px -12px rgba(23, 32, 31, .6); font-size: 12px; font-weight: 600; cursor: pointer; }
+.cal-pin::after { content: ""; position: absolute; left: 3px; bottom: -7px; width: 7px; height: 7px; background: var(--ink); clip-path: polygon(0 0, 100% 0, 0 100%); }
+.cal-pin[data-on], .cal-pin:hover { background: var(--ink); color: var(--bg); outline: 0; }
+.cal-pin[data-on]::after { background: var(--peri); }
+.cal-i { padding: 10px 12px; }
+.cal-n { border-radius: 2px; border-color: var(--rule); font-size: 12px; font-weight: 600; color: var(--ink); }
+.cal-i[data-on] .cal-n { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+/* ── reach us, and the next chapter, in the binder's own dress ───────── */
+.reach { border-radius: 0; border-color: var(--rule); background: var(--card); }
+.reach-t h3 { font-size: clamp(24px, 2.6vw, 34px); }
+.reach-s li::before { border-radius: 2px; border-color: var(--rule); background: var(--bg); }
+.reach .copyb { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--rule); border-radius: 3px; background: var(--card); color: var(--ink); }
+@media (hover: hover) { .reach .copyb:hover { background: var(--ink); color: var(--bg); } }
+.nxt { border-radius: 3px; border-color: var(--rule); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; }
+.nxt-k { font-size: 10px; }
+.nxt b { font-family: var(--font-display); font-weight: 500; font-size: 15px; letter-spacing: -0.01em; text-transform: none; }
+.fabs .fab, .fab-side { border-radius: 3px; }
+
+/* ── the next chapter, as marginalia ────────────────────────────────────
+   On a desk the pill sits in the control-number margin — the one column of
+   this document that never carries text — as a two-line card, so it never
+   covers a sentence. The margin is the page gutter, which base.css
+   exports as clamp(20px, 5vw, 80px). */
+@media (min-width: 901px) {
+  .nxt { left: clamp(20px, 3.2vw, 60px); bottom: clamp(20px, 3vw, 40px); flex-direction: column; align-items: flex-start; gap: 5px; width: 104px; min-height: 0; padding: 10px 30px 11px 12px; white-space: normal; }
+  .nxt b { display: block; line-height: 1.15; }
+  .nxt svg { position: absolute; right: 11px; bottom: 13px; }
+}
+
+/* the three proofs stack on a phone: .art-g.proof-g is (0,2,0) and had been
+   beating the 1040 tier's two-column rule and the phone's one-column one */
+@media (max-width: 640px) {
+  .art-g.proof-g { grid-template-columns: minmax(0, 1fr); }
+  .art-g.proof-g .art + .art { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
+  .art-g.proof-g .art { padding: 16px 0; }
 }

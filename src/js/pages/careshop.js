@@ -108,46 +108,50 @@
       });
     };
 
-    /* ── the loop ring turns with the reader; the strip lights the card in view ── */
+    /* ── the loop ring turns with the section, and lights the station beside it ──
+       Progress is the SECTION's, not the ring's own: the ring is sticky in
+       its column, so measuring itself would freeze it while the stations
+       scroll past. One full turn across the section; the lit node and the lit
+       station row are the same index, and a ring node is a link to its row. */
     const ring = () => {
       const wrap = $('[data-ring-wrap]');
-      if (wrap) {
-        const nodes = $$('.ring-n', wrap);
-        const station = $('[data-ring-station]', wrap);
-        const names = nodes.map((n) => n.querySelector('text')?.textContent || '');
-        let lit = -1;
-        const paint = () => {
-          const r = wrap.getBoundingClientRect();
-          const vh = window.innerHeight;
-          const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
-          wrap.style.setProperty('--lp', p.toFixed(4));
-          const i = Math.round(p * nodes.length) % nodes.length;
-          if (i !== lit) {
-            lit = i;
-            nodes.forEach((n, k) => n.classList.toggle('is-lit', k === i));
-            if (station) station.textContent = names[i] ? `station ${i + 1} · ${names[i].toLowerCase()}` : 'closes by itself';
-          }
-        };
-        let tick = false;
-        window.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(() => { tick = false; paint(); }); } }, { passive: true });
-        window.addEventListener('resize', paint, { passive: true });
-        paint();
-      }
-      const strip = $('[data-loop-strip]');
-      const dots = $('[data-ls-dots]');
-      if (strip && io) {
-        const cards = $$('.ls-c', strip);
-        if (dots) dots.innerHTML = cards.map((c, i) => `<i class="${i === 0 ? 'is-on' : ''}"></i>`).join('');
-        const obs = new IntersectionObserver((es) => {
-          for (const e of es) {
-            if (!e.isIntersecting) continue;
-            const i = cards.indexOf(e.target);
-            cards.forEach((c, k) => c.classList.toggle('is-on', k === i));
-            if (dots) $$('i', dots).forEach((d, k) => d.classList.toggle('is-on', k === i));
-          }
-        }, { root: strip, threshold: .6 });
-        cards.forEach((c) => obs.observe(c));
-      }
+      if (!wrap) return;
+      const sec = wrap.closest('section') || wrap.parentElement;
+      const nodes = $$('.ring-n', wrap);
+      const rows = $$('[data-stations] li');
+      const station = $('[data-ring-station]', wrap);
+      const names = nodes.map((n) => n.querySelector('text')?.textContent || '');
+      let lit = -1, held = -1;
+      const light = (i) => {
+        if (i === lit) return;
+        lit = i;
+        nodes.forEach((n, k) => n.classList.toggle('is-lit', k === i));
+        rows.forEach((r, k) => r.classList.toggle('is-on', k === i));
+        if (station) station.textContent = names[i] ? `station ${i + 1} · ${names[i].toLowerCase()}` : 'closes by itself';
+      };
+      const paint = () => {
+        const r = sec.getBoundingClientRect();
+        const vh = window.innerHeight;
+        /* the turn runs from the section's head reaching mid-screen to its
+           foot leaving it, so every station is lit for an equal stretch */
+        const p = Math.min(1, Math.max(0, (vh * 0.55 - r.top) / Math.max(1, r.height - vh * 0.1)));
+        wrap.style.setProperty('--lp', p.toFixed(4));
+        if (held >= 0) return;
+        light(Math.min(nodes.length - 1, Math.floor(p * nodes.length)));
+      };
+      let tick = false;
+      window.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(() => { tick = false; paint(); }); } }, { passive: true });
+      window.addEventListener('resize', paint, { passive: true });
+      /* the pointer over a station row, or a ring node, holds that station lit */
+      rows.forEach((row, i) => {
+        row.addEventListener('pointerenter', () => { held = i; light(i); });
+        row.addEventListener('pointerleave', () => { held = -1; paint(); });
+      });
+      nodes.forEach((n, i) => {
+        n.addEventListener('pointerenter', () => { held = i; light(i); });
+        n.addEventListener('pointerleave', () => { held = -1; paint(); });
+      });
+      paint();
     };
 
     /* ── the fan: dots on the phone carousel; the phone in view is the dot lit ── */

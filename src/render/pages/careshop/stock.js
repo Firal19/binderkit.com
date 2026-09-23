@@ -71,7 +71,7 @@ ${sec('zones', 'zones', `<div class="wrap aisle-g">
   <div class="aisle-ph"><div class="crop">${phone('stock')}</div></div>
   <div class="aisle-d">
     ${sticker('shelf', 'Four zones · walk order set by the house')}
-    ${h2('zones', 'Zone is where it sits.', 'Pantry, fridge, freezer, reserve — in the walk order the house sets. Category is the catalogue facet; aisle is the route through a store. The three are never conflated, because they are three different physical sequences.')}
+    ${h2('zones', 'Zone is where it sits.', 'Pantry, fridge, freezer, reserve, in the walk order the house sets.')}
     <div class="zones">${st.zones.map((z, i) => `<span class="zone"><span class="zone-n">${i + 1}</span>${ic(['shelf', 'water', 'clock', 'lock'][i], 16)}${esc(z)}</span>`).join('')}</div>
     <p class="st-p">${esc(loop.nodes[0].note)}</p>
     <div class="shows">${showMe('Rice', 'Short')}${showMe('Whole milk', 'Expiring')}${showMe('Oatmeal', 'Stocked')}</div>
@@ -79,7 +79,7 @@ ${sec('zones', 'zones', `<div class="wrap aisle-g">
 </div>`)}
 ${fold(sec('par', 'par-s', `<div class="wrap aisle-g is-rev">
   <div class="aisle-ph">${parDemo()}</div>
-  <div class="aisle-d">${sticker('scale', 'Par')}${h2('par', 'Par is the one number you set.', 'A par is a target, not a fact, so it stays direct. Everything else about on-hand moves through the record — count, scan, cook, discard, receipt — with an actor and a reason on every row.')}<p class="st-p">${esc(find('start').steps[1])} That is the second of the first ten minutes.</p></div>
+  <div class="aisle-d">${sticker('scale', 'Par')}${h2('par', 'Par is the one number you set.', 'A par is a target, not a fact. Everything else about on-hand moves through the record, with an actor and a reason on every row.')}<p class="st-p">${esc(find('start').steps[1])}</p></div>
 </div>`), 'Par is a target you set; everything else moves through the record.')}
 ${fold(sec('expiry', 'expiry-s', `<div class="wrap aisle-g">
   <div class="aisle-ph"><div class="crop">${phone('expiry')}</div></div>
@@ -90,16 +90,16 @@ ${fold(sec('reserves', 'reserves-s', `<div class="wrap aisle-g is-rev">
   <div class="aisle-d">${sticker('water', 'Reserves')}${h2('reserves', depth.heading, depth.pull)}<p class="st-p">${esc(machine('Reserve'))}</p><p class="st-p"><b>${esc(reserveRow[0])}.</b> ${esc(reserveRow[1])} <em class="today">${esc(reserveRow[2])}</em></p><p class="st-p">${esc(find('start').steps[3])}</p><a class="more" href="/rules">${ic('arrow', 16)}The rule, and how sure we are</a></div>
 </div>`), 'Days × beds × the quantity per bed per day.')}
 ${fold(sec('axes', 'axes-s', `<div class="wrap">
-  <div class="head">${sticker('sort', 'Three sequences, one item')}${h2('axes', 'Zone is not aisle is not category.', 'The same five things, sorted the two ways a person actually walks them. Conflating the three is the mistake every stock product makes, and it is the one this product is built not to make.')}</div>
+  <div class="head">${sticker('sort', 'Three sequences, one item')}${h2('axes', 'Zone is not aisle is not category.', 'The same five things, sorted the two ways a person actually walks them.')}</div>
   <div class="axes">${AXES.map(([n, count, note, rows], i) => `<details class="axes-d" name="careshop-axis"${i === 0 ? ' open' : ''}>
     <summary><b>${esc(n)}</b><span class="axes-c">${esc(count)}</span>${ic('down', 14)}</summary>
     <div class="axes-b"><p>${esc(note)}</p>${rows.length ? `<ul class="axes-l">${rows.map(([g, items]) => `<li><span class="axes-g">${esc(g)}</span><span>${esc(items)}</span></li>`).join('')}</ul>` : ''}</div>
   </details>`).join('')}</div>
 </div>`), 'Zone, aisle and category are three different physical sequences.')}
 ${fold(sec('movement', 'move-s', `<div class="wrap">
-  <div class="head">${sticker('receipt', 'The ledger rule')}${h2('movement', 'On hand is never typed.', 'Every change to on-hand is a recorded, immutable movement. A correction is a further movement rather than an edit, and nothing in the product can set the number directly.')}</div>
+  <div class="head">${sticker('receipt', 'The ledger rule')}${h2('movement', 'On hand is never typed.', 'Every change is a recorded movement. A correction is a further movement, never an edit.')}</div>
   <ul class="mvt">${MOVEMENT.map(([k, v]) => `<li><span class="mvt-k">${esc(k)}</span><b>${esc(v)}</b></li>`).join('')}</ul>
-  <p class="demo-f">Seven fields, on every movement, for every one of the six reasons. Delete is not one of them: a movement is the record, and the record is the product.</p>
+  <p class="demo-f">Seven fields on every movement. Delete is not one of the reasons.</p>
   <div class="two-up">${closers.map((b) => `<div class="two-c"><b>${esc(b.heading)}</b><p>${esc(b.text)}</p></div>`).join('')}</div>
 </div>`), 'Seven fields on every movement — and what happens when two people disagree.')}
 ${sec('ledger', 'ledger', `<div class="wrap ledger-in">

@@ -9,7 +9,7 @@
 // unchanged, and that is the point.
 
 import { productOf, mark, esc } from '../kit.js';
-import { JOIN } from '../data/page.js';
+import { JOIN, REACH } from '../data/page.js';
 import { social, socialGlyph, socialUrls } from './social.js';
 
 export { productOf, mark, esc, social, socialGlyph, socialUrls };
@@ -218,6 +218,14 @@ export function openNote(p) {
     : '';
 }
 
+/* "$39 / house / mo" → the number large, the unit small. "Card on file" and
+   "$0" have no unit and print as they are. */
+export const priceParts = (price) => {
+  const i = String(price).indexOf(' / ');
+  if (i < 0) return esc(price);
+  return `${esc(price.slice(0, i))}<small>${esc(price.slice(i))}</small>`;
+};
+
 export function tiers(p, main = 1, soonLabel = 'Not priced yet') {
   /* A row whose price reads "Open (#n)" is one the register has NOT decided. The
      page used to print soonLabel there and stop, which reads as a plan you can
@@ -231,7 +239,7 @@ export function tiers(p, main = 1, soonLabel = 'Not priced yet') {
     const soon = /^Open/.test(price);
     return `<div class="tier ${i === main ? 'is-main' : ''}">
       <span class="tier-n">${esc(name)}</span>
-      <span class="tier-p ${soon ? 'is-soon' : ''}">${esc(soon ? soonLabel : price)}</span>
+      <span class="tier-p ${soon ? 'is-soon' : ''}">${soon ? esc(soonLabel) : priceParts(price)}</span>
       <span class="tier-d">${esc(d)}</span>
     </div>`;
   }).join('')}</div>${note}`;
@@ -256,4 +264,36 @@ export function foot(cfg, p, opts = {}) {
       <p class="foot-fine">${esc(opts.fine || '')} ${esc(cfg.legalLine)}</p>
     </div>
   </footer>`;
+}
+
+/* ── reach us: a question becomes a conversation in three steps ─────────
+   Rendered after every site's questions. The address is the page's own box;
+   the form is the site's contact page (careshop writes at /write). */
+export function reach(cfg, p, opts = {}) {
+  const to = hello(cfg, opts.box);
+  const formHref = opts.formHref || (cfg.product === 'careshop' ? '/write' : '/contact');
+  const arrow = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  return `<div class="reach" id="${esc(opts.id || 'reach')}">
+    <div class="reach-t">
+      <span class="eyebrow">${esc(REACH.eyebrow)}</span>
+      <h3>${esc(opts.heading || REACH.heading)}</h3>
+      <p>${esc(opts.sub || REACH.sub)}</p>
+      <div class="reach-c">
+        <a class="btn pri" href="${mailto(cfg, opts.subject || `A question — ${p.name}`, opts.box)}" data-cta="reach">${esc(REACH.cta)}${arrow}</a>
+        <a class="btn" href="${esc(formHref)}">${esc(REACH.alt)}</a>
+      </div>
+      <p class="reach-a"><a href="${mailto(cfg, '', opts.box)}">${esc(to)}</a><button class="copyb" type="button" data-copy="${esc(to)}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(to)} and open your mail app">${ICON.mail}</button></p>
+    </div>
+    <ol class="reach-s">${REACH.steps.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
+  </div>`;
+}
+
+/* ── the next page, floating ─────────────────────────────────────────────
+   A small pill at the bottom-left that appears once the reader is well into
+   the page: "Next · Screens". It replaces the two-card previous/next block
+   every footer used to carry. Pure link; js/site.js only reveals it. */
+export function nextFloat(next, opts = {}) {
+  if (!next || !next.href) return '';
+  const arrow = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  return `<a class="nxt ${esc(opts.cls || '')}" href="${esc(next.href)}" data-next aria-label="Next page: ${esc(next.label)}${next.gist ? ` — ${esc(next.gist)}` : ''}"><span class="nxt-k">${esc(opts.key || 'Next')}</span><b>${esc(next.label)}</b>${arrow}</a>`;
 }

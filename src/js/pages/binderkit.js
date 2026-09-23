@@ -324,7 +324,7 @@
   };
   const sell = () => {
     const btns = $$('[data-sell]'); const note = $('[data-sell-note]'); if (!btns.length || !note) return;
-    btns.forEach((b) => b.addEventListener('click', () => { btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); note.textContent = note.dataset[b.dataset.sell] || note.textContent; }));
+    btns.forEach((b) => b.addEventListener('click', () => { btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); note.textContent = note.dataset[b.dataset.sell] || note.textContent; $$('[data-sell-p]').forEach((x) => { x.hidden = x.dataset.sellP !== b.dataset.sell; }); }));
   };
 
   /* ── questions: a hash opens its answer; the shell hint goes on scroll ─ */

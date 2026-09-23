@@ -190,7 +190,9 @@ ${extra}
 </head>
 <body>`;
 }
-/* One floating way to write, on every page of every site. It is an <a href>
+/* One floating way to write, on every page of every site, in one of four
+   voices — site.js picks one per visit and docks any [data-fab-side] control
+   beside it. It is an <a href>
    to the box that page prints, so it works with scripting off, opens in a mail
    app, and can be middle-clicked. site.js reveals it past the first screen so
    it never competes with the hero's own call to action.
@@ -199,14 +201,21 @@ ${extra}
    and which subject the draft opens with. Below 640px base.css hides .fab-t,
    so the aria-label is the only text a screen-reader user hears — which is why
    it carries the product and the address and the visible label does not. */
+const FAB_VOICES = [
+  ['Write to us', '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/>'],
+  ['Ask a question', '<path d="M12 21a9 9 0 1 0-8.2-5.3L3 21l4.6-1.1A9 9 0 0 0 12 21z"/><path d="M9.6 9.5a2.4 2.4 0 1 1 3.4 2.2c-.7.3-1 .8-1 1.5"/><path d="M12 16.2h.01"/>'],
+  ['Talk to a person', '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>'],
+  ['Say hello', '<path d="M7 11.5V6.2a1.6 1.6 0 0 1 3.2 0v5.3M10.2 11V4.6a1.6 1.6 0 0 1 3.2 0V11M13.4 11V5.8a1.6 1.6 0 0 1 3.2 0v6.7M16.6 12.5V9a1.6 1.6 0 0 1 3.2 0v5.5a6.8 6.8 0 0 1-6.8 6.8h-.8a6.8 6.8 0 0 1-5.6-2.9L3.4 14a1.7 1.7 0 0 1 2.7-2l1 1.3"/>'],
+];
 const fab = (c, prod, route) => {
   const k = boxAt(c, route);
   const s = subjectAt(c, route);
   const to = hello(c, k);
+  const ico = (body, i) => `<svg class="fab-i" data-fab-i="${i}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
   return `<a class="fab" href="${mailto(c, s ? `${s} — ${prod.name}` : '', k)}" data-fab aria-label="Write to ${esc(prod.name)} — ${esc(to)}">`
-    + `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">`
-    + `<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>`
-    + `<span class="fab-t">Write to us</span></a>`;
+    + FAB_VOICES.map(([, body], i) => ico(body, i)).join('')
+    + FAB_VOICES.map(([t], i) => `<span class="fab-t" data-fab-t="${i}">${esc(t)}</span>`).join('')
+    + '</a>';
 };
 const tail = (js, route) => `${fab(CONFIG, p, route)}
 <script src="/assets/${js}" defer></script>

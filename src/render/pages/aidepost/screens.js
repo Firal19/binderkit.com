@@ -10,7 +10,7 @@
 // and only index.html is measured — and because "see the whole product" is
 // the link a partner actually clicks.
 
-import { esc, sec, h2, eyebrow, ic, find, shell, filmStrip, screenSwitch, callouts, webShell, stateLegend, schemaBlock, ixNav, pager, deepLink, messages, firstTen, productMap, sampleNote } from './bits.js';
+import { esc, sec, h2, eyebrow, ic, find, shell, filmStrip, screenSwitch, callouts, webShell, stateLegend, schemaBlock, ixNav, deepLink, messages, firstTen, productMap } from './bits.js';
 
 /* Every caption here is the screen's own vault line or a sentence this
    product has already committed to in writing. “What this proves” is the
@@ -86,7 +86,7 @@ export const screensPage = {
     return shell(cfg, p, { page: 'screens', ids: SCREENS_IDS, ix: IX }, `<section class="hero hero-s hero-sc" id="top" aria-labelledby="h1">
   <div class="wrap hero-cg">
     <div>${eyebrow('The working demo')}<h1 id="h1">Both sides, screen by screen.</h1>
-      <p class="lede">Five screens, no sign-up, nothing to install. Press a side and the device answers; drag the rail below, or jump straight to one screen and send the link. Every screen is drawn from the specification and carries sample data — nothing here is a real house or a real person.</p>
+      <p class="lede">Five screens, no sign-up, nothing to install. Press a side and the device answers. Drag the rail, or jump straight to one screen and send the link.</p>
       <div class="ctas"><a class="btn pri lg" href="#strip">${ic('board', 18)}All five, in the rail</a><a class="btn lg" href="/providers">${ic('house', 18)}The provider side, at depth</a></div>
     </div>
     <div class="hero-dw is-live">${sx(screenSwitch('aidepost', {
@@ -107,7 +107,7 @@ ${sec('strip', 'strp', `<div class="wrap">
       label: 'Every screen in Aidepost, at the size it ships',
       hint: 'Drag it, scroll it, or use the arrow keys. Five screens: four the provider sees, one the caregiver does — and the caregiver’s is the one nobody pays for.',
     }))}
-  <div class="strp-u">${sampleNote()}${firstTen(p)}</div>
+  <div class="strp-u">${firstTen(p)}</div>
 </div>`)}
 ${sec('words', 'words', `<div class="wrap words-g">
   <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth.', 'Every state in Aidepost is one of these. Coral means exactly two things on this site: a shift nobody is on, and a credential that has run out.')}
@@ -115,20 +115,20 @@ ${sec('words', 'words', `<div class="wrap words-g">
   ${stateLegend()}
 </div>`)}
 ${sec('hiring', 'hiring', `<div class="wrap">
-  <div class="head">${eyebrow('Annotated')}${h2('hiring', 'Hiring, with the five things worth pointing at.', 'Point at a pin, or move through the list with a keyboard — each one rings the thing it quotes on the screen itself. A pin whose element is not there hides rather than pointing at nothing.')}</div>
+  <div class="head">${eyebrow('Annotated')}${h2('hiring', 'Hiring, with the five things worth pointing at.', 'Point at a pin, or move through the list with a keyboard. Each one rings the thing it quotes on the screen.')}</div>
   ${callouts(webShell('aidepost', { key: 'hire' }), PINS, { id: 'cal-hire', label: 'What the hiring screen does' })}
 </div>`)}
 ${sec('schema', 'schema', `<div class="wrap schema-g">
   <div>${eyebrow('The record')}${h2('schema', 'A shift describes the work, never the person.')}
-    <p class="sub">This is the load-bearing structural claim in Aidepost, and it is not a policy that can be relaxed later: the field must not exist. The same discipline applies to what the product is able to say out loud.</p>
+    <p class="sub">The field must not exist. The same discipline applies to what the product is able to say out loud.</p>
     ${schemaBlock()}</div>
   ${messages()}
 </div>`)}
 ${sec('map', 'pmap-s', `<div class="wrap">
-  <div class="head head-r"><div>${eyebrow('The whole thing')}${h2('map', 'Eight destinations. That is the product.', 'There is no second Aidepost behind a sales call — this is the entire information architecture, and the five screens above are five of these.')}</div>${deepLink('/screens#map', 'the product map')}</div>
+  <div class="head head-r"><div>${eyebrow('The whole thing')}${h2('map', 'Eight destinations. That is the product.', 'The five screens above are five of these.')}</div>${deepLink('/screens#map', 'the product map')}</div>
   ${productMap(p)}
 </div>`)}
-${pager('/screens')}`);
+`);
   },
 };
 

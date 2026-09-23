@@ -101,8 +101,10 @@
     const live = $('[data-live]');
     if (live) { const n = (6 - dow + 7) % 7; live.textContent = n === 0 ? 'That’s tonight.' : n === 1 ? 'That’s tomorrow night.' : `That’s in ${n} days.`; }
     $$('.board th[data-day]').forEach((th) => { th.classList.toggle('is-soon', th.dataset.day === 'Sat'); th.classList.toggle('is-today', th.dataset.day === today); });
-    $$('.ft-d[data-day]').forEach((el) => el.toggleAttribute('data-today', el.dataset.day === today));
-    const ft = $('.ft-today'); if (ft) ft.textContent = `${today}’s cell is lit below.`;
+    $$('.ft-day[data-day], .wkc-d[data-day]').forEach((el) => el.toggleAttribute('data-today', el.dataset.day === today));
+    /* the phone strip opens on the story: the day with the open shift */
+    const strip = $('.wkc'); const openCard = strip && $('.wkc-d.has-open', strip);
+    if (strip && openCard && strip.offsetParent) strip.scrollLeft = Math.max(0, openCard.offsetLeft - 12);
     tonight();
   };
 
@@ -124,15 +126,15 @@
         later(() => { say(1, 'Offered to 3 · Fri 09:12 — nobody accepted by Friday evening. The manager and the provider are told.'); btn('post').disabled = false; btn('post').focus(); }, 900);
       } else if (k === 'post' && !btn('post').disabled) {
         setStep(2); btn('post').disabled = true; say(2, 'Posted outward · Fri 17:40 — visible to signed-in relief workers whose area covers WH-1. Never public.');
-        later(() => { setStep(3); say(3, 'R. Alvarez claimed it · Fri 18:02 — the first claim stands. Awaiting your confirmation.'); btn('confirm').hidden = false; btn('confirm').focus(); }, 900);
+        later(() => { setStep(3); say(3, 'R. Alemu claimed it · Fri 18:02 — the first claim stands. Awaiting your confirmation.'); btn('confirm').hidden = false; btn('confirm').focus(); }, 900);
       } else if (k === 'confirm') {
-        say(3, 'R. Alvarez claimed it · Fri 18:02 — confirmed · Fri 18:05. She is told, and can now clock in.');
+        say(3, 'R. Alemu claimed it · Fri 18:02 — confirmed · Fri 18:05. She is told, and can now clock in.');
         btn('confirm').hidden = true; btn('reset').hidden = false; steps.dataset.step = '4';
-        if (cell) { cell.classList.remove('is-open'); cell.classList.add('is-covered', 'is-just'); cellT.textContent = 'R. Alvarez'; cellI.textContent = 'RA'; cell.setAttribute('aria-label', 'Sat night: R. Alvarez — covered'); }
+        if (cell) { cell.classList.remove('is-open'); cell.classList.add('is-covered', 'is-just'); cellT.textContent = 'R. Alemu'; cellI.textContent = 'RA'; cell.setAttribute('aria-label', 'Sat night: R. Alemu — covered'); }
         rec.textContent = '';
         const b = document.createElement('b'); b.textContent = 'The record: '; rec.appendChild(b);
-        rec.appendChild(document.createTextNode('offered inward first · Fri 09:12 → posted outward · Fri 17:40 → claimed by R. Alvarez · Fri 18:02 → confirmed · Fri 18:05. On Sunday the manager records that she showed — the employer’s own fact, never another employer’s.'));
-        toast('Covered · Sat night · R. Alvarez');
+        rec.appendChild(document.createTextNode('offered inward first · Fri 09:12 → posted outward · Fri 17:40 → claimed by R. Alemu · Fri 18:02 → confirmed · Fri 18:05. On Sunday the manager records that she showed — the employer’s own fact, never another employer’s.'));
+        toast('Covered · Sat night · R. Alemu');
         tonight();
       } else if (k === 'reset') {
         setStep(0); ['1', '2', '3'].forEach((n) => say(n, '')); rec.textContent = '';
@@ -188,11 +190,46 @@
     const hide = () => { n.classList.remove('is-on'); clearTimeout(timer); setTimeout(() => { n.hidden = true; }, 300); };
     const show = () => { sess.set('ap-ntf', '1'); n.hidden = false; requestAnimationFrame(() => n.classList.add('is-on')); timer = setTimeout(hide, 9000); };
     $('[data-ntf-close]', n).addEventListener('click', hide);
-    $('[data-ntf-open]', n).addEventListener('click', () => { hide(); claim.open(); });
+    $('[data-ntf-open]', n).addEventListener('click', () => {
+      hide();
+      if (root.dataset.side === 'caregiver') { const c = document.getElementById('caregivers'); if (c) { c.scrollIntoView({ behavior: smooth(), block: 'start' }); document.dispatchEvent(new CustomEvent('pho:openall')); } return; }
+      claim.open();
+    });
     if (!('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); show(); } }, { threshold: 0.2 });
     io.observe(board);
   };
+
+  /* ── the phone board's open cell stands in for the table's ────────── */
+  const proxies = () => {
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-cell-proxy]'); if (!b) return;
+      claim.open();
+    });
+  };
+
+  /* ── does this shift fit you? four answers, one honest card ───────── */
+  const fit = () => $$('[data-fq-box]').forEach((box) => {
+    const card = $('[data-fq-card]', box); const out = $('[data-fq-out]', box);
+    const val = (k) => { const b = $(`[data-fq="${k}"][aria-pressed="true"]`, box); return b ? b.dataset.v : ''; };
+    const paint = () => {
+      const mi = Number(val('mi')); const night = val('night'); const meds = val('meds'); const sat = val('sat');
+      const near = [];
+      if (mi < 6.2) near.push('it is 6.2 miles out, past your radius');
+      if (night === 'no') near.push('it is awake overnight');
+      if (meds === 'no') near.push('it asks for medication-certified, which shows beside your name');
+      let fit = 'yes'; let text = 'This fits. Claim it, and the house confirms.';
+      if (sat === 'no') { fit = 'no'; text = 'Not this one — you are not free Saturday. The next shift near you takes its place.'; }
+      else if (near.length) { fit = 'near'; text = `Close: ${near.join(', and ')}. Nothing here stops you claiming it; the house decides.`; }
+      card.dataset.fit = fit; out.textContent = text;
+    };
+    box.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-fq]'); if (!b) return;
+      $$(`[data-fq="${b.dataset.fq}"]`, box).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      paint();
+    });
+    paint();
+  });
 
   /* ── the roster toy ────────────────────────────────────────────────── */
   const roster = () => $$('[data-ros]').forEach((ros) => {
@@ -278,33 +315,30 @@
     inp.addEventListener('input', paint); paint();
   });
 
-  /* ── the deck ──────────────────────────────────────────────────────── */
-  const deck = () => $$('[data-deck]').forEach((dk) => {
-    const row = $('.deck-r', dk); const cards = $$('.deck-c', dk); const dots = $$('[data-deck-dots] i', dk);
-    const idx = () => { const x = row.scrollLeft + row.clientWidth / 2; let best = 0; let bd = Infinity; cards.forEach((c, i) => { const dd = Math.abs(c.offsetLeft + c.offsetWidth / 2 - x); if (dd < bd) { bd = dd; best = i; } }); return best; };
-    const go = (i) => { const c = cards[Math.max(0, Math.min(cards.length - 1, i))]; row.scrollTo({ left: c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2, behavior: smooth() }); };
-    $('[data-deck-prev]', dk).addEventListener('click', () => go(idx() - 1));
-    $('[data-deck-next]', dk).addEventListener('click', () => go(idx() + 1));
-    let t = 0;
-    row.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(() => { const i = idx(); dots.forEach((x, j) => x.classList.toggle('on', j === i)); }, 60); }, { passive: true });
-  });
-
-  /* ── spotlights on the annotated board ─────────────────────────────── */
+  /* ── spotlights on the annotated board ─────────────────────────────
+     Five numbered chips. Hover or focus one and the thing it names is
+     ringed on the board; press it and it stays. One panel under the row
+     reads the active chip's sentence, so five boxes of prose became one. */
   const spots = () => $$('[data-annot]').forEach((an) => {
-    const shell = (an.previousElementSibling && an.previousElementSibling.matches('[data-shell]')) ? an.previousElementSibling : $('[data-shell]');
-    if (!shell) return;
+    const shell = (an.previousElementSibling && an.previousElementSibling.matches('[data-shell]')) ? an.previousElementSibling : ($('[data-shell]') || (an.previousElementSibling && an.previousElementSibling.previousElementSibling));
     const SEL = { 1: '.wk-cell[data-state="covered"]', 2: '.wk-cell[data-state="open"]', 3: '.page-main .tile-a', 4: '.page-main .btn-row', 5: '.page-side .tile-a' };
-    const btns = $$('.an-b', an);
-    an.addEventListener('click', (e) => {
-      const b = e.target.closest('.an-b'); if (!b) return;
-      const n = b.dataset.spot; const was = b.getAttribute('aria-pressed') === 'true';
-      btns.forEach((x) => x.setAttribute('aria-pressed', 'false'));
-      $$('.is-spot', shell).forEach((x) => { x.classList.remove('is-spot'); x.removeAttribute('data-spot-n'); });
-      if (was) { shell.removeAttribute('data-spot'); return; }
-      b.setAttribute('aria-pressed', 'true'); shell.dataset.spot = n;
-      const el = $(SEL[n], shell);
-      if (el) { el.classList.add('is-spot'); el.dataset.spotN = n; const r = el.getBoundingClientRect(); const s = shell.getBoundingClientRect(); shell.scrollTo({ left: r.left - s.left + shell.scrollLeft - (s.width - r.width) / 2, behavior: smooth() }); }
-    });
+    const btns = $$('.an-b', an); const out = $('[data-an-out]', an);
+    const light = (b, scroll) => {
+      const n = b.dataset.spot;
+      if (shell) {
+        $$('.is-spot', shell).forEach((x) => { x.classList.remove('is-spot'); x.removeAttribute('data-spot-n'); });
+        shell.dataset.spot = n;
+        const el = $(SEL[n], shell);
+        if (el) { el.classList.add('is-spot'); el.dataset.spotN = n; if (scroll) { const r = el.getBoundingClientRect(); const sr = shell.getBoundingClientRect(); shell.scrollTo({ left: r.left - sr.left + shell.scrollLeft - (sr.width - r.width) / 2, behavior: smooth() }); } }
+      }
+      if (out) { out.textContent = ''; const t = document.createElement('b'); t.textContent = b.dataset.anT || ''; out.appendChild(t); out.appendChild(document.createTextNode(' — ' + (b.dataset.anD || ''))); }
+    };
+    const pressed = () => btns.find((b) => b.getAttribute('aria-pressed') === 'true') || btns[0];
+    an.addEventListener('click', (e) => { const b = e.target.closest('.an-b'); if (!b) return; btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); light(b, true); });
+    an.addEventListener('pointerover', (e) => { const b = e.target.closest('.an-b'); if (b) light(b, false); });
+    an.addEventListener('pointerleave', () => { const b = pressed(); if (b) light(b, false); });
+    an.addEventListener('focusin', (e) => { const b = e.target.closest('.an-b'); if (b) light(b, false); });
+    if (pressed()) light(pressed(), false);
   });
 
   /* ── the doors: the boundary follows the pointer ───────────────────── */
@@ -447,6 +481,6 @@
     all();
   };
 
-  const boot = () => { sides(); keys(); realDay(); palette(); notify(); roster(); timeline(); timesheet(); clock(); distance(); deck(); spots(); doors(); chapters(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
+  const boot = () => { sides(); keys(); realDay(); palette(); notify(); proxies(); fit(); roster(); timeline(); timesheet(); clock(); distance(); spots(); doors(); chapters(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
   boot();
 })();

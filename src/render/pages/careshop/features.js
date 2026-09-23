@@ -71,7 +71,7 @@ export function featuresPage(cfg, p) {
   const BUY = SURFACES.careshop.screens.find((x) => x.key === 'buy');
   const never = boundary.cols.find((c) => c.kind === 'never');
 
-  const inner = `${pageHead('The aisles', 'Everything CareShop does.', `${loop.nodes.length} stations on one loop, the rule layer beside them, and the list of what this product refuses. It is live today in real houses.`)}
+  const inner = `${pageHead('The aisles', 'Everything CareShop does.', 'Every station on the loop, the rule layer beside it, who uses it, and what it will not do.')}
 ${directory([['stations', 'The loop', '7 stations'], ['rules', 'The rule layer', '6 topics'], ['seats', 'Who uses it', '6 people'], ['test', 'The boundary test', '4 answers'], ['origins', 'The five origins', 'no sixth'], ['vocab', 'The closed lists', '6 counts'], ['elsewhere', 'Next door, and never', '12 refusals']], { title: 'On this page' })}
 ${sec('stations', 'fst-s', `<div class="wrap">
   <div class="head">${sticker('box', 'The loop')}${h2('stations', loop.heading, loop.sub)}</div>
@@ -85,7 +85,7 @@ ${fold(sec('rules', 'frl-s', `<div class="wrap">
     <tbody>${depth.rows.map((r) => `<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td><td class="is-mono">${esc(r[2])}</td></tr>`).join('')}</tbody>
   </table></div>
   <a class="more" href="/rules">${ic('label', 16)}<span>The ten citations, and how sure we are about each</span>${ic('arrow', 16)}</a>
-</div>`, { label: 'The rule layer' }), 'Eight purchasing rules, and the twelve refusals beside them.')}
+</div>`, { label: 'The rule layer' }), 'The reserve target and the ten citations, where each shows in the product.')}
 ${sec('seats', 'fse-s', `<div class="wrap">
   <div class="head">${sticker('tag', 'Who uses it')}${h2('seats', roles.heading, 'Six people, and the device each one holds.')}</div>
   <ul class="fseat">${roles.rows.map((r) => `<li class="fseat-i"><b>${esc(r[0])}</b><span class="fseat-w">${esc(r[1])}</span><span class="fseat-d">${ic('tag', 14)}${esc(r[3])}</span></li>`).join('')}</ul>
@@ -96,17 +96,17 @@ ${fold(sec('elsewhere', 'fel-s', `<div class="wrap fel-g">
     <ul class="mv-l">${next.items.map(([t]) => `<li><div><b>${esc(t)}</b></div></li>`).join('')}</ul>
   </div>
   <div>
-    <div class="head">${h2('never', 'Refused on principle.', 'Each one with the reason given for it.')}</div>
+    <div class="head">${h2('never', 'Refused on principle.', 'Seven things it will not do, under any name.')}</div>
     <ol class="ref-l">${never.items.map(([t], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b></div></li>`).join('')}</ol>
   </div>
 </div>`), 'What the loop does not do.')}
 ${sec('test', 'test-s', `<div class="wrap">
-  <div class="head">${sticker('scale', 'The boundary test')}${h2('test', boundary.strip.cells[0], 'The question is in Settings, in the product. Only one of the four answers is this product’s, and that is the point: a product with walls is a product you can finish.')}</div>
+  <div class="head">${sticker('scale', 'The boundary test')}${h2('test', boundary.strip.cells[0], 'One question, four answers. Only the first one is CareShop’s.')}</div>
   <ul class="own">${OWNERS.map(([q, who, a]) => `<li class="own-i${who === 'careshop' ? ' is-here' : ''}"><span class="own-q">${esc(q)}</span><span class="own-w">${who === 'careshop' ? `${ic('check', 18)}<b>${esc(byId[who].name)}</b>` : `${ic('arrow', 18)}<b>Not here</b>`}</span><span class="own-a">${esc(a)}</span></li>`).join('')}</ul>
   <p class="demo-f">${esc(boundary.strip.foot)}</p>
 </div>`)}
 ${sec('origins', 'origins-s', `<div class="wrap">
-  <div class="head">${sticker('cart', 'Five, and no sixth')}${h2('origins', 'Every buy request says where it came from.', 'Without the origin the queue is a list; with it, the queue is diagnosable. Open one and see the line it actually produced on the buy queue screen.')}</div>
+  <div class="head">${sticker('cart', 'Five, and no sixth')}${h2('origins', 'Every buy request says where it came from.', 'Open one and see the line it produced on the buy queue.')}</div>
   <div class="orig" data-origins>${BUY.rows.slice(0, 5).map((r, i) => {
     const o = r.origin.split(' · ')[0];
     return `<details class="orig-d" name="careshop-origin"${i === 0 ? ' open' : ''}>
@@ -117,15 +117,15 @@ ${sec('origins', 'origins-s', `<div class="wrap">
       </div>
     </details>`;
   }).join('')}</div>
-  <p class="demo-f">Each request carries exactly one origin, and it is preserved through approval, the shop and the receipt. Anything unticked at the till returns to the queue as still needed, with its origin intact.</p>
+  <p class="demo-f">One origin per request, kept through approval, the shop and the receipt.</p>
 </div>`)}
 ${sec('vocab', 'vocab-s', `<div class="wrap">
-  <div class="head">${sticker('book', 'Counted, not rounded')}${h2('vocab', 'The closed lists it matches on.', 'An allergen check is exact rather than textual, because the resident’s tag and the catalogue item draw on one vocabulary. These are the sizes of those lists — every one of them stated in the specification this page is built from.')}</div>
+  <div class="head">${sticker('book', 'Counted, not rounded')}${h2('vocab', 'The closed lists it matches on.', 'An allergen check is exact, not textual: the resident’s tag and the catalogue item draw on one vocabulary.')}</div>
   <ul class="vocab">${VOCAB.map(([n, l, d]) => `<li><span class="vocab-n">${esc(n)}</span><b>${esc(l)}</b><span>${esc(d)}</span></li>`).join('')}</ul>
-  <p class="demo-f">Nothing on this page is a projection or a customer count. They are the sizes of lists inside the product, and a house can open the catalogue on day one and count them.</p>
+  <p class="demo-f">The sizes of the lists inside the product. Open the catalogue on day one and count them.</p>
 </div>`)}
 ${sec('fjoin', 'fjoin-s', `<div class="wrap">
-  <div class="head">${sticker('clock', 'Live today')}${h2('fjoin', 'It is running in real houses.', 'Start free with one house, three people, five hundred items. No card to begin.')}</div>
+  <div class="head">${sticker('clock', 'Live today')}${h2('fjoin', 'It is running in real houses.', 'Start free with one house and three people. No card to begin.')}</div>
   <div class="ctas"><a class="btn pri lg" href="${esc(cfg.cta.primaryHref)}" data-cta="features">${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><a class="btn lg" href="/pricing">${ic('tag', 18)}What it costs</a></div>
 </div>`)}`;
   return page(cfg, p, 'features', inner);

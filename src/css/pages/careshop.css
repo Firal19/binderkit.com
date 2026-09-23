@@ -366,17 +366,9 @@ h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.022e
 .aisle[data-stuck] .aisle-in { --head-h: 60px; }
 
 /* the wordmark, punched and hung */
-.tagb { position: relative; display: inline-flex; align-items: center; text-decoration: none; color: var(--ink); flex: none; transform-origin: 8px 50%; transition: transform 320ms var(--ease); }
-@media (hover: hover) { .tagb:hover { transform: rotate(-2.5deg) translateY(-1px); } }
-.tagb-body { display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px 7px 24px; background: var(--card); border: 0; border-radius: 4px 11px 11px 4px; clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%); box-shadow: var(--shadow-tag); }
-.tagb-hole { position: absolute; left: 15px; top: 50%; width: 8px; height: 8px; border-radius: 50%; transform: translateY(-50%); background: var(--bg); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 22%, transparent); }
 /* the quarter-circle arc used to hang outside the header box and read as an
    orphan stroke. The rack rail below is where hanging is expressed now; the
    punched hole is the tag's own signal. */
-.tagb-string { display: none; }
-.tagb .mk { --c-tile: var(--sage); --c-glyph: var(--on-sage); }
-.tagb-n { font-family: var(--font-display); font-weight: 700; font-size: var(--cs-lg); letter-spacing: -0.024em; font-variation-settings: 'opsz' 72, 'SOFT' 30; }
-.tagb-s { font-family: var(--font-display); font-weight: 600; font-size: var(--cs-sm); color: var(--soft); margin-left: -6px; letter-spacing: -0.01em; }
 
 /* the rail. Painted as a background so it stays put while the signs scroll
    under it, and faded at both ends by the strip's own mask. */
@@ -779,8 +771,6 @@ li[data-on] .pal-r { box-shadow: inset 2px 0 0 var(--terra); }
 .loop-t h2 { max-width: 13ch; }
 .loop-t .sub { max-width: var(--measure-tight); }
 .loop-t .more { margin-top: clamp(30px, 3.4vw, 52px); }
-.loop-strip { display: none; }
-.ls-dots { display: none; }
 .loop-v { grid-column: 2; grid-row: 1; position: relative; align-self: center; justify-self: center; width: min(100%, 480px); }
 
 /* the trailing arc: how far round the loop the reader has come. Drawn on the
@@ -1207,34 +1197,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 
 /* the nine refusals: one ledger with nine compartments, numbered, set into a
    recessed tray — not nine outlined boxes floating on the band */
-.refused { margin-top: clamp(44px, 5vw, 72px); }
-.refused > .strip-l { margin-bottom: 16px; }
-.chips-l {
-  counter-reset: refusal;
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px; padding: 10px;
-  border-radius: var(--r3);
-  background: var(--rec-inset-2);
-  box-shadow: inset 0 0 0 1px var(--rec-line), inset 0 2px 6px rgba(0, 0, 0, .3);
-}
-.chips-l li {
-  counter-increment: refusal;
-  display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 9px 12px;
-  align-content: start;
-  padding: 17px 19px 19px;
-  border: 0; border-radius: var(--r1);
-  background: var(--card);
-  box-shadow: 0 0 0 1px var(--rec-line), inset 0 1px 0 var(--rec-spec);
-}
-.chips-l li::before {
-  grid-column: 1 / -1; grid-row: 1;
-  content: counter(refusal, decimal-leading-zero);
-  font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .14em; line-height: 1;
-  color: var(--soft);
-}
-.chips-l .ic-cs { grid-column: 1; grid-row: 2; justify-self: start; align-self: start; margin-top: 3px; color: var(--rec-terra, var(--terra)); opacity: 1; }
-.chips-l b { grid-column: 2; grid-row: 2; font-weight: 600; font-size: var(--cs-base); line-height: 1.34; letter-spacing: -0.014em; color: var(--ink); text-wrap: pretty; }
-.chips-l span { grid-column: 2; grid-row: 3; font-size: var(--cs-sm); line-height: 1.5; color: var(--muted); max-width: var(--measure); text-wrap: pretty; }
 
 /* the closing line of the chapter, set to land: a terracotta mark, air above
    it, and display type at the pull size */
@@ -1778,15 +1740,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .dir-i[aria-current] .dir-n, .dir-i[aria-current] .dir-q { color: color-mix(in srgb, var(--on-sage) 76%, transparent); }
 
 /* ── walk on: the aisle behind you and the aisle ahead ─────────────── */
-.walkon { padding: 0 0 var(--sp-6); }
-.wo-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.wo-c { display: grid; align-content: start; gap: 4px; padding: 17px 20px; border: 0; border-radius: var(--r2); background: var(--card); box-shadow: var(--e2); text-decoration: none; color: var(--ink); transition: transform 200ms var(--ease), box-shadow 200ms ease; }
-@media (hover: hover) { .wo-c:hover { transform: translateY(-2px); box-shadow: var(--e2-hover); } }
-.wo-c.is-end { background: none; box-shadow: none; }
-.wo-c:last-child { text-align: right; }
-.wo-d { font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
-.wo-c b { font-family: var(--font-display); font-weight: 600; font-size: var(--cs-lg); letter-spacing: -0.02em; line-height: 1.2; }
-.wo-s { font-size: var(--cs-sm); color: var(--muted); line-height: 1.45; }
 
 /* ── the palette's three drawers, and the dotless marker ───────────── */
 .pal-h { padding: 12px 12px 5px; font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
@@ -1939,7 +1892,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   /* one 64-character eyebrow. "Nine things it refuses to do, and will not do
      under another name" is a sentence wearing a label's clothes; at 13px
      uppercase it is the only thing on the phone you have to lean into. */
-  .refused > .strip-l { font-size: var(--cs-sm); letter-spacing: .04em; }
   :root:has(.aisle[data-stuck]) { --head-h: 56px; }
   .aisle-in { gap: 12px; height: 56px; }
   .aisle[data-stuck] .aisle-in { --head-h: 56px; }
@@ -2022,18 +1974,8 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .scan { --scan-x: var(--gutter); --scan-y: auto; --scan-b: 8px; --scan-w: 172px; --scan-tx: 0; }
 
   .loop-v { display: none; }
-  .loop-strip { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px var(--gutter) 14px; margin-inline: calc(-1 * var(--gutter)); margin-top: 26px; scroll-padding-inline: var(--gutter); scrollbar-width: none; }
-  .loop-strip::-webkit-scrollbar { display: none; }
-  .ls-c { flex: 0 0 min(78%, 300px); scroll-snap-align: center; display: grid; gap: 5px; padding: 18px 20px; background: var(--card); border: 0; border-radius: var(--r2); box-shadow: var(--e2); text-decoration: none; color: var(--ink); position: relative; transition: box-shadow 220ms ease, background 200ms ease; }
-  .ls-n { font-family: var(--font-display); font-size: var(--cs-xl); color: var(--soft); line-height: 1; }
-  .ls-c b { font-size: var(--cs-base); } .ls-c span:last-child { font-size: var(--cs-sm); color: var(--muted); line-height: 1.55; }
-  .ls-c.is-on { background: var(--terra-100); box-shadow: var(--e2), inset 0 0 0 1px color-mix(in srgb, var(--terra) 45%, transparent); }
-  .ls-c.is-on .ls-n { color: var(--terra); }
-  .ls-dots { display: flex; justify-content: center; gap: 0; }
   /* see the ≤640 block: below 640 .ls-c drops its sentence and the strip is
      a legend again, so the dots stop indexing a second story. */
-  .ls-dots i { width: 22px; height: 22px; display: grid; place-items: center; } .ls-dots i::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); transition: transform 200ms ease, background 200ms ease; }
-  .ls-dots i.is-on::before { background: var(--terra); transform: scale(1.5); }
   .stations { grid-template-columns: minmax(0, 1fr); }
 
   /* .res-r is flex-wrap now and collapses on its own; only the gap matters */
@@ -2159,11 +2101,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
      swipeable, a legend. .stations keeps the detail, once. Nothing is
      removed from the HTML — the sentence is still there for print, for
      no-JS and above 640, where the ring itself is drawn. */
-  .ls-c { flex: 0 0 auto; grid-auto-flow: column; align-items: baseline; gap: 10px; padding: 13px 18px; }
-  .ls-c > span:last-child { display: none; }
-  .ls-c .ls-n { font-size: var(--cs-lg); }
-  .ls-c b { white-space: nowrap; }
-  .loop-strip { margin-top: 20px; }
 }
 
 /* ── THE FOLD: an aisle you walk into, not past ─────────────────────────
@@ -2370,9 +2307,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .stat-n { font-size: clamp(36px, 10vw, 48px); }
 
   /* ── the loop ───────────────────────────────────────────────────────── */
-  .loop-strip { margin-top: 15px; padding-block: 3px 11px; }
   .stations li { padding: 16px 0 19px; }
-  .ls-c { padding-block: 10px; }
 
   /* ── an aisle: the picture, the demos, the copy ─────────────────────── */
   /* the window shortens; .crop .phone keeps zoom .76 and the fade keeps
@@ -2403,10 +2338,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .ev { gap: 13px; }
   .ev-b { padding: 19px; gap: 12px; }
   .ev-b > .strip-l { padding-bottom: 10px; }
-  .refused { margin-top: 34px; }
-  .refused > .strip-l { margin-bottom: 12px; }
-  .chips-l { gap: 8px; padding: 8px; }
-  .chips-l li { padding: 13px 15px 15px; gap: 7px 10px; }
   .boundary { margin-top: 38px; padding-top: 21px; }
   .role-l { gap: 10px; }
   .role { padding: 15px 15px 12px; gap: 9px; }
@@ -2516,7 +2447,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 
 @media (max-width: 400px) {
   .aisle-in { gap: 10px; }
-  .tagb-s { display: none; }
   /* 320 has 276px between the gutters and the wordmark takes 158 of them.
      Between the receipt count and the word AISLES, the word is the one that
      tells a first-time reader the button is a door — so the count steps off
@@ -2577,10 +2507,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .dir-i { padding: 9px 12px; }
   .dir { padding-inline: var(--dir-x); }
 
-  .wo-g { grid-template-columns: minmax(0, 1fr); gap: 9px; }
-  .wo-c { padding: 13px 16px; }
-  .wo-c:last-child { text-align: left; }
-  .walkon { padding-bottom: var(--sp-5); }
 
   .swx { gap: 11px; }
   .is-sw .swx-stage { padding: 12px 8px 0; }
@@ -2756,10 +2682,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .keys kbd { display: inline-flex; align-items: center; min-height: 26px; padding: 0 9px; border: 0; border-radius: 7px; background: var(--inset); box-shadow: inset 0 0 0 1px var(--line), 0 1px 0 var(--line-2); font-family: var(--font-mono); font-size: var(--cs-xs); color: var(--ink); }
 
 /* ── every figure says where it comes from ─────────────────────────── */
-.stat-s { justify-self: start; margin-top: 6px; padding: 4px 9px; border-radius: var(--r-btn); font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .08em; text-transform: uppercase; background: var(--sage-100); color: var(--sage-700); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sage) 26%, transparent); }
-.stat-s[data-src="demo data"] { background: var(--amber-soft); color: var(--amber); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--amber) 26%, transparent); }
-.stat-f { margin-top: 16px; font-size: var(--cs-xs); line-height: 1.5; color: var(--soft); max-width: var(--measure); text-wrap: pretty; }
-.stat-f b { color: var(--muted); font-weight: 650; }
 
 @media (max-width: 640px) {
   .own-i { padding: 14px 16px; gap: 7px; }
@@ -2773,8 +2695,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   .gov-i { padding-left: 44px; }
   .gov-i::before { left: 16px; top: 15px; }
   .keys li { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 10px 13px; }
-  .stat-f { margin-top: 10px; }
-  .stat-s { margin-top: 3px; padding: 2px 8px; }
 }
 
 /* ── THE 15px PROSE FLOOR, ON THE NEW FITTINGS ─────────────────────────
@@ -2792,7 +2712,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
    and are exempt — and nothing is a desk value: above 900 a label is
    11.5px mono and is not inside prose anywhere on this site. */
 @media (max-width: 900px) {
-  .stat-s, .stat-f, .vocab li span:last-child, .fam-o, .fam-s, .fam-u,
   .keys kbd, .labels-i .st, .gov-t .st, .orig-rp, .orig-rt span,
   .axes-g, .mvt-k, .addr-n, .take-l span, .dir-n { font-size: var(--cs-sm); }
   /* the qty is the one thing on a ticket a phone does not need: the number
@@ -2874,10 +2793,163 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
    stations, three visible, 54% off-screen and nothing saying so. Same
    trailing fade the .rail above already uses. */
 @media (max-width: 900px) {
-  .loop-strip {
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
-    mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent);
-    scroll-padding-inline-end: 44px;
-  }
-  .loop-strip[data-scroll-end] { -webkit-mask-image: none; mask-image: none; }
 }
+
+
+/* ══ R9 · 2026-09-23 · FIRAOL'S REVIEW ═══════════════════════════════════
+   Appended last, so it wins on order at equal specificity. What changed: the
+   brand is a wordmark; the fan stays inside its column and opens as the
+   reader scrolls; the ring is sticky and turns with the stations beside it;
+   every demo is a compact card; the residents chapter is three cards; the
+   price tags are three equal cards; the receipt is short; the reach block
+   and the floating next pill wear the store's material. */
+
+/* ── the brand: the mark on its tile, the name beside it ───────────────── */
+.brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: var(--ink); flex: none; }
+.brand .mk { --c-tile: var(--sage); --c-glyph: var(--on-sage); flex: none; border-radius: 8px; box-shadow: 0 0 0 1px var(--e-line), inset 0 1px 0 rgba(255, 255, 255, .18), 0 6px 14px -8px rgba(var(--sh), .45); transition: transform 240ms var(--ease); }
+@media (hover: hover) { .brand:hover .mk { transform: rotate(-7deg); } }
+.brand-n { font-family: var(--font-display); font-weight: 700; font-size: var(--cs-lg); letter-spacing: -0.024em; font-variation-settings: 'opsz' 72, 'SOFT' 30; white-space: nowrap; }
+
+/* ── the fan: inside its column, opening with the scroll ───────────────── */
+.fan { --fan-zoom: .64; --fan-w: calc(390px * var(--fan-zoom)); --fan-max: clamp(0px, calc((100% - var(--fan-w)) / 2 - 12px), 152px); --sp: 0; height: 620px; }
+.fan-p { transition: transform 220ms var(--ease-soft); }
+.fan-p.is-l { left: calc(50% - var(--fan-max)); transform: translateX(-50%) rotate(calc(-6deg - var(--sp) * 4deg)) translateY(calc(28px - var(--sp) * 18px)); }
+.fan-p.is-r { left: calc(50% + var(--fan-max)); transform: translateX(-50%) rotate(calc(6deg + var(--sp) * 4deg)) translateY(calc(28px - var(--sp) * 18px)); }
+.fan-p.is-c { transform: translateX(-50%) translateY(calc(var(--sp) * -12px)); }
+.hero { overflow: visible; }
+.hero-v { overflow: hidden; margin-inline: -12px; padding-inline: 12px; }
+/* the first number is a fact about the plan, not a risk */
+.stats li:first-child .stat-n { color: var(--sage-700); }
+
+/* ── the loop: the ring sticks and turns while the stations scroll ─────── */
+.loop-g { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); column-gap: clamp(32px, 5vw, 80px); row-gap: clamp(16px, 2vw, 26px); align-items: start; }
+.loop-t { grid-column: 1; grid-row: 1; }
+.loop-t h2 { max-width: 14ch; }
+.loop-v { grid-column: 2; grid-row: 1 / span 3; position: sticky; top: calc(var(--head-h) + 28px); align-self: start; justify-self: end; width: min(100%, 440px); }
+.stations { grid-column: 1; grid-row: 2; margin-top: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; counter-reset: st; }
+.stations li { position: relative; counter-increment: st; display: grid; grid-template-columns: 34px minmax(0, 1fr) 40px; grid-template-rows: auto auto; gap: 1px 14px; align-items: center; align-content: center; padding: 12px 12px 12px 16px; border-top: 0; border-radius: var(--r2); background: transparent; box-shadow: none; transition: background 220ms ease, box-shadow 220ms ease; }
+.stations li::before { content: counter(st); grid-column: 1; grid-row: 1 / 3; font-family: var(--font-display); font-weight: 500; font-size: var(--cs-xl); line-height: 1; color: var(--soft); font-variant-numeric: tabular-nums; font-variation-settings: 'opsz' 48, 'SOFT' 30; transition: color 200ms ease; }
+.stations b { grid-column: 2; grid-row: 1; font-size: var(--cs-base); }
+.stations span { grid-column: 2; grid-row: 2; font-size: var(--cs-sm); line-height: 1.5; }
+.st-go { grid-column: 3; grid-row: 1 / 3; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; color: var(--soft); background: var(--card); box-shadow: var(--e2); opacity: 0; transform: translateX(-4px); transition: opacity 180ms ease, transform 180ms var(--ease), color 160ms ease; }
+.stations li.is-on { background: var(--card); box-shadow: var(--e2); }
+.stations li.is-on::before { color: var(--terra); }
+.stations li.is-on .st-go, .stations li:focus-within .st-go { opacity: 1; transform: none; }
+@media (hover: hover) { .stations li:hover .st-go { opacity: 1; transform: none; } .st-go:hover { color: var(--terra); } }
+.st-go:focus-visible { opacity: 1; transform: none; }
+.loop-more { grid-column: 1; grid-row: 3; margin-top: 4px; justify-self: start; }
+@media (max-width: 900px) {
+  .loop-g { grid-template-columns: minmax(0, 1fr); row-gap: 18px; }
+  .loop-v { display: block; position: static; top: auto; grid-column: 1; grid-row: 2; width: min(100%, 300px); margin: 4px auto 0; justify-self: center; }
+  .stations { grid-row: 3; }
+  .loop-more { grid-row: 4; }
+  .stations li { padding: 10px 8px 10px 10px; }
+}
+
+/* ── the demos, compact ────────────────────────────────────────────────── */
+.demo { --demo-pad: clamp(16px, 1.4vw, 22px); --fig: clamp(20px, 1.5vw, 24px); gap: 10px; }
+.demo-h { gap: 8px 12px; padding-block: calc(var(--demo-pad) - 7px); }
+.demo-t { font-size: var(--cs-sm); }
+.demo-f { font-size: var(--cs-xs); line-height: 1.5; }
+.shelf-row { padding: 10px 12px; gap: 12px; }
+.mini-q, .shelf-mini { padding: 10px 12px; gap: 6px; }
+.mini-q-r { padding: 4px 0; }
+.q-rows { gap: 6px; } .q-row { padding: 8px 8px 8px 12px; gap: 10px; }
+.chips { gap: 8px; }
+.lad-l { gap: 5px; } .lad-r { padding: 9px 12px; gap: 12px; grid-template-columns: minmax(0, 1fr) minmax(70px, 130px) auto 56px; }
+.lad-r .lad-v { font-size: var(--cs-base); }
+.sp-l { gap: 5px; } .sp-r { padding: 8px 12px; gap: 12px; grid-template-columns: 62px minmax(0, 1fr) auto; }
+.sp-total { margin-top: 6px; padding-top: 12px; }
+.resv-in { gap: 8px; } .num input { min-height: 44px; font-size: var(--cs-sm); }
+.resv-out { gap: 8px; } .resv-out > div { padding: 10px 12px; gap: 3px; }
+.cook-steps { gap: 5px; } .cook-s { padding: 8px 8px 8px 12px; gap: 12px; }
+.shelf-b { min-height: 44px; padding: 10px 12px; }
+.pm-pop { padding: 10px 12px 12px; }
+.allg-note { padding: 11px 13px; font-size: var(--cs-xs); }
+.brief-roles li { padding: 14px 18px; gap: 4px; }
+.aisle-d { gap: 14px; max-width: 640px; }
+@media (min-width: 901px) {
+  .aisle-g { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(24px, 3.5vw, 56px); }
+  .aisle-g.is-rev { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+  .crop { height: 470px; max-width: 280px; }
+  .crop .phone { zoom: .7; }
+}
+@media (max-width: 640px) {
+  .q-btn, .chip, .unit-b, .shelf-b, .st-go { min-height: 44px; }
+  .st-go { width: 44px; height: 44px; }
+  .fan-p .phone { zoom: .7; }
+  .fan { padding-bottom: 14px; }
+}
+
+/* ── residents: three cards and one line ───────────────────────────────── */
+.ev { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 18px); }
+.ev-b { padding: clamp(20px, 2.2vw, 28px); gap: 12px; }
+.ev-b p:not(.quote) { font-size: var(--cs-sm); }
+.boundary { margin-top: clamp(36px, 4vw, 56px); padding-top: clamp(20px, 2.4vw, 30px); font-size: clamp(22px, 2.4vw, 32px); }
+@media (max-width: 900px) { .ev { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── the price tags: three equal cards ─────────────────────────────────── */
+.tiers { gap: clamp(18px, 1.6vw, 24px) clamp(14px, 1.6vw, 24px); }
+.tiers .tier { padding: 26px 24px 22px; }
+.tier-p { margin-top: 10px; font-size: clamp(38px, 3.4vw, 48px); }
+.tier-p small { font-size: var(--cs-xs); margin-left: 4px; }
+.tier-f { margin: 14px 0 18px; }
+.tier-f li { padding: 9px 0; }
+.tier .btn { min-height: 46px; }
+@media (max-width: 760px) { .tiers { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── the receipt, shorter ──────────────────────────────────────────────── */
+.till-in { max-width: 600px; }
+.rc-foot { --rc-pad: 30px; }
+.rc-foot .rc-l { min-height: 42px; padding: 6px 0; }
+.rc-block { margin-top: 10px; }
+.rc-mail { margin-top: 14px; gap: 8px; }
+.rc-thanks { margin-top: 18px; }
+.rc-by { margin-top: 14px; }
+.rc-fine.is-legal { margin-top: 8px; }
+.rc-logo .mk { width: 56px; height: 56px; }
+
+/* ── reach us, and the next room, in the store's material ──────────────── */
+.reach { background: var(--paper); border: 0; border-radius: var(--r3); box-shadow: var(--e2); }
+.reach-t h3 { font-weight: 600; letter-spacing: -0.024em; font-variation-settings: 'opsz' 72, 'SOFT' 30; }
+.reach-t p { font-size: var(--cs-sm); }
+.reach-s li::before { background: var(--card); box-shadow: var(--shadow-tag); border: 0; color: var(--sage-700); }
+.questions .reach, .pq-s .reach, .who .reach, .posture .reach { margin-top: clamp(24px, 3vw, 40px); }
+.nxt { background: var(--card); border: 0; box-shadow: var(--e2); font-family: var(--font-body); }
+.nxt-k { font-family: var(--font-mono); }
+@media (hover: hover) { .nxt:hover { box-shadow: var(--e2-hover); } }
+/* /about's one-column shelf */
+.take-g.is-one { grid-template-columns: minmax(0, 1fr); }
+
+/* ── R9 follow-up: the demo column takes the room the phone leaves ─────── */
+@media (min-width: 901px) {
+  .aisle-d { max-width: 760px; }
+  .shopq.is-rev { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+  .shopq .aisle-ph { width: 100%; justify-items: stretch; }
+  .shopq .demo { width: 100%; }
+}
+/* the next pill sits bottom-centre on this face: the text column is
+   left-aligned to the gutter, so a bottom-left pill would cover headings */
+.nxt { left: 50%; right: auto; translate: -50% 0; }
+
+/* ── R9 follow-up 2: what the phone and lap shots found ─────────────────── */
+/* a rotated phone swings its top corner out by sin(θ)·height, ~60px at the
+   open angle; the spread leaves that much room inside the fan box */
+.fan { --fan-max: clamp(0px, calc((100% - var(--fan-w)) / 2 - 60px), 152px); }
+@media (max-width: 1100px) and (min-width: 901px) { .fan { --fan-zoom: .58; height: 580px; } }
+/* the progress arc is positioned against the ring, so the ring stays a
+   containing block on a phone too (sticky above 900, relative below) */
+@media (max-width: 900px) { .loop-v { position: relative; top: auto; } }
+/* the two demo rows whose phone layout the compact rules above out-ordered */
+@media (max-width: 640px) {
+  .lad-r { grid-template-columns: minmax(0, 1fr) auto; }
+  .lad-r .lad-bar { grid-column: 1 / -1; order: 3; }
+  .sp-r { grid-template-columns: minmax(0, 1fr) auto; }
+  .sp-a { grid-column: 1 / -1; }
+}
+/* the reach block's address row: a thumb target, in the store's material
+   (the shared block sizes neither the link nor its copy button) */
+.reach-a { gap: 8px; }
+.reach-a a { display: inline-flex; align-items: center; min-height: 44px; }
+.reach-a .copyb { width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--card); color: var(--ink); box-shadow: var(--e2); cursor: pointer; transition: transform 160ms var(--ease), box-shadow 200ms ease, color 160ms ease; }
+@media (hover: hover) { .reach-a .copyb:hover { transform: translateY(-2px); box-shadow: var(--e2-hover); color: var(--sage-700); } }

@@ -208,14 +208,14 @@ const surfaces = {
         desktopTitle: 'Today', desktopSub: 'Composed from each source surface at read time — Today stores nothing of its own.',
         gate: 'Room 2 · loratadine matches a recorded allergy. The Six Rights dialog will ask for a reason before it signs.',
         rows: [
-          { t: 'Room 1', doc: '3 of 3', inc: '—', s: 'Documentation 3 of 3 · no incidents', state: 'given', stateText: '4 given', stamp: 'Logged by M. Okafor · 06:42', chev: true },
+          { t: 'Room 1', doc: '3 of 3', inc: '—', s: 'Documentation 3 of 3 · no incidents', state: 'given', stateText: '4 given', stamp: 'Logged by A. Tesfaye · 06:42', chev: true },
           { t: 'Room 2', doc: '2 of 3', inc: '—', s: 'Documentation 2 of 3 · allergy on file', state: 'due', stateText: '3 due', stamp: 'Next window 08:00', chev: true },
-          { t: 'Room 3', doc: '3 of 3', inc: '—', s: 'Documentation 3 of 3 · held with a reason', state: 'held', stateText: '1 held', stamp: 'Logged by M. Okafor · 06:15', chev: true },
+          { t: 'Room 3', doc: '3 of 3', inc: '—', s: 'Documentation 3 of 3 · held with a reason', state: 'held', stateText: '1 held', stamp: 'Logged by A. Tesfaye · 06:15', chev: true },
           { t: 'Room 4', doc: '1 of 3', inc: '1 awaiting sign-off', s: 'Documentation 1 of 3 · 1 incident awaiting sign-off', state: 'due', stateText: '2 due', stamp: 'Filed by T. Nguyen · 21:12', chev: true },
           { t: 'Room 5', doc: '0 of 3', inc: '—', s: 'Documentation 0 of 3 · window opens 08:00', state: 'due', stateText: '1 due', stamp: '—', chev: true },
         ],
         handoff: { t: 'Handoff · night shift', rows: [['MAR', '18 of 18 signed'], ['Documentation', '9 of 9'], ['Incidents', 'None'], ['Open issues', 'Fridge 2 reading high']], receipt: 'Read by J. Ruiz · 07:02' },
-        foot: 'Nothing on this screen is red. Completed items leave the list rather than sit in it.',
+        foot: 'Nothing here is red. Done items leave the list.',
         side: { kind: 'handoff', t: 'Handoff · night shift', rows: [['MAR', '18 of 18 signed'], ['Documentation', '9 of 9'], ['Incidents', 'None'], ['Open issues', 'Fridge 2 reading high']], receipt: 'Read by J. Ruiz · 07:02', cta: 'Mark as read' },
       },
       {
@@ -227,8 +227,8 @@ const surfaces = {
           { t: 'Loratadine 10 mg · by mouth', s: '08:00 window · matches a recorded allergy', state: 'due', chev: true },
           { t: 'Metformin 500 mg · by mouth', s: '08:00 window · with food', state: 'due', chev: true },
           { t: 'Ibuprofen 200 mg · as needed', s: 'last dose 05:50 · minimum interval 4 h', state: 'due', chev: true },
-          { t: 'Vitamin D 1000 IU', s: '06:00 window', state: 'given', stamp: 'Logged by M. Okafor · 06:04' },
-          { t: 'Senna 8.6 mg', s: 'withheld — resident declined', state: 'held', stamp: 'Logged by M. Okafor · 06:15' },
+          { t: 'Vitamin D 1000 IU', s: '06:00 window', state: 'given', stamp: 'Logged by A. Tesfaye · 06:04' },
+          { t: 'Senna 8.6 mg', s: 'withheld — resident declined', state: 'held', stamp: 'Logged by A. Tesfaye · 06:15' },
         ],
         sheet: {
           title: 'Six Rights', sub: 'Loratadine 10 mg · Room 2 · 08:00',
@@ -246,7 +246,7 @@ const surfaces = {
           ],
           actions: ['Record an override', 'Cancel'],
         },
-        foot: 'Two gates, both chosen because the harm of not stopping is physical. Everything else surfaces and steps aside.',
+        foot: 'Two stops, both because the harm is physical. Everything else informs.',
         side: { kind: 'handoff', t: 'This pass', rows: [['Scheduled', '6'], ['Signed', '3'], ['Gates raised', '2'], ['Overrides', 'None yet']], receipt: 'Witness co-sign is off — WH-1 is a solo house', cta: 'Start the pass' },
       },
       {
@@ -255,13 +255,13 @@ const surfaces = {
         scope: ['Meadow Care', 'WH-1 · Willow House', 'Incident 0417'],
         desktopTitle: 'Incident', desktopSub: 'Filed offline-safe and idempotent → notified → reviewed → signed off → locked. Addenda append forever.',
         trail: [
-          ['Filed', 'Offline-safe, idempotent', 'M. Okafor · 21:12', 'settled'],
+          ['Filed', 'Offline-safe, idempotent', 'A. Tesfaye · 21:12', 'settled'],
           ['Manager notified', 'Push: “WH-1: an incident was filed.”', '21:12', 'settled'],
           ['Reviewed', 'Read on the house phone', 'J. Ruiz · 07:02', 'settled'],
           ['Signed off', 'With an addendum attached', 'J. Ruiz · 07:06', 'settled'],
-          ['Addendum', 'Appended under the original — nothing replaced', 'M. Okafor · 09:20', 'given'],
+          ['Addendum', 'Appended under the original — nothing replaced', 'A. Tesfaye · 09:20', 'given'],
         ],
-        foot: 'Corrections are addenda under the original. Un-administering is forbidden by the state machine.',
+        foot: 'A correction goes under the original. A dose cannot be un-given.',
         side: { kind: 'handoff', t: 'What left the house', rows: [['Email', '“You have 2 items waiting in Cohort for WH-1.”'], ['Push', '“WH-1: medication due.”'], ['Analytics', 'Per house per day, never per resident']], receipt: 'The house short-code is product-assigned, never typed', cta: 'Print for the licensing file' },
       },
       {
@@ -272,7 +272,7 @@ const surfaces = {
         sheetRows: [['MAR', '18 of 18 signed', 'given'], ['Documentation', '9 of 9', 'given'], ['Incidents', 'None filed', 'given'], ['Tasks', '1 open · fridge 2', 'due'], ['Controlled count', 'Prompted at handover', 'due']],
         passage: 'Room 4 slept poorly; declined breakfast twice this week. Fridge 2 still reading high — work order filed.',
         receipt: 'Read by J. Ruiz · 07:02',
-        foot: 'Acknowledgement is never assumed. The incoming caregiver reads, and a receipt is recorded.',
+        foot: 'Reading it records a receipt. Nothing is assumed.',
         side: { kind: 'handoff', t: 'Every shift', rows: [['Composed', 'from the record'], ['Written', 'one passage'], ['Read', 'with a receipt'], ['Printed', 'for the file']], receipt: 'Handoff history is kept per shift', cta: 'Start handover' },
       },
       {
@@ -287,7 +287,7 @@ const surfaces = {
           { t: 'Room 4', s: 'Elopement window · from the plan', state: 'held', stateText: 'Plan', chev: true },
           { t: 'Room 5', s: 'Nobody has recorded allergies yet', state: 'held', stateText: 'Not asked', chev: true },
         ],
-        foot: '“No allergies recorded” and “nobody has asked yet” are two different facts, and the record keeps them apart.',
+        foot: '“No allergies recorded” and “nobody has asked yet” are different facts, and both are kept.',
         side: { kind: 'handoff', t: 'Summary sheet', rows: [['Allergies', 'on file'], ['Diagnoses', '2'], ['Contacts', '3'], ['Plan version', 'v3 · expires Jan']], receipt: 'Printed for the licensing file', cta: 'Open the summary sheet' },
       },
     ],
@@ -361,7 +361,7 @@ const surfaces = {
           { t: 'Applesauce · cups', s: 'Par 12 · dated 21 Sep', state: 'expiring', stateText: '2 days', v: '9' },
           { t: 'Bottled water · 24-pk', s: 'Reserve · 3 days × 5 beds', state: 'short', stateText: 'Gap', v: '2' },
         ],
-        foot: 'On hand is never typed. Count, scan, cook, discard, or close a receipt — each one moves the number.',
+        foot: 'On hand is never typed. Count, scan, cook, discard or close a receipt moves it.',
         side: { kind: 'ladder', t: 'Counted today', rows: [['Pantry', 0, 'stocked'], ['Fridge', 0, 'stocked'], ['Freezer', 4, 'expiring'], ['Reserve', 1, 'short']], foot: 'Four zones · walk order set by the house', cta: 'Scan an item' },
       },
       {
@@ -372,7 +372,7 @@ const surfaces = {
         rail: ['Today’s prep', 'Weekly meal plan', 'Recipes'], railOn: 0,
         steps: [['1', 'Rinse and simmer the rice', '18 min', 'done'], ['2', 'Sear chicken thighs', '12 min', 'now'], ['3', 'Allergen check · 5 trays', 'before plating', 'next'], ['4', 'Complete → stock down', 'rice −2 cups · chicken −3 lb', 'next']],
         trays: [['Room 1', 'regular'], ['Room 2', 'minced · IDDSI 5'], ['Room 3', 'no peanut · no tree nut'], ['Room 4', 'regular'], ['Room 5', 'no pork']],
-        foot: 'Tray notes are drawn from the tags at the moment you look. A resident is a label — “Room 2” — never a name.',
+        foot: 'Tray notes are drawn when you look. A resident is a label, never a name.',
         side: { kind: 'ladder', t: 'Allergen check', rows: [['Peanut', 0, 'stocked'], ['Tree nut', 0, 'stocked'], ['Milk', 1, 'expiring'], ['Egg', 0, 'stocked']], foot: 'Nine standard allergens · warns, never blocks', cta: 'Complete' },
       },
       {
@@ -387,7 +387,7 @@ const surfaces = {
           ['Aisle 12 · Water', [['Bottled water · 24-pk × 3', '$9.99 at Costco', 'open']]],
         ],
         total: 'Picked $15.76 · 2 left · the receipt lands prices on the shelf',
-        foot: 'Picks wait on the phone if there is no signal, and a pick is never counted twice. Closing the run puts the food back on the shelf.',
+        foot: 'Picks wait for a signal and land once. Closing the run puts the food back on the shelf.',
         side: { kind: 'ladder', t: 'This run', rows: [['Picked', 3, 'stocked'], ['Left', 2, 'short'], ['Queued offline', 3, 'expiring']], foot: 'Till roll read on the device', cta: 'Close the run' },
       },
       {
@@ -447,7 +447,7 @@ const surfaces = {
           ['Tab 4', 'Incident and abuse reporting', 'OAR 411-360-0185', 'derived', ''],
           ['Tab 5', 'Standards', 'OAR 411-360-0130', 'derived', ''],
         ],
-        foot: 'Illustrative rows — the AFH-DD library is v1’s content work. Identity fields are blank and hand-filled.',
+        foot: 'Identity lines print blank and are filled in by hand.',
         side: { kind: 'binders', t: 'Binders in this plan', rows: [['Resident binder', '5 tabs', 'RB-0417'], ['Staff binder', '4 tabs', 'SB-0418'], ['Facility binder', '6 tabs', 'FB-0419'], ['Emergency binder', 'posted', 'EB-0420'], ['Policy binder', '3 tabs', 'PB-0421']], cta: 'Print this binder' },
       },
       {
@@ -465,7 +465,7 @@ const surfaces = {
           ['4', 'Are any residents on one-to-one support?', 'No', 'derived'],
           ['5', 'Who keeps the policy binder?', 'The provider', 'derived'],
         ],
-        foot: 'Illustrative answers — the five questions are v1’s content work. The same answers always produce the same plan.',
+        foot: 'The same answers always produce the same plan.',
         side: { kind: 'binders', t: 'What comes out', rows: [['Contents page', 'per binder', ''], ['Tab dividers', '18 tabs', ''], ['One-page brief', 'per binder', ''], ['Standard operating procedure', 'per binder', '']], cta: 'Generate the plan' },
       },
       {
@@ -512,7 +512,7 @@ const surfaces = {
         title: 'Open shifts', sub: 'WH-1 · this week',
         scope: ['Meadow Care', 'WH-1 · Willow House', 'This week'],
         desktopTitle: 'Open shifts', desktopSub: 'One row per shift — covered, with a name, or open, in the accent.',
-        week: { days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], rows: [['Day', ['M. Okafor', 'M. Okafor', 'J. Ruiz', 'J. Ruiz', 'M. Okafor', 'T. Nguyen', 'T. Nguyen']], ['Night', ['J. Ruiz', 'T. Nguyen', 'T. Nguyen', 'M. Okafor', 'J. Ruiz', '', 'T. Nguyen']]] },
+        week: { days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], rows: [['Day', ['A. Tesfaye', 'A. Tesfaye', 'J. Ruiz', 'J. Ruiz', 'A. Tesfaye', 'T. Nguyen', 'T. Nguyen']], ['Night', ['J. Ruiz', 'T. Nguyen', 'T. Nguyen', 'A. Tesfaye', 'J. Ruiz', '', 'T. Nguyen']]] },
         // `detail` is the legacy three-string shape the landing page reads;
         // `shift` is the same fact with the credentials the vault requires.
         detail: ['Sat · Night', 'Awake overnight · med-certified', 'Offer to own staff → post outward'],
@@ -522,8 +522,8 @@ const surfaces = {
           caption: 'Surfaced, not required. The eligible filter shows what the shift asks for; it does not exclude.',
           actions: ['Offer to own staff', 'Post outward'],
         },
-        foot: 'Covered or not. The shift describes the work, never the person — the schema has no field that can reference a resident.',
-        side: { kind: 'expiry', t: 'Credentials', groups: [['Expired', [['M. Okafor · CPR', 'yesterday']], 'expired'], ['Seven-day notice', [['J. Ruiz · First Aid', 'Fri']], 'open'], ['Thirty-day notice', [['T. Nguyen · abuse-reporter', '21 days'], ['K. Silva · dementia training', '30 days']], 'pending']], cta: 'Send the seven-day notice' },
+        foot: 'Covered or not. A shift describes the work, never a person.',
+        side: { kind: 'expiry', t: 'Credentials', groups: [['Expired', [['A. Tesfaye · CPR', 'yesterday']], 'expired'], ['Seven-day notice', [['J. Ruiz · First Aid', 'Fri']], 'open'], ['Thirty-day notice', [['T. Nguyen · abuse-reporter', '21 days'], ['K. Silva · dementia training', '30 days']], 'pending']], cta: 'Send the seven-day notice' },
       },
       {
         key: 'credentials', tab: 2, nav: 'Credentials',
@@ -531,13 +531,13 @@ const surfaces = {
         scope: ['Meadow Care', 'WH-1 · Willow House', 'Staff'],
         desktopTitle: 'Credentials', desktopSub: 'Entered with an expiry → thirty-day notice → seven-day notice → expired, coral on the roster.',
         ladder: [
-          ['M. Okafor · CPR', 'Expired yesterday', 'expired', 'Renewed as a new row; the old one is retained'],
+          ['A. Tesfaye · CPR', 'Expired yesterday', 'expired', 'Renewed as a new row; the old one is retained'],
           ['J. Ruiz · First Aid', 'Seven-day notice · Fri', 'open', 'Notice sent 11 Sep'],
           ['T. Nguyen · abuse-reporter training', 'Thirty-day notice · 21 days', 'pending', 'OAR 407-007'],
           ['K. Silva · dementia training', 'Thirty-day notice · 30 days', 'pending', 'ORS 443.743'],
-          ['M. Okafor · exclusion screening', 'Re-screen due in 84 days', 'covered', 'OIG LEIE · SAM.gov'],
+          ['A. Tesfaye · exclusion screening', 'Re-screen due in 84 days', 'covered', 'OIG LEIE · SAM.gov'],
         ],
-        foot: 'Never a background check — the provider runs ORCHARDS and Aidepost records the status and the date.',
+        foot: 'Dates and status only. The background check is yours to run.',
         side: { kind: 'expiry', t: 'This week’s roster', groups: [['Open', [['Sat · Night', 'not offered yet']], 'open'], ['Offered', [['Sun · Day', 'awaiting an answer']], 'pending'], ['Covered', [['12 shifts', 'by name']], 'covered']], cta: 'Build next week' },
       },
       {
@@ -557,14 +557,14 @@ const surfaces = {
       },
       {
         key: 'hours', tab: 1, nav: 'Timesheets',
-        title: 'Hours', sub: 'M. Okafor · week of 14 Sep',
+        title: 'Hours', sub: 'A. Tesfaye · week of 14 Sep',
         scope: ['Meadow Care', 'WH-1 · Willow House', 'Timesheets'],
         desktopTitle: 'Timesheets', desktopSub: 'Clock in at the house, clock out, a daily total, a weekly total, the overtime flag at forty hours. Approved, then exported. Never computed into pay.',
         days: [['Mon', 8], ['Tue', 8.5], ['Wed', 0], ['Thu', 8], ['Fri', 9], ['Sat', 8.5], ['Sun', 0]],
         total: '42 h', over: 'Over forty by 2 h · weekly flag, never daily',
         rows: [{ t: 'Week of 14 Sep', s: '42 h · submitted Sunday', state: 'pending', stateText: 'To approve' }, { t: 'Week of 7 Sep', s: '38 h · approved by M. Kebede', state: 'covered', stateText: 'Approved' }, { t: 'Week of 31 Aug', s: '40 h · exported', state: 'covered', stateText: 'Exported' }],
-        foot: 'Hours are exported, never calculated into pay. A correction is an addendum with a reason; the original stays.',
-        side: { kind: 'expiry', t: 'This week', groups: [['To approve', [['3 timesheets', 'Sunday close']], 'pending'], ['Flagged', [['M. Okafor', '42 h']], 'open'], ['Exported', [['Week of 31 Aug', 'CSV']], 'covered']], cta: 'Approve and export' },
+        foot: 'Hours are exported, never turned into pay. A correction goes under the original.',
+        side: { kind: 'expiry', t: 'This week', groups: [['To approve', [['3 timesheets', 'Sunday close']], 'pending'], ['Flagged', [['A. Tesfaye', '42 h']], 'open'], ['Exported', [['Week of 31 Aug', 'CSV']], 'covered']], cta: 'Approve and export' },
       },
       {
         key: 'hire', tab: 3, nav: 'Posts',

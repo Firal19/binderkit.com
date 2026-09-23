@@ -586,3 +586,130 @@ html.has-ckb body { padding-bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px
 @media (prefers-reduced-motion: reduce) {
   .btn:active, button:active, [role="button"]:active { transform: none; }
 }
+
+/* ═══ ROUND 3 · 2026-09-23 · the shared chrome Firaol asked for ══════════
+   Four voices on the floating write-to-us, a dock beside it, a small
+   floating "next page" control that replaces every footer's two-card
+   previous/next block, the reach-us block after the questions, tooltips on
+   icon-only controls, and a price that prints its unit small. Shape and
+   position only; every colour still comes from the page's own tokens. */
+
+/* ── the dock: the fab, and anything a site puts beside it ─────────────── */
+.fabs {
+  position: fixed; z-index: 43;
+  right: clamp(14px, 2.4vw, 26px);
+  bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + clamp(14px, 2.4vw, 26px) + var(--sab));
+  display: flex; align-items: center; gap: 8px;
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms cubic-bezier(.25, 1, .5, 1);
+}
+.fabs.is-on, .no-js .fabs { opacity: 1; transform: none; pointer-events: auto; }
+.fabs .fab { position: static; right: auto; bottom: auto; }
+.fabs .fab, .fabs.is-on .fab { opacity: 1; transform: none; pointer-events: auto; }
+.has-ckb .fabs { opacity: 0 !important; pointer-events: none !important; }
+body.is-locked .fabs { opacity: 0; pointer-events: none; }
+/* a docked control wears the fab's shape in the page's card colours */
+.fab-side {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: var(--tap, 44px); min-width: var(--tap, 44px); padding: 0 14px;
+  border-radius: var(--r-btn, 999px); border: 1px solid var(--line);
+  background: var(--card); color: var(--ink);
+  font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap;
+  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, .35);
+  transition: transform 140ms cubic-bezier(.25, 1, .5, 1), border-color 140ms ease;
+}
+@media (hover: hover) { .fab-side:hover { border-color: var(--ink); } }
+@media (max-width: 430px) { .fab-side { padding: 0; width: var(--tap, 44px); } .fab-side span, .fab-side kbd { display: none; } }
+
+/* four voices, one shown; with scripting off the first one shows */
+.fab [data-fab-i], .fab [data-fab-t] { display: none; }
+.fab:not([data-fab-v]) [data-fab-i="0"], .fab:not([data-fab-v]) [data-fab-t="0"],
+.fab[data-fab-v="0"] [data-fab-i="0"], .fab[data-fab-v="0"] [data-fab-t="0"],
+.fab[data-fab-v="1"] [data-fab-i="1"], .fab[data-fab-v="1"] [data-fab-t="1"],
+.fab[data-fab-v="2"] [data-fab-i="2"], .fab[data-fab-v="2"] [data-fab-t="2"],
+.fab[data-fab-v="3"] [data-fab-i="3"], .fab[data-fab-v="3"] [data-fab-t="3"] { display: inline-flex; }
+@media (max-width: 430px) { .fab [data-fab-t] { display: none !important; } }
+
+/* ── the next page, floating ──────────────────────────────────────────── */
+.nxt {
+  position: fixed; z-index: 42;
+  left: clamp(14px, 2.4vw, 26px);
+  bottom: calc(var(--dock, 0px) + var(--footbar-h, 0px) + var(--bar-h, 0px) + clamp(14px, 2.4vw, 26px) + var(--sab));
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: var(--tap, 44px); padding: 0 14px 0 13px;
+  border-radius: var(--r-btn, 999px); border: 1px solid var(--line);
+  background: var(--card); color: var(--ink);
+  font-size: 13.5px; font-weight: 500; text-decoration: none; white-space: nowrap;
+  box-shadow: 0 10px 30px -16px rgba(0, 0, 0, .45);
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(.25, 1, .5, 1), border-color 140ms ease;
+}
+.nxt.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.nxt b { font-weight: 600; }
+.nxt-k { font-family: var(--font-mono, ui-monospace, monospace); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.nxt svg { flex: none; color: var(--muted); transition: transform 160ms cubic-bezier(.25, 1, .5, 1); }
+@media (hover: hover) { .nxt:hover { border-color: var(--ink); } .nxt:hover svg { transform: translateX(3px); color: var(--ink); } }
+/* a slow, small lift — it levitates, it does not bounce */
+@media (prefers-reduced-motion: no-preference) {
+  .nxt.is-on { animation: nxt-float 5.2s cubic-bezier(.45, 0, .55, 1) infinite; }
+  @keyframes nxt-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+}
+.has-ckb .nxt, body.is-locked .nxt { opacity: 0 !important; pointer-events: none !important; }
+@media (max-width: 640px) { .nxt { left: 12px; padding: 0 12px; gap: 7px; } .nxt-k { display: none; } }
+@media print { .nxt, .fabs { display: none !important; } }
+
+/* ── reach us: the questions end in a conversation, not a wall ─────────── */
+.reach {
+  margin-top: var(--sp-6);
+  padding: clamp(22px, 3vw, 40px);
+  border: 1px solid var(--line); border-radius: calc(var(--r, 16px) + 4px);
+  background: var(--card);
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: var(--sp-5) var(--sp-6);
+  align-items: start;
+}
+.reach-t { display: grid; gap: 8px; }
+.reach-t h3 { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-h2); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
+.reach-t p { color: var(--muted); max-width: 44ch; }
+.reach-c { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.reach-a { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; font-size: var(--fs-read); color: var(--muted); }
+/* the address is a tap target on a phone: 44px tall whatever the face does */
+.reach-a a { display: inline-flex; align-items: center; min-height: var(--tap, 44px); color: var(--ink); text-decoration: none; }
+/* a copy button with no face of its own still gets a thumb-sized square;
+   :where() keeps this at (0,1,0) so every page's own .copyb rule wins */
+:where(.reach-a) .copyb { display: inline-grid; place-items: center; min-width: var(--tap, 44px); min-height: var(--tap, 44px); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); cursor: pointer; }
+.reach-a a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.reach-s { display: grid; gap: 14px; counter-reset: reach; align-self: center; }
+.reach-s li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 4px 14px; align-items: start; counter-increment: reach; }
+.reach-s li::before {
+  content: counter(reach); grid-row: 1 / span 2;
+  width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; font-weight: 500;
+  border: 1px solid var(--line); color: var(--muted); background: var(--bg);
+}
+.reach-s b { font-weight: 600; }
+.reach-s span { color: var(--muted); font-size: var(--fs-read); line-height: 1.5; }
+@media (max-width: 900px) { .reach { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── icon-only controls say what they do ─────────────────────────────── */
+[data-tip] { position: relative; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; left: 50%; top: calc(100% + 8px); transform: translate(-50%, -4px);
+  padding: 6px 10px; border-radius: 8px;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--font-body, system-ui, sans-serif); font-size: 12.5px; font-weight: 500;
+  letter-spacing: 0; text-transform: none; white-space: nowrap; line-height: 1.2;
+  opacity: 0; pointer-events: none; z-index: 71;
+  transition: opacity 140ms ease, transform 140ms cubic-bezier(.25, 1, .5, 1);
+}
+[data-tip][data-tip-at="end"]::after { left: auto; right: 0; transform: translate(0, -4px); }
+[data-tip][data-tip-at="start"]::after { left: 0; transform: translate(0, -4px); }
+@media (hover: hover) {
+  [data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+  [data-tip][data-tip-at="end"]:hover::after, [data-tip][data-tip-at="end"]:focus-visible::after,
+  [data-tip][data-tip-at="start"]:hover::after, [data-tip][data-tip-at="start"]:focus-visible::after { transform: translate(0, 0); }
+}
+.fabs [data-tip]::after, .fab-side[data-tip]::after { top: auto; bottom: calc(100% + 8px); }
+
+/* ── a price prints its unit small ──────────────────────────────────────── */
+.tier-p small { font-size: .42em; font-weight: 500; letter-spacing: 0; color: var(--muted); margin-left: 3px; }

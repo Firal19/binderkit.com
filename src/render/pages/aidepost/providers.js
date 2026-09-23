@@ -1,7 +1,7 @@
 // /providers — the provider side at depth: four screens, each doing work,
 // and the flows from the feature document told step by step.
 
-import { esc, sec, fold, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credTimeline, timesheetToy, clockToy, joinBlock, ixNav, pager, deepLink } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credRail, credTimeline, timesheetToy, clockToy, joinBlock, ixNav, deepLink } from './bits.js';
 
 const CHAPTERS = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['hiring', 'Hiring']];
 
@@ -37,13 +37,13 @@ function chBoard() {
     <div class="ch-g">
       ${flow('Saturday night is open', [
     ['Friday morning', 'the board shows Saturday night open at one house.', 'open'],
-    ['Offer to own staff', 'everyone eligible is listed; two carry markers — one certificate expired, one already assigned that night. Neither is removed and neither requires an override.'],
+    ['Offer to own staff', 'everyone eligible is listed; two carry markers and both stay on the list.'],
     ['Nobody accepts by Friday evening', 'the shift is within the escalation window; the manager and the provider are both notified.'],
     ['Decide', 'assign someone carrying a marker, or post outward?'],
-    ['Post outward', 'relief workers whose area covers the house and whose availability includes nights see it, with distance and any credential marker.'],
+    ['Post outward', 'relief caregivers near the house see the work, the hours and the distance.'],
     ['One claims; the manager confirms', 'the worker is notified and can now clock in.', 'covered'],
-    ['Sunday', 'the manager records that she showed. That fact is the employer’s own — no other employer will ever see it.'],
-  ], 'If two workers claim at once, the first stands and the second is told immediately. If nobody claims, the shift stays open, the escalation repeats, and the provider works the phone as she did before — but now with a record of having tried.')}
+    ['Sunday', 'the manager records that she showed. That fact is yours and no other employer’s.'],
+  ], 'If two people claim at once, the first stands and the second is told. If nobody claims, the shift stays open and you work the phone as before, now with a record of having tried.')}
       <div class="ch-side">
         <div class="gates"><h3>Two gates, and nothing else blocks</h3><ul>${loop.gates.map((g) => `<li>${ic('check', 16)}${esc(g)}</li>`).join('')}</ul><p class="fine">${esc(loop.gateNote)}</p></div>
         <p class="pull">${esc(loop.quote.text)}</p>
@@ -57,6 +57,7 @@ function chCredentials() {
   const s = screen('credentials');
   return fold('Entered with an expiry — then thirty days, seven, and the day itself.', sec('credentials', 'ch', `<div class="wrap">
     <div class="ch-head">${eyebrow('2 · Credentials')}${h2('credentials', 'Entered with an expiry. Then thirty days, seven, the day itself.', s.foot)}</div>
+    ${credRail()}
     <div class="ch-g is-phone">
       <div class="ch-dev"><div class="dev">${iosShell('aidepost', { key: 'credentials' })}</div></div>
       <div>
@@ -93,7 +94,7 @@ function chHours() {
     ['Forgets to clock out', 'the incomplete record surfaces to her and the manager; either completes it with a time and a reason.'],
     ['Crosses forty hours', 'an overtime indication appears. No daily indication appears, at any point.', 'open'],
     ['Her manager approves', 'one person at a time; bulk approval is forbidden. The week locks.', 'covered'],
-    ['The provider exports', 'CSV — person, employee reference, house, date, hours, overtime hours, shift type and the rate where one was recorded. No calculated pay. Exporting is recorded.'],
+    ['The provider exports', 'a CSV of hours by person, house and day. No calculated pay. Exporting is recorded.'],
   ])}
         ${trans('Clock → timesheet → export', [
     ['—', 'Clock in', 'open day'],
@@ -121,9 +122,9 @@ function chHiring() {
         ${flow('Hiring, end to end', [
     ['Draft', 'role, schedule in words, rate, credentials, description. The house by its identifier, by default.'],
     ['The warning', '“one-to-one for a resident who…” is flagged: a posting describes work, not a person. She rewrites it; the warning and her decision are recorded.', 'open'],
-    ['Pay, publish', 'live publicly and to workers. A worker finds it in an ordinary search, without an account; applying asks her to create one — three screens, no payment.'],
+    ['Pay, publish', 'live to the public and to caregivers. Applying takes a caregiver account: three screens, no payment.'],
     ['An application arrives', 'with her self-attested credentials. The manager is told an application was received at a house identifier.'],
-    ['Screened, offered, accepted, hired', 'a staff record is created, her account attached, her credentials copied in as self-attested, and onboarding opens for that house’s track.', 'covered'],
+    ['Screened, offered, accepted, hired', 'a staff record, her account attached, and onboarding for that house’s track.', 'covered'],
     ['Three items outstanding', 'she may be rostered before they are complete; the eligibility list marks it; the provider decides.'],
   ], s.foot)}
         ${trans('Application → hire', [
@@ -154,7 +155,7 @@ function failed() {
     <ol class="flow-l">${[
     ['Overdue', 'full access; a notice to the provider alone.'],
     ['Reminders', 'day 0, day 7, day 14.'],
-    ['Read-only', 'rosters cannot be built and shifts cannot be assigned. Clocking continues, and the notice says so, because hours worked are a legal record.', 'open'],
+    ['Read-only', 'rosters cannot be built and shifts cannot be assigned. Clocking continues: hours worked are a legal record.', 'open'],
     ['Live postings', 'unaffected until cancellation; on cancellation they are withdrawn.'],
     ['Resolved', 'full access immediately.', 'covered'],
   ].map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
@@ -183,7 +184,6 @@ ${chHours()}
 ${chHiring()}
 ${machines()}
 ${failed()}
-${sec('join', 'join', joinBlock(cfg, p))}
-${pager('/providers')}`);
+${sec('join', 'join', joinBlock(cfg, p))}`);
   },
 };

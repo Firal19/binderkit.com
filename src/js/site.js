@@ -210,7 +210,7 @@
     const btns = $$('[data-mode-toggle]');
     const dark = window.matchMedia('(prefers-color-scheme: dark)');
     const current = () => { const m = root.getAttribute('data-mode'); return m === 'dark' || m === 'light' ? m : (dark.matches ? 'dark' : 'light'); };
-    const paint = () => { const m = current(); btns.forEach((b) => { b.setAttribute('aria-pressed', String(m === 'dark')); b.setAttribute('aria-label', m === 'dark' ? 'Switch to light' : 'Switch to dark'); }); const metas = $$('meta[name="theme-color"]'); if (metas.length && b0) { const c = m === 'dark' ? (b0.getAttribute('data-theme-dark') || '#17201F') : (b0.getAttribute('data-theme-light') || metas[0].getAttribute('content')); /* both, because the page ships one meta per colour scheme: an explicit choice has to win whichever one the OS is currently matching. */ metas.forEach((x) => x.setAttribute('content', c)); } };
+    const paint = () => { const m = current(); btns.forEach((b) => { b.setAttribute('aria-pressed', String(m === 'dark')); b.setAttribute('aria-label', m === 'dark' ? 'Switch to light' : 'Switch to dark'); if (b.hasAttribute('data-tip')) b.setAttribute('data-tip', b.getAttribute('aria-label')); }); const metas = $$('meta[name="theme-color"]'); if (metas.length && b0) { const c = m === 'dark' ? (b0.getAttribute('data-theme-dark') || '#17201F') : (b0.getAttribute('data-theme-light') || metas[0].getAttribute('content')); /* both, because the page ships one meta per colour scheme: an explicit choice has to win whichever one the OS is currently matching. */ metas.forEach((x) => x.setAttribute('content', c)); } };
     const b0 = btns[0];
     btns.forEach((b) => b.addEventListener('click', () => {
       const next = current() === 'dark' ? 'light' : 'dark';
@@ -333,6 +333,9 @@
         e.preventDefault();
         const text = c.getAttribute('data-copy') || c.textContent.trim();
         try { await navigator.clipboard.writeText(text); toast(c.getAttribute('data-copied') || 'Copied'); } catch { toast(text); }
+        /* an address is copied AND opened: the copy is for pasting elsewhere,
+           the mail app is what most people wanted in the first place */
+        if (EMAIL.test(text) && !c.hasAttribute('data-copy-only')) setTimeout(() => { location.href = 'mailto:' + text; }, 420);
         return;
       }
       const s = e.target.closest('[data-share]');
@@ -534,24 +537,87 @@
      opens with one call to action rather than two competing ones. */
   const fab = () => {
     const el = $('[data-fab]'); if (!el) return;
-    /* Prefer the page's own first screen; fall back to the first section, and
-       then to a plain scroll distance. Whichever we get, also reveal once the
-       reader is simply a screen down — the previous version keyed on ONE
-       element's bottom edge and stayed invisible for the whole page wherever
-       that element was not the hero. */
+    /* four voices, one per visit — random, so no storage is needed and a
+       returning reader meets a different line without being tracked */
+    el.setAttribute('data-fab-v', String(Math.floor(Math.random() * 4)));
+    /* the dock: the fab, and anything a site marks data-fab-side (cohort's
+       Keys), one fixed corner rather than two things fighting for it */
+    const dock = document.createElement('div');
+    dock.className = 'fabs';
+    el.parentNode.insertBefore(dock, el);
+    for (const side of $$('[data-fab-side]')) { side.classList.add('fab-side'); dock.appendChild(side); }
+    dock.appendChild(el);
     const hero = $('#top') || $('main .hero') || $('main > section');
     const show = () => {
       const byHero = hero ? hero.getBoundingClientRect().bottom < 40 : false;
-      el.classList.toggle('is-on', byHero || window.scrollY > window.innerHeight * 0.9);
+      const on = byHero || window.scrollY > window.innerHeight * 0.9;
+      el.classList.toggle('is-on', on);
+      dock.classList.toggle('is-on', on);
     };
     show();
-    /* Hidden by opacity alone, it still took a Tab stop and drew a focus ring
-       on something nobody can see. Keep it out of the tab order until it is up. */
-    const sync = () => el.setAttribute('tabindex', el.classList.contains('is-on') ? '0' : '-1');
+    const sync = () => { const on = el.classList.contains('is-on'); el.setAttribute('tabindex', on ? '0' : '-1'); $$('.fab-side', dock).forEach((b) => { b.tabIndex = on ? 0 : -1; }); };
     sync();
     new MutationObserver(sync).observe(el, { attributes: true, attributeFilter: ['class'] });
     addEventListener('scroll', show, { passive: true });
     addEventListener('resize', show, { passive: true });
+  };
+
+  /* ── the next page, floating: shown once the reader is well into the page ── */
+  const nxt = () => {
+    const el = $('[data-next]'); if (!el) return;
+    const show = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      el.classList.toggle('is-on', max > 600 && window.scrollY > max * 0.42);
+    };
+    show();
+    addEventListener('scroll', show, { passive: true });
+    addEventListener('resize', show, { passive: true });
+  };
+
+  /* ── scroll-driven instruments ────────────────────────────────────────
+     Any [data-scroll-p] element gets --sp: 0 as its top enters the bottom of
+     the viewport, 1 as its bottom leaves the top — so a ring can turn, a
+     phone can travel and a bar can fill in step with the reader rather than
+     on a timer. [data-turn] additionally gets --turn in degrees, over the
+     element's own scroll span (data-turn="360" is one full turn). A
+     [data-scroll-p="parent"] reads its parent section's span instead, which
+     is what lets a sticky instrument follow the list beside it. */
+  const scrollDrive = () => {
+    const els = $$('[data-scroll-p], [data-turn]');
+    if (!els.length || calm.matches) return;
+    let ticking = false;
+    const paint = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      for (const el of els) {
+        const ref = el.getAttribute('data-scroll-p') === 'parent' ? (el.closest('section') || el.parentElement) : el;
+        const r = ref.getBoundingClientRect();
+        const span = r.height + vh;
+        const p = span > 0 ? Math.min(1, Math.max(0, (vh - r.top) / span)) : 0;
+        el.style.setProperty('--sp', p.toFixed(4));
+        if (el.hasAttribute('data-turn')) el.style.setProperty('--turn', (p * (parseFloat(el.getAttribute('data-turn')) || 360)).toFixed(2) + 'deg');
+      }
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    paint();
+  };
+
+  /* ── icon-only controls say what they do ─────────────────────────────
+     Every button or link in the chrome that carries only an icon gets its
+     aria-label as a hover tooltip, so a sighted reader learns what the
+     lamp, the share glyph and the search glass are before pressing. */
+  const tips = () => {
+    for (const el of $$('header button[aria-label], header a[aria-label], footer button[aria-label], .fabs button[aria-label], [data-fab-side][aria-label]')) {
+      if (el.hasAttribute('data-tip') || el.classList.contains('brand')) continue;
+      const text = el.textContent.replace(/\s+/g, ' ').trim();
+      if (text) continue;
+      el.setAttribute('data-tip', el.getAttribute('aria-label'));
+      const r = el.getBoundingClientRect();
+      if (r.left > window.innerWidth * 0.7) el.setAttribute('data-tip-at', 'end');
+      else if (r.left < window.innerWidth * 0.2) el.setAttribute('data-tip-at', 'start');
+    }
   };
 
   /* ── the working demo: rails, screen switchers, callouts ─────────────
@@ -788,7 +854,7 @@
   };
 
   window.PHO = { $, $$, calm, toast, root, EMAIL };
-  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); demos(); consent(); drafts(); emailCheck(); sendByMail(); fab(); document.dispatchEvent(new CustomEvent('pho:ready')); };
+  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); demos(); consent(); drafts(); emailCheck(); sendByMail(); fab(); nxt(); scrollDrive(); tips(); document.dispatchEvent(new CustomEvent('pho:ready')); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

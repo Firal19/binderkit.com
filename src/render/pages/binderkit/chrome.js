@@ -5,7 +5,7 @@
 // planner itself. Everything here is the site's — nothing is the product's
 // except the rows it quotes from the instruments.
 
-import { esc, mark, social, byline, hello, mailto } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, nextFloat, priceParts } from '../../shared.js';
 import { SURFACES } from '../../instruments.js';
 import { PAGES } from '../../../data/page.js';
 import { ic, lampIcon } from '../../icons/binderkit.js';
@@ -19,10 +19,10 @@ const intake = S.screens.find((s) => s.key === 'intake');
 /* ── the book: chapters, and the sections of the front page ───────────── */
 export const CHAPTERS = [
   { path: '/', title: 'Binderkit', sub: 'The front page', ctl: 'BK-LP' },
-  { path: '/screens', title: 'The screens', sub: 'Five plates, at the size they ship', ctl: 'BK-SC' },
-  { path: '/plan', title: 'The plan', sub: 'Five answers in, a shelf of binders out', ctl: 'BK-PL' },
+  { path: '/screens', title: 'The screens', sub: 'Five screens, at the size they ship', ctl: 'BK-SC' },
+  { path: '/plan', title: 'The plan', sub: 'Five answers in, five binders out', ctl: 'BK-PL' },
   { path: '/library', title: 'The library', sub: 'Four tracks, four libraries', ctl: 'BK-LB' },
-  { path: '/pricing', title: 'Pricing', sub: 'Priced in the open', ctl: 'BK-PR' },
+  { path: '/pricing', title: 'Pricing', sub: '$29 a facility a month, or $149 once', ctl: 'BK-PR' },
   { path: '/about', title: 'About', sub: 'Who makes Binderkit', ctl: 'BK-AB' },
   { path: '/contact', title: 'Contact', sub: 'Write to a person', ctl: 'BK-CT' },
   { path: '/privacy', title: 'Privacy', sub: 'What it holds, and what leaves it', ctl: 'BK-PV' },
@@ -33,19 +33,18 @@ export const number = (prefix, list) => list.map((s, i) => ({ ...s, ctl: `${pref
 
 export const HOME = number('BK-LP', [
   { id: 'top', label: 'The title page', tab: '' },
-  { id: 'why', label: 'Why this one can ship first', tab: 'Proof', foldName: 'Why it ships first', gist: 'It holds nothing about anyone, and the same answers always make the same plan.' },
-  { id: 'screens', label: 'Every surface', tab: 'Screens', foldName: 'Every surface', gist: 'Plan, binders, versions — switched by their own index tab, with nothing moving.' },
-  { id: 'plan', label: 'The plan', tab: 'Plan', gist: 'Question zero picks the library, and the library is everything.' },
+  { id: 'why', label: 'Why Binderkit', tab: 'Why', foldName: 'Why Binderkit', gist: 'Nothing about anyone, and the same answers always make the same plan.' },
+  { id: 'screens', label: 'The screens', tab: 'Screens', foldName: 'The screens', gist: 'Answers in, binder out, switched by index tab.' },
+  { id: 'plan', label: 'The plan', tab: 'Plan', gist: 'Your licence track picks the library. Then five questions.' },
   { id: 'page', label: 'The page', tab: 'Page' },
-  { id: 'library', label: 'The library', tab: 'Library', gist: 'Four tracks, four libraries, an authority beside every item.' },
-  { id: 'editor', label: 'The editor', tab: 'Editor', gist: 'A refusal names the rule that caused it and offers an alternative.' },
-  { id: 'versions', label: 'Versions', tab: 'Versions', gist: 'An answer changes, the plan regenerates, and the diff is shown.' },
-  { id: 'plates', label: 'Two plates', tab: 'Plates', foldName: 'Two plates', gist: 'Print and the guarded editor, at the size they ship.' },
-  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a person out, and the boundary they draw.' },
-  { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each of them may see.' },
-  { id: 'questions', label: 'Questions', tab: 'Questions', gist: 'The four we are actually asked, answered in full.' },
-  { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: 'Every plan sees every screen; nothing is silently blocked.' },
-  { id: 'family', label: 'Where this goes next', tab: 'Ladder', foldName: 'The ladder', gist: 'The platform a facility graduates into, and how the plan gets there.' },
+  { id: 'library', label: 'The library', tab: 'Library', gist: 'Four tracks, four libraries, the rule beside every item.' },
+  { id: 'editor', label: 'The editor', tab: 'Editor', gist: 'A refusal names the rule and offers something to do instead.' },
+  { id: 'versions', label: 'Versions', tab: 'Versions', gist: 'An answer changes, the plan regenerates, the diff is shown.' },
+  { id: 'plates', label: 'The screens, listed', tab: 'Plates', foldName: 'Five screens', gist: 'Five screens, each with an address of its own.' },
+  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a person out.' },
+  { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each may see.' },
+  { id: 'questions', label: 'Questions', tab: 'FAQ', gist: 'The five we are asked most, and how to reach us.' },
+  { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: '$29 a facility a month, or $149 once.' },
   { id: 'join', label: 'Join', tab: 'Join' },
 ]);
 
@@ -58,9 +57,8 @@ export const BOOK = {
   '/': HOME,
   '/screens': number('BK-SC', [
     { id: 'top', label: 'The plates', tab: '' },
-    { id: 'five-plates', hid: 'plates', label: 'Five plates', tab: 'Plates' },
-    { id: 'annotated', label: 'The guarded editor, at desk size', tab: 'Desk size', foldName: 'At desk size', gist: 'The same refusals, on the shell a provider actually plans in.' },
-    { id: 'sample', label: 'What is real on these plates', tab: 'Sample', foldName: 'What is real', gist: 'Sample data throughout, and the reason it is safe to publish.' },
+    { id: 'five-plates', hid: 'plates', label: 'Five screens', tab: 'Screens' },
+    { id: 'annotated', label: 'The guarded editor, at desk size', tab: 'Desk size', foldName: 'At desk size', gist: 'The same refusals, on the screen a provider plans at.' },
   ]),
   '/plan': number('BK-PL', [
     { id: 'top', label: 'Five answers in. A shelf of binders out.', tab: '' },
@@ -72,21 +70,20 @@ export const BOOK = {
   '/library': number('BK-LB', [
     { id: 'top', label: 'The library is the product', tab: '' },
     { id: 'libraries', label: 'Four tracks, four libraries', tab: 'Libraries' },
-    { id: 'evidence', label: 'The evidence tags, and the four rules', tab: 'Evidence', foldName: 'The evidence tags', gist: 'Verified, derived or open, and the four rules behind a version.' },
-    { id: 'written', label: 'What is written, and what is not', tab: 'Written', foldName: 'What is written', gist: 'The AFH-DD library counted rather than claimed.' },
-    { id: 'never', label: 'Removed, and never', tab: 'Never', gist: 'Six taken out on purpose, and six this product will never do.' },
+    { id: 'evidence', label: 'The rules, in plain words', tab: 'Rules', foldName: 'The rules', gist: 'Every citation on your plan, and how sure we are of it.' },
+    { id: 'never', label: 'What stays out', tab: 'Never', gist: 'Six things this product will never hold, and why.' },
     { id: 'words', label: 'Three words', tab: 'Words' },
   ]),
   '/pricing': number('BK-PR', [
     { id: 'top', label: 'Priced in the open', tab: '' },
     { id: 'tiers', label: 'The tiers', tab: 'Tiers' },
-    { id: 'signup', label: 'Signing up, in five steps', tab: 'Signing up' },
+    { id: 'signup', label: 'Signing up', tab: 'Signing up' },
     { id: 'billing', label: 'If a payment fails', tab: 'Payment' },
     { id: 'lapse', label: 'If you stop paying', tab: 'Lapse' },
   ]),
   '/about': number('BK-AB', [
     { id: 'top', label: 'Binder setup for care homes', tab: '' },
-    { id: 'first', label: 'Why it holds nothing about anyone', tab: 'Nothing' },
+    { id: 'first', label: 'Nothing about anyone', tab: 'Nothing' },
     { id: 'maker', label: 'Who makes it', tab: 'Maker' },
   ]),
   '/contact': number('BK-CT', [
@@ -211,34 +208,63 @@ export function title(s, { eyebrow: eb, h1, lede, ctas = '', fine = '', aside = 
 </section>`;
 }
 
-/* ── citations: the five on this site, and what each one is ───────────── */
+/* ── citations: the rules on this site, in plain words ────────────────
+   Grouped by licence track. Each row is the rule number as a chip, the
+   rule's own name, and one line saying what it is about in words a new
+   provider can read. The popover (js/pages/binderkit.js cites()) reads the
+   same rows, so a citation anywhere on the page explains itself. */
+export const TRACK_NAMES = {
+  'AFH-DD': 'Adult foster homes · developmental disabilities · OAR chapter 411, division 360',
+  'Agency': 'Agencies and group homes · OAR chapter 411, division 325',
+};
 export const CITES = [
-  ['OAR 411-360-0130', 'Standards', 'Chapter 411, division 360 — the AFH-DD track. Section 0130 is the standards section of that chapter.'],
-  ['OAR 411-360-0140', 'Health care', 'Chapter 411, division 360 — the AFH-DD track. Section 0140 is the health-care section.'],
-  ['OAR 411-360-0150', 'Emergency information', 'Chapter 411, division 360 — the AFH-DD track. Cited from the chapter for the items that are posted rather than filed.'],
-  ['OAR 411-360-0170', 'Documentation and records', 'Chapter 411, division 360 — the AFH-DD track. Section 0170 is documentation and records, the section a resident binder is built from.'],
-  ['OAR 411-360-0180', 'Staff records', 'Chapter 411, division 360 — the AFH-DD track. Cited from the chapter for the staff binder.'],
-  ['OAR 411-360-0185', 'Abuse and incident', 'Chapter 411, division 360 — the AFH-DD track. Section 0185 is abuse and incident reporting.'],
+  ['OAR 411-360-0130', 'Standards', 'What every home keeps in order: the licence, the house rules, the records a surveyor asks for first.', 'AFH-DD'],
+  ['OAR 411-360-0140', 'Health care', 'How each resident’s health needs and medications are written down and kept.', 'AFH-DD'],
+  ['OAR 411-360-0150', 'Emergency information', 'What is posted on the wall for an emergency, rather than filed in a binder.', 'AFH-DD'],
+  ['OAR 411-360-0170', 'Documentation and records', 'What goes in each resident’s binder. The section a resident binder is built from.', 'AFH-DD'],
+  ['OAR 411-360-0180', 'Staff records', 'What goes in each staff file: training, checks and their dates.', 'AFH-DD'],
+  ['OAR 411-360-0185', 'Abuse and incident', 'How an incident is reported, to whom, and by when.', 'AFH-DD'],
 ];
-const EV_LINE = 'Evidence: derived — cited from the rule chapter, not yet read against the rule by a provider inspected on this track. Today no citation on this site is verified.';
 export const cite = (text) => {
   const known = CITES.find((c) => c[0] === text);
   return known
     ? `<a class="cite" href="#cites" data-cite="${esc(text)}">${esc(text)}</a>`
     : esc(text);
 };
-export const citesBlock = () => `<dl class="cites" id="cites">
-  <span class="strip-l">The citations on this page, and what each one is</span>
-  ${CITES.map(([c, name, what]) => `<div class="cite-r" data-cite-row="${esc(c)}"><dt><code>${esc(c)}</code> <b>${esc(name)}</b></dt><dd>${esc(what)}</dd></div>`).join('')}
-  <p class="cite-ev">${esc(EV_LINE)}</p>
-</dl>`;
+export const citesBlock = (opts = {}) => {
+  const groups = [...new Set(CITES.map((c) => c[3]))];
+  return `<div class="cites" id="${esc(opts.id || 'cites')}">
+  <span class="strip-l">${esc(opts.title || 'The rules on this page, in plain words')}</span>
+  ${groups.map((g) => `<div class="cite-g">
+    <p class="cite-gt"><b>${esc(g)}</b><span>${esc(TRACK_NAMES[g] || '')}</span></p>
+    <dl class="cite-l">${CITES.filter((c) => c[3] === g).map(([c, name, what]) => `<div class="cite-r" data-cite-row="${esc(c)}"><dt><code>${esc(c.replace(/^OAR /, ''))}</code><b>${esc(name)}</b></dt><dd>${esc(what)}</dd></div>`).join('')}</dl>
+  </div>`).join('')}
+  <p class="cite-f">${esc(opts.foot || 'Every item on your plan carries one of these beside it, with a tag saying how sure we are: verified, derived or open.')}</p>
+</div>`;
+};
+
+/* ── how it is sold: a subscription, or once ───────────────────────────
+   Shared by the front page and the pricing chapter. js/pages/binderkit.js
+   sell() swaps the note and the Pro price together. */
+export const sellSwitch = () => `<div class="ptog" role="group" aria-label="How it is sold"><button class="tog" type="button" data-sell="sub" aria-pressed="true">Subscription</button><button class="tog" type="button" data-sell="once" aria-pressed="false">Buy once</button></div>
+  <p class="sell-note" data-sell-note data-sub="Per facility, renewing monthly. Three-day trial, cancel in one tap." data-once="Per facility, once. For a binder you revise twice a year.">Per facility, renewing monthly. Three-day trial, cancel in one tap.</p>`;
+
+/** The three tiers, with the Pro price switching between the two ways it is sold. */
+export const tierGrid = (p) => `<div class="tiers">${p.pricing.rows.map(([name, price, d], i) => {
+  const main = i === 1;
+  const desc = main ? d.replace(/\s*Or \$\d+ once\.?$/, '') : d;
+  const priceHtml = main && p.pricing.once
+    ? `<span data-sell-p="sub">${priceParts(price)}</span><span data-sell-p="once" hidden>${esc(p.pricing.once)}<small> once</small></span>`
+    : priceParts(price);
+  return `<div class="tier ${main ? 'is-main' : ''}">${main ? '<span class="tier-flag">Most facilities</span>' : ''}<span class="tier-n">${esc(name)}</span><span class="tier-p">${priceHtml}</span><span class="tier-d">${esc(desc)}</span></div>`;
+}).join('')}</div>`;
 
 /* ── the planner: the data, then the rule ─────────────────────────────── */
 const TRACKS = [
   { id: 'AFH-DD', auth: 'OAR 411-360', ok: true },
-  { id: 'AFH-APD', auth: 'OAR 411-050', notice: 'The AFH-APD library is not in this release. On this track the plan screen says so plainly, and you are not charged for what you cannot use. Its authority, when it is written: OAR 411-050 — 0745 Facility Records, which is the rule’s own name for that set, and 0750 resident records, twenty to twenty-four types.' },
-  { id: 'AFH-OHA', auth: 'OAR 309-040', notice: 'The AFH-OHA library is not written yet. On this track the plan screen says so plainly, and you are not charged for what you cannot use. Its authority, when it is written: OAR 309-040.' },
-  { id: 'Agency', auth: 'OAR 411-325', notice: 'The agency library is one hundred and twenty-six items — the same thirty-two, plus ninety-four derived — with ninety-nine citations recorded, all of which must be re-verified against OAR 411-325 as amended 15 January 2026 before the first paying agency. This demonstration plans on the AFH-DD library only.' },
+  { id: 'AFH-APD', auth: 'OAR 411-050', notice: 'The AFH-APD library is coming next. This page plans on the AFH-DD library. Its rule: OAR 411-050, facility records and resident records.' },
+  { id: 'AFH-OHA', auth: 'OAR 309-040', notice: 'The AFH-OHA library is coming next. This page plans on the AFH-DD library. Its rule: OAR 309-040.' },
+  { id: 'Agency', auth: 'OAR 411-325', notice: 'The agency library follows OAR 411-325 and 411-323: one hundred and twenty-six items across the five binders. This page plans on the AFH-DD library.' },
 ];
 const SKIP = ['skip', 'Skip — resolves the inclusive way'];
 const YN = [['yes', 'Yes'], ['no', 'No'], SKIP];
@@ -300,7 +326,7 @@ export function computePlan(D, a) {
 }
 
 export const planText = (plan, a) => {
-  const lines = [`Binderkit plan — illustrative · ${plan.track}`];
+  const lines = [`Binderkit plan · ${plan.track}`];
   lines.push(`Answers: ${QUESTIONS.map((q) => `Q${q.no} ${labelOf(q, a[q.id], a.track)}`).join(' · ')}`);
   if (!plan.ok) { lines.push(plan.notice); return lines.join('\n'); }
   plan.binders.forEach((b, i) => lines.push(`${i + 1}. ${b.name}${b.copies > 1 ? ` ×${b.copies}` : ''} — ${b.posted ? 'posted' : `${b.tabs} tabs`} — ${b.auth} — ${b.why}`));
@@ -324,7 +350,7 @@ export function planOut(plan) {
   <ol class="po-l">${plan.binders.map((b, i) => `<li class="po-b" data-key="${esc(b.key)}"><span class="po-n">${i + 1}</span><div class="po-m"><b>${esc(b.name)}${b.copies > 1 ? ` <em>× ${b.copies}</em>` : ''}</b><span class="po-why">${esc(b.why)}${b.fromSkip ? ' <i class="po-skip">from a skipped question</i>' : ''}</span></div><span class="po-t">${b.posted ? 'posted' : `${b.tabs} tabs`}</span><span class="po-a">${cite(b.auth)}</span></li>`).join('')}</ol>
   ${plan.left.length ? `<ul class="po-left">${plan.left.map((b) => `<li><s>${esc(b.name)}</s> <span>${esc(b.why)}</span></li>`).join('')}</ul>` : ''}
   <dl class="po-counts"><div><dt>Binders</dt><dd>${c.kinds} kinds · ${c.physical} physical</dd></div><div><dt>Tabs</dt><dd>${c.tabs}</dd></div><div><dt>Dividers to buy</dt><dd>${c.dividers}</dd></div>${plan.skipped.length ? `<div><dt>Skipped</dt><dd>${esc(plan.skipped.join(', '))} — resolved the inclusive way</dd></div>` : ''}</dl>
-  <p class="po-banner" data-plan-banner ${plan.same ? 'hidden' : ''}>${plan.same ? '' : 'Re-plan: v1 → v2. In the product this is an offer and a diff, and nothing changes until you accept it; here it is applied so you can see the page.'}</p>
+  <p class="po-banner" data-plan-banner ${plan.same ? 'hidden' : ''}>${plan.same ? '' : 'Re-plan: v1 → v2. In the product this is an offer with a diff, and nothing changes until you accept it.'}</p>
 </div>`;
 }
 
@@ -339,10 +365,10 @@ export function planner(opts = {}) {
     <fieldset class="pl-track"><legend><span class="pl-n">Q0</span> ${esc(intake.questions[0][1])}</legend><div class="seg">${TRACKS.map(track).join('')}</div><span class="pl-why">It selects the library, and the library is everything.</span></fieldset>
     <ol class="pl-qs">${QUESTIONS.map(q).join('')}</ol>
     <div class="pl-acts">
-      <button type="button" class="btn sm" data-plan-reset>${ic('reset', 18)}<span>Reset to the demonstration</span></button>
+      <button type="button" class="btn sm" data-plan-reset>${ic('reset', 18)}<span>Reset the answers</span></button>
       <button type="button" class="btn sm" data-plan-copy data-copy="${esc(planText(plan, a))}" data-copied="Plan copied as text">${ic('copy', 18)}<span>Copy the plan as text</span></button>
     </div>
-    <p class="pl-fine">Illustrative. This site plans on its own copy of the AFH-DD rule; the product’s libraries are not yet written. The same answers always produce the same plan — change one, then change it back, and you are back at v1.</p>
+    <p class="pl-fine">The same answers always produce the same plan. Change one, then change it back, and you are at v1 again.</p>
   </form>
   <div class="pl-out" id="plan-out" aria-live="polite">${planOut(plan)}</div>
   <script type="application/json" id="bk-plan-data">${JSON.stringify(PLAN_DATA).replace(/</g, '\\u003c')}</script>
@@ -382,7 +408,7 @@ export function header(cfg, p, opts = {}) {
     <div class="wrap toc-in">
       <div class="toc-head"><span class="toc-h">Contents</span>
         <div class="toc-tools">
-          <button class="rb rb-i lamp" type="button" data-mode-toggle aria-pressed="false" aria-label="Switch to the lamp" data-theme-light="#FFFFFF" data-theme-dark="#F3EBDA">${lampIcon(20)}</button>
+          <button class="rb rb-i lamp" type="button" data-mode-toggle aria-pressed="false" aria-label="Turn the lamp on — warm paper for reading" data-theme-light="#FFFFFF" data-theme-dark="#F3EBDA">${lampIcon(20)}</button>
           <button class="rb rb-i" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}" aria-label="Share this page">${ic('share', 20)}</button>
           <button class="rb rb-i" type="button" data-close aria-label="Close the contents">${ic('close', 20)}</button>
         </div>
@@ -399,10 +425,10 @@ export function header(cfg, p, opts = {}) {
     <button class="rule-where" type="button" aria-expanded="false" aria-controls="contents" data-lock data-focus="a" aria-label="Contents — you are on ${esc(chapter.title)}"><span class="rule-where-t">${esc(chapter.title)}</span><svg class="rule-where-c" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
     <span class="run"><span class="run-l">Control</span><span class="run-n" id="run-ctl" data-run="${esc(ctl0)}">${esc(ctl0)}</span></span>
     <div class="rule-r">
-      <button class="rb rb-t" type="button" aria-expanded="false" aria-controls="contents" data-lock data-focus="a" aria-label="Open the contents">${ic('contents', 20)}<span>Contents</span></button>
-      <button class="rb" type="button" data-print aria-label="Print">${ic('print', 20)}<span>Print</span></button>
+      <button class="rb rb-t" type="button" aria-expanded="false" aria-controls="contents" data-lock data-focus="a" aria-label="Open the contents — every chapter and section">${ic('contents', 20)}<span>Contents</span></button>
+      <button class="rb" type="button" data-print aria-label="Print the contents page">${ic('print', 20)}<span>Print</span></button>
       <button class="rb rb-i" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}" aria-label="Share this page">${ic('share', 20)}</button>
-      <button class="rb rb-i lamp" type="button" data-mode-toggle aria-pressed="false" aria-label="Switch to the lamp" data-theme-light="#FFFFFF" data-theme-dark="#F3EBDA">${lampIcon(20)}</button>
+      <button class="rb rb-i lamp" type="button" data-mode-toggle aria-pressed="false" aria-label="Turn the lamp on — warm paper for reading" data-theme-light="#FFFFFF" data-theme-dark="#F3EBDA">${lampIcon(20)}</button>
       <a class="btn pri sm rule-cta" href="${primary}" data-cta="rule">${esc(cfg.cta.nav)}</a>
     </div>
   </div>
@@ -413,44 +439,52 @@ export function header(cfg, p, opts = {}) {
 </header>`;
 }
 
-/* ── the footer: a contents page, a colophon, the stamps ──────────────── */
+/* ── the footer: the chapters, a colophon, the address, the byline ────────
+   The previous/next cards are gone; the next chapter floats at the
+   bottom-left as a small pill (shared.js nextFloat) once the reader is well
+   into the page. The page's own section list is gone too: the tabs, the
+   contents sheet and the phone fold already index it three times. */
 export function footer(cfg, p, opts = {}) {
   const page = opts.page || 'home';
   const chapter = CHAPTERS.find((c) => (page === 'home' ? c.path === '/' : c.path === `/${page}`)) || CHAPTERS[0];
   const here = opts.tabs || (page === 'home' ? HOME : []);
-  const line = (href, no, t, ctl, sub = '', cur = false) => `<li><a href="${esc(href)}" ${cur ? 'aria-current="page"' : ''}><span class="toc-no">${esc(no)}</span><span class="toc-t">${esc(t)}${sub ? `<small>${esc(sub)}</small>` : ''}</span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(ctl)}</span></a></li>`;
-  const tabbed = here.filter((s) => s.tab);
-  const sections = here.length ? `<ol class="toc">${here.map((s) => line(`#${s.id}`, s.tab ? String(tabbed.indexOf(s) + 1) : '—', s.label, s.ctl)).join('')}</ol>` : '';
-  const chapters = `<ol class="toc toc-ch">${CHAPTERS.map((c, i) => line(c.path, i + 1, c.title, c.ctl, c.sub, c === chapter)).join('')}</ol>`;
+  const at = CHAPTERS.indexOf(chapter);
+  const after = CHAPTERS[at + 1];
+  const next = after && after.path !== '/privacy' ? { href: after.path, label: after.title, gist: after.sub } : (page === 'privacy' || page === '404' ? { href: '/', label: 'The front page' } : null);
+  const line = (c, i) => `<li><a href="${esc(c.path)}" ${c === chapter ? 'aria-current="page"' : ''}><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(c.title)}<small>${esc(c.sub)}</small></span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(c.ctl)}</span></a></li>`;
   return `<footer class="foot" id="foot">
-  <div class="wrap doc"><span class="ctl" aria-hidden="true">Contents</span>
+  <div class="wrap doc"><span class="ctl" aria-hidden="true">Chapters</span>
     <div class="doc-b">
-      ${pager(chapter.path)}
-      <h2 class="foot-h">Contents</h2>
-      <div class="foot-g">
-        <div class="foot-here"><span class="strip-l">${page === 'home' ? 'This page' : `This chapter · ${esc(chapter.title)}`}</span>${sections || '<p class="fine">One section.</p>'}</div>
-        <div class="foot-ch"><span class="strip-l">Chapters</span>${chapters}</div>
+      <div class="foot-top">
+        <div class="foot-lede"><h2 class="foot-h">The chapters.</h2><p class="foot-sub">Eight pages, one binder. You are on <b>${esc(chapter.title)}</b>.</p></div>
+        <ol class="toc toc-ch foot-toc">${CHAPTERS.map(line).join('')}</ol>
       </div>
-      <div class="colophon">
-        <span class="colo-mark">${mark(p.id, 80, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
-        <p class="colo-t"><span class="colo-ctl">Binderkit</span> · printed <span data-clock="date">today</span>.</p>
+      <div class="foot-mid">
+        <div class="colophon">
+          <span class="colo-mark">${mark(p.id, 64, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
+          <p class="colo-t"><span class="colo-ctl">Binderkit</span> · ${esc(p.descriptor.toLowerCase())} · printed <span data-clock="date">today</span></p>
+        </div>
+        <div class="foot-write">
+          <span class="strip-l">Write to a person</span>
+          <div class="stamps-row">
+            <a class="stamp is-mail" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a>
+            <button class="stamp" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(hello(cfg))} and open your mail app">${ic('copy', 18)}<span>Copy</span></button>
+            <button class="stamp" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}" aria-label="Share this page">${ic('share', 18)}<span>Share</span></button>
+          </div>
+          <p class="foot-note">One inbox. A person answers within a working day.</p>
+          ${social(p.id, { size: 16, cls: 'stamps', label: 'Binderkit elsewhere' })}
+        </div>
       </div>
-      <div class="stamps-row">
-        <a class="stamp" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a>
-        <button class="stamp" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}<span>Copy the address</span></button>
-        <button class="stamp" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}">${ic('share', 18)}<span>Share this page</span></button>
-        <button class="stamp" type="button" data-print>${ic('print', 18)}<span>Print</span></button>
-      </div>
-      ${social(p.id, { size: 16, cls: 'stamps', text: true, label: 'Binderkit elsewhere' })}
       <div class="foot-b">${byline()}<p class="foot-fine">${opts.fine ? `${esc(opts.fine)} ` : ''}${esc(cfg.legalLine)}</p></div>
     </div>
   </div>
 </footer>
 <div class="footbar" aria-label="Page controls">
-  <button class="fb-b" type="button" data-print>${ic('print', 18)}<span>Print</span></button>
+  <button class="fb-b" type="button" data-print aria-label="Print the contents page">${ic('print', 18)}<span>Print</span></button>
   <span class="fb-p" data-progress aria-live="off"><span data-page-n>p. 1</span><span class="fb-sep">/</span><span data-page-total>${here.length || 1}</span><span class="fb-w" data-page-name>${esc((here[0] || chapter).label || chapter.title)}</span></span>
   <a class="fb-b is-pri" href="/#join" data-cta="footbar">${ic('pen', 18)}<span>Join</span></a>
 </div>
+${nextFloat(next, { key: 'Next' })}
 ${dialogs(cfg, p, { tabs: here.filter((s) => s.tab !== ''), page })}`;
 }
 

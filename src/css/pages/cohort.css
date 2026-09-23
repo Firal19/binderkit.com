@@ -87,25 +87,19 @@ html[data-scrolled] .tr-in { height: 58px; }
 .brand { display: flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: var(--ink); }
 .brand-tile { display: grid; place-items: center; }
 .brand-n { font-family: var(--font-display); font-weight: 550; font-size: 22px; letter-spacing: -0.03em; font-variation-settings: 'opsz' 48; }
-.rail { position: relative; display: flex; justify-content: space-between; align-items: center; height: 48px; width: min(100%, 460px); justify-self: center; }
-.rail-line { position: absolute; left: 16px; right: 16px; top: 22px; height: 1px; background: var(--line); }
+.rail { position: relative; display: flex; justify-content: space-between; align-items: center; height: 40px; width: min(100%, 440px); justify-self: center; }
+.rail-line { position: absolute; left: 16px; right: 16px; top: 15px; height: 1px; background: var(--line); }
 .rail-fill { position: absolute; left: 0; top: 0; height: 100%; width: calc(var(--now, var(--p, 0)) * 100%); background: var(--teal); transition: width 160ms linear; }
 .rail-now { position: absolute; top: 50%; left: calc(var(--now, var(--p, 0)) * 100%); width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--bg); transition: left 160ms linear; }
-.rail-stop { position: relative; z-index: 1; flex: 1; min-width: 0; height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 0 2px 1px; text-decoration: none; color: var(--soft); border-radius: 8px; }
-.rail-hr { display: inline-flex; align-items: center; height: 14px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: var(--soft); transition: color 160ms; }
-.rail-hr:empty { visibility: hidden; }
+.rail-stop { position: relative; z-index: 1; flex: 1; min-width: 0; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 7px; padding: 0 2px; text-decoration: none; color: var(--soft); border-radius: 8px; }
 .rail-tick { width: 6px; height: 6px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--soft); flex: none; transition: transform 200ms, background 200ms, border-color 200ms; }
 .rail-l { font-size: 12.5px; font-weight: 600; letter-spacing: -0.015em; white-space: nowrap; color: var(--ink); line-height: 1.15; }
 @media (hover: hover) { .rail-stop:hover { color: var(--teal); } }
-@media (hover: hover) { .rail-stop:hover .rail-hr, .rail-stop:hover .rail-l { color: var(--teal); } }
+@media (hover: hover) { .rail-stop:hover .rail-l { color: var(--teal); } }
 @media (hover: hover) { .rail-stop:hover .rail-tick { border-color: var(--teal); } }
 .rail-stop[aria-current] { color: var(--teal); }
 .rail-stop[aria-current] .rail-tick { background: var(--teal); border-color: var(--teal); transform: scale(1.25); }
-.rail-stop[aria-current] .rail-hr, .rail-stop[aria-current] .rail-l { color: var(--teal); }
-.tr[data-page]:not([data-page="home"]) .rail-hr { display: none; }
-.tr[data-page]:not([data-page="home"]) .rail { height: 36px; }
-.tr[data-page]:not([data-page="home"]) .rail-line { top: 15px; }
-.tr[data-page]:not([data-page="home"]) .rail-stop { height: 36px; justify-content: flex-end; gap: 7px; padding-bottom: 0; }
+.rail-stop[aria-current] .rail-l { color: var(--teal); }
 .tr-r { display: flex; align-items: center; gap: 8px; }
 .tr-tools { display: flex; align-items: center; gap: 2px; }
 .tr-rule { width: 1px; height: 16px; background: var(--line); margin: 0 2px; flex: none; }
@@ -363,10 +357,6 @@ html[data-mode="dark"] .gate-b .gate-p.is-strong { color: #0E1F1E; }
 .gate-b .gate-cta { color: var(--mint); }
 html[data-mode="dark"] .gate-b .gate-cta { color: #0F5C5A; }
 @media (hover: hover) { .gate:hover .gate-cta { text-decoration: underline; } }
-.machines { margin-top: 44px; display: grid; }
-.machine { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; padding: 16px 0; border-top: 1px solid var(--line); }
-.machine:last-child { border-bottom: 1px solid var(--line); }
-.machine span { color: var(--soft); font-size: .9rem; line-height: 1.55; }
 
 /* ── the manifesto ────────────────────────────────────────────────────── */
 .ref-l { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
@@ -374,9 +364,6 @@ html[data-mode="dark"] .gate-b .gate-cta { color: #0F5C5A; }
 .ref-n { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--teal); padding-top: 4px; }
 .ref-l b { display: block; font-size: 1.03rem; }
 .ref-l span:not(.ref-n) { display: block; margin-top: 4px; font-size: .9rem; color: var(--soft); line-height: 1.5; }
-.notstored { margin-top: 36px; padding: 22px 26px; border: 1px dashed var(--line); border-radius: 18px; }
-.notstored p { color: var(--muted); font-size: .95rem; line-height: 1.6; }
-.boundary { margin-top: 30px; font-family: var(--font-display); font-size: clamp(20px, 2.2vw, 26px); line-height: 1.3; color: var(--ink); max-width: 40ch; }
 .ref-print { display: none; }
 
 /* ── the record ───────────────────────────────────────────────────────── */
@@ -427,7 +414,9 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .ev { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .ev-b { padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; display: grid; align-content: start; gap: 10px; }
 .ev-b p { font-size: .9rem; line-height: 1.55; color: var(--muted); }
-.ev-b .quote { color: var(--bg); background: var(--wash); border-left-color: var(--mint); }
+/* the band is dark in BOTH modes, so the quote names its ink rather than
+   reading the page ground, which is dark under night shift */
+.record .ev-b .quote { color: #F9F4EC; background: var(--wash); border-left-color: var(--mint); }
 .ev-cl { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .record .note { background: var(--card); }
 
@@ -541,11 +530,10 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 
 /* ── the footer: the end-of-shift sheet ───────────────────────────────── */
 .eos { position: relative; padding: clamp(56px, 7vw, 96px) 0 48px; border-top: 1px solid var(--line); background: var(--card); color: var(--muted); font-family: var(--font-body); }
-.eos-head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 20px 56px; align-items: end; margin-bottom: 40px; }
-.eos-when { display: block; margin-bottom: 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); font-weight: 500; }
+.eos-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 56px; align-items: end; margin-bottom: 36px; }
 .eos-h { font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 4vw, 52px); letter-spacing: -0.025em; line-height: 1.02; color: var(--ink); font-variation-settings: 'opsz' 144; }
 .eos-sub { font-size: 1rem; color: var(--muted); max-width: 44ch; line-height: 1.55; }
-.eos-g { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 32px; border-top: 1px solid var(--line); }
+.eos-g { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr) minmax(0, 1.25fr); gap: 8px 40px; border-top: 1px solid var(--line); }
 .eos-d { padding: 24px 0 8px; min-width: 0; }
 .eos-d summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 32px; cursor: default; pointer-events: none; }
 .eos-d summary::-webkit-details-marker { display: none; }
@@ -580,11 +568,10 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .eos-sign { margin-top: 44px; padding-top: 36px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 32px 40px; align-items: center; }
 .eos-so { font-family: var(--font-mono); font-size: 13.5px; letter-spacing: .06em; color: var(--ink); }
 .eos-so b { font-weight: 500; color: var(--teal); }
-.stampl { position: relative; width: 148px; height: 148px; display: grid; place-items: center; color: var(--teal); transform: rotate(-8deg); }
+.stampl { position: relative; width: 132px; height: 132px; display: grid; place-items: center; color: var(--teal); }
 .stampl-r { position: absolute; inset: 0; width: 100%; height: 100%; }
 .stampl-t { fill: currentColor; font-family: var(--font-mono); font-weight: 500; }
-.stampl-m { position: relative; margin-top: -12px; display: inline-flex; }
-.stampl-c { position: absolute; bottom: 32px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--teal); }
+.stampl-m { position: relative; display: inline-flex; }
 .eos-by { display: grid; gap: 10px; justify-items: end; text-align: right; }
 .eos .pho, .company-by .pho { min-height: 44px; }
 .eos-legal { font-size: 12px; color: var(--soft); line-height: 1.45; letter-spacing: 0.01em; }
@@ -636,22 +623,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .fg2 .note { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; }
 .fg2 .gate-n { font-size: 36px; }
 .fg2 .note p { margin-top: 0; }
-.fm-g { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-/* ONE column, because there is only one child. .ref-l's 34px track holds a
-   .ref-n number; .mv-l has no equivalent, so the 64px track was a leftover
-   and the lone <div> landed in it: four spans pinned to 64px on /features at
-   every desktop width, 12 words over 8 lines, hyphen-breaking "clock- / in/out".
-   Give the track back rather than inventing a marker to fill it. */
-.mv-l li { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: .95rem; }
-.mv-l li:last-child { border-bottom: 1px solid var(--line); }
-.mv-l span { display: block; font-size: .85rem; color: var(--soft); margin-top: 3px; line-height: 1.5; }
-.mv-l em { font-style: normal; color: var(--teal); font-weight: 600; }
-.fn-g { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.dot-l { display: grid; gap: 6px; margin-top: 10px; font-size: .9rem; color: var(--muted); }
-.dot-l li::before { content: "— "; color: var(--teal); }
-.notnow { margin-top: 24px; padding: 22px 26px; border: 1px dashed var(--line); border-radius: 18px; }
-.notnow .defs { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.notnow .defs dt { font-family: var(--font-body); font-size: .95rem; letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 600; }
 .fnever .ctas, .sgates .ctas, .pjoin .ctas { margin-top: 32px; }
 .trial { margin-top: 26px; display: flex; gap: 16px; padding: 20px 24px; border-radius: 18px; background: var(--wash); }
 .trial-i { color: var(--teal); flex: none; padding-top: 2px; }
@@ -666,23 +637,9 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .shell-w { overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; border-radius: 18px; padding-bottom: 8px; }
 .shell { width: max-content; }
 .shell .browser { scroll-snap-align: start; }
-.rooms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-.room { display: grid; gap: 8px; align-content: start; padding: 24px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: transform 200ms, box-shadow 200ms; }
-@media (hover: hover) { .room:hover { transform: translateY(-3px); box-shadow: var(--sh-2); } }
-.room.is-here { border-color: var(--teal); background: var(--wash); }
-.room-mk { display: inline-flex; margin-bottom: 6px; }
-.room-n { font-family: var(--font-display); font-size: 24px; letter-spacing: -0.015em; font-variation-settings: 'opsz' 48; }
-.room-here { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); vertical-align: middle; }
-.room-d { color: var(--muted); font-size: .9rem; line-height: 1.45; }
-.room-o { display: inline-flex; gap: 6px; align-items: center; color: var(--teal); font-size: 13px; font-weight: 600; }
-.room-u { font-family: var(--font-mono); font-size: 12px; color: var(--soft); letter-spacing: .04em; }
 .proof { display: grid; gap: 12px; }
 .proof li { display: flex; gap: 10px; font-size: 1rem; color: var(--muted); max-width: 70ch; line-height: 1.55; }
 .proof .ic-cohort { color: var(--teal); margin-top: 4px; }
-.lad { grid-template-columns: minmax(0, 1fr) 280px; }
-.lad dt { font-family: var(--font-body); font-size: .95rem; letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 500; }
-.lad dd { font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; color: var(--teal); }
-.aladder .cap { margin-top: 14px; }
 .company { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: center; }
 .company-l { margin-top: 14px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em; color: var(--soft); }
 .company .ctas { margin-top: 24px; }
@@ -722,47 +679,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
    descendant that reaches a mockup is written `X *:is(…)`, because
    build.mjs squeeze() eats the space before a colon. */
 
-/* ── the page index: the shift, as a strip of stamps ─────────────────── */
-.pidx { display: flex; align-items: center; gap: 14px; width: var(--wrap-w); margin: 0 auto; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.pidx-k { flex: none; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); font-weight: 500; }
-.pidx-r { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0; }
-.pidx-a { display: inline-flex; align-items: baseline; gap: 7px; min-height: var(--tap); padding: 0 11px; border-radius: 999px; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; transition: color 160ms, background 160ms; }
-.pidx-h { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: var(--soft); }
-@media (hover: hover) { .pidx-a:hover { color: var(--teal); background: var(--wash); } }
-.pidx-a[aria-current] { background: var(--wash); color: var(--teal); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--teal) 34%, transparent); }
-.pidx-a[aria-current] .pidx-h { color: var(--accent-ink); }
-.pidx-all { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-@media (hover: hover) { .pidx-all:hover { border-color: var(--teal); } }
-
-/* ── sample data, said out loud beside every instrument ──────────────── */
-/* No nowrap: at 320 the hero's own badge is 347px of 13px mono and it was
-   the one thing on the page that ran past the glass. It wraps; the dot
-   stays on the first line. */
-.demo-b { display: inline-flex; align-items: flex-start; gap: 6px; max-width: 100%; font-family: var(--font-mono); font-size: 11px; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
-.demo-b::before { content: ""; width: 6px; height: 6px; margin-top: 6px; border-radius: 50%; background: var(--accent); flex: none; }
-
-/* ── a refusal is an address ─────────────────────────────────────────── */
-/* 26px with a mouse, 44 with a thumb. Eleven of these on two routes: at a
-   flat 44 they added 242px of desktop page for a control a mouse can hit
-   at 26. responsive.css's coarse-pointer net only reaches nav/header/
-   footer/sheet lists, so this one asks for the floor by name. */
-.ref-a { display: inline-flex; align-items: center; min-height: 26px; margin-top: 4px; padding: 0 9px 0 0; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--soft); border-radius: 8px; transition: color 160ms; }
-@media (pointer: coarse) { .ref-a { min-height: var(--tap); } }
-.ref-a:focus-visible { color: var(--teal); }
-@media (hover: hover) { .ref-a:hover { color: var(--teal); } }
-.ref-l li:target { background: var(--wash); border-radius: 10px; }
-.ref-l li:target .ref-a { color: var(--teal); }
-
-/* ── the boundary, as a map rather than a gap ────────────────────────── */
-.bmap { margin-top: 30px; }
-.bmap-l { margin-top: 14px; border-top: 1px solid var(--line); }
-.bmap-r { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.bmap-w { font-size: .95rem; color: var(--muted); }
-.bmap-w::before { content: "It does not "; color: var(--soft); }
-.bmap-to { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: border-color 160ms; }
-@media (hover: hover) { .bmap-to:hover { border-color: var(--teal); } }
-.bmap-to.is-none { color: var(--soft); border-style: dashed; background: none; }
-
 /* ── a correction, drawn: the addendum sits under the original ───────── */
 .adden { margin-top: 0; padding: 20px 22px; border: 1px dashed var(--line); border-radius: 18px; }
 .adden-r { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 18px; padding: 12px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
@@ -773,62 +689,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .adden-j { display: grid; place-items: center; height: 26px; color: var(--teal); }
 .adden-f { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; font-size: .9rem; color: var(--soft); line-height: 1.5; }
 .adden-f .ic-cohort { flex: none; margin-top: 2px; color: var(--accent-ink); }
-
-/* ── the four words, and the three inks ──────────────────────────────── */
-.legend { margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
-.stleg, .inks { padding: 20px 22px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
-.stleg-l, .inks-l { display: grid; gap: 8px; }
-.stleg-i, .inks-i { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 4px 16px; align-items: baseline; }
-.stleg-i dd, .inks-i dd { font-size: .9rem; color: var(--muted); line-height: 1.5; }
-.stleg .st-a { font-size: 13px; min-height: 26px; }
-.inks-i dt { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; }
-.inks-i dt i { width: 12px; height: 12px; border-radius: 50%; flex: none; }
-.inks-i[data-ink="teal"] dt i { background: var(--teal); }
-.inks-i[data-ink="coral"] dt i { background: var(--accent); }
-.inks-i[data-ink="ink"] dt i { background: var(--ink); }
-
-/* ── the ledger: what is live and what is not ────────────────────────── */
-.standing, .grammar { border-top: 1px solid var(--line); }
-.ledg { border-top: 1px solid var(--line); }
-.ledg-r { display: grid; grid-template-columns: 116px 190px minmax(0, 1fr); gap: 6px 22px; align-items: baseline; padding: 15px 0; border-bottom: 1px solid var(--line); }
-.ledg-s { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; }
-.ledg-s i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-.ledg-r[data-live="yes"] .ledg-s { color: var(--teal); } .ledg-r[data-live="yes"] .ledg-s i { background: var(--teal); }
-.ledg-r[data-live="part"] .ledg-s { color: var(--accent-ink); } .ledg-r[data-live="part"] .ledg-s i { background: var(--accent); }
-.ledg-r[data-live="no"] .ledg-s { color: var(--soft); } .ledg-r[data-live="no"] .ledg-s i { background: var(--soft); opacity: .55; }
-.ledg-w { font-size: 1.02rem; font-weight: 600; }
-.ledg-y { font-size: .92rem; color: var(--muted); line-height: 1.5; }
-
-/* ── the wedge, and the one thing it misses ──────────────────────────── */
-.wedge { margin-top: 30px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.wedge-l { counter-reset: wg; display: grid; gap: 10px; margin-top: 4px; }
-.wedge-l li { counter-increment: wg; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 12px; }
-.wedge-l li::before { content: counter(wg, decimal-leading-zero); grid-row: 1 / 3; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--teal); padding-top: 4px; }
-.wedge-l b { font-size: 1.02rem; }
-.wedge-l span { font-size: .92rem; color: var(--muted); line-height: 1.5; }
-.limit { border-style: dashed; }
-.limit h3 { color: var(--accent-ink); }
-
-/* ── the other rooms, and the ladder out of them ─────────────────────── */
-.family { border-top: 1px solid var(--line); }
-.grad { margin-top: 30px; padding: 22px 24px; border-radius: 20px; background: var(--wash); }
-.grad-l { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 14px; }
-.grad-s { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; position: relative; }
-.grad-s + .grad-s::before { content: "→"; position: absolute; left: -17px; top: 4px; color: var(--teal); opacity: .7; }
-.grad-n { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); font-family: var(--font-mono); font-size: 12px; color: var(--teal); }
-.grad-s b { display: block; font-size: .98rem; }
-.grad-s span { display: block; margin-top: 3px; font-size: .88rem; color: var(--muted); line-height: 1.45; }
-.grad .cap { margin-top: 16px; }
-
-/* ── previous and next, at the bottom of the sheet ───────────────────── */
-.eos-pn { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.eos-pn-a { display: grid; gap: 3px; align-content: start; min-height: var(--tap); padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg); text-decoration: none; color: var(--ink); transition: border-color 200ms, transform 200ms; }
-@media (hover: hover) { .eos-pn-a:hover { border-color: var(--teal); transform: translateY(-2px); } }
-.eos-pn-a[data-pn="next"] { text-align: right; }
-.eos-pn-a.is-end { border-style: dashed; opacity: .4; }
-.eos-pn-k { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
-.eos-pn-a b { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.018em; }
-.eos-pn-g { font-size: .88rem; color: var(--soft); line-height: 1.4; }
 
 /* ── the shift sheet learns the five screens ─────────────────────────── */
 .ssheet-sc { display: grid; gap: 8px; }
@@ -896,7 +756,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .tl-g { grid-template-columns: minmax(0, 1fr) 320px; }
   .ev { grid-template-columns: 1fr 1fr; }
   .rooms { grid-template-columns: 1fr 1fr; }
-  .eos-g { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 900px) {
   /* --scroll-pad and --hdr are derived at <=900 by responsive.css; the
@@ -927,16 +786,18 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .tl::before { left: 88px; }
   .tl-i { grid-template-columns: 74px 28px minmax(0, 1fr); }
   .tl-dot { margin-left: 8px; }
-  .ref-l, .ev-cl, .subs, .q-g, .join-g, .house-g, .fm-g, .fn-g, .fg2, .c-g { grid-template-columns: minmax(0, 1fr); }
+  .ref-l, .ev-cl, .subs, .q-g, .join-g, .house-g, .fg2, .c-g, .house-k { grid-template-columns: minmax(0, 1fr); }
   .role-g, .tiers, .pv-g { grid-template-columns: minmax(0, 1fr); }
+  .shift-hint { display: none; }
   /* .defs was collapsing only under .notnow; the same list inside a .note
      card on / and /pricing kept its 140px label column, so "Full access
      while we retry" came down a ten-line ribbon. Measured at 390 and 320. */
-  .machine, .lad, .defs, .notnow .defs { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .lad dd, .defs dd { padding-top: 0; border-top: 0; }
+  .defs { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .defs dd { padding-top: 0; border-top: 0; }
   .q-g .head { margin-bottom: 8px; }
   .company-by { justify-self: start; }
-  .gates, .rooms, .ev, .fgrid, .company, .eos-head, .eos-g { grid-template-columns: 1fr 1fr; }
+  .gates, .ev, .ev.is-4, .ev-cl.is-3, .fgrid, .company, .eos-g { grid-template-columns: 1fr 1fr; }
+  .eos-head { grid-template-columns: minmax(0, 1fr); }
   .eos-g { gap: 0 20px; }
   .eos-d { border-top: 1px solid var(--line); padding: 0; }
   .eos-d summary { pointer-events: auto; cursor: pointer; min-height: 54px; }
@@ -1019,17 +880,8 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      Every new instrument collapses to one column here, and every new
      name joins one of the two floor lists above rather than restating a
      px value of its own. */
-  .legend, .wedge, .eos-pn, .bmap-r, .dl-i { grid-template-columns: minmax(0, 1fr); }
-  .bmap-r { gap: 6px; }
-  .bmap-to { justify-self: start; }
-  .eos-pn-a[data-pn="next"] { text-align: left; }
-  /* one column here, so the dashed end-stop is no longer holding a column
-     open — it is just an empty box under the thumb. */
-  .eos-pn-a.is-end { display: none; }
-  .ledg-r { grid-template-columns: minmax(0, 1fr); gap: 4px; }
-  .grad-l { grid-template-columns: 1fr 1fr; }
-  .grad-s + .grad-s::before { display: none; }
-  .stleg-i, .inks-i { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .dl-i, .corr { grid-template-columns: minmax(0, 1fr); }
+  .stleg-i { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .adden-r { grid-template-columns: minmax(0, 1fr); gap: 3px; }
   .adden-r p, .adden-r .stamp-a, .adden-k { grid-column: 1; grid-row: auto; }
   /* ── the index, on a phone, is the time rail the header gives up ────
@@ -1038,7 +890,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      it reads as the rail the header hides below 900, and the stop you are
      reading still marks itself as you scroll. It bleeds to the glass by
      reversing the gutter, never by 100vw. */
-  .pidx { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 10px; }
+  .pidx { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; }
   .pidx-k { grid-column: 1; grid-row: 1; }
   .pidx-all { grid-column: 2; grid-row: 1; }
   .pidx-r { grid-column: 1 / -1; grid-row: 2; flex-wrap: nowrap; gap: 6px;
@@ -1051,16 +903,14 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .dl-u { grid-column: 1; }
 
   /* the label voice — 13px and the tracking down with it */
-  .pidx-k, .pidx-h, .demo-b, .adden-k, .ledg-s, .eos-pn-k,
-  .grad-n, .pass-b, .ssheet-scr b, .pal-no
+  .pidx-k, .adden-k, .pass-b, .ssheet-scr b, .pal-no
   { font-size: var(--fs-label); letter-spacing: var(--track-label); }
 
   /* the prose floor — 15px, because every one of these is reading matter
      and half of them are a leaf inside <li> or <dd>, which the gate reads
      as prose whatever the string length */
-  .ledg-y, .bmap-w, .wedge-l span, .stleg-i dd, .inks-i dd, .adden-r p,
-  .adden-f, .eos-pn-g, .grad-s span, .pass-s > span, .dl-u, .ref-a, .ftn-s,
-  .pidx-a, .pidx-all
+  .stleg-i dd, .adden-r p, .adden-f, .pass-s > span, .dl-u, .ftn-s,
+  .pidx-a, .pidx-all, .stops-line, .signup-line
   { font-size: var(--fs-read); }
 }
 @media (max-width: 640px) {
@@ -1068,7 +918,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      so the 12px label floor does not apply to these — they need the 15px one. */
   .frow-id, .frow .tg { font-size: 15px; }
 
-  .ev, .strip-c, .rooms, .gates, .fgrid, .company, .eos-head, .eos-g { grid-template-columns: minmax(0, 1fr); }
+  .ev, .ev.is-4, .ev-cl.is-3, .strip-c, .gates, .fgrid, .company, .eos-g { grid-template-columns: minmax(0, 1fr); }
 
   /* ── THE RHYTHM ────────────────────────────────────────────────────────
      The air BETWEEN two cards has to beat the air INSIDE one, or the eye
@@ -1084,10 +934,10 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      stacks, so the row gap is declared on its own at --sp-6 (28px at 390)
      and the card padding comes down to meet it. Every run now separates at
      about 1.6:1 and the page does not get one pixel longer for it. */
-  .ev, .ev-cl, .tiers, .pv-g, .rooms, .gates, .fg2, .fn-g, .q-g, .ref-l,
-  .subs, .join-g, .house-g, .c-g, .role-g, .company, .fgrid, .machines
+  .ev, .ev-cl, .tiers, .pv-g, .gates, .fg2, .q-g, .ref-l,
+  .subs, .join-g, .house-g, .c-g, .role-g, .company, .fgrid, .corr
   { row-gap: var(--sp-6); }
-  .ev-b, .note, .pv-c, .room { padding: 18px 20px; }
+  .ev-b, .note, .pv-c { padding: 18px 20px; }
   .tier { padding: 20px 22px; }
 
   /* the run needs a first among equals. "Append-only" is the standing rule
@@ -1136,7 +986,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .rec { padding: 12px 14px; }
   .rec-main { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .rec .stamp-a { justify-self: start; }
-  .machines { margin-top: 32px; }
   .keys-l { grid-template-columns: minmax(0, 1fr); gap: 4px 0; }
   .keys-l dd { margin-bottom: 10px; }
   .phead-in { align-items: flex-start; }
@@ -1248,32 +1097,23 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   /* ── the two stops ────────────────────────────────────────────────── */
   .gate-f, .gate-b { padding: 22px 22px 19px 24px; gap: 8px; }
   .gate-cta { padding-top: 10px; }
-  .pull { margin-top: 32px; }
-  .machines { margin-top: 26px; }
-  .machine { padding: 13px 0; }
 
   /* ── the manifesto and the boundary map ───────────────────────────── */
   .ref-l li { padding: 14px 0; }
-  .ref-a { margin-top: 2px; }
-  .notstored { margin-top: 29px; padding: 17px 20px; }
-  .bmap { margin-top: 24px; }
-  .bmap-l { margin-top: 11px; }
-  .bmap-r { padding: 8px 0; }
-  .boundary { margin-top: 0; }
 
   /* ── the record ───────────────────────────────────────────────────── */
   .cmp-w { margin-bottom: 32px; }
   .cmp-cap { margin-top: 10px; }
-  .ev-b, .note, .room { padding: 15px 17px; }
+  .ev-b, .note { padding: 15px 17px; }
   .note p { margin-top: 8px; }
   .quote { padding: 10px 12px; }
   .ev-cl { margin-top: 11px; }
   .adden { padding: 14px 15px; }
   .adden-r { padding: 10px 12px; }
   .adden-f { margin-top: 10px; }
-  .legend { margin-top: 16px; gap: var(--sp-4); }
-  .stleg, .inks { padding: 16px 17px; }
-  .stleg-l, .inks-l { gap: 6px; }
+  .corr { gap: var(--sp-4); }
+  .stleg { padding: 16px 17px; }
+  .stleg-l { gap: 6px; }
 
   /* ── roles, the house, the ledger, the rooms ──────────────────────── */
   .role { padding: 15px 17px; gap: 6px; }
@@ -1283,12 +1123,6 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .house-k { margin-top: 26px; }
   .house-k li { padding: 11px 0; }
   .door-card { padding: 19px 17px 16px; }
-  .ledg-r { padding: 12px 0; }
-  .wedge { margin-top: 24px; gap: var(--sp-4); }
-  .wedge-l { gap: 8px; }
-  .grad { margin-top: 24px; padding: 17px 18px; }
-  .grad-l { grid-template-columns: minmax(0, 1fr); gap: 11px; margin-top: 11px; }
-  .grad .cap { margin-top: 12px; }
   .pass { margin-top: 19px; gap: 8px; }
   .pass-s { padding: 11px 13px; }
 
@@ -1317,11 +1151,9 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .fmod { padding: 11px 13px 13px; }
   .fgrid { gap: var(--sp-5); }
   .mv-l li { padding: 10px 0; }
-  .fn-g { margin-top: 26px; }
-  .notnow { margin-top: 19px; padding: 17px 20px; }
-  .dot-l { gap: 5px; margin-top: 8px; }
   .fnever .ctas, .sgates .ctas, .pjoin .ctas { margin-top: 26px; }
   .proof { gap: 10px; }
+  .stops-line, .signup-line { margin-top: 18px; }
   .company .ctas { margin-top: 19px; }
   .company-l { margin-top: 11px; }
   .c-side { gap: 11px; }
@@ -1337,10 +1169,8 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .eos-b { padding-bottom: 16px; }
   .eos-fine { margin-top: 6px; }
   .stamps { margin-top: 13px; }
-  .eos-pn { margin-top: 26px; gap: 10px; }
-  .eos-pn-a { padding: 13px 15px; }
-  .pidx { padding: 10px 0; gap: 6px 10px; }
-  .pidx-a { padding: 0 9px; }
+  .pidx { padding: 8px 0; gap: 4px 10px; }
+  .pidx-a { padding: 0 10px; }
 
   /* ── the shift sheet, denser, because it IS the phone navigation ──── */
   .ssheet-in { gap: 17px; }
@@ -1366,9 +1196,9 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .sub, .lede, .fine, .cap, .closing, .hs-line, .note p, .ev-b p, .gate-p,
   .role-d, .machine span, .house-k span, .notstored p, .faq-a p, .proof li,
   .pv-c p, .frow-d, .mv-l span, .ref-l span:not(.ref-n), .defs dd, .trial p,
-  .ledg-y, .bmap-w, .wedge-l span, .stleg-i dd, .inks-i dd, .adden-r p,
-  .adden-f, .grad-s span, .pass-s > span, .tl-b p, .sim-hint, .tl-note,
-  .dl-u, .eos-pn-g, .eos-fine, .room-d, .air-l li, .faq-none, .pal-none
+  .stleg-i dd, .adden-r p, .adden-f, .pass-s > span, .tl-b p, .sim-hint,
+  .tl-note, .dl-u, .eos-fine, .air-l li, .faq-none, .pal-none, .stops-line,
+  .signup-line, .house-k span
   { line-height: 1.45; }
 
   /* ── the two prose floors, for the names this sweep touches ───────── */
@@ -1394,16 +1224,14 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .tr, .eos, .tabs, .totop, .pal, .keys, .ssheet, .h-link, .keysb, .printb, .now, .float, .fold-s { display: none !important; }
   .page { color: #000; }
   .stops, .join, .record { background: none; color: #000; }
-  html[data-print="manifesto"] #main > *:not(#refuses) { display: none !important; }
-  html[data-print="manifesto"] #refuses { padding: 0; }
+  html[data-print="manifesto"] #main > *:not(#never) { display: none !important; }
+  html[data-print="manifesto"] #never { padding: 0; }
+  html[data-print="manifesto"] #never .printb, html[data-print="manifesto"] #never .fold-s { display: none; }
   html[data-print="manifesto"] .ref-l { grid-template-columns: minmax(0, 1fr); gap: 0; }
   html[data-print="manifesto"] .ref-l li { padding: 7px 0; break-inside: avoid; }
   html[data-print="manifesto"] .ref-l b { font-size: 12.5pt; }
   html[data-print="manifesto"] .ref-l span:not(.ref-n) { font-size: 10pt; }
-  html[data-print="manifesto"] .notstored { display: none; }
-  html[data-print="manifesto"] .boundary { font-size: 13pt; margin-top: 14px; }
   html[data-print="manifesto"] .head { margin-bottom: 18px; }
-  html[data-print="manifesto"] .ref-print { display: block; margin-top: 18px; font-family: var(--font-mono); font-size: 8pt; letter-spacing: .12em; text-transform: uppercase; color: #444; }
   @page { margin: 16mm; }
 }
 
@@ -1507,7 +1335,167 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .tr-k { width: var(--tap); height: var(--tap); }
 }
 
-/* The allergy gate's own limitation, stated beside the gate it qualifies.
-   It lived in #standing until that section was deleted on 2026-09-21; it is
-   a fact about the product, not about the roadmap, so it belongs here. */
-.limit-note { grid-column: 1 / -1; margin: 6px 0 0; max-width: 62ch; color: var(--muted); font-size: .95rem; line-height: 1.55; }
+
+
+/* ══ ROUND 3 · 2026-09-23 ══════════════════════════════════════════════════
+   Firaol's review: the index without hours, the shift as the centrepiece,
+   two calm stops, a shorter record, a correction drawn cleanly, roles with
+   their own icons, a one-line house CTA, the reach-us block, the price
+   with its unit, and a footer that is a footer. Every rule here sits at
+   the end of the sheet on purpose, so it wins on order over what it
+   refines above. */
+
+/* ── the page index ───────────────────────────────────────────────────── */
+.pidx { display: flex; align-items: center; gap: 18px; width: var(--wrap-w); margin: 0 auto; padding: 8px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.pidx-k { flex: none; font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); font-weight: 500; }
+.pidx-r { display: flex; gap: 2px; flex: 1; min-width: 0; }
+.pidx-a { position: relative; display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 12px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; transition: color 160ms, background 160ms; }
+.pidx-a::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 7px; height: 2px; border-radius: 2px; background: var(--teal); transform: scaleX(0); transform-origin: left; transition: transform 220ms cubic-bezier(.22, 1, .36, 1); }
+@media (hover: hover) { .pidx-a:hover { color: var(--teal); } }
+.pidx-a[aria-current] { color: var(--teal); }
+.pidx-a[aria-current]::after { transform: scaleX(1); }
+.pidx-all { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: border-color 160ms; }
+@media (hover: hover) { .pidx-all:hover { border-color: var(--teal); } }
+
+/* ── the shift ────────────────────────────────────────────────────────── */
+.shift-head { align-items: flex-end; }
+.shift-hint { display: inline-flex; align-items: center; gap: 8px; flex: none; margin-bottom: 8px; font-size: 13px; color: var(--soft); }
+.shift-hint kbd { margin-left: 2px; }
+.tl-g { grid-template-columns: minmax(0, 1fr) 400px; }
+.tour-stick { top: 88px; }
+.tour .phone { --mock-z: .76; }
+@media (prefers-reduced-motion: no-preference) {
+  .tour-stick .dev { animation: hover 7s ease-in-out infinite; }
+  @keyframes hover { 50% { transform: translateY(-6px); } }
+}
+.tl::before { left: 105px; }
+.tl-i { grid-template-columns: 88px 36px minmax(0, 1fr); padding: 18px 0; }
+.tl-at { gap: 8px; min-height: 36px; padding: 0 10px 0 6px; margin-left: -6px; border-radius: 999px; font-size: 13px; color: var(--muted); }
+.tl-i[data-on] .tl-at { background: var(--wash); color: var(--teal); }
+.tl-h { display: inline; padding: 0; margin: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; transition: color 200ms; }
+@media (hover: hover) { .tl-h:hover { color: var(--teal); } }
+.tl-i[data-on] .tl-h { color: var(--teal); }
+.tl-b h3 { font-size: 1.24rem; padding-top: 6px; }
+.tl-b p { margin-top: 6px; font-size: .96rem; max-width: 50ch; }
+.tl-dot { margin-top: 15px; }
+.tl-i[data-on] .tl-dot { box-shadow: 0 0 0 5px var(--wash); }
+.sim, .air { margin-top: 12px; padding: 12px 14px; }
+/* the keys button, before the script docks it beside the write-to-us */
+.keysb { margin-top: 18px; }
+.fabs .keysb { margin: 0; }
+
+/* ── the two stops ────────────────────────────────────────────────────── */
+.stops-line { display: flex; gap: 10px; align-items: flex-start; margin-top: 22px; max-width: 72ch; color: var(--muted); font-size: .97rem; line-height: 1.55; }
+.stops-line .ic-cohort { color: var(--teal); margin-top: 3px; }
+.stops .more { margin-top: 14px; }
+
+/* ── the record, on /security with four ───────────────────────────────── */
+.ev.is-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ev-cl.is-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* ── a correction, drawn ──────────────────────────────────────────────── */
+.corr { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.adden { margin: 0; padding: 22px 24px; border: 1px solid var(--line); border-radius: 22px; background: var(--card); }
+.adden-r { background: var(--bg); }
+.adden-r.is-add { background: var(--wash); }
+.adden-f .ic-cohort { color: var(--teal); }
+.stleg { padding: 22px 24px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; }
+.stleg-l { display: grid; gap: 10px; }
+.stleg-i { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 4px 14px; align-items: baseline; }
+.stleg-i dd { font-size: .92rem; color: var(--muted); line-height: 1.5; }
+.stleg .st-a { font-size: 13px; min-height: 26px; }
+
+/* ── roles, with their own icons ──────────────────────────────────────── */
+.role { padding: 24px; gap: 7px; }
+.role-ic { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; background: var(--wash); color: var(--teal); margin-bottom: 4px; transition: background 250ms, color 250ms; }
+.role.is-on .role-ic { background: var(--teal); color: var(--bg); }
+.role-w { font-size: 1.05rem; }
+
+/* ── your house ───────────────────────────────────────────────────────── */
+.house-c { margin-top: 26px; }
+.house-k { margin-top: 28px; border-top: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.house-k li { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3px; padding: 14px 16px; border: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 14px; background: var(--card); font-size: .9rem; }
+.house-ki { display: inline-flex; color: var(--teal); margin-bottom: 4px; }
+.house-k b { font-size: .95rem; }
+
+/* ── the questions end in a person ────────────────────────────────────── */
+.questions .reach { margin-top: var(--sp-6); }
+/* the address in the reach block is a tap, not a word in a sentence: base.css
+   sets the row inline-flex, which blockifies the link — a 158x22 target. */
+.reach-a a { display: inline-flex; align-items: center; min-height: var(--tap); }
+.reach-t h3 { font-variation-settings: 'opsz' 144; }
+.aask .reach { margin-top: 0; }
+
+/* ── pricing ──────────────────────────────────────────────────────────── */
+.signup-line { display: flex; gap: 10px; align-items: flex-start; margin-top: 22px; max-width: 74ch; color: var(--muted); font-size: .97rem; line-height: 1.55; }
+.signup-line .ic-cohort { color: var(--teal); margin-top: 3px; }
+.signup-line b { color: var(--ink); }
+.signup-line a { color: var(--teal); }
+.tier-p small { font-family: var(--font-body); }
+
+/* ── the footer ───────────────────────────────────────────────────────── */
+.eos-sub { margin-bottom: 6px; }
+#eos-product .eos-l { grid-template-columns: 1fr 1fr; gap: 2px 18px; }
+.eos-sign { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+.stampl-t { fill: currentColor; font-family: var(--font-mono); font-weight: 500; opacity: .9; }
+
+/* ── the floating next, in this face ──────────────────────────────────── */
+.nxt { font-family: var(--font-body); }
+.nxt-k { font-family: var(--font-mono); }
+
+/* ── on a lap and a phone ─────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .tl-g { grid-template-columns: minmax(0, 1fr) 340px; }
+}
+@media (max-width: 900px) {
+  /* everything unscoped above this line wins on order over the lap and
+     phone tiers earlier in the sheet, so each tier value it displaced is
+     restated here — the source-order trap this kit has paid for before. */
+  .tl-g { grid-template-columns: minmax(0, 1fr); }
+  .ev.is-4, .ev-cl.is-3 { grid-template-columns: 1fr 1fr; }
+  .tl-at { min-height: var(--tap); margin-left: 0; font-size: var(--fs-read); }
+  .pidx { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; }
+  .pidx-k { grid-column: 1; grid-row: 1; }
+  .pidx-all { grid-column: 2; grid-row: 1; }
+  .pidx-r { grid-column: 1 / -1; grid-row: 2; flex-wrap: nowrap; gap: 4px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
+            margin-inline: calc(-1 * (var(--gutter) + var(--sal))) calc(-1 * (var(--gutter) + var(--sar)));
+            padding-inline: calc(var(--gutter) + var(--sal)) calc(var(--gutter) + var(--sar));
+            scroll-padding-inline: calc(var(--gutter) + var(--sal)); }
+  .pidx-r::-webkit-scrollbar { display: none; }
+  .pidx-a { flex: none; scroll-snap-align: start; font-size: var(--fs-read); }
+  .pidx-all { font-size: var(--fs-read); }
+  .pidx-a::after { bottom: 5px; }
+  .eos-head { grid-template-columns: minmax(0, 1fr); }
+  .tour { margin: 0 calc(-1 * (var(--gutter) + var(--sal))) 0 calc(-1 * (var(--gutter) + var(--sar))); }
+  .tour-stick .dev { animation: none; }
+  .crop { height: 300px; }
+  .crop::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 56px; background: linear-gradient(to bottom, transparent, var(--bg)); pointer-events: none; }
+  .tour .phone { --mock-z: min(.9, var(--mock-fit)); margin-top: -60px; }
+  .tour-cap { height: 36px; font-size: 12.5px; }
+  .tour-cap span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .tl::before { left: 98px; }
+  .tl-i { grid-template-columns: 82px 28px minmax(0, 1fr); }
+  .role-ic { width: 40px; height: 40px; }
+  .corr { grid-template-columns: minmax(0, 1fr); }
+  .stleg-i { grid-template-columns: minmax(0, 1fr); }
+  .tour .phone { --mock-z: min(.9, var(--mock-fit)); }
+  .house-k { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .eos-sign { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .pidx-r { flex-wrap: nowrap; }
+  .ev.is-4, .ev-cl.is-3 { grid-template-columns: minmax(0, 1fr); }
+  .adden { padding: 16px; }
+  .stleg { padding: 16px; }
+  .role { padding: 16px 18px; gap: 6px; }
+  .crop { height: 276px; }
+  .tour .phone { --mock-z: min(.86, var(--mock-fit)); margin-top: -58px; }
+  .tl-i { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 16px 0; }
+  .tl-at { margin-left: 0; padding: 0 12px 0 8px; }
+  .tl-dot { display: none; }
+  .tl-b h3 { padding-top: 2px; }
+  .house-k { grid-template-columns: minmax(0, 1fr); }
+  .house-k li { padding: 12px 14px; }
+  .stampl { width: 116px; height: 116px; }
+  .stampl-m svg { width: 48px; height: 48px; }
+}

@@ -13,11 +13,11 @@ function render(cfg, p) {
 ${header(cfg, p, { page: 'contact', tabs: SECS.filter((x) => x.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">
 ${title(TOP, { eyebrow: 'Chapter · Contact', h1: CONTACT.heading, lede: CONTACT.sub, ctas: `<a class="btn pri lg" href="#write">${ic('pen', 18)}<span>Write the message</span></a><a class="btn lg" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a>`, index: onThisPage(SECS) })}
-${section(WRITE, `<h2 id="h-write">The message.</h2><p class="sub">Tell us the facility code, not the resident’s name. There is nothing about a person here, and nothing you send should change that.</p>
+${section(WRITE, `<h2 id="h-write">The message.</h2><p class="sub">A facility code is enough to find your plan. Never a resident’s name.</p>
   <div class="join-f is-contact">${contact(cfg, p, { topics: TOPICS, placeholder: 'What would you like to know? A facility code is enough to find your plan; a resident’s name is never needed.' })}</div>
   <p class="fine">${esc(CONTACT.fine)}</p>`)}
-${section(ELSE, `<h2 id="h-elsewhere">Elsewhere.</h2><p class="sub">The same handle on every platform, drawn as stamps. Every one links to the profile under it.</p>
-  <div class="stamps-row"><a class="stamp" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a><button class="stamp" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied">${ic('copy', 18)}<span>Copy the address</span></button></div>
+${section(ELSE, `<h2 id="h-elsewhere">Elsewhere.</h2><p class="sub">The same handle on every platform.</p>
+  <div class="stamps-row"><a class="stamp" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a><button class="stamp" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app">${ic('copy', 18)}<span>Copy the address</span></button></div>
   ${social(p.id, { text: true, size: 16, cls: 'stamps is-text', label: 'Binderkit elsewhere' })}`)}
 </main>
 ${footer(cfg, p, { page: 'contact', tabs: SECS })}`;

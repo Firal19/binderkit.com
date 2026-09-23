@@ -10,7 +10,7 @@ export const CONFIGS = {
   cohort: {
     product: 'cohort',
     domain: 'cohorthome.app',
-    description: 'The app a care home’s staff run the residents’ day on: the MAR, care notes, incidents, tasks and the shift handoff. One record, stamped and never deleted.',
+    description: 'Run the shift from the house phone: the MAR, care notes, incidents, tasks and the handoff. One record, stamped and never deleted. For Oregon care homes.',
     preloadFonts: ['fraunces.woff2', 'instrument-sans.woff2'],
     legalLine: LEGAL,
     cta: { primary: 'Get early access', nav: 'Early access', secondary: 'See a shift' },
@@ -24,10 +24,11 @@ export const CONFIGS = {
     ],
     og: { bg: '#F9F4EC', bgDark: '#0E1F1E', ink: '#17201F', accent: '#E0704F', tile: '#0F5C5A', glyph: '#F9F4EC', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
     faq: [
-      ['Will Cohort stop my caregiver mid-shift?', 'Twice, ever: a medication that matches a recorded allergy, and an as-needed dose given too soon after the last one. Everything else surfaces and steps aside. There are no countdown timers anywhere in the product.'],
-      ['Does Cohort work when the house wifi is bad?', 'Yes. Incidents are filed offline-safe and idempotent, and every shift write goes through an outbox. The record catches up; the caregiver does not wait for it.'],
-      ['Can I export my data out of Cohort?', 'Yes. Exports are generated in the client with redaction on by default, and a cancelled account can still sign in to export before anything is purged.'],
-      ['Is Cohort an electronic health record?', 'No. It runs the shift — medication administration, care documentation, incidents, tasks and the handoff. It does not author care plans or nursing assessments, schedule staff, or bill the state.'],
+      ['Will Cohort stop my caregiver mid-shift?', 'Twice, ever: a medication that matches a recorded allergy, and an as-needed dose given too soon. Everything else informs and steps aside. There are no countdown timers.'],
+      ['Does Cohort work when the house wifi is bad?', 'Yes. Doses, notes, tasks and incident drafts queue on the phone and catch up when the signal returns. Nothing is lost and nothing is recorded twice.'],
+      ['Can I take my data out of Cohort?', 'Yes, at any time, without asking anyone. The export is a ZIP you can read without Cohort, and a cancelled account can still sign in to export.'],
+      ['How is Cohort different from Therap?', 'Therap and the other large systems are built for agencies with a compliance department. Cohort is built for a house: it runs on the phone your staff already carry, sets up in an afternoon, and is priced per house.'],
+      ['Is Cohort an electronic health record?', 'No. It runs the shift: medications, notes, incidents, tasks and the handoff. It does not author care plans or bill the state.'],
     ],
     privacy: {
       holds: [
@@ -42,7 +43,7 @@ export const CONFIGS = {
   careshop: {
     product: 'careshop',
     domain: 'careshop.app',
-    description: 'Stock by zone, dated perishables, a weekly menu checked against who lives there, a buy queue under your policy, and receipts that land prices back on the shelf.',
+    description: 'Kitchen software for care homes. Stock by zone, dated food, a menu checked against who lives there, and a buy list that writes itself. Free to start.',
     preloadFonts: ['fraunces.woff2', 'hanken-grotesk.woff2'],
     legalLine: LEGAL,
     cta: { primary: 'Start free', primaryHref: 'https://app.careshop.app/signup', nav: 'Start free', secondary: 'See Today' },
@@ -58,10 +59,10 @@ export const CONFIGS = {
     ],
     og: { bg: '#f6f4f0', bgDark: '#1b1613', ink: '#191713', accent: '#c25a38', tile: '#486b3d', glyph: '#ffffff', display: 'Fraunces', displayFile: 'fraunces.woff2', body: 'Hanken Grotesk', bodyFile: 'hanken-grotesk.woff2', weight: 600 },
     faq: [
-      ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 · A is tree-nut allergic, that the water reserve is short against a licensed bed count, or what the applesauce cost at Fred Meyer last month. The loop is the product; the list is one station on it.'],
-      ['Who checks the rules CareShop cites?', 'Today the product explains ten Oregon citations in one line each, and shows the rule text on every other catalogue row. Until a provider inspected on that track has reviewed the full set, the product says so.'],
-      ['What if the phone has no signal in the store?', 'Picks wait on the phone. When the signal comes back they land once, and a pick is never counted twice. Reading the till roll on the device is not in the product yet.'],
-      ['How much does CareShop cost?', 'Free to start with one house and up to three people. Nineteen dollars a house a month on Pro, thirty-seven on Scale for unlimited houses and seats.'],
+      ['Isn’t CareShop just a grocery list?', 'A grocery list does not know that Room 2 is allergic to tree nuts, that the water reserve is short against your bed count, or what applesauce cost last month. The loop is the product.'],
+      ['What if the phone has no signal in the store?', 'Picks wait on the phone. When the signal comes back they land once, and a pick is never counted twice.'],
+      ['Can I use CareShop across more than one house?', 'Yes. Pro covers up to five houses. Scale is unlimited houses and seats, with spend across all of them.'],
+      ['How much does CareShop cost?', 'Free to start with one house and up to three people. Nineteen dollars a house a month on Pro, thirty-seven on Scale.'],
     ],
     privacy: {
       holds: [
@@ -76,7 +77,7 @@ export const CONFIGS = {
   binderkit: {
     product: 'binderkit',
     domain: 'binderkit.com',
-    description: 'A licence track and five answers in; printable binder plans out — tabs, a contents page with the authority beside each item, a brief and an SOP.',
+    description: 'Binder setup for Oregon care homes. Your licence track and five answers in; printable binder plans out, with the rule beside each item. No resident data.',
     preloadFonts: ['newsreader.woff2', 'instrument-sans.woff2'],
     legalLine: LEGAL,
     cta: { primary: 'Get early access', nav: 'Early access', secondary: 'See the contents page' },
@@ -88,10 +89,10 @@ export const CONFIGS = {
     ],
     og: { bg: '#FFFFFF', bgDark: '#F3EBDA', ink: '#17201F', accent: '#6E8FE8', tile: '#17201F', glyph: '#FFFFFF', display: 'Newsreader', displayFile: 'newsreader.woff2', body: 'Instrument Sans', bodyFile: 'instrument-sans.woff2', weight: 500 },
     faq: [
-      ['Can’t I just copy another provider’s binder?', 'A copied binder carries someone else’s licence track, someone else’s house count, and someone else’s gaps. Binderkit builds the plan from your track and your five answers.'],
-      ['Will Binderkit make me compliant?', 'No. It tells you what the rule asks for, with the rule printed beside it, in order. It does not certify anything — and the words ready, compliant and audit-proof are forbidden in the product by design.'],
-      ['What if a citation is wrong?', 'It tells you before you print it. Every item carries an evidence tag: verified when someone inspected on that track has read the primary source, derived when it comes from the rule chapter.'],
-      ['Does Binderkit store anything about residents?', 'No. Identity fields print blank and are filled in by hand, and a plan is keyed by a facility code rather than a name. There is no free-text field about a resident anywhere in the product.'],
+      ['Can’t I just copy another provider’s binder?', 'A copied binder carries someone else’s licence track, house count and gaps. Binderkit builds the plan from your track and your answers.'],
+      ['Will Binderkit make me compliant?', 'No. It tells you what the rule asks for, with the rule printed beside it, in order. It certifies nothing.'],
+      ['What if a citation is wrong?', 'Every item carries a tag: verified, derived or open. Filter the plan to the unconfirmed items and take that list to an adviser.'],
+      ['Does Binderkit store anything about residents?', 'No. Identity fields print blank, plans are keyed by a facility code, and there is no free-text field about a person anywhere.'],
     ],
     privacy: {
       holds: [
@@ -106,7 +107,7 @@ export const CONFIGS = {
   aidepost: {
     product: 'aidepost',
     domain: 'aidepost.com',
-    description: 'Staff and credential dates, the roster, the open-shift board, clock-in and timesheets — plus job posts and a relief pool of caregivers, free to them.',
+    description: 'Open shifts and jobs in care homes. Staff and credential dates, the roster, the open-shift board, clock-in and timesheets. Free for caregivers.',
     preloadFonts: ['bricolage-grotesque.woff2', 'manrope.woff2'],
     legalLine: LEGAL,
     cta: { primary: 'Get early access', nav: 'Early access', secondary: 'Caregivers: find shifts' },
@@ -119,10 +120,10 @@ export const CONFIGS = {
     ],
     og: { bg: '#F7F3EC', bgDark: '#1C1620', ink: '#17201F', accent: '#D4699F', tile: '#17201F', glyph: '#F7F3EC', display: 'Bricolage Grotesque', displayFile: 'bricolage-grotesque.woff2', body: 'Manrope', bodyFile: 'manrope.woff2', weight: 700 },
     faq: [
-      ['Why not just post an open shift in the Facebook group?', 'A Facebook group does not know who holds a current CPR card, cannot record that the shift was offered to your own staff first, and leaves you no timesheet at the end of the week.'],
-      ['Will Aidepost stop me scheduling someone whose CPR has lapsed?', 'No. It tells you at thirty days, at seven days, and on the roster itself. Credentials are surfaced, never enforced — the decision stays yours.'],
+      ['Why not just post an open shift in the Facebook group?', 'A Facebook group does not know who holds a current CPR card, cannot show that you offered the shift to your own staff first, and leaves you no timesheet at the end of the week.'],
+      ['Will Aidepost stop me scheduling someone whose CPR has lapsed?', 'No. It tells you at thirty days, at seven, and on the roster itself. The decision stays yours.'],
       ['Will my staff be poached?', 'Shifts are never public. Only a job post is public, and only when you publish it and pay for it.'],
-      ['Do caregivers pay for Aidepost?', 'Never. Providers buy Aidepost. Caregivers create a profile, keep their credential dates, claim shifts and apply to posts free, without an organisation and without a card.'],
+      ['Do caregivers pay for Aidepost?', 'Never. Caregivers create a profile, keep their dates, claim shifts and apply to posts free, without an organisation and without a card.'],
     ],
     privacy: {
       holds: [

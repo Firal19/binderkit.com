@@ -111,13 +111,13 @@ export function shelfPage(cfg, p) {
     notes: NOTES,
     label: 'All eight CareShop screens, at the size they ship',
     jumpLabel: 'Jump to a screen',
-    hint: 'Drag it, flick it, or use the arrow keys. Every screen here is the product itself, drawn from the same data the application draws it from — with sample houses in place of a real one.',
+    hint: 'Drag it, flick it, or use the arrow keys. Every screen here is the product itself.',
   });
 
-  const inner = `${pageHead('Aisle 4 · the shelf', 'Eight screens. All of them, full size.', `This is the whole of CareShop, in the order a house meets it. Nothing is a mock-up of a plan: ${p.proof[0].charAt(0).toLowerCase()}${p.proof[0].slice(1)}`, `<div class="ctas"><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="shelf"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><a class="btn lg" href="#strip">${ic('down', 18)}Start at the queue</a></div>`)}
+  const inner = `${pageHead('Aisle 4 · the shelf', 'Eight screens. All of them, full size.', 'The whole of CareShop, in the order a house meets it.', `<div class="ctas"><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="shelf"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><a class="btn lg" href="#strip">${ic('down', 18)}Start at the queue</a></div>`)}
 ${directory([['strip', 'All eight screens', '8 labels'], ['till', 'The till, annotated', '6 pins'], ['labels', 'The four labels', '4 words'], ['keys', 'The keyboard map', '6 keys'], ['addresses', 'Every screen has an address', '8 links']], { title: 'On this shelf' })}
 ${sec('strip', 'shelf-s', `<div class="wrap">
-  <div class="head">${sticker('shelf', 'The shelf · ' + screens.length + ' screens')}${h2('strip', 'Pick one up.', 'Each one is captioned with what it is, and with the one thing it proves about how the product is built.')}</div>
+  <div class="head">${sticker('shelf', 'The shelf · ' + screens.length + ' screens')}${h2('strip', 'Pick one up.', 'Each one is captioned with what it is, and the one thing it proves.')}</div>
   ${strip}
 </div>`, { label: 'Every screen' })}
 ${sec('till', 'till-s', `<div class="wrap">
@@ -130,13 +130,13 @@ ${sec('labels', 'labels-s', `<div class="wrap">
   <ul class="labels-l">${stateRows.map(([key, word, , note]) => `<li class="labels-i"><span class="st" data-state="${esc(key)}"><i aria-hidden="true"></i>${esc(word)}</span><p>${esc(note)}</p></li>`).join('')}</ul>
 </div>`, { label: 'The four state words' })}
 ${sec('keys', 'keys-s', `<div class="wrap">
-  <div class="head">${sticker('keyboard', 'Without touching the mouse')}${h2('keys', 'Every key the store answers to.', 'The rail, the ticket switcher and the palette were built for a keyboard first. This is the map, because a demo nobody can drive is a screenshot.')}</div>
+  <div class="head">${sticker('keyboard', 'Without touching the mouse')}${h2('keys', 'Every key the store answers to.', 'The rail, the ticket switcher and the palette were built for a keyboard first.')}</div>
   <ul class="keys">${KEYS.map(([a, b, d]) => `<li><span class="keys-k"><kbd>${esc(a)}</kbd>${b ? `<kbd>${esc(b)}</kbd>` : ''}</span><span>${esc(d)}</span></li>`).join('')}</ul>
 </div>`)}
 ${sec('addresses', 'addr-s', `<div class="wrap">
-  <div class="head">${sticker('receipt', 'Send one to somebody')}${h2('addresses', 'Every screen has an address.', 'A link here opens the shelf with that one screen under the reader’s thumb — sideways, already in view. Copy it and paste it into a message; it will land in the same place for them.')}</div>
+  <div class="head">${sticker('receipt', 'Send one to somebody')}${h2('addresses', 'Every screen has an address.', 'Copy one and paste it into a message. It opens on that screen.')}</div>
   <ul class="addr-l">${SHELF_TABS.map(([key, name], i) => `<li class="addr-r"><a class="addr-a" href="#shelf-${esc(key)}"><span class="addr-n">${String(i + 1).padStart(2, '0')}</span><b>${esc(name)}</b></a><button type="button" class="rc-b addr-c" data-copy="https://${esc(cfg.domain)}/shelf#shelf-${esc(key)}" data-copied="Link to ${esc(name)} copied">${ic('copy', 16)}Copy the link</button></li>`).join('')}</ul>
-  <p class="demo-f">The same is true of every section of every page on this site: the aisle you are standing in is in the address bar, and the dock at the foot of a phone copies it with one press.</p>
+  
 </div>`, { label: 'Deep links to every screen' })}`;
   return page(cfg, p, 'shelf', inner);
 }

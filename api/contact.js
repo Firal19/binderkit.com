@@ -28,7 +28,7 @@ const PRODUCTS = { cohort: 'Cohort', careshop: 'CareShop', binderkit: 'Binderkit
      careshop  “A house wants to switch”  render/pages/careshop/write.js
    tools/check.mjs reads this literal and fails the build if a rendered
    <option> is missing from it, so it cannot drift again. */
-const TOPICS = new Set(['Question', 'Early access', 'Pricing', 'Security and privacy', 'Press', 'Something else', 'I’m a caregiver', 'Which track?', 'The pilot', 'A house wants to switch']);
+const TOPICS = new Set(['Question', 'Early access', 'Pricing', 'Security and privacy', 'Press', 'Something else', 'I’m a caregiver', 'Which track?', 'The pilot', 'A demo', 'A house wants to switch']);
 
 const json = (res, code, body) => {
   res.status(code);

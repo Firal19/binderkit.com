@@ -12,7 +12,7 @@ import { webShell, filmStrip, callouts, screensOf } from '../../instruments.js';
 import { header, footer, section, title, BOOK, atChapter, onThisPage, esc, ic } from './chrome.js';
 
 const SECS = BOOK['/screens'];
-const [TOP, PLATES, ANNOTATED, SAMPLE] = SECS;
+const [TOP, PLATES, ANNOTATED] = SECS;
 const BASE = 'https://binderkit.com/screens';
 
 /* One note per screen: the tab it is filed under, the caption, and the
@@ -22,27 +22,27 @@ const BASE = 'https://binderkit.com/screens';
 export const NOTES = {
   intake: {
     tab: 'Plan', title: 'Question zero, then five',
-    cap: 'Question zero is the licence track and it selects the library. Then five questions, each saying why it is asked and what it will change.',
+    cap: 'Question zero is your licence track. Then five questions, each saying why it is asked.',
     proves: 'The same five answers always produce the same plan, and the plan shows its reasoning.',
   },
   contents: {
     tab: 'Binders', title: 'The contents page',
-    cap: 'One page per binder: the tabs in order, numbered, the authority beside each item, the evidence tag where a citation is short of confirmed.',
+    cap: 'One page per binder: the tabs in order, the rule beside each item, and a tag where a citation is not yet confirmed.',
     proves: 'The identity line is blank and filled in by hand. No field on this page could hold a person’s name.',
   },
   versions: {
     tab: 'Versions', title: 'Versions and control numbers',
-    cap: 'An answer changed, the plan regenerated, the diff is shown. Notes are carried by item ID.',
+    cap: 'An answer changed, the plan regenerated, the diff is shown. Notes stay attached.',
     proves: 'A superseded version is kept, never deleted, and its control number still prints the identical page.',
   },
   print: {
     tab: 'Print', title: 'The four artefacts',
-    cap: 'The contents page, the tab dividers, the brief and the procedure. Every print writes a row: version, control number, artefact, who and when.',
+    cap: 'The contents page, the tab dividers, the brief and the procedure. Every print is recorded.',
     proves: 'A print that fails consumes no control number. Any past control number reproduces the identical artefact.',
   },
   editor: {
     tab: 'Editing', title: 'Edit, guarded',
-    cap: 'Add, remove or reorder a tab. Three guardrails answer in plain words: coverage, scope and access, cohesion.',
+    cap: 'Add, remove or reorder a tab. Three guardrails answer in plain words.',
     proves: 'A refusal names the guardrail, the rule and the alternative. A refusal that offers no alternative is a defect.',
   },
 };
@@ -84,7 +84,7 @@ export const plates = (id, keys, opts = {}) => scrollx(withAddresses(filmStrip('
   only: keys,
   notes: NOTES,
   label: opts.label || 'The five Binderkit screens, at the size they ship',
-  hint: opts.hint || 'Drag it, scroll it, or use the arrow keys. Every screen here is drawn from the product’s own specification.',
+  hint: opts.hint || 'Drag it, scroll it, or use the arrow keys.',
   jumpLabel: 'Jump to a plate',
 }), keys, id, opts.base));
 
@@ -105,7 +105,7 @@ export const plates = (id, keys, opts = {}) => scrollx(withAddresses(filmStrip('
       carries every sentence, which is the component's own fallback. */
 export const annotated = (inner, pins, opts = {}) => callouts(inner, pins, opts)
   .replace('<div class="cal-stage">', '<div class="cal-stage" data-scrollx>')
-  + `<p class="shell-hint">${ic('left', 16)}<span>${esc(opts.hint || 'Shown at the density a phone can read — drag it sideways')}</span>${ic('right', 16)}</p>`;
+  + `<p class="shell-hint">${ic('left', 16)}<span>${esc(opts.hint || 'Drag it sideways for the rest')}</span>${ic('right', 16)}</p>`;
 
 /* The four numbered callouts over the guarded editor. Each names a real
    element of the screen; site.js measures it and puts the pin on it, and a
@@ -113,17 +113,9 @@ export const annotated = (inner, pins, opts = {}) => callouts(inner, pins, opts)
    wrong thing — the sentence stays in the list underneath either way. */
 export const EDITOR_PINS = [
   { n: 1, sel: '.tbl-a tbody tr:first-child .tg', text: 'Required. Coverage refuses a removal and offers the move instead: “This item is required by 411-360-0170; it can move but not go.”' },
-  { n: 2, sel: '.tbl-a tbody tr:last-child td:nth-child(3)', text: 'A custom item carries no authority at all. Its column reads “Your own practice”, and it lives on this plan only — it never enters a library and never reaches anyone else.' },
-  { n: 3, sel: '.notice-a', text: 'The refusal states what was attempted, which guardrail applied, the rule behind it, and one thing to do instead — one tap away.' },
-  { n: 4, sel: '.spines', text: 'Three guardrails and no fourth: coverage, scope and access, cohesion. A guardrail that refuses the same item over and over is evidence about the library, not about the provider.' },
-];
-
-const REAL = [
-  ['The screens', 'Drawn from the product’s specification, not from a running build. Binderkit has no repository yet; its status is draft v1.1.'],
-  ['The facility', 'Meadow Care, facility WH-1 — the seeded demonstration world, not a customer.'],
-  ['The rows', 'Illustrative. The AFH-DD library is content work that has not been done; thirty-two items were observed on one provider’s shelf and none has been read against the rule.'],
-  ['The identity fields', 'Blank, here and in the product. That is the one thing on these plates that is exactly what ships.'],
-  ['The control numbers', 'RB-0417 and RB-0418 are made up for the demonstration. The form is real: facility code, binder, plan version, print sequence.'],
+  { n: 2, sel: '.tbl-a tbody tr:last-child td:nth-child(3)', text: 'An item of your own carries no rule. Its column reads “Your own practice”, and it lives on this plan only.' },
+  { n: 3, sel: '.notice-a', text: 'The refusal says what you tried, which guardrail applied, the rule behind it, and one thing to do instead.' },
+  { n: 4, sel: '.spines', text: 'Three guardrails and no fourth: coverage, scope, cohesion.' },
 ];
 
 function render(cfg, p) {
@@ -134,28 +126,25 @@ ${header(cfg, p, { page: 'screens', tabs: SECS.filter((s) => s.tab) })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light">
 ${title(TOP, {
     eyebrow: 'Chapter · The screens',
-    h1: 'Five plates, at the size they ship.',
-    lede: `Every screen Binderkit has, in one gathering: ${five.map((s) => NOTES[s.key].tab.toLowerCase()).join(', ')}. Each one is numbered, captioned, and says what it is evidence for. Nothing on this page is a picture of a picture — they are the same drawings the front page runs.`,
-    ctas: `<a class="btn pri lg" href="#plates">${ic('binder', 18)}<span>Open the plates</span></a><a class="btn lg" href="/#join" data-cta="screens">${esc(cfg.cta.primary)}</a>`,
+    h1: 'Five screens, at the size they ship.',
+    lede: `Every screen Binderkit has: ${five.map((s) => NOTES[s.key].tab.toLowerCase()).join(', ')}. Each one is numbered, captioned, and says what it shows.`,
+    ctas: `<a class="btn pri lg" href="#plates">${ic('binder', 18)}<span>Open the screens</span></a><a class="btn lg" href="/#join" data-cta="screens">${esc(cfg.cta.primary)}</a>`,
     index: onThisPage(SECS),
   })}
-${section(PLATES, `<h2 id="h-plates">Five plates.</h2><p class="sub">Snap through them with a finger, a trackpad or the arrow keys. Every plate carries its own address, so one screen can be sent on its own.</p>
+${section(PLATES, `<h2 id="h-plates">Five screens.</h2><p class="sub">Swipe, drag, or use the arrow keys. Every screen has its own address, so one can be sent on its own.</p>
   ${plates('plates', ORDER)}
-  <p class="cap">The order is the product’s own: question zero, the binder it produces, the editing it permits, the version that results, the print that ends it.</p>`)}
-${section(ANNOTATED, `<h2 id="h-annotated">The guarded editor, at desk size.</h2><p class="sub">The same refusals, on the shell a provider actually plans in.</p>
+  <p class="cap">In the product’s own order: the questions, the binder they produce, the editing, the version, the print.</p>`)}
+${section(ANNOTATED, `<h2 id="h-annotated">The guarded editor, at desk size.</h2><p class="sub">The same refusals, on the screen a provider plans at.</p>
   ${annotated(webShell('binderkit', { key: 'editor' }), EDITOR_PINS, { id: 'cal-plates', label: 'What the guarded editor does' })}
   <p class="refusal">“This item is required by section 0170. You can move it, but it can’t come out.”</p>
-  <p class="cap">That sentence is the product’s voice, set down in the design register. It never says “not allowed”.</p>`)}
-${section(SAMPLE, `<h2 id="h-sample">What is real on these plates.</h2><p class="sub">Five lines, because a screenshot with sample data in it should say so on the same page rather than in a footer.</p>
-  <dl class="ledger">${REAL.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-  <p class="boundary">It holds nothing about anyone, so there is nothing on these plates to redact.</p>`)}
+  <p class="cap">That is the product’s voice. It never says “not allowed”.</p>`)}
 </main>
-${footer(cfg, p, { page: 'screens', tabs: SECS, fine: 'Screens on this page use sample data.' })}`;
+${footer(cfg, p, { page: 'screens', tabs: SECS })}`;
 }
 
 export const screensPage = {
   path: 'screens',
   title: 'The screens',
-  description: 'All five Binderkit screens in one gathering — plan, binders, editing, versions and print — each at the size it ships, numbered and captioned with what it proves.',
+  description: 'All five Binderkit screens — plan, binders, editing, versions and print — each at the size it ships, numbered and captioned.',
   render,
 };

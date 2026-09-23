@@ -51,6 +51,15 @@ export const ICONS = {
   offline: '<path d="M2.5 8.5a14 14 0 0 1 12.7-3.6M5.5 12a9.5 9.5 0 0 1 6.5-2.5M8.5 15.5a5 5 0 0 1 4.5-1"/><circle cx="12" cy="19" r="1.2" fill="currentColor" stroke="none"/><path d="M3 21 19 4"/>',
   pen: '<path d="M4 20h4l10-10-4-4L4 16z"/><path d="m12 8 4 4"/>',
   export: '<path d="M11 15V4M7 8l4-4 4 4"/><path d="M4 14v3.5A2.5 2.5 0 0 0 6.5 20h9a2.5 2.5 0 0 0 2.5-2.5V14"/>',
+  /* round three: the nav, the wallet and the fit quiz */
+  tag: '<path d="M3.5 4.5h7l8 8-7 7-8-8z"/><circle cx="7.5" cy="8.5" r="1.4" fill="currentColor" stroke="none"/>',
+  clipboard: '<rect x="4" y="5" width="13" height="16" rx="2.5"/><path d="M7.5 5V3.5h6V5"/><path d="m7.5 13 2.2 2.2L14 10.7"/>',
+  sparkle: '<path d="M11 3.5 12.7 9l5.5 1.7-5.5 1.7L11 18l-1.7-5.6-5.5-1.7 5.5-1.7z"/>',
+  flag: '<path d="M5 21V4.5"/><path d="M5 5h10.5l-2 3.5 2 3.5H5"/>',
+  cpr: '<path d="M11 19.5S3.5 14.8 3.5 9.4A4 4 0 0 1 11 7.2a4 4 0 0 1 7.5 2.2c0 5.4-7.5 10.1-7.5 10.1z"/><path d="M6.5 12h2.5l1.2-2.5 1.6 5 1.2-2.5h2.5"/>',
+  firstaid: '<rect x="3" y="6" width="16" height="14" rx="3"/><path d="M8.5 6V4.5a1.5 1.5 0 0 1 1.5-1.5h2a1.5 1.5 0 0 1 1.5 1.5V6"/><path d="M11 10v6M8 13h6"/>',
+  meds: '<rect x="2.6" y="9.4" width="17" height="7.5" rx="3.75" transform="rotate(-45 11 13)"/><path d="m8.4 10.4 5.2 5.2"/>',
+  shield: '<path d="M11 3.5 4.5 6v5.5c0 4.5 2.8 7.6 6.5 9 3.7-1.4 6.5-4.5 6.5-9V6z"/><path d="m8.2 12.4 2 2 3.6-4"/>',
 };
 
 /**

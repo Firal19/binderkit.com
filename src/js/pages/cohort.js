@@ -24,28 +24,20 @@
   const oregonMin = () => { const [h, m] = oregon().split(':').map(Number); return h * 60 + m; };
   const isDay = (min) => min >= 6 * 60 + 55 && min < 19 * 60;
 
-  /* ── the hero clock, and what the demo shift has due this hour ───────── */
+  /* ── the hero clock: Oregon time, and which shift it is ─────────────── */
   const clock = () => {
     const els = $$('[data-oregon]');
     const shorts = $$('[data-oregon-short]');
-    const due = $('[data-due]');
+    const word = $('[data-shift-word]');
     if (!els.length && !shorts.length) return;
-    const steps = $$('.tl-i[data-at]').map((li) => ({ at: li.dataset.at, t: ($('h3', li) || {}).textContent || '', min: Number(li.dataset.at.slice(0, 2)) * 60 + Number(li.dataset.at.slice(3)) }));
     const tick = () => {
       const t = oregon();
       const min = oregonMin();
-      const h = Math.floor(min / 60);
       els.forEach((el) => { el.textContent = t; });
       shorts.forEach((el) => { el.textContent = t; });
       const day = isDay(min);
       root.dataset.shiftNow = day ? 'day' : 'night';
-      if (due && steps.length) {
-        const hour = steps.filter((s) => Math.floor(s.min / 60) === h);
-        const next = steps.find((s) => s.min > min) || steps[0];
-        due.textContent = hour.length
-          ? `${day ? 'Day shift' : 'Night shift'} · due this hour on the demo shift: ${hour.length} — ${hour.map((s) => s.t).join(', ')}.`
-          : `${day ? 'Day shift' : 'Night shift'} · due this hour on the demo shift: 0. Next, ${next.at} ${next.t}.`;
-      }
+      if (word) word.textContent = day ? 'Day shift.' : 'Night shift.';
     };
     tick();
     setInterval(tick, 15000);
@@ -214,6 +206,35 @@
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'k') { e.preventDefault(); btn.click(); }
     });
+  };
+
+  /* ── the hours are tappable: the step goes on and the phone follows ──
+     site.js tour() keys the phone to the step nearest the middle of the
+     viewport, so a tap lands the step there and the two agree. The phones
+     are switched here as well so the screen changes on the tap itself,
+     not a frame later. The listener is capture-phase and stops the event,
+     so site.js's own anchor handler (block: start) does not fight it. */
+  const settle = (li) => {
+    const steps = $$('.tl-i');
+    steps.forEach((s2) => s2.removeAttribute('data-on'));
+    li.setAttribute('data-on', '');
+    const key = li.dataset.tour;
+    $$('.tour-p[data-tour]').forEach((p2) => { p2.hidden = !(' ' + p2.dataset.tour + ' ').includes(' ' + key + ' '); });
+    const y = li.getBoundingClientRect().top + window.scrollY - (window.innerHeight * 0.45 - 80) + 8;
+    window.scrollTo({ top: Math.max(0, y), behavior: calm.matches ? 'auto' : 'smooth' });
+    history.replaceState(null, '', '#' + li.id);
+  };
+  const tapHours = () => {
+    if (!$('.tl')) return;
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-tl-go]');
+      if (!b) return;
+      const li = b.closest('.tl-i');
+      if (!li) return;
+      e.preventDefault();
+      e.stopPropagation();
+      settle(li);
+    }, true);
   };
 
   /* ── J and K walk the shift; ? opens the keys sheet; T goes home ─────── */
@@ -522,9 +543,9 @@
     const tiers = $$('.tier');
     const sel = $('#joinform select[name="houses"]');
     const LINES = {
-      '1': ['One house — Pro covers it, and every plan sees every screen.', 1],
-      '2–3': ['Two or three houses — still Pro: an AFH operator, up to 3 houses, one price per house.', 1],
-      '4–9': ['Four to nine houses — Scale: agency or multi-home, with roll-ups, agency roles and exports.', 2],
+      '1': ['One house — Pro, $39 a month. Every plan sees every screen.', 1],
+      '2–3': ['Two or three houses — Pro, $39 per house a month.', 1],
+      '4–9': ['Four to nine houses — Scale, $79 per house a month, with roll-ups and agency roles.', 2],
       '10+': ['Ten houses and up — Scale, and worth a conversation about the roll-ups you need.', 2],
     };
     const pick = (h) => {
@@ -684,7 +705,7 @@
   };
 
   const boot = () => {
-    clock(); signOut(); rail(); tabs(); textSize(); phoneMode(); palette(); keys(); caption();
+    clock(); signOut(); rail(); tabs(); textSize(); phoneMode(); palette(); keys(); tapHours(); caption();
     simulator(); airplane(); compose(); flips(); roles(); compare(); faqs(); houses();
     headingLinks(); totop(); footer(); printing(); stages(); pins(); sheetEdge();
   };

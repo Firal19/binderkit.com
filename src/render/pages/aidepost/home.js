@@ -1,6 +1,7 @@
 // aidepost.com — the front page. The light half, then the page turns over.
 
-import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, spec, find, S, STEPS, BOUNDARY, shell, boardTable, doors, rosterToy, credTimeline, timesheetToy, clockToy, distanceToy, walletCards, deck, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav, pager, familyBand, doesNotList, deepLink, screensOf } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, EVERY_PLAN, find, S, STEPS, NEVER, shell, boardTable, doors, rosterToy, credRail, credTimeline, timesheetToy, clockToy, distanceToy, fitQuiz, walletCards, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav, screensOf } from './bits.js';
+import { reach } from '../../shared.js';
 
 function hero(cfg, p) {
   return `<section class="hero" id="top" aria-labelledby="h1">
@@ -17,7 +18,7 @@ function hero(cfg, p) {
         </div>
         <p class="hero-fine">${esc(find('hero').fine)}</p>
       </div>
-      <div class="hero-dw" aria-hidden="true"><div class="dev">${iosShell('aidepost', { key: 'board' })}</div></div>
+      <div class="hero-dw" aria-hidden="true" data-scroll-p><div class="dev">${iosShell('aidepost', { key: 'board' })}</div></div>
       </div>
       ${boardTable({ domain: cfg.domain })}
       ${doors()}
@@ -26,13 +27,13 @@ function hero(cfg, p) {
 }
 
 const steps = () => sec('providers', 'steps', `<div class="wrap">
-  <div class="head">${eyebrow('For providers')}${h2('providers', 'Inward first. Outward second.', 'The order is the product. A shift goes to your own staff before it goes anywhere near the outside — and the record shows you tried.')}</div>
+  <div class="head">${eyebrow('For providers')}${h2('providers', 'Inward first. Outward second.', 'A shift goes to your own staff before it goes anywhere else. The record shows you tried.')}</div>
   <ol class="step-g">${STEPS.map(([t, d, k], i) => `<li class="step"><span class="step-n">${i + 1}</span><h3>${esc(t)}</h3><p>${esc(d)}</p><div class="crop">${iosShell('aidepost', { key: k })}</div></li>`).join('')}</ol>
 </div>`);
 
 function board() {
   const s = find('screen');
-  return fold('One row per shift — covered with a name, or open — and the desktop board at true size.', sec('board', 'boardsec', `<div class="wrap">
+  return fold('One row per shift: a name, or open. The desktop board at true size.', sec('board', 'boardsec', `<div class="wrap">
     <div class="head head-r"><div>${h2('board', s.heading, s.sub)}</div><button class="btn sm" type="button" data-print>${ic('print', 18, { pin: false })}Print this week</button></div>
     ${annotatedBoard()}
     ${rosterToy()}
@@ -41,70 +42,58 @@ function board() {
 
 function credentials() {
   const s = find('screen');
-  return fold('Thirty days out, seven, then expired — surfaced on the roster and never blocking.', sec('credentials', 'creds', `<div class="wrap cred-g">
-    <div class="cred-t">${eyebrow('Credentials')}${h2('credentials', 'Surfaced, never enforced.', 'Thirty days out, the holder and the manager are told. Seven days out, both again. Then it expires and is marked on the roster, naming the credential. Nothing is ever blocked, because the decision is yours.')}
-      <ol class="ladder"><li><b>30 days</b><span>a notice to the holder; the manager sees a count</span></li><li><b>7 days</b><span>both, again</span></li><li><b>Expired</b><span>marked on the roster and in the eligible list — assignable, marked, recorded</span></li><li><b>Renewed</b><span>a new row; the old one stays as history</span></li></ol>
-      <p class="side-note"><b>${esc(s.side.label)}</b> ${esc(s.side.text)}</p>
+  return fold('Thirty days out, seven, then expired. Shown on the roster, never blocking.', sec('credentials', 'creds', `<div class="wrap">
+    <div class="head">${eyebrow('Credentials')}${h2('credentials', 'Surfaced, never enforced.', 'You are told at thirty days, at seven, and on the day. Then it is marked on the roster. Nothing is blocked, because the decision is yours.')}</div>
+    ${credRail()}
+    <div class="cred-g">
+      <div class="cred-t"><p class="side-note"><b>${esc(s.side.label)}</b> ${esc(s.side.text)}</p></div>
+      ${credTimeline()}
     </div>
-    ${credTimeline()}
   </div>`));
 }
 
-const hours = () => fold('Clock in at the house, approve, export — hours are a record, never arithmetic on pay.', sec('hours', 'hours', `<div class="wrap">
+const hours = () => fold('Clock in at the house, approve, export. Hours are a record, never pay.', sec('hours', 'hours', `<div class="wrap">
   <div class="hrs-g">
-    <div class="hrs-v"><div class="dev">${iosShell('aidepost', { key: 'hours' })}</div></div>
-    <div class="hrs-t">${eyebrow('Hours')}${h2('hours', 'Clock in at the house. Export, never calculate.', 'A daily total, a weekly total, the overtime flag at forty hours — weekly, because Oregon has no daily flag for this work. A manager approves; the provider exports. A correction is an addendum with a reason; the original stays.')}
-      <ul class="facts"><li><b>Offline</b> a clock-in with no signal queues, marked pending, and catches up.</li><li><b>Forgotten clock-out</b> surfaces to her and the manager; either completes it with a time and a reason.</li><li><b>Read-only</b> if a payment fails, clocking still works — hours are a legal record.</li></ul>
+    <div class="hrs-t">${eyebrow('Hours')}${h2('hours', 'Clock in at the house. Export, never calculate.', 'A daily total, a weekly total, and a flag at forty hours. A manager approves; you export.')}
+      <ul class="facts"><li><b>Offline</b> a clock-in with no signal queues and lands once.</li><li><b>Forgotten clock-out</b> surfaces to her and the manager; either completes it, with a reason.</li><li><b>Read-only</b> if a payment fails, clocking still works. Hours are a legal record.</li></ul>
     </div>
+    <div class="hrs-v" data-scroll-p><div class="dev">${iosShell('aidepost', { key: 'hours' })}</div></div>
   </div>
   <div class="hrs-toys">${clockToy()}${timesheetToy()}</div>
 </div>`));
 
 function caregivers() {
   const s = find('caregiver');
-  /* THE PIVOT HAS TO SURVIVE THE FOLD, AND IN DARK MODE THE GROUND DOES NOT.
-     Before the fold each of these three sections carried its own eyebrow, its
-     own h2 and its own hero on a near-black ground, and the ground was
-     reinforcement. Folded, the ground is the only carrier left — and measured
-     at 390px it is rgb(35,27,42) on a rgb(28,22,32) page in dark mode, a shift
-     of 7 in 255. So a dark-mode reader scrolling the middle of the home page
-     meets ten identical rows and is never told that three of them are a
-     different product, free, for a different person. This says it in words,
-     once, where the eyebrows used to. Phone only: above 640 the three heroes
-     are back and they say it better. */
   return `<div class="dark-half" data-dark-half>
   <div class="care-pivot"><span class="eyebrow">For caregivers</span><b>Free, for ever. The next three sections are the caregiver app.</b></div>
-  <section class="sec care" id="caregivers" aria-labelledby="h-caregivers" data-reveal data-phone="fold" data-gist="Shifts near you, soonest first and then nearest, with the distance.">
+  <section class="sec care" id="caregivers" aria-labelledby="h-caregivers" data-reveal data-phone="fold" data-gist="Shifts near you, soonest first and then nearest. And whether one fits you.">
     <div class="wrap care-g">
       <div class="care-t">
         ${eyebrow('For caregivers')}
         <h2 id="h-caregivers">${esc(s.heading)}</h2>
         <p class="sub">${esc(s.sub)}</p>
-        <ul class="care-l">${s.lines.slice(0, 5).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
+        <ul class="care-l">${s.lines.slice(0, 3).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
         ${distanceToy('dist-home')}
       </div>
-      <div class="care-v"><div class="dev">${iosShell('aidepost', { key: 'caregiver', mode: 'dark' })}</div></div>
+      <div class="care-v" data-scroll-p><div class="dev">${iosShell('aidepost', { key: 'caregiver', mode: 'dark' })}</div></div>
     </div>
+    <div class="wrap">${fitQuiz()}</div>
   </section>
   <section class="sec care wallet-s" id="wallet" aria-labelledby="h-wallet" data-reveal data-phone="fold" data-gist="Your credential dates in your pocket, carried from one employer to the next.">
     <div class="wrap wallet-g">
-      <div class="wallet-t">${eyebrow('Your wallet')}<h2 id="h-wallet">Your dates, in your pocket.</h2><p class="sub">Keep your own credential dates in one place, and carry them from one employer to the next. A notice at thirty days and at seven — to you, by name; to a manager, only as a count.</p>
-        <ul class="care-l">${s.lines.slice(5).map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
+      <div class="wallet-t">${eyebrow('Your wallet')}<h2 id="h-wallet">Your dates, in your pocket.</h2><p class="sub">Your own credential dates, in one place, carried from one employer to the next. A notice at thirty days and at seven, to you by name.</p>
+        <ul class="care-l">${s.lines.slice(3, 5).map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
       ${walletCards()}
-      <p class="cap wallet-c">The same dates appear on the provider’s side — surfaced with the shift, never used to remove anyone from the list. <a href="/caregivers#wallet">The wallet, at depth ${ic('arrow', 14, { pin: false })}</a></p>
+      <p class="cap wallet-c">The same dates show on the provider’s side, beside the shift. Never used to remove anyone from a list. <a href="/caregivers#wallet">The wallet, at depth ${ic('arrow', 14, { pin: false })}</a></p>
     </div>
   </section>
-  <section class="sec care free-s" id="free" aria-labelledby="h-free" data-reveal data-phone="fold" data-gist="Free for ever — and the four things Aidepost will never do to a caregiver.">
+  <section class="sec care free-s" id="free" aria-labelledby="h-free" data-reveal data-phone="fold" data-gist="Free for ever, and the four things Aidepost never does to a caregiver.">
     <div class="wrap free-g">
       <div class="free-t">${eyebrow('Free, for ever')}<h2 id="h-free">You are not the product.</h2><p class="promise">${esc(s.promise)}</p>
         <div class="ctas">${s.ctas.map(([label, href], i) => `<a class="btn ${i === 0 ? 'pri' : ''} lg" href="${esc(href)}" data-cta="caregiver">${esc(label)}</a>`).join('')}</div>
         <p class="fine">${esc(s.fine)}</p></div>
-      <p class="cap free-c">What a relief worker sees when a shift goes outward is the work, the distance, and nothing about a resident. <a href="/screens#strip-hire">See that screen ${ic('arrow', 14, { pin: false })}</a></p>
       <ul class="free-l" aria-label="What Aidepost never does to a caregiver">
-        <li>${ic('x', 18, { pin: 'open' })}<span><b>No background check</b> — the provider runs ORCHARDS; Aidepost holds a status she types.</span></li>
-        <li>${ic('x', 18, { pin: 'open' })}<span><b>No rating</b> — attendance is showed, did not show, or late with a number of minutes. No stars, no comment, no free text.</span></li>
-        <li>${ic('x', 18, { pin: 'open' })}<span><b>No pay computed</b> — hours are exported, never calculated.</span></li>
-        <li>${ic('x', 18, { pin: 'open' })}<span><b>No charge</b> — the supply side is free, permanently.</span></li>
+        ${NEVER.map(([t, d]) => `<li>${ic('x', 18, { pin: 'open' })}<span><b>${esc(t)}</b> — ${esc(d)}</span></li>`).join('')}
       </ul>
     </div>
   </section>
@@ -113,57 +102,38 @@ function caregivers() {
 
 function rules() {
   const s = find('depth');
-  return fold('Every rule with the Oregon citation behind it — or the note that there is none.', sec('rules', 'rules', `<div class="wrap">
+  return fold('Every rule with the Oregon citation behind it, and how sure we are.', sec('rules', 'rules', `<div class="wrap">
     <div class="head">${h2('rules', s.heading, s.sub)}</div>
     <div class="rule-l" role="table" aria-label="${esc(s.cols.join(', '))}">
       <div class="rule-h" role="row">${s.cols.map((c) => `<span role="columnheader">${esc(c)}</span>`).join('')}</div>
-      ${s.rows.map(([t, w, where, sure]) => `<div class="rule-r" role="row"><b role="cell">${esc(t)}</b><span role="cell">${esc(w)}</span><em role="cell">${esc(where)}</em><i role="cell" class="${/^Verified/.test(sure) ? 'is-ok' : /^No citation/.test(sure) ? 'is-none' : ''}">${esc(sure)}</i></div>`).join('')}
+      ${s.rows.map(([t, w, where, sure]) => `<div class="rule-r" role="row"><b role="cell">${esc(t)}</b><span role="cell">${esc(w)}</span><em role="cell">${esc(where)}</em><i role="cell" class="${/^Verified/.test(sure) ? 'is-ok' : ''}">${esc(sure)}</i></div>`).join('')}
     </div>
     <p class="pull">${esc(s.pull)}</p>
-    <p class="fine rules-c">${esc(s.closing)}</p>
   </div>`));
 }
-
-const refuses = () => fold('Seven refusals, each one a position rather than a missing feature.', sec('refuses', 'refuse', `<div class="wrap">
-  <div class="head">${h2('refuses', 'What Aidepost will not do.', 'Each is a position, not a missing feature.')}</div>
-  ${deck()}
-  <p class="boundary">${esc(BOUNDARY)}</p>
-</div>`));
 
 function roles() {
   const s = find('roles');
   return fold('Five roles, and exactly what each one may do. Turn a card over.', sec('roles', 'roles', `<div class="wrap">
     <div class="head">${h2('roles', s.heading, 'Turn a card over to see what the role may do.')}</div>
     ${flipRoles()}
-    <p class="fine roles-c">${esc(s.closing)}</p>
   </div>`));
 }
 
-const questions = () => fold('The ones we are actually asked — Facebook, the per-post charge, the trial.', sec('questions', 'questions', `<div class="wrap q-g"><div class="head">${h2('questions', 'The questions we get.')}</div>${faq(find('objections').rows)}</div>`));
+const questions = (cfg, p) => fold('The ones we are actually asked, and how to reach a person.', sec('questions', 'questions', `<div class="wrap"><div class="q-g"><div class="head">${h2('questions', 'The questions we get.')}</div>${faq(find('objections').rows)}</div>${reach(cfg, p)}</div>`));
 
 function pricing(cfg, p) {
   const s = find('pricing');
   return sec('pricing', 'pricing', `<div class="wrap">
     <div class="head">${h2('pricing', s.heading, EVERY_PLAN)}</div>
     ${tierBlock(p)}
-    <p class="fine">${esc(s.note)}</p>
-    <p class="fine"><a href="/pricing">${esc(find('start').signupHeading)}, ${esc(BILLING_STATES.heading.toLowerCase())}, and what one post buys — pricing at depth ${ic('arrow', 14, { pin: false })}</a></p>
+    <p class="fine">${esc(s.note)} Signing up takes five minutes: email, licence track, your first house, the agreements, a card. <a href="/pricing">Pricing at depth ${ic('arrow', 14, { pin: false })}</a></p>
   </div>`);
 }
 
 const join = (cfg, p) => sec('join', 'join', joinBlock(cfg, p));
 
-/* ── the five screens, one tap from the top of the page ───────────────
-   The full strip is 31 kB of HTML and only index.html is measured, so it
-   lives on /screens where it costs the budget nothing. What belongs here is
-   the door to it — and every one of these is a deep link that lands on a
-   single screen, sideways, in the rail. */
-/* The chips are numbered, and so is the rail they land in. They were two
-   hand-written lists in two files and they disagreed: a visitor tapped
-   “05 Her side” here and arrived at a card captioned 03. The order is now
-   read from the same place the rail reads it — instruments.js's own screen
-   list — so the two numberings cannot drift again. Only the words are
-   local, because /screens renames two of the five for its own captions. */
+/* ── the five screens, one tap from the top of the page ─────────────── */
 const SCREEN_WORDS = { board: ['The board', 'prov'], credentials: ['Credentials', 'prov'], caregiver: ['Her side', 'care'], hours: ['Timesheets', 'prov'], hire: ['Posts', 'prov'] };
 const SCREEN_LINKS = screensOf('aidepost').map((s) => [s.key, ...(SCREEN_WORDS[s.key] || [s.title, 'both'])]);
 const stripJump = () => `<nav class="sj" aria-label="Jump straight to one screen">
@@ -171,14 +141,6 @@ const stripJump = () => `<nav class="sj" aria-label="Jump straight to one screen
   <ol class="sj-l" data-scrollx>${SCREEN_LINKS.map(([k, t, side], i) => `<li><a href="/screens#strip-${k}" data-side-hint="${side}"><span class="sj-n">${String(i + 1).padStart(2, '0')}</span>${esc(t)}</a></li>`).join('')}</ol>
   <a class="sj-all" href="/screens">Open the strip ${ic('arrow', 16, { pin: false })}</a>
 </nav>`;
-
-/* ── the family ───────────────────────────────────────────────────────── */
-const familySec = (p) => fold('Where this goes next — the enterprise layer Aidepost graduates into.', sec('family', 'family', `<div class="wrap">
-  <div class="head">${eyebrow('The ladder')}${h2('family', esc(find('family').heading), 'Aidepost holds the workforce and nothing else. When an operator outgrows one house, the roster, the credentials and the hours are already in the shape the enterprise platform reads.')}</div>
-  ${familyBand()}
-  ${doesNotList(p)}
-  <p class="fine"><a href="/about#ladder">Aidepost graduates into Provider Hub Oregon by export → import, and her data is already in PHO’s shape — the map ${ic('arrow', 14, { pin: false })}</a></p>
-</div>`));
 
 export const HOME_IX = [
   ['top', 'Saturday night', 'prov'],
@@ -189,14 +151,14 @@ export const HOME_IX = [
   ['caregivers', 'Shifts near you', 'care'],
   ['wallet', 'Your wallet', 'care'],
   ['free', 'Free, for ever', 'care'],
-  ['refuses', 'What we refuse', 'both'],
-  ['family', 'Where this goes next', 'both'],
+  ['rules', 'The rules', 'both'],
+  ['roles', 'Who does what', 'both'],
   ['questions', 'Questions', 'both'],
   ['pricing', 'Pricing', 'both'],
   ['join', 'Join', 'both'],
 ];
 
-export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'refuses', 'roles', 'family', 'questions', 'pricing', 'join', 'claim']);
+export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'roles', 'questions', 'pricing', 'join', 'claim', 'reach']);
 
 export function home(cfg, p) {
   return shell(cfg, p, { page: 'home', ids: HOME_IDS }, `${hero(cfg, p)}
@@ -208,13 +170,10 @@ ${credentials()}
 ${hours()}
 ${caregivers()}
 ${rules()}
-${refuses()}
 ${roles()}
-${familySec(p)}
-${questions()}
+${questions(cfg, p)}
 ${pricing(cfg, p)}
-${join(cfg, p)}
-${pager('/')}`);
+${join(cfg, p)}`);
 }
 
-export { spec, S };
+export { S };

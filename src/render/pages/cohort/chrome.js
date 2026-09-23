@@ -1,15 +1,14 @@
-// The chrome every Cohort page wears: the time rail, the shift sheet, the
-// phone tab bar, the command palette, and the end-of-shift footer.
+// The chrome every Cohort page wears: the rail, the shift sheet, the phone
+// tab bar, the command palette, and the end-of-shift footer.
 
-import { esc, mark, social, byline, hello, mailto } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, nextFloat } from '../../shared.js';
 import { ic } from '../../icons/cohort.js';
-import { APP, STOPS, PAGE_LINKS, VERBS, DAY, hid, find, SCREEN_ORDER, SCREEN_NOTES, screenHref, ROUTES } from './data.js';
+import { APP, STOPS, PAGE_LINKS, VERBS, DAY, hid, SCREEN_ORDER, SCREEN_NOTES, screenHref, ROUTES } from './data.js';
 import { screensOf } from '../../instruments.js';
 
 const isHome = (opts) => !opts.page || opts.page === 'home';
 
-/* The five real screens, in vault order, each with the tab word it owns.
-   screensOf() is the shared reader; SCREEN_NOTES only names them. */
+/* The five real screens, in vault order, each with the tab word it owns. */
 export const SCREENS = screensOf('cohort')
   .slice()
   .sort((a, b) => SCREEN_ORDER.indexOf(a.key) - SCREEN_ORDER.indexOf(b.key))
@@ -26,7 +25,7 @@ function palette(cfg, p, opts) {
       <ul class="pal-l">
         ${VERBS.map((v) => row(at(opts, v.to), v.icon, v.t, v.s, 'verb')).join('')}
         ${SCREENS.map((sc, i) => `<li><a class="pal-r is-screen" href="${screenHref(sc.key)}" data-kind="screen"><span class="pal-no">${String(i + 1).padStart(2, '0')}</span><span class="pal-t">${esc(sc.note.tab)} — the screen</span><span class="pal-s">${esc(sc.title)}</span></a></li>`).join('')}
-        ${STOPS.map((s) => row(at(opts, s.id), s.icon, s.label, s.hr ? `${s.hr} · a stop on the front page` : 'A stop on the front page', 'stop')).join('')}
+        ${STOPS.map((s) => row(at(opts, s.id), s.icon, s.label, 'On the front page', 'stop')).join('')}
         ${PAGE_LINKS.map((l) => row(`/${l.path}`, l.icon, l.label, l.title, 'page')).join('')}
         ${row('/privacy', 'shield', 'Privacy', 'What Cohort holds, and what leaves it', 'page')}
         ${row(APP, 'ext', 'Sign in to your house', 'app.cohorthome.app', 'page', true)}
@@ -37,20 +36,20 @@ function palette(cfg, p, opts) {
   </div>`;
 }
 
-/* ── the shift sheet: the phone's menu, drawn as the app's handoff sheet ── */
+/* ── the shift sheet: the phone's menu ──────────────────────────────────── */
 function sheet(cfg, p, opts) {
   const home = isHome(opts);
   return `<div class="ssheet" id="sheet" hidden>
     <div class="ssheet-in">
-      <div class="ssheet-h"><span class="eyebrow">Shift sheet</span><button class="ssheet-x" type="button" data-close aria-label="Close the shift sheet">${ic('close', 22)}</button></div>
-      <div class="ssheet-ix msheet-g" data-page-index data-open-all="Open every hour of this page"><span class="msheet-k ssheet-k">In this page</span></div>
+      <div class="ssheet-h"><span class="eyebrow">Menu</span><button class="ssheet-x" type="button" data-close aria-label="Close the menu">${ic('close', 22)}</button></div>
+      <div class="ssheet-ix msheet-g" data-page-index data-open-all="Open every section of this page"><span class="msheet-k ssheet-k">In this page</span></div>
       <div class="ssheet-sc">
         <span class="msheet-k ssheet-k">The five screens</span>
         <div class="ssheet-scr">${SCREENS.map((sc, i) => `<a href="${screenHref(sc.key)}"><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(sc.note.tab)}</span></a>`).join('')}</div>
       </div>
       <nav aria-label="Stops, on the phone">
         <ol class="ssheet-l">
-          ${STOPS.map((s) => `<li><a href="${at(opts, s.id)}"><b class="ssheet-hr">${s.hr ? esc(s.hr) : ic(s.icon, 18)}</b><span>${esc(s.label)}</span>${ic('right', 18, { cls: 'ssheet-c' })}</a></li>`).join('')}
+          ${STOPS.map((s) => `<li><a href="${at(opts, s.id)}"><b class="ssheet-hr">${ic(s.icon, 18)}</b><span>${esc(s.label)}</span>${ic('right', 18, { cls: 'ssheet-c' })}</a></li>`).join('')}
         </ol>
         <ul class="ssheet-p">
           ${PAGE_LINKS.map((l) => `<li><a href="/${l.path}" ${opts.page === l.path ? 'aria-current="page"' : ''}>${ic(l.icon, 18)}<span>${esc(l.label)}</span></a></li>`).join('')}
@@ -65,8 +64,8 @@ function sheet(cfg, p, opts) {
         <a class="btn pri lg" href="${home ? '#join' : '/#join'}" data-cta="sheet">${esc(cfg.cta.primary)}</a>
         <a class="btn lg" href="${esc(APP)}">${esc(cfg.signIn.label)} to your house</a>
       </div>
-      <p class="ssheet-f">${esc(p.descriptor)} · <a class="ssheet-fa" href="${mailto(cfg, `I’m staff — ${p.name}`)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy ${esc(hello(cfg))}">${ic('copy', 16)}</button></p>
-      <p class="ssheet-nl">No login yet? Only an administrator at your house can add you — write and a person will tell you who that is.</p>
+      <p class="ssheet-f">${esc(p.descriptor)} · <a class="ssheet-fa" href="${mailto(cfg, `I’m staff — ${p.name}`)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(hello(cfg))} and open your mail app">${ic('copy', 16)}</button></p>
+      <p class="ssheet-nl">No login yet? An administrator at your house adds you. Write to us and we will tell you who that is.</p>
     </div>
   </div>`;
 }
@@ -84,14 +83,14 @@ function tabs(cfg, p, opts) {
   </nav>`;
 }
 
-/* ── the header: the time rail ─────────────────────────────────────────── */
+/* ── the header: the rail ──────────────────────────────────────────────── */
 export function header(cfg, p, opts = {}) {
   const home = isHome(opts);
   const rail = home ? STOPS.filter((s) => s.id !== 'join') : PAGE_LINKS;
-  const stop = (href, hr, label, current) => `<a class="rail-stop" href="${href}" ${current ? 'aria-current="page"' : ''}><span class="rail-hr">${hr}</span><span class="rail-tick" aria-hidden="true"></span><span class="rail-l">${esc(label)}</span></a>`;
+  const stop = (href, label, current) => `<a class="rail-stop" href="${href}" ${current ? 'aria-current="page"' : ''}><span class="rail-tick" aria-hidden="true"></span><span class="rail-l">${esc(label)}</span></a>`;
   const stops = home
-    ? rail.map((s) => stop(`#${s.id}`, s.hr ? esc(s.hr) : '', s.label, false)).join('')
-    : rail.map((l) => stop(`/${l.path}`, '', l.label, opts.page === l.path)).join('');
+    ? rail.map((s) => stop(`#${s.id}`, s.label, false)).join('')
+    : rail.map((l) => stop(`/${l.path}`, l.label, opts.page === l.path)).join('');
   return `<header class="tr" id="top-bar" data-page="${esc(opts.page || 'home')}">
     <div class="wrap tr-in">
       <a class="brand" href="/" aria-label="${esc(p.name)} — home"><span class="brand-tile">${mark(p.id, 26, { label: false })}</span><span class="brand-n">${esc(p.name)}</span></a>
@@ -101,13 +100,13 @@ export function header(cfg, p, opts = {}) {
       </nav>
       <div class="tr-r">
         <div class="tr-tools">
-          <button class="tr-k" type="button" aria-controls="pal" aria-expanded="false" data-focus=".pal-in" aria-label="Search">${ic('search', 17)}</button>
+          <button class="tr-k" type="button" aria-controls="pal" aria-expanded="false" data-focus=".pal-in" aria-label="Search this site">${ic('search', 17)}</button>
           <button class="shiftb" type="button" data-mode-toggle data-theme-dark="#0E1F1E" data-theme-light="#F9F4EC" aria-label="Switch to night shift"><span class="shiftb-d">${ic('sun', 15)}<span class="shiftb-l">Day</span></span><span class="shiftb-n">${ic('moon', 15)}<span class="shiftb-l">Night</span></span></button>
         </div>
         <span class="tr-rule" aria-hidden="true"></span>
         <a class="signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>
         <a class="stampb" href="${home ? '#join' : '/#join'}" data-cta="nav">${esc(cfg.cta.nav)}</a>
-        <button class="tr-menu" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open the shift sheet" data-label-close="Close the shift sheet" data-lock data-focus=".ssheet-x">${ic('menu', 22)}</button>
+        <button class="tr-menu" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open the menu" data-label-close="Close the menu" data-lock data-focus=".ssheet-x">${ic('menu', 22)}</button>
       </div>
     </div>
   </header>`;
@@ -116,55 +115,39 @@ export function header(cfg, p, opts = {}) {
 /* ── the footer: the end-of-shift sheet ──────────────────────────────────
    The shift sheet, the palette and the phone tab bar are fixed overlays;
    they render here rather than in the header because the header's
-   backdrop-filter would make it their containing block.
-
-   There used to be a fourth: `.mcta`, a floating "Get early access" pill.
-   It is gone. The tab bar's fifth slot is already Join, the header already
-   carries the same words, and stacking a 56px pill on a 64px tab bar put
-   132px of fixed chrome over a body that reserved nothing for it — the pill
-   sat on the page's own headings. One action, one dock. */
-const RING_TEXT = 'LOGGED BY COHORT · COHORTHOME.APP · LOGGED BY COHORT · COHORTHOME.APP · ';
+   backdrop-filter would make it their containing block. */
+const RING_TEXT = 'COHORT · COHORTHOME.APP · COHORT · COHORTHOME.APP · ';
 const stampLogo = (p) => `<div class="stampl" aria-hidden="true">
-  <svg class="stampl-r" viewBox="0 0 132 132" aria-hidden="true"><defs><path id="ring" d="M66 66m-49 0a49 49 0 1 1 98 0a49 49 0 1 1-98 0"/></defs><circle cx="66" cy="66" r="62" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="66" cy="66" r="57" fill="none" stroke="currentColor" stroke-width=".75" stroke-dasharray="2 3"/><circle cx="66" cy="66" r="38" fill="none" stroke="currentColor" stroke-width="1.25"/><text class="stampl-t" font-size="9.2" letter-spacing="2.1"><textPath href="#ring">${RING_TEXT}</textPath></text></svg>
-  <span class="stampl-m">${mark(p.id, 80, { label: false, mono: true })}</span>
-  <span class="stampl-c" data-clock>--:--</span>
+  <svg class="stampl-r" viewBox="0 0 132 132" aria-hidden="true"><defs><path id="ring" d="M66 66m-50 0a50 50 0 1 1 100 0a50 50 0 1 1-100 0"/></defs><circle cx="66" cy="66" r="63" fill="none" stroke="currentColor" stroke-width="1.25"/><circle cx="66" cy="66" r="38.5" fill="none" stroke="currentColor" stroke-width=".75" opacity=".55"/><text class="stampl-t" font-size="8.4" letter-spacing="2.6"><textPath href="#ring">${RING_TEXT}</textPath></text></svg>
+  <span class="stampl-m">${mark(p.id, 56, { label: false, mono: true })}</span>
 </div>`;
 
-/* ── previous and next, across the eight routes ────────────────────────
-   A reader who reaches the end of a page is told what comes before it and
-   what comes after it, by name, with the one line that says what is there.
-   Pure markup: no script, and it works on the printed page too. */
-function prevNext(opts) {
+/* the page after this one, on the route line; the last one leads home */
+const nextOf = (opts) => {
   const here = ROUTES.findIndex((r) => r.page === (opts.page || 'home'));
-  if (here < 0) return '';
-  const cell = (r, kind) => (r
-    ? `<a class="eos-pn-a" href="/${r.path}" data-pn="${kind}"><span class="eos-pn-k">${kind === 'prev' ? 'Back' : 'Next'}</span><b>${esc(r.label)}</b><span class="eos-pn-g">${esc(r.gist)}</span></a>`
-    : '<span class="eos-pn-a is-end" aria-hidden="true"></span>');
-  return `<nav class="eos-pn" aria-label="Previous and next page">${cell(ROUTES[here - 1], 'prev')}${cell(ROUTES[here + 1], 'next')}</nav>`;
-}
+  const n = here >= 0 ? ROUTES[here + 1] : null;
+  return n ? { href: `/${n.path}`, label: n.label, gist: n.gist } : { href: '/', label: 'The shift', gist: 'Back to the front page' };
+};
 
 export function footer(cfg, p, opts = {}) {
   const home = isHome(opts);
   const col = (id, title, inner) => `<details class="eos-d" id="eos-${id}" open><summary><span class="eos-k">${esc(title)}</span>${ic('down', 18, { cls: 'eos-chev' })}</summary><div class="eos-b">${inner}</div></details>`;
   const link = (href, t, ext = false) => `<li><a href="${esc(href)}" ${ext ? 'rel="noopener"' : ''}>${esc(t)}${ext ? ic('ext', 13, { cls: 'eos-ext' }) : ''}</a></li>`;
-  const disclaimer = find('foot').disclaimer;
   return `<footer class="eos" id="foot" aria-labelledby="h-foot">
     <div class="wrap">
       <div class="eos-head">
-        <div><span class="eos-when">18:45</span><h2 class="eos-h" id="h-foot">End of shift.</h2></div>
-        <p class="eos-sub">What this site is, where it goes, and how to reach a person.</p>
+        <h2 class="eos-h" id="h-foot">End of shift.</h2>
+        <p class="eos-sub">Everything on this site, and a person to write to.</p>
       </div>
       <div class="eos-g">
-        ${col('product', 'Product', `<ul class="eos-l">${STOPS.map((s) => link(at(opts, s.id), s.hr ? `${s.hr} · ${s.label}` : s.label)).join('')}${link('/features', 'Everything Cohort does')}${link('/security', 'Security')}</ul>`)}
-        ${col('company', 'Company', `<ul class="eos-l">${link('/about', 'About')}${link('/contact', 'Contact')}${link('/privacy', 'Privacy')}${link('https://providerhub.us', 'providerhub.us', true)}${link(APP, 'Sign in to your house', true)}</ul>`)}
-        ${col('help', 'Help', `<ul class="eos-l">${link('/features', 'Features')}${link('/security', 'Security')}${link('/pricing', 'Pricing')}${link('/contact', 'Write to a person')}</ul>`)}
-        ${col('write', 'Write to us', `<p class="eos-mail"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied" aria-label="Copy the address">${ic('copy', 16)}</button></p><p class="eos-fine">One inbox. A person answers.</p>${social(p.id, { text: true, cls: 'stamps', size: 18, label: 'Cohort on social' })}`)}
+        ${col('product', 'Product', `<ul class="eos-l">${STOPS.map((s) => link(at(opts, s.id), s.label)).join('')}${link('/screens', 'The five screens')}${link('/features', 'Everything Cohort does')}${link('/security', 'Security and privacy')}</ul>`)}
+        ${col('company', 'Company', `<ul class="eos-l">${link('/about', 'About')}${link('/contact', 'Contact')}${link('/privacy', 'Privacy')}${link(APP, 'Sign in to your house', true)}</ul>`)}
+        ${col('write', 'Write to us', `<p class="eos-mail"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app" aria-label="Copy the address and open your mail app">${ic('copy', 16)}</button></p><p class="eos-fine">One inbox. A person answers within a working day.</p>${social(p.id, { text: true, cls: 'stamps', size: 18, label: 'Cohort on social' })}`)}
       </div>
-      ${prevNext(opts)}
       <div class="eos-sign">
         <div class="eos-out">
           <span class="eos-so">Oregon · <b data-clock>--:--</b></span>
-          <p class="eos-fine">${esc(disclaimer)}</p>
+          <p class="eos-fine">Daily operations for care homes. Made in Oregon.</p>
         </div>
         ${stampLogo(p)}
         <div class="eos-by">
@@ -177,7 +160,8 @@ export function footer(cfg, p, opts = {}) {
     ${sheet(cfg, p, opts)}
     ${palette(cfg, p, opts)}
     ${tabs(cfg, p, opts)}
-    <a class="totop" href="${home ? '#top' : '#main'}" aria-label="${home ? 'Back to 06:55, the top of the page' : 'Back to the top'}">${ic('totop', 18)}<span>${home ? '06:55' : 'Top'}</span></a>
+    <a class="totop" href="${home ? '#top' : '#main'}" aria-label="Back to the top">${ic('totop', 18)}<span>Top</span></a>
+    ${nextFloat(nextOf(opts))}
   </footer>`;
 }
 
