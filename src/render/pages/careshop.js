@@ -13,7 +13,7 @@ import { esc, faq, sec, h2, skip, reach } from '../shared.js';
 import { iosShell, screenSwitch } from '../instruments.js';
 import { PAGES } from '../../data/page.js';
 import { ic } from '../icons/careshop.js';
-import { header, footer, sticker, screen, parDemo, approveDemo, allergenDemo, reserveDemo, priceDemo, storeDemo, ladderDemo, cookDemo, printList, directory, tierCards } from './careshop/parts.js';
+import { header, footer, sticker, roleIcon, screen, parDemo, approveDemo, allergenDemo, reserveDemo, priceDemo, storeDemo, ladderDemo, cookDemo, printList, directory, tierCards } from './careshop/parts.js';
 import { loopPage } from './careshop/loop.js';
 import { stockPage } from './careshop/stock.js';
 import { rulesPage } from './careshop/rules.js';
@@ -38,14 +38,16 @@ const STATS = [
   ['', '10', 0, 'Oregon citations, explained', 'In one line each, inside the product, beside the shelf they govern.'],
 ];
 
-/* the seven stations on the ring, each a link to the aisle it lives in */
+/* the seven stations on the ring, each a link to the aisle it lives in.
+   One line each: the row is 321px of text at 1024, which is 48 characters
+   of this face, so every note here is under that. */
 export const RING = [
-  ['Count', 'stock', 'Walk the house one zone at a time. Each item shows its last count and a keypad.'],
-  ['Queue', 'queue', 'What to buy and nothing else, each line carrying where it came from.'],
-  ['Approve', 'queue', 'Auto under your threshold, a manager above it. The rule is recorded.'],
+  ['Count', 'stock', 'Zone by zone. Each item keeps its last count.'],
+  ['Queue', 'queue', 'Only what to buy, each line with its origin.'],
+  ['Approve', 'queue', 'Auto under your threshold, a manager above it.'],
   ['Shop', 'queue', 'In that shop’s aisle order. Works with no signal.'],
-  ['Receipt', 'queue', 'Closing the run puts stock and prices back on the shelf, once.'],
-  ['Stock', 'stock', 'On hand is never typed. It moves through the record.'],
+  ['Receipt', 'queue', 'Close the run: stock and prices go back, once.'],
+  ['Stock', 'stock', 'Never typed. Every change is a movement.'],
   ['Cook', 'cook', 'Complete, and stock goes down. Once.'],
 ];
 
@@ -280,7 +282,7 @@ function roles() {
   const s = find('roles');
   return sec('roles', 'roles', `<div class="wrap">
     <div class="head">${sticker('person', 'Who is in the store')}${h2('roles', s.heading, s.sub)}</div>
-    <div class="role-l">${s.rows.map(([r, who, does, dev, wash]) => `<div class="role ${wash ? 'is-wash' : ''}"><span class="role-n">${esc(r)}</span><span class="role-w">${esc(who)}</span><span class="role-d">${esc(does)}</span><span class="role-r">${ic('phone', 14)}${esc(dev)}</span></div>`).join('')}</div>
+    <div class="role-l">${s.rows.map(([r, who, does, dev, wash]) => `<div class="role ${wash ? 'is-wash' : ''}"><span class="role-top">${roleIcon(r)}<span class="role-n">${esc(r)}</span></span><span class="role-w">${esc(who)}</span><span class="role-d">${esc(does)}</span><span class="role-r">${esc(dev)}</span></div>`).join('')}</div>
   </div>`);
 }
 
@@ -368,7 +370,7 @@ ${footer(cfg, p, { page: 'home' })}`;
 }
 
 export const pages = [
-  { path: 'features', title: 'Features', description: 'Every station on the loop, the rule layer beside them, who uses it on what device, and what this product will not do.', render: featuresPage },
+  { path: 'features', title: 'Features', description: 'Every station on the loop, the rule layer beside them, and who uses it on what device.', render: featuresPage },
   { path: 'pricing', title: 'Pricing', description: 'Free, Pro at nineteen a house, Scale at thirty-seven. What a plan counts, and what is sold.', render: pricingPage },
   { path: 'loop', title: 'The loop', description: 'Count, queue, approve, shop, receipt, stock, cook: seven stations, six screens, and the house’s own data moving around them.', render: loopPage },
   { path: 'stock', title: 'Stock', description: 'Stock by zone, the par you set, Expiry Watch with the value at risk, and the reserve target: days times beds times the quantity per bed.', render: stockPage },

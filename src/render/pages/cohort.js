@@ -13,7 +13,7 @@ import { EVERY_PLAN, JOIN } from '../../data/page.js';
 import { STATE_SETS } from '../../data/states.js';
 import { ic } from '../icons/cohort.js';
 import { header, footer, SCREENS } from './cohort/chrome.js';
-import { DAY, hid, tourKey, HOUSE_KEYS, APP, find, screenHref } from './cohort/data.js';
+import { DAY, hid, tourKey, HOUSE_KEYS, APP, find, screenHref, neutral } from './cohort/data.js';
 import { pages } from './cohort/pages.js';
 
 export { header, footer, pages };
@@ -32,9 +32,11 @@ const fold = (gist, html, open = false) => html.replace(
   `<section data-phone="fold" data-gist="${esc(gist)}"${open ? ' data-phone-open' : ''} class="sec`,
 );
 
-/* ── the hero device: a real tablist over the product's own screens ───── */
+/* ── the hero device: a real tablist over the product's own screens ─────
+   neutral() swaps the shared Today foot for this site's own line; see
+   cohort/data.js. */
 const HERO_SCREENS = ['today', 'handoff'];
-const heroSwitch = () => screenSwitch('cohort', {
+const heroSwitch = () => neutral(screenSwitch('cohort', {
   id: 'sw-hero',
   on: 0,
   only: HERO_SCREENS,
@@ -43,7 +45,7 @@ const heroSwitch = () => screenSwitch('cohort', {
     today: { tab: 'Today', cap: 'The first screen after sign-in: what is due, what is documented, what is waiting on a decision.' },
     handoff: { tab: 'Handoff', cap: 'The other end of the shift, composed from the day rather than typed from memory.' },
   },
-});
+}));
 
 /* ── “on this page”, and where you are in it ────────────────────────────
    One chip per stop. `data-spy` is js/site.js's own contract: it marks the
@@ -137,7 +139,7 @@ function shift() {
   const keys = [...new Set(DAY.map(tourKey))];
   const phones = keys.map((k, i) => {
     const [key, present] = k.split('+');
-    return `<div class="tour-p ${present === 'compose' ? 'is-compose' : ''}" data-tour="${esc(k)}" ${i ? 'hidden' : ''}>${iosShell('cohort', { key, present: present === 'sheet' ? 'sheet' : 'none' })}</div>`;
+    return `<div class="tour-p ${present === 'compose' ? 'is-compose' : ''}" data-tour="${esc(k)}" ${i ? 'hidden' : ''}>${neutral(iosShell('cohort', { key, present: present === 'sheet' ? 'sheet' : 'none' }))}</div>`;
   }).join('');
   const steps = DAY.map((d, i) => `<li class="tl-i" id="${hid(d.at)}" data-tour="${esc(tourKey(d))}" data-at="${esc(d.at)}" ${i === 0 ? 'data-on' : ''}>
         <a class="tl-at" href="#${hid(d.at)}" data-tl-go aria-label="${esc(d.at)} — ${esc(d.t)}"><span class="tl-ic">${ic(d.icon, 16)}</span><time>${esc(d.at)}</time></a>

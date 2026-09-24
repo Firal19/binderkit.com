@@ -100,7 +100,7 @@
     const d = new Date(); const dow = d.getDay(); const today = DAYS[dow];
     const live = $('[data-live]');
     if (live) { const n = (6 - dow + 7) % 7; live.textContent = n === 0 ? 'That’s tonight.' : n === 1 ? 'That’s tomorrow night.' : `That’s in ${n} days.`; }
-    $$('.board th[data-day]').forEach((th) => { th.classList.toggle('is-soon', th.dataset.day === 'Sat'); th.classList.toggle('is-today', th.dataset.day === today); });
+    $$('.board th[data-day], .pb-g th[data-day]').forEach((th) => { th.classList.toggle('is-soon', th.dataset.day === 'Sat'); th.classList.toggle('is-today', th.dataset.day === today); });
     $$('.ft-day[data-day], .wkc-d[data-day]').forEach((el) => el.toggleAttribute('data-today', el.dataset.day === today));
     /* the phone strip opens on the story: the day with the open shift */
     const strip = $('.wkc'); const openCard = strip && $('.wkc-d.has-open', strip);
@@ -200,9 +200,14 @@
     io.observe(board);
   };
 
-  /* ── the phone board's open cell stands in for the table's ────────── */
+  /* ── the phone boards stand in for the table ────────────────────────
+     The hero strip's open cell opens the claim sheet. The phone board's two
+     actions open it and run it — inward first, always, so "Post outward"
+     offers to own staff before it posts, the way the product does. */
   const proxies = () => {
     document.addEventListener('click', (e) => {
+      const go = e.target.closest('[data-claim-go]');
+      if (go) { claim.open(); claim.act('offer'); if (go.dataset.claimGo === 'post') setTimeout(() => claim.act('post'), calm.matches ? 0 : 1000); return; }
       const b = e.target.closest('[data-cell-proxy]'); if (!b) return;
       claim.open();
     });
@@ -320,17 +325,27 @@
      ringed on the board; press it and it stays. One panel under the row
      reads the active chip's sentence, so five boxes of prose became one. */
   const spots = () => $$('[data-annot]').forEach((an) => {
-    const shell = (an.previousElementSibling && an.previousElementSibling.matches('[data-shell]')) ? an.previousElementSibling : ($('[data-shell]') || (an.previousElementSibling && an.previousElementSibling.previousElementSibling));
+    /* the figure holds both boards — the desktop shell and the phone board.
+       A chip rings the same thing on each; CSS decides which one is showing,
+       and only a shell that is showing is scrolled to its ringed element. */
+    const fig = an.closest('[data-aboard]');
+    const shell = fig ? $('[data-shell]', fig) : $('[data-shell]');
+    const pb = fig ? $('[data-pboard]', fig) : null;
     const SEL = { 1: '.wk-cell[data-state="covered"]', 2: '.wk-cell[data-state="open"]', 3: '.page-main .tile-a', 4: '.page-main .btn-row', 5: '.page-side .tile-a' };
     const btns = $$('.an-b', an); const out = $('[data-an-out]', an);
+    const ring = (root, el, n) => {
+      $$('.is-spot', root).forEach((x) => { x.classList.remove('is-spot'); x.removeAttribute('data-spot-n'); });
+      if (el) { el.classList.add('is-spot'); el.dataset.spotN = n; }
+      return el;
+    };
     const light = (b, scroll) => {
       const n = b.dataset.spot;
       if (shell) {
-        $$('.is-spot', shell).forEach((x) => { x.classList.remove('is-spot'); x.removeAttribute('data-spot-n'); });
         shell.dataset.spot = n;
-        const el = $(SEL[n], shell);
-        if (el) { el.classList.add('is-spot'); el.dataset.spotN = n; if (scroll) { const r = el.getBoundingClientRect(); const sr = shell.getBoundingClientRect(); shell.scrollTo({ left: r.left - sr.left + shell.scrollLeft - (sr.width - r.width) / 2, behavior: smooth() }); } }
+        const el = ring(shell, $(SEL[n], shell), n);
+        if (el && scroll && shell.offsetParent) { const r = el.getBoundingClientRect(); const sr = shell.getBoundingClientRect(); shell.scrollTo({ left: r.left - sr.left + shell.scrollLeft - (sr.width - r.width) / 2, behavior: smooth() }); }
       }
+      if (pb) ring(pb, $(`[data-spot-el="${n}"]`, pb), n);
       if (out) { out.textContent = ''; const t = document.createElement('b'); t.textContent = b.dataset.anT || ''; out.appendChild(t); out.appendChild(document.createTextNode(' — ' + (b.dataset.anD || ''))); }
     };
     const pressed = () => btns.find((b) => b.getAttribute('aria-pressed') === 'true') || btns[0];
@@ -451,17 +466,19 @@
   };
 
   /* ── the swipe strip reports its own edges ──────────────────────────
-     Measured at 390px: .shell is 350px wide over 460px of content, so 110px
-     of the board is past the right edge, and it was cut there with nothing but
-     a caption underneath claiming so. CSS fades the side that still has board
-     behind it and lifts the fade on the side you have reached; this sets the
-     attribute that tells it which. Deliberately attribute-only, so that with
-     scripting off there is no fade at all — a gradient drawn over a strip that
-     does not scroll is a worse lie than no gradient. */
+     Between 641 and 900 the shell holds the 768px board in a gutter narrower
+     than it, so part of the board is past the right edge. CSS fades the side
+     that still has board behind it and lifts the fade on the side you have
+     reached; this sets the attribute that tells it which. Deliberately
+     attribute-only, so that with scripting off there is no fade at all — a
+     gradient drawn over a strip that does not scroll is a worse lie than no
+     gradient. Below 640 the shell is gone and the phone board stands in;
+     the roster toy's strip, which scrolls at 320 because its cells are tap
+     targets that cannot shrink, reports its edges the same way. */
   const stripEdges = () => {
-    const strips = $$('.shell');
+    const strips = $$('.shell, .ros-w');
     if (!strips.length) return;
-    const mq = window.matchMedia('(max-width: 640px)');
+    const mq = window.matchMedia('(max-width: 1100px)');
     const paint = (s) => {
       if (!mq.matches) { s.removeAttribute('data-sx'); return; }
       const max = s.scrollWidth - s.clientWidth;

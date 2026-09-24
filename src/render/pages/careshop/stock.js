@@ -30,17 +30,17 @@ const phone = (key) => `<div class="ph" data-phone="${esc(key)}">${iosShell('car
    browser's own exclusive accordion: no script, and where it is not
    supported the panels simply all open, which is still correct. */
 const AXES = [
-  ['Zone', '9 zones', 'Where it sits in the house. Pantry, fridge, freezer, reserve — in the walk order the house sets, because the house walks it.', [
+  ['Zone', '9 zones', 'Where it sits in the house, in the walk order the house sets.', [
     ['Pantry', 'Rice · 10 lb · Oatmeal · 42 oz'],
     ['Fridge', 'Whole milk · gal · Applesauce · cups'],
     ['Reserve', 'Bottled water · 24-pk'],
   ]],
-  ['Aisle', '19 aisles', 'The route through one shop. It is that shop’s own sequence, never alphabetical and never by category; where no sequence has been recorded the list groups by zone and the screen says so.', [
+  ['Aisle', '19 aisles', 'The route through one shop, in that shop’s own sequence. Never alphabetical, never by category.', [
     ['Aisle 3 · Dairy', 'Whole milk · 2 gal · Oat milk · 1 gal'],
     ['Aisle 7 · Grains', 'Rice · 10 lb · Oatmeal · 42 oz'],
     ['Aisle 12 · Water', 'Bottled water · 24-pk × 3'],
   ]],
-  ['Category', '20 categories', 'The catalogue’s own facet, used for meal planning. There is no list of it on this page on purpose: a kitchen walks a zone and a shopper walks an aisle, and the product never derives one of the three from another or merges them into one ordering.', []],
+  ['Category', '20 categories', 'The catalogue’s own facet, for meal planning. Not listed here on purpose: nobody walks a category, and the product never derives one axis from another.', []],
 ];
 
 /* the movement: the seven things every change to on-hand carries. Read

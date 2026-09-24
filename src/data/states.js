@@ -24,7 +24,7 @@ export const STATE_SETS = {
     ['verified', 'Verified', 'settled', 'The authority was read and it matches the item.'],
     ['derived', 'Derived', 'offered', 'Inferred from the licence track; it says so until verified.'],
     ['unverified', 'Unverified', 'escalated', 'No authority attached yet — the citation mark.'],
-    ['superseded', 'Superseded', 'inert', 'Replaced by a later control number; kept, not deleted.'],
+    ['superseded', 'Kept', 'inert', 'Replaced by a later control number; kept, not deleted.'],
   ],
   aidepost: [
     ['covered', 'Covered', 'settled', 'A person is on it, by name.'],

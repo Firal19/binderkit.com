@@ -26,20 +26,21 @@ const LEGEND = [
   ['unreviewed', 'A rule set no provider on that track has reviewed yet. It carries a banner on the dashboard and on every export.'],
 ];
 
-/* the rules the product applies to itself */
+/* the rules the product applies to itself — one clause each, because a
+   card that needs a second sentence is a card that has two rules on it */
 const TWELVE = [
-  ['The ledger rule', 'On hand comes from recorded movements. Nothing types a quantity directly, and a correction is a further movement.'],
-  ['The three-axes rule', 'Zone is where it sits in the house, aisle is the route through a shop, category is the catalogue. Never merged.'],
-  ['The minimum-resident rule', 'Only what lets a tray be prepared safely. No diagnosis, no medication, no incident, no note.'],
-  ['The rendered-tray-note rule', 'A tray note is drawn at the moment of viewing and stored nowhere.'],
-  ['The citation-confidence rule', 'A citation appears only with its confidence, and an unreviewed set carries a banner.'],
-  ['The origin rule', 'Every buy request records what produced it. With the origin, the queue is diagnosable.'],
-  ['The one-contract rule', 'Every route into the queue produces the same kind of request under the same rules.'],
-  ['The typed-count rule', 'The licensed bed count is typed by a person and never derived from the resident list.'],
-  ['The no-deletion rule', 'Residents are archived, items merged, houses deactivated, runs closed. Movements are never removed.'],
-  ['The notification rule', 'A message leaving the system carries a house code and a count. Never a resident, a diet or an item name.'],
-  ['The snapshot rule', 'Any view built for someone outside the system comes from a source that cannot read resident information.'],
-  ['The curation rule', 'An item a house has switched off is skipped in every count, every gap and every reading.'],
+  ['The ledger rule', 'On hand comes from movements, never typed.'],
+  ['The three-axes rule', 'Zone, aisle and category are never merged.'],
+  ['The minimum-resident rule', 'Only what a safe tray needs. Nothing clinical.'],
+  ['The rendered-tray-note rule', 'Drawn at viewing, stored nowhere.'],
+  ['The citation-confidence rule', 'A citation always shows how sure we are.'],
+  ['The origin rule', 'Every buy request records what produced it.'],
+  ['The one-contract rule', 'One kind of request, whatever the route.'],
+  ['The typed-count rule', 'The bed count is typed, never derived.'],
+  ['The no-deletion rule', 'Archive, merge, deactivate, close. Never delete.'],
+  ['The notification rule', 'A message carries a code and a count.'],
+  ['The snapshot rule', 'An outside view never reads resident data.'],
+  ['The curation rule', 'A switched-off item is skipped in every count.'],
 ];
 
 const conf = (c) => `<span class="conf" data-c="${esc(c)}">${esc(c)}</span>`;
@@ -67,7 +68,7 @@ ${sec('banner', 'banner-s', `<div class="wrap aisle-g">
   <div class="aisle-d">${sticker('tag', 'The banner')}${h2('banner', 'Until a provider has reviewed the set, every screen says so.', buy.banner)}<p class="st-p">You always know which of the two you are reading: a citation explained in the product, or the bare rule text.</p><div class="shows">${showMe('Bottled water', 'An inferred citation')}${showMe('Applesauce', 'A confirmed one')}</div></div>
 </div>`)}
 ${fold(sec('twelve', 'twelve-s', `<div class="wrap">
-  <div class="head">${sticker('book', 'The product’s own rules')}${h2('twelve', 'Twelve rules it applies to itself.', 'None of these is a regulation. They are the rules CareShop is built to.')}</div>
+  <div class="head">${sticker('book', 'The product’s own rules')}${h2('twelve', 'Twelve rules it applies to itself.', 'Not regulations. The rules CareShop is built to.')}</div>
   <ol class="gov">${TWELVE.map(([t, d]) => `<li class="gov-i"><span class="gov-t"><b>${esc(t)}</b></span><p>${esc(d)}</p></li>`).join('')}</ol>
 </div>`), 'Twelve rules the product applies to itself.')}
 ${fold(sec('egress', 'egress-s', `<div class="wrap">

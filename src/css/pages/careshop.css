@@ -241,6 +241,9 @@ h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.022e
 .head { margin-bottom: clamp(40px, 5vw, 68px); }
 .quote { font-family: var(--font-display); font-size: var(--cs-xl); font-variation-settings: 'opsz' 48, 'SOFT' 40; padding: 15px 18px; background: var(--sage-50); border-radius: var(--r1); color: var(--sage-700); letter-spacing: -0.02em; box-shadow: var(--e1); }
 .today { font-style: normal; font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .08em; text-transform: uppercase; color: var(--sage-700); white-space: nowrap; }
+/* set inside a sentence it is a phrase, and a phrase wraps: nowrap here made
+   /stock 347px wide at 320 */
+p .today, li .today, dd .today { white-space: normal; }
 .st-p { margin-top: 15px; font-size: var(--cs-base); line-height: 1.62; color: var(--muted); max-width: var(--measure); }
 .st-p b { color: var(--ink); font-weight: 650; }
 .more { display: inline-flex; align-items: center; gap: 9px; margin-top: 24px; min-height: 44px; font-weight: 650; font-size: var(--cs-sm); color: var(--ink); text-decoration: none; letter-spacing: -0.01em; }
@@ -417,7 +420,6 @@ h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.022e
 .aisle > .wrap > .aisle-r { display: flex; align-items: center; gap: 10px; margin-left: auto; flex: none; }
 .kbtn { width: 44px; height: 44px; min-height: 44px; display: grid; place-items: center; border: 0; border-radius: var(--r1); color: var(--soft); background: transparent; cursor: pointer; transition: color 160ms ease, background 160ms ease, box-shadow 200ms ease; }
 @media (hover: hover) { .kbtn:hover { color: var(--ink); background: var(--inset); box-shadow: var(--e1); } }
-.cord-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
 .signin { font-weight: 600; font-size: var(--cs-sm); color: var(--muted); text-decoration: none; white-space: nowrap; min-height: 44px; display: inline-flex; align-items: center; padding: 0 6px; }
 @media (hover: hover) { .signin:hover { color: var(--ink); } }
 /* the light pull: a switch plate that dents, and a cord that drops */
@@ -680,7 +682,7 @@ li[data-on] .pal-r { box-shadow: inset 2px 0 0 var(--terra); }
 @media (hover: hover) { .hero-v:hover .fan-p.is-c { transform: translateX(-50%) translateY(-14px); } }
 
 .fan-ui { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 10px; }
-.fan-dots { display: none; gap: 2px; }
+.fan-dots { display: flex; gap: 2px; }
 .fan-dot { width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: var(--r1); }
 .fan-dot i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); transition: transform 220ms var(--ease), background 220ms ease; }
 .fan-dot[aria-pressed="true"] i { background: var(--terra); transform: scale(1.6); }
@@ -792,7 +794,10 @@ li[data-on] .pal-r { box-shadow: inset 2px 0 0 var(--terra); }
 .ring-rot { transform: rotate(calc(var(--lp, 0) * -1turn)); transform-origin: 190px 190px; transform-box: view-box; transition: transform 90ms linear; }
 .ring-n { transform: rotate(calc(var(--lp, 0) * 1turn)); transform-box: fill-box; transform-origin: center; transition: transform 90ms linear; cursor: pointer; }
 .ring-rot > circle { stroke: var(--e-line-2); stroke-width: 2; stroke-dasharray: 2 9; stroke-linecap: round; opacity: 1; }
-.ring-n circle { fill: var(--card); stroke: var(--e-line); stroke-width: 1; filter: drop-shadow(0 6px 10px rgba(var(--sh), .16)); transition: fill 220ms ease, stroke 220ms ease, filter 220ms ease; }
+/* the lit node changes with the caption in the same call; the fill swaps
+   in the same frame too, so a screenshot can never show one station lit
+   and another named. Only the glow eases. */
+.ring-n circle { fill: var(--card); stroke: var(--e-line); stroke-width: 1; filter: drop-shadow(0 6px 10px rgba(var(--sh), .16)); transition: filter 220ms ease; }
 .ring-n text { fill: var(--ink); font-size: var(--cs-xs); font-weight: 650; letter-spacing: -0.01em; }
 @media (hover: hover) { .ring-n:hover circle { fill: var(--sage-50); stroke: var(--sage); filter: drop-shadow(0 10px 18px rgba(var(--sh), .24)); } }
 .ring-n.is-lit circle { fill: var(--terra); stroke: var(--terra); filter: drop-shadow(0 0 14px color-mix(in srgb, var(--terra) 55%, transparent)) drop-shadow(0 8px 14px rgba(var(--sh), .26)); }
@@ -885,7 +890,7 @@ li[data-on] .pal-r { box-shadow: inset 2px 0 0 var(--terra); }
 .shelf-n, .lad-v, .sp-p, .sp-total > b, .resv-out dd b, .range-l output, .q-stage, .stamp { font-variant-numeric: tabular-nums lining; }
 
 /* ── recessed: everything that sits INSIDE a panel ────────────────────── */
-.shelf-row, .q-row, .lad-r, .sp-r, .cook-s, .mini-q, .shelf-mini, .shelf-l, .resv-out > div {
+.shelf-row, .q-row, .lad-r, .sp-r, .cook-s, .mini-q, .shelf-mini, .shelf-line, .shelf-l, .resv-out > div {
   background: color-mix(in srgb, var(--inset) 86%, var(--card));
   border: 0; border-radius: var(--r1); box-shadow: var(--e1);
 }
@@ -924,6 +929,11 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .shelf-mini .shelf-row { padding: 12px 0; background: transparent; border-radius: 0; box-shadow: inset 0 -1px 0 var(--e-line); }
 @media (hover: hover) { .shelf-mini .shelf-row:hover { box-shadow: inset 0 -1px 0 var(--e-line-2); } }
 .shelf-mini li:last-child .shelf-row { box-shadow: none; }
+/* cook mode's shelf, on one line: the label, then each item with its number */
+.shelf-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; padding: 12px 16px; }
+.shelf-it { display: inline-flex; align-items: baseline; gap: 7px; font-size: var(--cs-sm); font-weight: 650; letter-spacing: -0.01em; color: var(--ink); }
+.shelf-it .shelf-n { font-size: var(--cs-lg); }
+.shelf-it > span { font-size: var(--cs-xs); font-weight: 400; color: var(--soft); }
 
 /* ── approve: a line walks Pending → Approved → In cart → Bought ──────── */
 .q-rows { display: grid; gap: 8px; }
@@ -1235,6 +1245,11 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 /* the one card that is not an account holder */
 .role.is-wash { background: var(--sage-50); box-shadow: 0 0 0 1px color-mix(in srgb, var(--sage) 38%, transparent), var(--e2); }
 .role.is-wash .role-n { background: var(--sage-100); color: var(--sage-700); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sage) 26%, transparent); }
+/* the seat's own sticker on a sage tile, with the code stamp beside it: six
+   cards, six different people before a word is read */
+.role-top { display: flex; align-items: center; gap: 10px; }
+.role-i { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--sage-100); color: var(--sage-700); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sage) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, .5); }
+.role.is-wash .role-i { background: var(--card); }
 /* ── your kitchen: the door to careshop.app ───────────────────────────────
    The two chapter bands in this region (kitchen, pricing) now RECEDE instead
    of lifting: a shade under the page in light, a well below it in dark. It is
@@ -1510,10 +1525,18 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .st-v > .ph { --plinth: clamp(20px, 2.4vw, 36px); flex: 1 1 auto; max-width: none; display: grid; justify-items: center; padding: var(--plinth) max(0px, min(var(--plinth), (100% - 300px) / 2)); border-radius: var(--r3); background: var(--paper); box-shadow: var(--e2); }
 .st-v .ph .phone { zoom: .86; }
 .st-v .demo { width: 100%; max-width: 520px; }
-.ph-pair { flex: 1 1 auto; max-width: 470px; display: flex; gap: 14px; padding: clamp(18px, 2.2vw, 30px); border-radius: var(--r3); background: var(--paper); box-shadow: var(--e2); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+.ph-pair { flex: 1 1 auto; max-width: 580px; display: flex; gap: 14px; padding: clamp(18px, 2.2vw, 30px); border-radius: var(--r3); background: var(--paper); box-shadow: var(--e2); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; container-type: inline-size; }
 .ph-pair::-webkit-scrollbar { display: none; }
 .ph-pair .ph { flex: none; scroll-snap-align: center; }
 .ph-pair .ph .phone { zoom: .64; }
+/* two 390px screens have to share the pair's own width: the zoom steps down
+   with the box, so the second phone is never a scroll away on a desk. The
+   pair stays a swipe rail below 900, where the shelf is deliberately wider
+   than the hand. */
+@container (max-width: 573px) { .ph-pair .ph .phone { zoom: .58; } }
+@container (max-width: 519px) { .ph-pair .ph .phone { zoom: .52; } }
+@container (max-width: 469px) { .ph-pair .ph .phone { zoom: .47; } }
+@container (max-width: 429px) { .ph-pair .ph .phone { zoom: .42; } }
 
 /* the closing band on /loop and /stock */
 .ledger { background: var(--paper); box-shadow: inset 0 -1px 0 var(--e-line-2); }
@@ -1793,6 +1816,8 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
    is capped at --measure, so nothing gets a longer line out of it. */
 @media (min-width: 901px) { .scan { --scan-ghost: .4; } }
 @media (min-width: 1100px) {
+  /* six seats as two rows of three; auto-fit at 320 gave four and an orphan pair */
+  .role-l { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   /* the demo cap and the track were different numbers, which left a 142px
      stub column between the panel and the phone on every aisle */
   .aisle-g { grid-template-columns: minmax(0, 1fr) minmax(0, 720px); }
@@ -1823,9 +1848,12 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 }
 
 @media (max-width: 1100px) {
+  /* six doors in a 901px tray: 968px of plates at the desk sizes, so the
+     plates lose a little padding rather than the sixth losing its edge */
+  .doors-r { gap: 8px; }
+  .door-c { gap: 9px; padding: 9px 12px 9px 9px; }
   .ev, .chips-l { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .cord-t { display: none; }
   .resv-in { grid-template-columns: 1fr 1fr; } .num-x { display: none; } .resv-in .num:last-child { grid-column: 1 / -1; }
   /* the Gap chip is nowrap, so a three-up dl forces its track past the column
      and the reserve demo overflowed the page by 9px at 1024 */
@@ -1838,10 +1866,32 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
    stack. Shrink the phone and the guard together (the guard is half a phone
    plus the swing of its top corner) and it reads as a fan again. */
 @media (max-width: 1100px) and (min-width: 901px) {
+  /* the approve demo and the cook/menu pair need a real column here: the
+     measure-first split left them 311px, a squeezed demo and a clipped phone */
+  #s-approve .st-g, #s-cook .st-g { grid-template-columns: minmax(0, 1fr) minmax(0, 480px); }
+  /* five plates fit the tray here and the sixth does not; it drops to a
+     second row rather than hiding past the edge with no mask to say so */
   .hero-in { grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); }
   .fan { height: 560px; --fan-zoom: .54; --fan-guard: 190px; }
   .scan { --scan-y: 140px; --scan-w: 186px; }
+  /* the stations: a zoom-.86 phone is 335px wide, and the measure-first
+     split left its column 246px at 950 — the plinth stuck out 45px on each
+     side and the page scrolled 7px sideways. The phone takes a 360px column
+     of its own (mirrored on .is-rev, where the visual is the first track)
+     and a .78 zoom: 304px of phone plus the plinth, with room at 901. The
+     child combinator keeps this off the cook/menu pair, whose phones are
+     sized by .ph-pair's container queries later in the sheet. */
+  .st-g { grid-template-columns: minmax(0, 1fr) minmax(0, 360px); }
+  .station.is-rev .st-g { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); }
+  .st-v > .ph .phone { zoom: .78; }
 }
+
+/* 901–990: five plates fit the doors tray and the sixth does not; it drops
+   to a second row rather than hiding past the edge with no mask to say so */
+@media (max-width: 990px) and (min-width: 901px) { .doors-r { flex-wrap: wrap; overflow: visible; } }
+/* 1101–1300: the measure-first station split starves the approve demo and
+   the cook/menu pair (466px at 1200); they hold a 520px column instead */
+@media (max-width: 1300px) and (min-width: 1101px) { #s-approve .st-g, #s-cook .st-g { grid-template-columns: minmax(0, 1fr) minmax(0, 520px); } }
 
 /* the aisle strip runs out of room before the dock arrives at 900 */
 @media (max-width: 1220px) and (min-width: 901px) {
@@ -1888,7 +1938,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
   /* .today is a tracked mono stamp, and a label at 13px — except when it is
      set INSIDE a sentence, where a 13px word in a 15px line reads as a typo
      and measures as prose. Inline, it takes its paragraph's size. */
-  p .today, li .today, dd .today { font-size: inherit; }
+  p .today, li .today, dd .today { font-size: inherit; white-space: normal; }
   /* one 64-character eyebrow. "Nine things it refuses to do, and will not do
      under another name" is a sentence wearing a label's clothes; at 13px
      uppercase it is the only thing on the phone you have to lean into. */
@@ -2480,7 +2530,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ring-rot, .ring-n, .sign, .tagb, .cord-pull, .rc-soc .soc-i, .scan-card, .scan-found, .tier, .door, .ls-c { transition: none; }
+  .ring-rot, .ring-n, .sign, .tagb, .cord-pull, .rc-soc .soc-i, .scan-card, .scan-found, .tier, .door, .ls-c, .fan-p { transition: none; }
   .scan.is-scanning .scan-line { animation: none; opacity: 0; }
   @media (hover: hover) { .btn.pri:hover::after { transition: none; transform: translateX(-120%); } }
   .chip:active, .q-btn:active, .unit-b:active, .show:active, .shelf-b:active, .door-c:active { transform: none; }
@@ -2600,14 +2650,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
    simply open, which is the honest fallback. */
 
 /* ── the boundary test: four answers, one of them here ─────────────── */
-.own { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 11px; }
-.own-i { display: grid; align-content: start; gap: 9px; padding: 17px 19px; border: 0; border-radius: var(--r2); background: var(--card); box-shadow: var(--e2); }
-.own-i.is-here { background: var(--sage-50); box-shadow: var(--e2), inset 0 0 0 2px var(--sage); }
-.own-q { font-size: var(--cs-base); font-weight: 650; letter-spacing: -0.014em; line-height: 1.3; color: var(--ink); text-wrap: pretty; }
-.own-w { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 600; font-size: var(--cs-lg); letter-spacing: -0.02em; color: var(--sage-700); }
-.own-w .ic-cs { color: var(--soft); }
-.own-i.is-here .own-w .ic-cs { color: var(--sage); }
-.own-a { font-size: var(--cs-sm); line-height: 1.45; color: var(--muted); max-width: var(--measure); text-wrap: pretty; }
 
 /* ── one disclosure group, used by the origins and the three axes ──── */
 .orig, .axes { display: grid; gap: 7px; }
@@ -2637,7 +2679,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .vocab li { display: grid; align-content: start; gap: 3px; padding: 15px 17px; border: 0; border-radius: var(--r2); background: var(--card); box-shadow: var(--e2); }
 .vocab-n { font-family: var(--font-display); font-weight: 500; font-size: clamp(30px, 3vw, 42px); line-height: 1; letter-spacing: -0.04em; color: var(--terra); font-variant-numeric: tabular-nums lining; font-variation-settings: 'opsz' 96, 'SOFT' 20; }
 .vocab b { margin-top: 4px; font-size: var(--cs-sm); font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
-.vocab span:last-child { font-size: var(--cs-xs); line-height: 1.45; color: var(--soft); text-wrap: pretty; }
+.vocab span:last-child { font-size: var(--cs-sm); line-height: 1.45; color: var(--soft); text-wrap: pretty; } /* inside <li>: prose, 15px floor */
 
 /* ── the movement: seven stamped fields on one slip ────────────────── */
 .mvt { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -2684,7 +2726,6 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 /* ── every figure says where it comes from ─────────────────────────── */
 
 @media (max-width: 640px) {
-  .own-i { padding: 14px 16px; gap: 7px; }
   .orig-d > summary, .axes-d > summary { padding: 9px 14px; }
   .orig-b, .axes-b { padding: 11px 14px 14px; gap: 9px; }
   .axes-l li { grid-template-columns: minmax(0, 1fr); gap: 3px; padding: 9px 11px; }
@@ -2733,6 +2774,9 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
    six roles, a six-row table and twelve refusals as bare browser defaults:
    an unstyled <ol>, a 2px table border, numbers on their own lines. It is
    also 1,547px of the phone page and the route a partner opens second.
+   (2026-09-23: the refusal list, the next-door list and the boundary test
+   left the page with the review; `.mv-l`, `.ref-l` and `.own` went with
+   them, and the seats took the front page's `.role-i` sticker.)
    The same four materials as everywhere else — plinth, ticket, rule,
    stamp — and no new tokens. */
 .fst { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
@@ -2744,7 +2788,10 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 
 .fseat { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
 .fseat-i { display: grid; align-content: start; gap: 7px; padding: 15px 17px; border: 0; border-radius: var(--r2); background: var(--card); box-shadow: var(--e2); }
-.fseat-i > b { justify-self: start; padding: 5px 11px; border-radius: var(--r-btn); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--font-mono); font-weight: 400; font-size: var(--cs-xs); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+/* two rows of three on a desk, as the front page's cards; declared after
+   .fseat because the auto-fit above would out-order an earlier tier */
+@media (min-width: 1100px) { .fseat { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fseat-i .role-top > b { justify-self: start; padding: 5px 11px; border-radius: var(--r-btn); background: var(--inset); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--font-mono); font-weight: 400; font-size: var(--cs-xs); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .fseat-w { font-size: var(--cs-sm); font-weight: 650; letter-spacing: -0.01em; line-height: 1.4; color: var(--ink); text-wrap: pretty; }
 .fseat-d { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 9px; box-shadow: inset 0 1px 0 var(--e-line); font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .06em; text-transform: uppercase; color: var(--soft); }
 .fseat-d .ic-cs { color: var(--soft); }
@@ -2757,36 +2804,26 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .ftab td { color: var(--muted); }
 .ftab td.is-mono { font-family: var(--font-mono); font-size: var(--cs-xs); letter-spacing: .04em; color: var(--sage-700); white-space: nowrap; }
 
-.fel-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 3.4vw, 48px); align-items: start; }
-.mv-l, .ref-l { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
-.mv-l li { display: grid; padding: 13px 16px; border: 0; border-radius: var(--r1); background: var(--inset); box-shadow: var(--e1); }
-.mv-l b { display: block; font-size: var(--cs-sm); font-weight: 650; letter-spacing: -0.01em; color: var(--ink); text-wrap: pretty; }
-.mv-l span { display: block; margin-top: 3px; font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .1em; text-transform: uppercase; color: var(--sage-700); }
-.ref-l li { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 12px 0; box-shadow: inset 0 1px 0 var(--e-line); }
-.ref-l li:first-child { box-shadow: none; }
-.ref-n { font-family: var(--font-mono); font-size: var(--cs-11); letter-spacing: .1em; color: var(--clay); }
-.ref-l b { font-weight: 500; font-size: var(--cs-sm); line-height: 1.5; color: var(--muted); text-wrap: pretty; }
+/* the one line at the foot of /features: a statement, not a map */
+.fel-in .sub { max-width: var(--measure-tight); }
 
 @media (max-width: 900px) {
-  .fel-g { grid-template-columns: minmax(0, 1fr); row-gap: var(--sp-6); }
   .ftab tbody th { min-width: 120px; }
   /* every one of these sits inside an <li>, so the 15px prose floor is
      the law for it on a phone — the same raise the block further up
      makes for .cite-w and .cite .conf. */
-  .mv-l span, .fseat-d, .ref-n, .fst-n, .fseat-i > b, .ftab td.is-mono { font-size: var(--cs-sm); }
+  .fseat-d, .fst-n, .fseat-i .role-top > b, .ftab td.is-mono { font-size: var(--cs-sm); }
 }
 @media (max-width: 640px) {
   .fst-i { padding: 11px 14px; gap: 10px; }
-  /* six role cards stacked is six three-line blocks; the code stamp and
-     the device are both chrome and both short, so on a phone they share
-     the first row and the sentence takes the second. 433px back. */
-  .fseat-i { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 14px; gap: 4px 10px; }
-  .fseat-i > b { grid-row: 1; grid-column: 1; padding: 3px 9px; }
-  .fseat-d { grid-row: 1; grid-column: 2; align-self: center; margin-top: 0; padding-top: 0; box-shadow: none; }
-  .fseat-w { grid-column: 1 / -1; }
+  /* the seat's sticker and code stamp take the first row on their own: a
+     device line beside them ran into the stamp on the caregiver card */
+  .fseat-i { padding: 10px 14px 12px; gap: 6px; }
+  .fseat-i .role-top > b { padding: 3px 9px; }
+  .role-i { width: 32px; height: 32px; border-radius: 9px; }
+  .role-i .ic-cs { width: 20px; height: 20px; }
+  .fseat-d { padding-top: 8px; }
   .ftab th, .ftab td { padding: 10px 13px; }
-  .mv-l li { padding: 10px 13px; }
-  .ref-l li { padding: 9px 0; }
 }
 
 /* The loop strip is the one phone rail with no peeking item at all: seven
@@ -2812,7 +2849,9 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 
 /* ── the fan: inside its column, opening with the scroll ───────────────── */
 .fan { --fan-zoom: .64; --fan-w: calc(390px * var(--fan-zoom)); --fan-max: clamp(0px, calc((100% - var(--fan-w)) / 2 - 12px), 152px); --sp: 0; height: 620px; }
-.fan-p { transition: transform 220ms var(--ease-soft); }
+.fan-p { transition: transform 220ms var(--ease-soft), left 260ms var(--ease-soft); }
+/* a side phone is a target: tap it and it comes to the front */
+@media (min-width: 901px) { .fan-p:not(.is-c) { cursor: pointer; } }
 .fan-p.is-l { left: calc(50% - var(--fan-max)); transform: translateX(-50%) rotate(calc(-6deg - var(--sp) * 4deg)) translateY(calc(28px - var(--sp) * 18px)); }
 .fan-p.is-r { left: calc(50% + var(--fan-max)); transform: translateX(-50%) rotate(calc(6deg + var(--sp) * 4deg)) translateY(calc(28px - var(--sp) * 18px)); }
 .fan-p.is-c { transform: translateX(-50%) translateY(calc(var(--sp) * -12px)); }
@@ -2850,7 +2889,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .demo { --demo-pad: clamp(16px, 1.4vw, 22px); --fig: clamp(20px, 1.5vw, 24px); gap: 10px; }
 .demo-h { gap: 8px 12px; padding-block: calc(var(--demo-pad) - 7px); }
 .demo-t { font-size: var(--cs-sm); }
-.demo-f { font-size: var(--cs-xs); line-height: 1.5; }
+.demo-f { font-size: var(--cs-sm); line-height: 1.5; } /* a <p>: the 15px prose floor, compact only in leading */
 .shelf-row { padding: 10px 12px; gap: 12px; }
 .mini-q, .shelf-mini { padding: 10px 12px; gap: 6px; }
 .mini-q-r { padding: 4px 0; }
@@ -2924,7 +2963,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 /* ── R9 follow-up: the demo column takes the room the phone leaves ─────── */
 @media (min-width: 901px) {
   .aisle-d { max-width: 760px; }
-  .shopq.is-rev { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+  .shopq.is-rev { grid-template-columns: minmax(0, 1fr) minmax(0, 500px); }
   .shopq .aisle-ph { width: 100%; justify-items: stretch; }
   .shopq .demo { width: 100%; }
 }

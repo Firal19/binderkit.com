@@ -1,13 +1,13 @@
 // /providers — the provider side at depth: four screens, each doing work,
-// and the flows from the feature document told step by step.
+// and the flows from the feature document told step by step. The flows
+// carry the story on their own: the From/Trigger/To tables that used to
+// follow two of them said the same thing a second time in a grid.
 
-import { esc, sec, fold, h2, eyebrow, iosShell, webShell, ic, find, S, screen, shell, rosterToy, credRail, credTimeline, timesheetToy, clockToy, joinBlock, ixNav, deepLink } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, rosterToy, credRail, credTimeline, annotatedBoard, joinBlock, ixNav, deepLink } from './bits.js';
 
 const CHAPTERS = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['hiring', 'Hiring']];
 
 const flow = (title, steps, note) => `<div class="flow"><h3>${esc(title)}</h3><ol class="flow-l">${steps.map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b>${d ? `<span>${esc(d)}</span>` : ''}</li>`).join('')}</ol>${note ? `<p class="fine">${esc(note)}</p>` : ''}</div>`;
-
-const trans = (title, rows) => `<div class="trans"><h3>${esc(title)}</h3><div class="trans-t" role="table" aria-label="${esc(title)}"><div class="trans-h" role="row"><span role="columnheader">From</span><span role="columnheader">Trigger</span><span role="columnheader">To</span></div>${rows.map(([a, b, c, k]) => `<div class="trans-r" role="row"><span role="cell">${esc(a)}</span><span role="cell">${esc(b)}</span><b role="cell" class="${k ? `is-${k}` : ''}">${esc(c)}</b></div>`).join('')}</div></div>`;
 
 function strip() {
   return `<nav class="chap" aria-label="Chapters" data-spy data-chap><ul data-scrollx>${CHAPTERS.map(([id, t], i) => `<li><a href="#${id}"><span class="chap-n">${i + 1}</span>${esc(t)}</a></li>`).join('')}</ul></nav>`;
@@ -32,8 +32,7 @@ function chBoard() {
   const loop = find('loop');
   return sec('board', 'ch', `<div class="wrap">
     <div class="ch-head head-r"><div>${eyebrow('1 · The board')}${h2('board', s.heading, s.sub)}</div>${deepLink('/providers#board', 'the board')}</div>
-    <div class="shell" tabindex="0" role="group" aria-label="The desktop board — scroll sideways for the rest">${webShell('aidepost', { key: 'board' })}</div>
-    <span class="shell-cap">Drag sideways — the board goes on past the edge.</span>
+    ${annotatedBoard({ annot: false, live: false })}
     <div class="ch-g">
       ${flow('Saturday night is open', [
     ['Friday morning', 'the board shows Saturday night open at one house.', 'open'],
@@ -68,14 +67,6 @@ function chCredentials() {
     ['Decide', 'the manager assigns her anyway — permitted, marked, recorded — or does not.'],
     ['Renewed', 'the marker clears; the expired record remains as history.', 'covered'],
   ])}
-        ${trans('The lifecycle — nothing in this table blocks an assignment', [
-    ['—', 'Recorded with dates', 'current'],
-    ['current', '30 days before expiry', 'expiring', 'open'],
-    ['expiring', '7 days before', 'expiring · second alert', 'open'],
-    ['expiring', 'Expiry passes', 'expired · marked on the roster', 'open'],
-    ['any', 'New row recorded', 'current · prior retained', 'covered'],
-    ['current', '14 days before the next screening', 'rescreen due'],
-  ])}
       </div>
     </div>
     ${credTimeline()}
@@ -93,21 +84,11 @@ function chHours() {
     ['Clocks in at the house', 'no connectivity? The event queues, marked pending; she carries on.'],
     ['Forgets to clock out', 'the incomplete record surfaces to her and the manager; either completes it with a time and a reason.'],
     ['Crosses forty hours', 'an overtime indication appears. No daily indication appears, at any point.', 'open'],
-    ['Her manager approves', 'one person at a time; bulk approval is forbidden. The week locks.', 'covered'],
+    ['Her manager approves', 'one person at a time. The week locks.', 'covered'],
     ['The provider exports', 'a CSV of hours by person, house and day. No calculated pay. Exporting is recorded.'],
-  ])}
-        ${trans('Clock → timesheet → export', [
-    ['—', 'Clock in', 'open day'],
-    ['open day', 'Clock out', 'hours computed'],
-    ['open day', 'No clock-out two hours after shift end', 'flagged · correctable with a reason', 'open'],
-    ['week', 'Sunday boundary', 'submitted'],
-    ['submitted', 'Approve', 'approved · locked', 'covered'],
-    ['approved', 'Correction', 'approved + addendum, re-approved'],
-    ['approved', 'Export', 'logged — no state change'],
   ])}
       </div>
     </div>
-    <div class="hrs-toys">${clockToy()}${timesheetToy()}</div>
     <p class="pull">${esc(find('loop').closing)}</p>
   </div>`));
 }
@@ -127,38 +108,31 @@ function chHiring() {
     ['Screened, offered, accepted, hired', 'a staff record, her account attached, and onboarding for that house’s track.', 'covered'],
     ['Three items outstanding', 'she may be rostered before they are complete; the eligibility list marks it; the provider decides.'],
   ], s.foot)}
-        ${trans('Application → hire', [
-    ['draft', 'Publish — the charge is paid', 'live', 'covered'],
-    ['live', 'Apply, with an account', 'received'],
-    ['received', 'Screen', 'screened'],
-    ['screened', 'Offer', 'offered'],
-    ['offered', 'Accept / decline', 'accepted / declined'],
-    ['accepted', 'Hire — the provider', 'staff row, onboarding opened', 'covered'],
-    ['any', 'Reject, with an optional reason', 'rejected'],
-  ])}
       </div>
     </div>
   </div>`));
 }
 
+/* One line per machine. Three of the four are told step by step in the
+   chapters above; this is the index, not a second telling. */
+const MACHINES = [
+  ['Credential', 'Dated, noticed at thirty days and seven, marked when expired, renewed as a new row.'],
+  ['Hire', 'Drafted, paid, published, applied for, screened, offered, hired.'],
+  ['Hours', 'Clock in, clock out, a week, a flag at forty, approve, export.'],
+  ['Policy signature', 'Register a version; everyone signs by name; a new version resets the signatures.'],
+];
 function machines() {
-  const loop = find('loop');
-  return fold('The four machines: what happens, in order, every single time.', sec('machines', 'mach', `<div class="wrap">
+  return fold('Four machines, one line each: what happens, in order, every time.', sec('machines', 'mach', `<div class="wrap">
     <div class="head">${eyebrow('Four machines')}${h2('machines', 'What happens, in order, every time.')}</div>
-    <div class="mach-g">${loop.machines.map(([t, d]) => `<details class="mach-i"><summary><h3>${esc(t)}</h3><span class="faq-x" aria-hidden="true"></span></summary><p>${esc(d)}</p></details>`).join('')}</div>
+    <dl class="mach-l">${MACHINES.map(([t, d]) => `<div class="mach-i"><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join('')}</dl>
   </div>`));
 }
 
+/* One sentence. The billing states themselves are on /pricing. */
 function failed() {
-  return fold('If a payment fails your workers see nothing, and clocking continues.', sec('payment', 'pay', `<div class="wrap pay-g">
-    <div>${eyebrow('If a payment fails')}${h2('payment', 'Your workers see nothing. Clocking continues.')}</div>
-    <ol class="flow-l">${[
-    ['Overdue', 'full access; a notice to the provider alone.'],
-    ['Reminders', 'day 0, day 7, day 14.'],
-    ['Read-only', 'rosters cannot be built and shifts cannot be assigned. Clocking continues: hours worked are a legal record.', 'open'],
-    ['Live postings', 'unaffected until cancellation; on cancellation they are withdrawn.'],
-    ['Resolved', 'full access immediately.', 'covered'],
-  ].map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>
+  return fold('Your workers can still clock in and out; you see the notice, they see nothing.', sec('payment', 'pay', `<div class="wrap pay-g">
+    <div>${eyebrow('Billing')}${h2('payment', 'If a payment fails.')}</div>
+    <p class="pay-one">If a payment fails, your workers can still clock in and out; you see the notice, they see nothing.</p>
   </div>`));
 }
 

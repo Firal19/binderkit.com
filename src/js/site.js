@@ -238,7 +238,7 @@
          only claim one key. data-tour="marpass handoff" now serves both. */
       phones.forEach((p) => { p.hidden = !(` ${p.dataset.tour} `).includes(` ${key} `); });
     };
-    let ticking = false;
+    let ticking = false; let settleT = 0;
     const scan = () => {
       ticking = false;
       const mid = window.innerHeight * 0.45;
@@ -250,7 +250,8 @@
       }
       if (best) { steps.forEach((s) => s.removeAttribute('data-on')); best.setAttribute('data-on', ''); show(best.dataset.tour); }
     };
-    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(scan); } }, { passive: true });
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(scan); } clearTimeout(settleT); settleT = setTimeout(scan, 380); }, { passive: true });
+    window.addEventListener('scrollend', scan);
     steps.forEach((s) => s.addEventListener('mouseenter', () => { steps.forEach((x) => x.removeAttribute('data-on')); s.setAttribute('data-on', ''); show(s.dataset.tour); }));
   };
 

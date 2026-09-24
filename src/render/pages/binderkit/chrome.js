@@ -41,7 +41,7 @@ export const HOME = number('BK-LP', [
   { id: 'editor', label: 'The editor', tab: 'Editor', gist: 'A refusal names the rule and offers something to do instead.' },
   { id: 'versions', label: 'Versions', tab: 'Versions', gist: 'An answer changes, the plan regenerates, the diff is shown.' },
   { id: 'plates', label: 'The screens, listed', tab: 'Plates', foldName: 'Five screens', gist: 'Five screens, each with an address of its own.' },
-  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Six rules that keep every fact about a person out.' },
+  { id: 'nothing', label: 'Nothing about anyone', tab: 'Nothing', gist: 'Four rules that keep every fact about a person out.' },
   { id: 'roles', label: 'Roles', tab: 'Roles', gist: 'Who plans, who prints, and what each may see.' },
   { id: 'questions', label: 'Questions', tab: 'FAQ', gist: 'The five we are asked most, and how to reach us.' },
   { id: 'pricing', label: 'Pricing', tab: 'Pricing', gist: '$29 a facility a month, or $149 once.' },
@@ -52,37 +52,42 @@ export const HOME = number('BK-LP', [
    Every chapter's sections, numbered. It was one array per chapter file,
    which was fine while nothing needed to see across chapters; the palette,
    the chapter pager and the site-wide section index all do. One source, so
-   a section cannot exist in the header and be missing from the palette. */
+   a section cannot exist in the header and be missing from the palette.
+
+   A chapter's first entry is its title page, and its label is the h1's own
+   wording, minus the full stop: the phone foot bar prints that label as the
+   page name, and a bar that says "a shelf of binders" under a heading that
+   says "five binders" is two claims. js/pages/binderkit.js fitName() cuts
+   it at a word boundary where the bar is narrower than the words. */
 export const BOOK = {
   '/': HOME,
   '/screens': number('BK-SC', [
-    { id: 'top', label: 'The plates', tab: '' },
+    { id: 'top', label: 'Five screens, at the size they ship', tab: '' },
     { id: 'five-plates', hid: 'plates', label: 'Five screens', tab: 'Screens' },
     { id: 'annotated', label: 'The guarded editor, at desk size', tab: 'Desk size', foldName: 'At desk size', gist: 'The same refusals, on the screen a provider plans at.' },
   ]),
   '/plan': number('BK-PL', [
-    { id: 'top', label: 'Five answers in. A shelf of binders out.', tab: '' },
+    { id: 'top', label: 'Five answers in. Five binders out', tab: '' },
     { id: 'answers', label: 'The answers, and the plan', tab: 'Answers' },
     { id: 'steps', label: 'From question zero to reset', tab: 'Steps', foldName: 'The steps', gist: 'What each step decides, and what it costs to change your mind.' },
     { id: 'guardrails', label: 'The three guardrails', tab: 'Guardrails', gist: 'Coverage, scope and access, cohesion.' },
     { id: 'artefacts', label: 'What prints', tab: 'Prints', gist: 'The contents page, the dividers, the brief and the procedure.' },
   ]),
   '/library': number('BK-LB', [
-    { id: 'top', label: 'The library is the product', tab: '' },
+    { id: 'top', label: 'Your licence track selects the library', tab: '' },
     { id: 'libraries', label: 'Four tracks, four libraries', tab: 'Libraries' },
     { id: 'evidence', label: 'The rules, in plain words', tab: 'Rules', foldName: 'The rules', gist: 'Every citation on your plan, and how sure we are of it.' },
-    { id: 'never', label: 'What stays out', tab: 'Never', gist: 'Six things this product will never hold, and why.' },
     { id: 'words', label: 'Three words', tab: 'Words' },
   ]),
   '/pricing': number('BK-PR', [
-    { id: 'top', label: 'Priced in the open', tab: '' },
+    { id: 'top', label: 'Priced per facility', tab: '' },
     { id: 'tiers', label: 'The tiers', tab: 'Tiers' },
     { id: 'signup', label: 'Signing up', tab: 'Signing up' },
     { id: 'billing', label: 'If a payment fails', tab: 'Payment' },
     { id: 'lapse', label: 'If you stop paying', tab: 'Lapse' },
   ]),
   '/about': number('BK-AB', [
-    { id: 'top', label: 'Binder setup for care homes', tab: '' },
+    { id: 'top', label: 'Binder setup for Oregon care homes', tab: '' },
     { id: 'first', label: 'Nothing about anyone', tab: 'Nothing' },
     { id: 'maker', label: 'Who makes it', tab: 'Maker' },
   ]),
@@ -111,6 +116,19 @@ export const eyebrow = (t) => `<span class="eyebrow">${esc(t)}</span>`;
 export const h2 = (id, text, sub = '') => `<h2 id="h-${esc(id)}">${esc(text)}</h2>${sub ? `<p class="sub">${esc(sub)}</p>` : ''}`;
 export const ev = (tag) => (tag ? `<i class="ev is-${esc(tag)}">${esc(tag)}</i>` : '');
 export const place = (t) => (t ? `<i class="place">${esc(t)}</i>` : '');
+
+/* ── the three words on every item, and no fourth ─────────────────────
+   verified, derived, open. The sheet's legend, the library chapter's
+   evidence section and the front page's own legend all read from this one
+   list, so the vocabulary cannot drift: the front page used to print four
+   words (unverified, superseded) that no other page and no toggle knew.
+   "posted" on the sheet is a placement mark, not an evidence grade. */
+export const WORDS = [
+  ['verified', 'A provider inspected on this track read the rule itself.'],
+  ['derived', 'Taken from the rule chapter. It prints that way until confirmed.'],
+  ['open', 'No rule yet. Marked as such, never hidden.'],
+];
+export const wordsList = () => `<div class="tag-g words">${WORDS.map(([k, what]) => `<div data-word="${esc(k)}">${ev(k)}<span>${esc(what)}</span></div>`).join('')}</div>`;
 
 /** A section of the document: the control number in the margin, the body beside it. */
 export function section(s, inner, opts = {}) {
@@ -225,12 +243,19 @@ export const CITES = [
   ['OAR 411-360-0180', 'Staff records', 'What goes in each staff file: training, checks and their dates.', 'AFH-DD'],
   ['OAR 411-360-0185', 'Abuse and incident', 'How an incident is reported, to whom, and by when.', 'AFH-DD'],
 ];
+/* The front page no longer prints the rules list — it is /library's own
+   section — so a citation there goes to the chapter that has it, and on
+   any other chapter it jumps to the list on the same page. The popover
+   (js/pages/binderkit.js cites()) reads its rows from #bk-cites, which
+   every chapter carries in its dialogs, so it explains a citation wherever
+   the link points. */
 export const cite = (text) => {
   const known = CITES.find((c) => c[0] === text);
   return known
-    ? `<a class="cite" href="#cites" data-cite="${esc(text)}">${esc(text)}</a>`
+    ? `<a class="cite" href="${CUR === '/' ? '/library#cites' : '#cites'}" data-cite="${esc(text)}">${esc(text)}</a>`
     : esc(text);
 };
+export const citesJson = () => `<script type="application/json" id="bk-cites">${JSON.stringify(CITES.map(([c, name, what]) => [c, name, what])).replace(/</g, '\\u003c')}</script>`;
 export const citesBlock = (opts = {}) => {
   const groups = [...new Set(CITES.map((c) => c[3]))];
   return `<div class="cites" id="${esc(opts.id || 'cites')}">
@@ -259,14 +284,26 @@ export const tierGrid = (p) => `<div class="tiers">${p.pricing.rows.map(([name, 
   return `<div class="tier ${main ? 'is-main' : ''}">${main ? '<span class="tier-flag">Most facilities</span>' : ''}<span class="tier-n">${esc(name)}</span><span class="tier-p">${priceHtml}</span><span class="tier-d">${esc(desc)}</span></div>`;
 }).join('')}</div>`;
 
+/* ── the four libraries, as one table ──────────────────────────────────
+   Shared by the front page and /library. A library is defined by the rule
+   it is read from, so a row whose inventory the data leaves open is
+   described by that rule rather than by a date: the page says what the
+   product is, not what is being built. */
+const LIB_WHAT = {
+  'AFH-APD': 'Facility records and resident records, with the rule beside each.',
+  'AFH-OHA': 'The records the rule names, with the rule beside each.',
+};
+export const libTable = (s) => `<table class="lib"><thead><tr>${s.cols.map((c) => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead>
+    <tbody>${s.rows.map(([lib, auth, what]) => `<tr><th scope="row" data-col="${esc(s.cols[0])}">${esc(lib)}</th><td data-col="${esc(s.cols[1])}" class="is-auth"><code>${esc(auth)}</code></td><td data-col="${esc(s.cols[2])}">${esc(/^coming next/i.test(what) && LIB_WHAT[lib] ? LIB_WHAT[lib] : what)}</td></tr>`).join('')}</tbody></table>`;
+
 /* ── the planner: the data, then the rule ─────────────────────────────── */
 const TRACKS = [
   { id: 'AFH-DD', auth: 'OAR 411-360', ok: true },
-  { id: 'AFH-APD', auth: 'OAR 411-050', notice: 'The AFH-APD library is coming next. This page plans on the AFH-DD library. Its rule: OAR 411-050, facility records and resident records.' },
-  { id: 'AFH-OHA', auth: 'OAR 309-040', notice: 'The AFH-OHA library is coming next. This page plans on the AFH-DD library. Its rule: OAR 309-040.' },
+  { id: 'AFH-APD', auth: 'OAR 411-050', notice: 'This page plans on the AFH-DD library. The AFH-APD library is read from OAR 411-050: facility records and resident records.' },
+  { id: 'AFH-OHA', auth: 'OAR 309-040', notice: 'This page plans on the AFH-DD library. The AFH-OHA library is read from OAR 309-040.' },
   { id: 'Agency', auth: 'OAR 411-325', notice: 'The agency library follows OAR 411-325 and 411-323: one hundred and twenty-six items across the five binders. This page plans on the AFH-DD library.' },
 ];
-const SKIP = ['skip', 'Skip — resolves the inclusive way'];
+const SKIP = ['skip', 'Skip'];
 const YN = [['yes', 'Yes'], ['no', 'No'], SKIP];
 export const QUESTIONS = [
   { id: 'q1', no: '1', text: intake.questions[1][1], options: YN, why: 'It decides whether a staff binder is in the plan.' },
@@ -368,7 +405,7 @@ export function planner(opts = {}) {
       <button type="button" class="btn sm" data-plan-reset>${ic('reset', 18)}<span>Reset the answers</span></button>
       <button type="button" class="btn sm" data-plan-copy data-copy="${esc(planText(plan, a))}" data-copied="Plan copied as text">${ic('copy', 18)}<span>Copy the plan as text</span></button>
     </div>
-    <p class="pl-fine">The same answers always produce the same plan. Change one, then change it back, and you are at v1 again.</p>
+    ${opts.fine === false ? '' : '<p class="pl-fine">The same answers always produce the same plan. Change one, then change it back, and you are at v1 again.</p>'}
   </form>
   <div class="pl-out" id="plan-out" aria-live="polite">${planOut(plan)}</div>
   <script type="application/json" id="bk-plan-data">${JSON.stringify(PLAN_DATA).replace(/</g, '\\u003c')}</script>
@@ -515,7 +552,8 @@ function dialogs(cfg, p, { tabs, page }) {
     }
   }
   const all = [...verbs, ...go, ...ch, ...elsewhere];
-  return `<dialog class="lens" id="lens" aria-label="The contents page at true size">
+  return `${citesJson()}
+<dialog class="lens" id="lens" aria-label="The contents page at true size">
   <div class="lens-bar"><span class="lens-t">${esc(S.paperTitle)} · 8.5 × 11 in</span><button class="rb" type="button" data-lens-close aria-label="Close">${ic('close', 20)}</button></div>
   <div class="lens-scroll" data-scrollx><div class="lens-page"><div class="ruler ruler-x" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => `<i>${n}</i>`).join('')}</div><div class="ruler ruler-y" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => `<i>${n}</i>`).join('')}</div><div class="lens-sheet" data-lens-sheet></div></div></div>
 </dialog>

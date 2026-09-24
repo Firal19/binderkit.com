@@ -29,7 +29,26 @@
       /* the foot bar says WHERE, not just how far: a page number on a
          seven-thousand-pixel phone page is a progress bar, and a name is a
          location. Both, on one line, under the thumb. */
-      if (nm && on && on.dataset.name) nm.textContent = on.dataset.name;
+      if (nm && on && on.dataset.name) fitName(on.dataset.name);
+    };
+    /* A name wider than the room the bar leaves it is cut at a word and
+       given an ellipsis, not cut mid-word by the CSS ellipsis alone:
+       "Five answers in. Five…" rather than "Five answers in. Five bin…".
+       Measured only when the name or the bar's width changes, so a scroll
+       costs one comparison. The CSS ellipsis stays as the last resort for
+       a single word wider than the bar. */
+    let fitted = ''; let fittedW = 0;
+    const fitName = (name) => {
+      const room = nm.parentElement ? nm.parentElement.clientWidth : 0;
+      if (name === fitted && room === fittedW) return;
+      fitted = name; fittedW = room;
+      nm.textContent = name;
+      if (nm.scrollWidth <= nm.clientWidth + 1) return;
+      const words = name.split(' ');
+      while (words.length > 1 && nm.scrollWidth > nm.clientWidth + 1) {
+        words.pop();
+        nm.textContent = `${words.join(' ').replace(/[.,;:]$/, '')}…`;
+      }
     };
     window.addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(paint); } }, { passive: true });
     window.addEventListener('resize', paint, { passive: true });
@@ -172,12 +191,18 @@
       out.counts = { kinds: out.binders.length, physical, tabs, dividers };
       return out;
     }
-    const cite = (t) => `<a class="cite" href="#cites" data-cite="${esc(t)}">${esc(t)}</a>`;
+    /* the rules list is /library's own section; a chapter that carries it
+       links within the page, the front page links to the chapter — the
+       same choice render/pages/binderkit/chrome.js cite() makes at build,
+       kept here so a re-plan does not turn every citation into a link to
+       an anchor this page does not have. */
+    const citesAt = document.getElementById('cites') ? '#cites' : '/library#cites';
+    const cite = (t) => `<a class="cite" href="${citesAt}" data-cite="${esc(t)}">${esc(t)}</a>`;
     const evTag = (t) => (t ? `<i class="ev is-${esc(t)}">${esc(t)}</i>` : '');
     const place = (t) => (t ? `<i class="place">${esc(t)}</i>` : '');
     const labelOf = (q, v, track) => { const opts = track === 'Agency' && q.agency ? q.agency.options : q.options; const o = opts.find((x) => x[0] === v); return o ? o[1].replace(/ — .*$/, '') : v; };
     const planText = (plan, a) => {
-      const lines = [`Binderkit plan — illustrative · ${plan.track}`];
+      const lines = [`Binderkit plan · ${plan.track}`];
       lines.push(`Answers: ${D.questions.map((q) => `Q${q.no} ${labelOf(q, a[q.id], a.track)}`).join(' · ')}`);
       if (!plan.ok) { lines.push(plan.notice); return lines.join('\n'); }
       plan.binders.forEach((b, i) => lines.push(`${i + 1}. ${b.name}${b.copies > 1 ? ` ×${b.copies}` : ''} — ${b.posted ? 'posted' : `${b.tabs} tabs`} — ${b.auth} — ${b.why}`));
@@ -194,7 +219,7 @@
   <ol class="po-l">${plan.binders.map((b, i) => `<li class="po-b" data-key="${esc(b.key)}"><span class="po-n">${i + 1}</span><div class="po-m"><b>${esc(b.name)}${b.copies > 1 ? ` <em>× ${b.copies}</em>` : ''}</b><span class="po-why">${esc(b.why)}${b.fromSkip ? ' <i class="po-skip">from a skipped question</i>' : ''}</span></div><span class="po-t">${b.posted ? 'posted' : `${b.tabs} tabs`}</span><span class="po-a">${cite(b.auth)}</span></li>`).join('')}</ol>
   ${plan.left.length ? `<ul class="po-left">${plan.left.map((b) => `<li><s>${esc(b.name)}</s> <span>${esc(b.why)}</span></li>`).join('')}</ul>` : ''}
   <dl class="po-counts"><div><dt>Binders</dt><dd>${c.kinds} kinds · ${c.physical} physical</dd></div><div><dt>Tabs</dt><dd>${c.tabs}</dd></div><div><dt>Dividers to buy</dt><dd>${c.dividers}</dd></div>${plan.skipped.length ? `<div><dt>Skipped</dt><dd>${esc(plan.skipped.join(', '))} — resolved the inclusive way</dd></div>` : ''}</dl>
-  <p class="po-banner" data-plan-banner ${plan.same ? 'hidden' : ''}>${plan.same ? '' : 'Re-plan: v1 → v2. In the product this is an offer and a diff, and nothing changes until you accept it; here it is applied so you can see the page.'}</p>
+  <p class="po-banner" data-plan-banner ${plan.same ? 'hidden' : ''}>${plan.same ? '' : 'Re-plan: v1 → v2. In the product this is an offer with a diff, and nothing changes until you accept it.'}</p>
 </div>`;
     };
     const rowHtml = ([no, item, auth, tag, pl]) => `<li class="cp-r" data-ev="${esc(tag || 'none')}"><span class="cp-n">${esc(no)}</span><span class="cp-i">${esc(item)}</span><span class="cp-a">${cite(auth)}${evTag(tag)}${place(pl)}</span></li>`;
@@ -265,6 +290,10 @@
   /* ── citations: a paper popover on hover or tap ─────────────────────── */
   const cites = () => {
     const dict = {};
+    /* the rows travel with every chapter as #bk-cites, so the popover works
+       on the front page too, where the list itself is one chapter away */
+    const src = $('#bk-cites');
+    if (src) { try { JSON.parse(src.textContent).forEach(([c, name, what]) => { dict[c] = { name, what }; }); } catch (e) { /* the rows below */ } }
     $$('[data-cite-row]').forEach((r) => { const b = $('dt b', r); const d = $('dd', r); dict[r.dataset.citeRow] = { name: b ? b.textContent : '', what: d ? d.textContent : '' }; });
     if (!Object.keys(dict).length) return;
     const hover = window.matchMedia('(hover: hover)');
@@ -280,7 +309,8 @@
     const show = (a) => {
       const c = a.dataset.cite; const d = dict[c]; if (!d) return;
       const p = el();
-      p.innerHTML = `<b class="pop-c">${esc(c)}</b><span class="pop-n">${esc(d.name)}</span><p>${esc(d.what)}</p><a class="pop-l" href="#cites">All citations on this page →</a>`;
+      const to = a.getAttribute('href') || '#cites';
+      p.innerHTML = `<b class="pop-c">${esc(c)}</b><span class="pop-n">${esc(d.name)}</span><p>${esc(d.what)}</p><a class="pop-l" href="${esc(to)}">${to.startsWith('#') ? 'All the rules on this page →' : 'All the rules, in plain words →'}</a>`;
       p.hidden = false; cur = a;
       const r = a.getBoundingClientRect(); const w = p.offsetWidth;
       let left = r.left + window.scrollX; if (left + w > window.scrollX + window.innerWidth - 12) left = window.scrollX + window.innerWidth - 12 - w;
@@ -407,6 +437,32 @@
     first.parentNode.insertBefore(lead, first);
   };
 
+  /* ── the numbered pins, as buttons ──────────────────────────────────
+     site.js lights a callout on pointerover and darkens it on the next
+     pointer move outside, which is right for hovering and wrong for a
+     press. A pressed pin HOLDS: pin, sentence and the element it names
+     carry data-held until the pin is pressed again, another one is, or
+     Escape — and the sentence is brought into view and given focus. */
+  const pins = () => {
+    const release = () => $$('[data-held], [data-held-t]').forEach((x) => { x.removeAttribute('data-held'); x.removeAttribute('data-held-t'); });
+    document.addEventListener('click', (e) => {
+      const p = e.target.closest('button.cal-pin');
+      if (!p) { if (!e.target.closest('[data-callouts]')) release(); return; }
+      const w = p.closest('[data-callouts]'); if (!w) return;
+      const k = p.dataset.cal; const again = p.hasAttribute('data-held');
+      release();
+      if (again) return;
+      $$(`[data-cal="${k}"]`, w).forEach((x) => x.setAttribute('data-held', ''));
+      const stage = $('.cal-stage', w); const sel = p.dataset.sel;
+      if (stage && sel) { try { const t = stage.querySelector(sel); if (t) t.setAttribute('data-held-t', ''); } catch (err) { /* a selector that stops matching holds nothing */ } }
+      const row = $(`.cal-i[data-cal="${k}"]`, w); if (!row) return;
+      row.setAttribute('tabindex', '-1');
+      row.scrollIntoView({ block: 'nearest', behavior: calm.matches ? 'auto' : 'smooth' });
+      row.focus({ preventScroll: true });
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') release(); });
+  };
+
   /* ── determinism, checked in the page ──────────────────────────────── */
   const determinism = () => {
     const b = $('[data-determinism]'); const out = $('[data-det-out]');
@@ -439,7 +495,7 @@
     const openKeys = keysCard();
     const openPal = palette();
     keys(links, openKeys, openPal);
-    planner(); determinism(); guards(); legend(); cites(); versions(); turn(); ledger(); sell(); faq(); shell();
+    planner(); determinism(); guards(); legend(); cites(); pins(); versions(); turn(); ledger(); sell(); faq(); shell();
     document.documentElement.setAttribute('data-bk', 'set');
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

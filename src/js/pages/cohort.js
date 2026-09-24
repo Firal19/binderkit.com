@@ -214,14 +214,28 @@
      are switched here as well so the screen changes on the tap itself,
      not a frame later. The listener is capture-phase and stops the event,
      so site.js's own anchor handler (block: start) does not fight it. */
+  /* Where a step lands. On a desk the phone stands beside the list, and the
+     step goes to the 45% line site.js tour() scans on, so the two agree. At
+     <=900 the phone is pinned ACROSS the top of the list (cohort.css: .tour
+     is sticky at --hdr, crop + cap tall) and that same line put the tapped
+     hour under it — measured at 390x844, the time link at y331 beneath a
+     phone that ends at 364. There the step goes where its scroll-margin-top
+     says: 8px under the phone. position is read off .tour itself, because
+     the sideways-phone tier makes it static again. */
+  const pinned = () => { const t = $('.tour'); return Boolean(t) && getComputedStyle(t).position === 'sticky'; };
+  const land = (li) => {
+    const behavior = calm.matches ? 'auto' : 'smooth';
+    if (pinned()) { li.scrollIntoView({ block: 'start', behavior }); return; }
+    const y = li.getBoundingClientRect().top + window.scrollY - (window.innerHeight * 0.45 - 80) + 8;
+    window.scrollTo({ top: Math.max(0, y), behavior });
+  };
   const settle = (li) => {
     const steps = $$('.tl-i');
     steps.forEach((s2) => s2.removeAttribute('data-on'));
     li.setAttribute('data-on', '');
     const key = li.dataset.tour;
     $$('.tour-p[data-tour]').forEach((p2) => { p2.hidden = !(' ' + p2.dataset.tour + ' ').includes(' ' + key + ' '); });
-    const y = li.getBoundingClientRect().top + window.scrollY - (window.innerHeight * 0.45 - 80) + 8;
-    window.scrollTo({ top: Math.max(0, y), behavior: calm.matches ? 'auto' : 'smooth' });
+    land(li);
     history.replaceState(null, '', '#' + li.id);
   };
   const tapHours = () => {
@@ -248,8 +262,7 @@
       if (!next) return;
       steps.forEach((s) => s.removeAttribute('data-on'));
       next.setAttribute('data-on', '');
-      const y = next.getBoundingClientRect().top + window.scrollY - (window.innerHeight * 0.45 - 80) + 8;
-      window.scrollTo({ top: Math.max(0, y), behavior: calm.matches ? 'auto' : 'smooth' });
+      land(next);
       const a = $('.tl-at', next);
       if (a) a.focus({ preventScroll: true });
     };
@@ -273,6 +286,46 @@
     const paint = () => { const on = $('.tl-i[data-on]', tl); if (on) c.textContent = `${on.dataset.at} · ${($('h3', on) || {}).textContent || ''}`; };
     new MutationObserver(paint).observe(tl, { attributes: true, subtree: true, attributeFilter: ['data-on'] });
     paint();
+  };
+
+  /* ── on a phone, the step that is on is the one just under the phone ──
+     site.js tour() keys the phone to the step whose head is nearest 45% of
+     the viewport, and the desktop keeps that. At <=900 the phone is pinned
+     ACROSS the top of the list, crop + cap tall, so that line is wrong twice
+     over: on an 844px-tall phone it sits 16px under the phone, barely right,
+     and on a 667px-tall one it sits UNDER the phone, so the screen it showed
+     belonged to the step the phone was hiding — one behind the step being
+     read. Measured at 375x667 after landing 07:02 the phone still showed
+     06:55; at 320x568 five of seven hours showed the hour before. The line
+     here is the landed step's own head: 8px of air under the phone plus the
+     80px site.js measures a step's head at. It runs after site.js's scan on
+     the same scroll frame — both listeners queue one animation frame per
+     scroll event, in the order they were added, and this file boots after
+     site.js — so its answer is the one that paints. Off a phone, and on a
+     sideways phone where .tour is static again, it does nothing. */
+  const phoneScan = () => {
+    const tour = $('.tour');
+    const steps = $$('.tl-i[data-tour]');
+    const phones = $$('.tour-p[data-tour]');
+    if (!tour || !steps.length || !phones.length) return;
+    let ticking = false;
+    const scan = () => {
+      ticking = false;
+      if (!pinned()) return;
+      const line = tour.getBoundingClientRect().bottom + 8 + 80;
+      let best = null; let bestD = Infinity;
+      for (const s of steps) {
+        const r = s.getBoundingClientRect();
+        const d = Math.abs(r.top + Math.min(r.height / 2, 80) - line);
+        if (d < bestD) { bestD = d; best = s; }
+      }
+      if (!best || best.hasAttribute('data-on')) return;
+      steps.forEach((s) => s.removeAttribute('data-on'));
+      best.setAttribute('data-on', '');
+      const key = best.dataset.tour;
+      phones.forEach((p) => { p.hidden = !(' ' + p.dataset.tour + ' ').includes(' ' + key + ' '); });
+    };
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(scan); } }, { passive: true });
   };
 
   /* ── 08:00 · the MAR pass, played on the rendered screen ─────────────── */
@@ -621,10 +674,29 @@
     mq.addEventListener('change', apply);
   };
 
-  /* ── print only the manifesto ────────────────────────────────────────── */
-  const printing = () => {
-    $$('[data-print-only]').forEach((b) => b.addEventListener('click', () => { root.setAttribute('data-print', b.dataset.printOnly === 'refuses' ? 'manifesto' : b.dataset.printOnly); }));
-    window.addEventListener('afterprint', () => root.removeAttribute('data-print'));
+  /* ── the day/night switch says what it does ──────────────────────────
+     site.js tips() turns an icon-only control's aria-label into a hover
+     tooltip, but it skips any control with text inside it — and the
+     header's switch carries its visually-hidden Day / Night words, so at
+     1440 it was the one chrome control with no tip (measured: data-tip
+     null, ::after content none). It gets one here, in the product's own
+     words, and it is kept in step with the label site.js rewrites on every
+     switch, so the tip always says which shift the press leads to. */
+  const shiftTip = () => {
+    const b = $('.tr-tools .shiftb[data-mode-toggle]');
+    if (!b) return;
+    const word = (l) => l.replace(/\bdark\b/, 'night shift').replace(/\blight\b/, 'day shift');
+    const paint = () => {
+      const l = word(b.getAttribute('aria-label') || '');
+      if (!l) return;
+      if (b.getAttribute('aria-label') !== l) b.setAttribute('aria-label', l);
+      if (b.getAttribute('data-tip') !== l) b.setAttribute('data-tip', l);
+    };
+    const r = b.getBoundingClientRect();
+    if (r.left > window.innerWidth * 0.7) b.setAttribute('data-tip-at', 'end');
+    else if (r.left < window.innerWidth * 0.2) b.setAttribute('data-tip-at', 'start');
+    new MutationObserver(paint).observe(b, { attributes: true, attributeFilter: ['aria-label', 'data-tip'] });
+    paint();
   };
 
   /* ── the features page: rows by stage ────────────────────────────────── */
@@ -705,9 +777,9 @@
   };
 
   const boot = () => {
-    clock(); signOut(); rail(); tabs(); textSize(); phoneMode(); palette(); keys(); tapHours(); caption();
+    clock(); signOut(); rail(); tabs(); textSize(); phoneMode(); palette(); keys(); tapHours(); caption(); phoneScan();
     simulator(); airplane(); compose(); flips(); roles(); compare(); faqs(); houses();
-    headingLinks(); totop(); footer(); printing(); stages(); pins(); sheetEdge();
+    headingLinks(); totop(); footer(); shiftTip(); stages(); pins(); sheetEdge();
   };
   if (window.PHO) boot(); else document.addEventListener('pho:ready', boot);
 })();

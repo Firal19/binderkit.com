@@ -47,6 +47,10 @@ export const ICONS = {
   person: 'M14 6a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5zM9 19a5 5 0 0 1 10 0z',
   chapter: 'M9 5h7v14H9zM16 8h3v11h-3M11 9h3',
   scale: 'M14 5v14M9 9l5-2 5 2M9 9l-2 5h4zM19 9l-2 5h4z',
+  /* the three seats: the key that the licence holder carries, the printer
+     the manager runs, the reading glasses of the one who only reads */
+  key: 'M11 9.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5zM13.5 12h6.5M17.5 12v2.5M20 12v2',
+  glasses: 'M8 13.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0zM15 13.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0zM13 13.5h2M8 13.5V11l1-1.5M20 13.5V11l-1-1.5',
 };
 
 const BOX = '<rect x="1.5" y="1.5" width="21" height="21" stroke-width="1"/><circle cx="4.75" cy="8" r="1.25" stroke-width="1"/><circle cx="4.75" cy="16" r="1.25" stroke-width="1"/>';

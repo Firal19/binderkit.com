@@ -308,7 +308,7 @@ body.is-locked { overflow: hidden; }
 .field textarea[aria-invalid="true"] { border-color: var(--danger, #B24A2C); }
 .form.is-done { grid-template-columns: minmax(0, 1fr); }
 .contact-alt { grid-column: 1 / -1; }
-.contact-alt a { color: var(--ink); }
+.contact-alt a { color: var(--ink); display: inline-flex; align-items: center; min-height: var(--tap, 44px); }
 
 .soc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .soc-i { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 0 10px; color: var(--muted); text-decoration: none; border-radius: var(--r-btn, 10px); transition: color 140ms ease, background 140ms ease, transform 140ms cubic-bezier(.25, 1, .5, 1); }
@@ -677,7 +677,7 @@ body.is-locked .fabs { opacity: 0; pointer-events: none; }
 /* a copy button with no face of its own still gets a thumb-sized square;
    :where() keeps this at (0,1,0) so every page's own .copyb rule wins */
 :where(.reach-a) .copyb { display: inline-grid; place-items: center; min-width: var(--tap, 44px); min-height: var(--tap, 44px); padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); cursor: pointer; }
-.reach-a a:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .reach-a a:hover { text-decoration: underline; text-underline-offset: 3px; } }
 .reach-s { display: grid; gap: 14px; counter-reset: reach; align-self: center; }
 .reach-s li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 4px 14px; align-items: start; counter-increment: reach; }
 .reach-s li::before {
@@ -699,17 +699,19 @@ body.is-locked .fabs { opacity: 0; pointer-events: none; }
   background: var(--ink); color: var(--bg);
   font-family: var(--font-body, system-ui, sans-serif); font-size: 12.5px; font-weight: 500;
   letter-spacing: 0; text-transform: none; white-space: nowrap; line-height: 1.2;
-  opacity: 0; pointer-events: none; z-index: 71;
-  transition: opacity 140ms ease, transform 140ms cubic-bezier(.25, 1, .5, 1);
+  display: none; pointer-events: none; z-index: 71;
+  animation: tip-in 140ms cubic-bezier(.25, 1, .5, 1);
 }
-[data-tip][data-tip-at="end"]::after { left: auto; right: 0; transform: translate(0, -4px); }
-[data-tip][data-tip-at="start"]::after { left: 0; transform: translate(0, -4px); }
+@keyframes tip-in { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+[data-tip][data-tip-at="end"]::after { left: auto; right: 0; transform: none; }
+[data-tip][data-tip-at="start"]::after { left: 0; transform: none; }
 @media (hover: hover) {
-  [data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+  [data-tip]:hover::after, [data-tip]:focus-visible::after { display: block; }
   [data-tip][data-tip-at="end"]:hover::after, [data-tip][data-tip-at="end"]:focus-visible::after,
-  [data-tip][data-tip-at="start"]:hover::after, [data-tip][data-tip-at="start"]:focus-visible::after { transform: translate(0, 0); }
+  [data-tip][data-tip-at="start"]:hover::after, [data-tip][data-tip-at="start"]:focus-visible::after { animation-name: tip-in-flat; }
+  @keyframes tip-in-flat { from { opacity: 0; transform: translate(0, -4px); } to { opacity: 1; transform: translate(0, 0); } }
 }
 .fabs [data-tip]::after, .fab-side[data-tip]::after { top: auto; bottom: calc(100% + 8px); }
 
 /* ── a price prints its unit small ──────────────────────────────────────── */
-.tier-p small { font-size: .42em; font-weight: 500; letter-spacing: 0; color: var(--muted); margin-left: 3px; }
+.tier-p small { font-size: max(12px, .42em); font-weight: 500; letter-spacing: 0; color: var(--muted); margin-left: 3px; }

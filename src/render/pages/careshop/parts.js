@@ -113,7 +113,7 @@ export function header(cfg, p, opts = {}) {
     <div class="aisle-r">
       <button class="kbtn" type="button" aria-controls="palette" aria-expanded="false" aria-label="Search" data-focus=".pal-in" data-label-open="Search" data-label-close="Close search">${ic('search', 18)}</button>
       <a class="signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>
-      <button class="cord" type="button" data-mode-toggle aria-pressed="false" aria-label="Lights: switch between light and dark" data-theme-light="${esc(cfg.og.bg)}" data-theme-dark="#1b1613">${ic('cord', 18)}<span class="cord-t">Lights</span><span class="cord-pull" aria-hidden="true"></span></button>
+      <button class="cord" type="button" data-mode-toggle aria-pressed="false" aria-label="Lights: switch between light and dark" data-theme-light="${esc(cfg.og.bg)}" data-theme-dark="#1b1613">${ic('cord', 18)}<span class="cord-pull" aria-hidden="true"></span></button>
       <a class="btn pri tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="nav"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.nav)}</a>
       <button class="tally" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Aisles — open the menu" data-lock data-focus=".drawer-close" data-label-open="Aisles — open the menu" data-label-close="Aisles — close the menu">${ic('receipt', 22)}<span class="tally-l">Aisles</span><span class="tally-n" aria-hidden="true">${AISLES.length + PAGES_NAV.length}</span></button>
     </div>
@@ -130,7 +130,7 @@ function drawer(cfg, p, page) {
     <div class="drawer-scrim" data-close aria-hidden="true"></div>
     <div class="drawer-sheet rc" role="dialog" aria-label="Menu">
       <button class="drawer-close" type="button" data-close aria-label="Close the menu">${ic('close', 22)}</button>
-      <div class="rc-top">${mark(p.id, 34, { label: false })}<b class="rc-store">${esc(p.name.toUpperCase())}</b><span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span><span class="rc-meta"><span data-clock="date">today</span> · <span data-clock>now</span></span></div>
+      <div class="rc-top">${mark(p.id, 34, { label: false })}<b class="rc-store">${esc(p.name.toUpperCase())}</b><span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span><span class="rc-meta"><span data-clock="date">today</span></span></div>
       <nav class="rc-lines" aria-label="Sections">
         <div class="rc-idx" data-page-index data-open-all="Open every aisle"></div>
         <div class="rc-g-page">
@@ -185,7 +185,7 @@ export function footer(cfg, p, opts = {}) {
         <span class="rc-logo">${mark(p.id, 64, { label: false })}</span>
         <b class="rc-store">${esc(p.name.toUpperCase())}</b>
         <span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span>
-        <span class="rc-meta"><span data-clock="date">today</span> · <span data-clock>now</span> · ${esc(cfg.domain.toUpperCase())}</span>
+        <span class="rc-meta"><span data-clock="date">today</span> · ${esc(cfg.domain.toUpperCase())}</span>
       </div>
       <nav class="rc-lines" aria-label="Footer">
         ${rcGroup('THE STORE', `${STORE_LINES.length} LINES`, STORE_LINES.map(([href, t, qty]) => line(href, t, qty, href === `/${page}`)).join(''))}
@@ -297,6 +297,11 @@ export const pageHead = (n, title, lede, extra = '') => `<section class="hero pg
 </section>`;
 
 /* ── small furniture ──────────────────────────────────────────────────── */
+/* one sticker per seat: the licence holder's key, the manager's clipboard,
+   the caregiver's scan, the buyer's cart, the link a spouse opens, and the
+   operator's wrench. Six cards, six different people at a glance. */
+export const ROLE_ICON = { provider: 'key', manager: 'clipboard', caregiver: 'scan', buyer: 'cart', 'no account': 'link', operator: 'wrench' };
+export const roleIcon = (name) => `<span class="role-i">${ic(ROLE_ICON[String(name).toLowerCase()] || 'person', 24)}</span>`;
 export const sticker = (icon, text, cls = '') => `<span class="sticker ${cls}">${ic(icon, 16)}${esc(text)}</span>`;
 export const chip = (state, text) => `<span class="st" data-state="${esc(state)}"><i aria-hidden="true"></i>${esc(text)}</span>`;
 
@@ -385,8 +390,11 @@ export function priceDemo() {
 /* the store picker: re-total the shopping list by what the ledger knows at each shop */
 export function storeDemo() {
   const sh = screen('shop');
+  /* one line per aisle — three rows are enough to re-total, and the card
+     stays at a working size beside the text */
   const lines = [];
-  for (const [aisle, items] of sh.aisles) for (const [t, price] of items) {
+  for (const [aisle, items] of sh.aisles) {
+    const [t, price] = items[0];
     const at = price.match(/at (.+)$/);
     lines.push({ aisle, t, price: price.replace(/ at .+$/, ''), store: at ? at[1] : 'WinCo' });
   }
@@ -397,7 +405,6 @@ export function storeDemo() {
     <div class="chips" role="group" aria-label="Store">${stores.map((s, i) => `<button type="button" class="chip" aria-pressed="${i === 0 ? 'true' : 'false'}" data-store="${esc(s)}">${ic('store', 14)}${esc(s)}<span class="chip-n">${known(s).length}</span></button>`).join('')}</div>
     <ul class="sp-l" role="list">${lines.map((l) => `<li class="sp-r" data-store-of="${esc(l.store)}" data-price="${esc(l.price.replace('$', ''))}"><span class="sp-a">${esc(l.aisle.split(' · ')[0])}</span><span class="sp-t">${esc(l.t)}</span><span class="sp-p" data-sp-price>${esc(l.price)}</span><span class="sp-none">no price at this shop</span></li>`).join('')}</ul>
     <div class="sp-total"><span>Total at <b data-sp-store>WinCo</b></span><b data-sp-total>$0.00</b><span class="sp-note" data-sp-note></span></div>
-    <p class="demo-f">${esc(sh.foot)}</p>
   </div>`;
 }
 
@@ -423,12 +430,11 @@ export function cookDemo() {
   return `<div class="demo cook-d" data-cook>
     <div class="demo-h">${sticker('pot', 'Cook mode')}<span class="demo-t">${esc(c.sub)}</span></div>
     <ol class="cook-steps">${c.steps.map(([n, t, d, st]) => `<li class="cook-s" data-state="${esc(st)}" data-step="${n}"><span class="cook-n">${n}</span><span class="cook-t"><b>${esc(t)}</b><span>${esc(d)}</span></span>${n === '4' ? `<button type="button" class="q-btn" data-cook-complete>${ic('check', 16)}<span>Complete</span></button>` : ''}</li>`).join('')}</ol>
-    <div class="shelf-mini" aria-live="polite">
+    <div class="shelf-line" aria-live="polite">
       <span class="mini-q-h">${ic('shelf', 14)}On the shelf</span>
-      <ul><li class="shelf-row"><span class="shelf-t"><b>Rice</b><span>cups</span></span><b class="shelf-n" data-shelf="rice" data-start="14" data-take="2">14</b></li>
-      <li class="shelf-row"><span class="shelf-t"><b>Chicken thighs</b><span>lb</span></span><b class="shelf-n" data-shelf="chicken" data-start="5" data-take="3">5</b></li></ul>
+      <span class="shelf-it"><b>Rice</b><b class="shelf-n" data-shelf="rice" data-name="rice" data-unit="cups" data-start="14" data-take="2">14</b><span>cups</span></span>
+      <span class="shelf-it"><b>Chicken thighs</b><b class="shelf-n" data-shelf="chicken" data-name="chicken thighs" data-unit="lb" data-start="5" data-take="3">5</b><span>lb</span></span>
     </div>
-    <p class="demo-f">${esc(c.foot)}</p>
   </div>`;
 }
 

@@ -24,19 +24,13 @@ export const DAY = [
 export const hid = (at) => at.replace(':', '');
 export const tourKey = (d) => `${d.screen}${d.present ? `+${d.present}` : ''}`;
 
-/* the manifesto — FAD §6.3, shortened. It lives on /features only. */
+/* the refusals — FAD §6.3, cut to the four that matter. On /features only,
+   as four short cards; the eleven-item numbered wall is gone. */
 export const REFUSALS = [
-  ['A compliance score or grade', 'It measures the record, not the care, and invites managing the number.'],
-  ['Countdown timers on obligations', 'An obligation stated as immediate is not a clock.'],
   ['A third stop', 'Two exist because the harm is physical. A third turns informing into policing.'],
   ['Deleting anything', 'The record’s value is that it cannot be quietly changed.'],
   ['Editing a filed incident', 'A correction is an addendum under the original.'],
-  ['Sending resident information outside the system', 'A message says something exists. The content is read after signing in.'],
-  ['Notifying a family member', 'The obligation and the judgement belong to the provider.'],
-  ['Working out a regulatory number', 'Capacity is typed by a person.'],
-  ['Inventing a citation, threshold or window', 'Where a source is not established, the statement is shown without one.'],
   ['Recording care in bulk', 'Each dose, sign-off and completion is signed one at a time.'],
-  ['Ranking houses or people', 'It turns a record into a performance instrument.'],
 ];
 
 export const HOUSE_KEYS = [
@@ -114,6 +108,15 @@ export const SCREEN_NOTES = {
   residents: { tab: 'Residents', proves: '“No allergies recorded” and “nobody has asked yet” are different facts, and both are kept.' },
 };
 export const screenHref = (key) => `/screens#${STRIP}-${key}`;
+
+/* The shared Today surface (render/instruments.js, `foot:` on the today
+   screen) still foots itself with 'Nothing here is red. Done items leave
+   the list.' — the confession, shortened — and this site does not print
+   it. Every instrument drawn from that surface here (the hero switch, the
+   tour phone, the film strip) passes through neutral() until the line
+   moves in instruments.js, which this module does not own. */
+export const TODAY_FOOT = 'What is due, what is documented, what is waiting.';
+export const neutral = (html) => html.split('Nothing here is red. Done items leave the list.').join(TODAY_FOOT);
 
 /* the route line, in reading order — the floating "next" walks it */
 export const ROUTES = [

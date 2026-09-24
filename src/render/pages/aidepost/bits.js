@@ -74,8 +74,6 @@ export const NEVER = [
   ['No charge', 'Free, for ever. No organisation, no card, nothing to cancel.'],
 ];
 
-export const BOUNDARY = 'Aidepost is the workforce record. It does not keep residents’ records, process payroll, or run background checks.';
-
 /* ── the page wrapper every page shares ───────────────────────────────── */
 export function shell(cfg, p, opts, body) {
   const fine = opts.fine != null ? opts.fine : find('foot').disclaimer;
@@ -93,7 +91,10 @@ ${footer(cfg, p, { ...opts, fine })}`;
    as seven day cards in a snap strip, because a 7x2 table squeezed to
    initials is a table squeezed, not a phone board. Both are in the DOM;
    CSS shows one. The card strip's open cell is a proxy for the table's
-   real button, so the claim sheet has one owner. */
+   real button, so the claim sheet has one owner. The cards are a labelled
+   group of divs rather than a list: each row inside one is a 12px label
+   (Day / Night) over a name, a data cell and not a line of reading matter,
+   and a list item would hold it to the 15px prose floor. */
 const SHIFT_HOURS = { Day: '06:00 – 14:00', Night: '22:00 – 06:00' };
 export function boardTable(opts = {}) {
   const w = S.week;
@@ -108,7 +109,7 @@ export function boardTable(opts = {}) {
         ? `<span class="wkc-r"><i>${esc(name)}</i><b>${esc(c)}</b></span>`
         : `<button class="wkc-r is-open" type="button" data-cell-proxy aria-label="${esc(d)} ${esc(name.toLowerCase())} is open — see how it gets covered"><i>${esc(name)}</i><b>Open</b>${ic('arrow', 14, { pin: false })}</button>`;
     }).join('');
-    return `<li class="wkc-d${w.rows.some(([, cells]) => !cells[i]) ? ' has-open' : ''}" data-day="${esc(d)}"><span class="wkc-n">${esc(d)}<i class="wkc-tn" aria-hidden="true">tonight</i></span>${rows}</li>`;
+    return `<div class="wkc-d${w.rows.some(([, cells]) => !cells[i]) ? ' has-open' : ''}" data-day="${esc(d)}"><span class="wkc-n">${esc(d)}<i class="wkc-tn" aria-hidden="true">tonight</i></span>${rows}</div>`;
   }).join('');
   return `<div class="board-w" role="group" aria-label="This week’s shift board">
     <table class="board"><caption class="sr-only">Shift coverage for the week, by house</caption>
@@ -116,7 +117,7 @@ export function boardTable(opts = {}) {
       <tbody>${w.rows.map(([name, cells]) => `<tr><th scope="row">${esc(name)}<small>${esc(SHIFT_HOURS[name] || '')}</small></th>${cells.map((c, i) => `<td>${cellOf(c, w.days[i], name)}</td>`).join('')}</tr>`).join('')}</tbody>
     </table>
   </div>
-  <ol class="wkc" data-scrollx aria-label="This week, day by day">${cards}</ol>
+  <div class="wkc" data-scrollx role="group" aria-label="This week, day by day">${cards}</div>
   <div class="board-u">
     <p class="board-c"><b>${esc(S.detail[0])}</b> · ${esc(S.detail[1])} — ${esc(S.detail[2])}</p>
     <p class="tonight" data-tonight aria-live="polite"><span class="tonight-k">${ic('clock', 16)}Who’s on tonight</span><span class="tonight-v">Pick a day on the board.</span></p>
@@ -125,13 +126,16 @@ export function boardTable(opts = {}) {
 }
 
 /* ── the claim sheet: how Saturday night gets covered ─────────────────── */
+/* everyone on staff at WH-1, with the marker each carries — read by the claim
+   sheet and by the phone board, so both list the same three people */
+export const ELIGIBLE = [
+  [NAMES[0], 'CPR expired yesterday', 'expired'],
+  [NAMES[1], 'already on that night · WH-2', 'open'],
+  [NAMES[2], '', ''],
+];
+const eligList = (label) => `<ul class="elig" aria-label="${esc(label)}">${ELIGIBLE.map(([n, m, k]) => `<li class="elig-i"><span class="elig-n">${esc(n)}</span>${m ? `<span class="elig-m" data-kind="${esc(k)}">${esc(m)}</span>` : '<span class="elig-m is-none">no marker</span>'}</li>`).join('')}</ul>`;
 export function claimSheet(opts = {}) {
   const d = S.shift;
-  const ELIGIBLE = [
-    [NAMES[0], 'CPR expired yesterday', 'expired'],
-    [NAMES[1], 'already on that night · WH-2', 'open'],
-    [NAMES[2], '', ''],
-  ];
   const share = `https://${esc(opts.domain || 'aidepost.com')}/#board`;
   return `<div class="claim" id="claim" hidden data-claim>
     <div class="claim-c">
@@ -145,7 +149,7 @@ export function claimSheet(opts = {}) {
       <p class="claim-cap">Shown, not required. Nobody is removed from the list.</p>
       <ol class="claim-steps" data-step="0">
         <li class="cs" data-s="1"><span class="cs-n">1</span><div><b>${esc(d.actions[0])}</b><span class="cs-w">Everyone on staff at WH-1. Two carry a marker; both stay on the list.</span>
-          <ul class="elig">${ELIGIBLE.map(([n, m, k]) => `<li class="elig-i"><span class="elig-n">${esc(n)}</span>${m ? `<span class="elig-m" data-kind="${esc(k)}">${esc(m)}</span>` : '<span class="elig-m is-none">no marker</span>'}</li>`).join('')}</ul>
+          ${eligList('Everyone on staff at WH-1')}
           <span class="cs-r" data-cs-r="1"></span></div></li>
         <li class="cs" data-s="2"><span class="cs-n">2</span><div><b>${esc(d.actions[1])}</b><span class="cs-w">Nobody took it by Friday evening. Relief caregivers near the house see it, with the distance.</span><span class="cs-r" data-cs-r="2"></span></div></li>
         <li class="cs" data-s="3"><span class="cs-n">3</span><div><b>Claimed, then confirmed</b><span class="cs-w">The first claim stands. You decide who enters your house.</span><span class="cs-r" data-cs-r="3"></span></div></li>
@@ -323,19 +327,70 @@ export function tierBlock(p) {
   </div>`;
 }
 
-/* ── the annotated web board: five pins, one description ──────────────
-   A row of five numbered chips, and one panel underneath that reads the
-   active chip's sentence. Hover, focus or press a chip and the thing it
-   names is ringed on the board itself. */
-export function annotatedBoard() {
+/* ── the board figure: the desktop mock, the phone board, five pins ────
+   Above 640 the desktop shell at true size, with a row of five numbered
+   chips under it and one panel that reads the active chip's sentence.
+   Hover, focus or press a chip and the thing it names is ringed on the
+   board. Below 640 the shell goes: a 768px picture at zoom .6 with its
+   right fifth past the edge is a squeezed desktop, not a phone board.
+   phoneBoard() draws the same screen for a thumb instead. Both are in the
+   DOM; CSS shows one, and the chips ring the same five things on
+   whichever is showing.
+     annot: false — no chips (the /providers chapter tells it in steps)
+     live: false  — no claim sheet on the page, so the board's actions
+                    are a line, not buttons that would do nothing */
+export function annotatedBoard(opts = {}) {
   const s = find('screen');
   const on = (fn) => (typeof fn === 'function' ? fn(S) : fn);
   const short = ['A covered cell', 'The open cell', 'The detail card', 'Two actions, in order', 'The eligibility list'];
-  return `<div class="shell" tabindex="0" role="group" aria-label="The desktop board, at true size — scroll sideways for the rest" data-shell>${webShell('aidepost', { key: 'board' })}</div>
-  <span class="shell-cap">Drag sideways — the board goes on past the edge.</span>
-  <div class="annot" data-annot>
+  const annot = opts.annot === false ? '' : `<div class="annot" data-annot>
     <ol class="an-row" data-scrollx>${s.callouts.map(([t, d], i) => `<li><button class="an-b" type="button" data-spot="${i + 1}" aria-pressed="${i === 0 ? 'true' : 'false'}" data-an-t="${esc(on(t))}" data-an-d="${esc(d)}"><span class="an-n">${i + 1}</span><span class="an-l">${esc(short[i] || on(t))}</span></button></li>`).join('')}</ol>
     <p class="an-out" data-an-out aria-live="polite"><b>${esc(on(s.callouts[0][0]))}</b> — ${esc(s.callouts[0][1])}</p>
+  </div>`;
+  return `<div class="aboard" data-aboard>
+    <div class="board-desk"><div class="shell" tabindex="0" role="group" aria-label="The desktop board" data-shell>${webShell('aidepost', { key: 'board' })}</div></div>
+    <div class="board-phone">${phoneBoard(opts)}</div>
+    ${annot}
+  </div>`;
+}
+
+/* ── the board on a phone ───────────────────────────────────────────────
+   The same screen the desktop mock shows, drawn at phone size: the week as
+   a seven-by-two grid that fits inside the gutter at 320 (initials in a
+   cell, the full name for a screen reader), Saturday night open in the
+   accent, then the shift card with its two actions and the eligibility
+   list — the five things the chips name. On the front page the two actions
+   are real: they open the claim sheet and run it, inward first. */
+export function phoneBoard(opts = {}) {
+  const w = S.week; const d = S.shift;
+  const live = opts.live !== false;
+  const openN = w.rows.reduce((n, [, cells]) => n + cells.filter((c) => !c).length, 0);
+  const cell = (c, i, r) => (c
+    ? `<span class="pb-c is-covered"${i === 0 && r === 0 ? ' data-spot-el="1"' : ''}><i aria-hidden="true">${esc(initials(c))}</i><span class="sr-only">${esc(c)}</span></span>`
+    : '<span class="pb-c is-open" data-spot-el="2">Open</span>');
+  const acts = live
+    ? `<div class="pb-act" data-spot-el="4"><button class="btn pri sm" type="button" data-claim-go="offer">${esc(d.actions[0])}</button><button class="btn sm" type="button" data-claim-go="post">${esc(d.actions[1])}</button></div>`
+    : `<p class="pb-next" data-spot-el="4"><b>${esc(d.actions[0])}</b> → ${esc(d.actions[1])}</p>`;
+  return `<div class="pb" data-pboard>
+    <div class="pb-h"><span class="pb-k">Open shifts</span><span class="pb-s">WH-1 · this week</span><b class="pb-n">${openN} open</b></div>
+    <table class="pb-g">
+      <caption class="sr-only">This week at WH-1: one row per shift, covered with a name or open</caption>
+      <colgroup><col class="pb-c0"><col span="7"></colgroup>
+      <thead><tr><th scope="col"><span class="sr-only">Shift</span></th>${w.days.map((day) => `<th scope="col" data-day="${esc(day)}">${esc(day)}</th>`).join('')}</tr></thead>
+      <tbody>${w.rows.map(([name, cells], r) => `<tr><th scope="row">${esc(name)}</th>${cells.map((c, i) => `<td>${cell(c, i, r)}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+    <div class="pb-card" data-spot-el="3">
+      <b class="pb-when">${esc(d.when)}</b>
+      <span class="pb-work">${esc(d.work)}</span>
+      <span class="pb-none">Nobody on staff has taken it yet.</span>
+      <ul class="needs" aria-label="What the shift asks for">${d.needs.map(([n, k]) => `<li class="need" data-kind="${esc(k)}">${esc(n)}<i>${esc(k)}</i></li>`).join('')}</ul>
+      ${acts}
+    </div>
+    <div class="pb-el" data-spot-el="5">
+      <span class="pb-el-k">Everyone on staff at WH-1</span>
+      ${eligList('Everyone on staff at WH-1, with any marker')}
+      <span class="pb-el-c">Shown, not required. Nobody is removed from the list.</span>
+    </div>
   </div>`;
 }
 

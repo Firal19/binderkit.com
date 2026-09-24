@@ -105,6 +105,12 @@ export const plates = (id, keys, opts = {}) => scrollx(withAddresses(filmStrip('
       carries every sentence, which is the component's own fallback. */
 export const annotated = (inner, pins, opts = {}) => callouts(inner, pins, opts)
   .replace('<div class="cal-stage">', '<div class="cal-stage" data-scrollx>')
+  /* A pin is drawn as a control — it inks on hover and carries a pointer —
+     so it is one: a button that brings its sentence into view and holds
+     the callout lit (js/pages/binderkit.js pins()). callouts() emits
+     <b aria-hidden>; the rewrite keeps every attribute site.js reads and
+     the `hidden` it clears once the pin has been measured. */
+  .replace(/<b class="cal-pin" data-cal="(\d+)"([^>]*?) aria-hidden="true">(\d+)<\/b>/g, '<button type="button" class="cal-pin" data-cal="$1"$2 aria-label="Callout $1">$3</button>')
   + `<p class="shell-hint">${ic('left', 16)}<span>${esc(opts.hint || 'Drag it sideways for the rest')}</span>${ic('right', 16)}</p>`;
 
 /* The four numbered callouts over the guarded editor. Each names a real

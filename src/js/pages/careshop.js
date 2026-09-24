@@ -154,7 +154,15 @@
       paint();
     };
 
-    /* ── the fan: dots on the phone carousel; the phone in view is the dot lit ── */
+    /* ── the fan: three phones, and a way to choose the one in front ──────
+       Above 900 the phones are placed by three slot classes — is-l, is-c,
+       is-r — and nothing used to move them: the dots were hidden and a
+       tap on a side phone did nothing. Now a tap on a side phone, or on
+       its dot, swaps it into the centre and the centre phone takes its
+       slot. Below 900 the fan is a snap strip, the same dots scroll it,
+       and the dot lit is the phone in view. The fan itself is aria-hidden
+       (it is a picture of the product), so the dots are the control that
+       has a name; the tap on a phone is the pointer's shortcut. */
     const fan = () => {
       const f = $('[data-fan]');
       const dots = $('[data-fan-dots]');
@@ -163,19 +171,37 @@
       const names = phones.map((p) => p.querySelector('.phone')?.getAttribute('aria-label')?.replace(/^.*: /, '') || 'Phone');
       dots.innerHTML = phones.map((p, i) => `<button type="button" class="fan-dot" aria-pressed="${i === 0 ? 'true' : 'false'}" aria-label="Show ${names[i]}"><i></i></button>`).join('');
       const btns = $$('.fan-dot', dots);
-      const ordered = () => phones.slice().sort((a, b) => a.offsetLeft - b.offsetLeft);
+      const SLOTS = ['is-l', 'is-c', 'is-r'];
+      const fanned = () => getComputedStyle(phones[0]).position === 'absolute';
+      const slotOf = (p) => SLOTS.find((c) => p.classList.contains(c)) || 'is-c';
+      const centre = () => phones.findIndex((p) => p.classList.contains('is-c'));
+      const paint = () => {
+        let best = 0;
+        if (fanned()) best = Math.max(0, centre());
+        else {
+          const mid = f.scrollLeft + f.clientWidth / 2;
+          let d = Infinity;
+          phones.forEach((p, i) => { const c = p.offsetLeft + p.clientWidth / 2; const dd = Math.abs(c - mid); if (dd < d) { d = dd; best = i; } });
+        }
+        btns.forEach((b, i) => b.setAttribute('aria-pressed', String(i === best)));
+      };
+      /* the tapped phone takes the centre; the centre phone takes its slot */
+      const bring = (i) => {
+        const c = centre();
+        if (c < 0 || c === i) return;
+        const was = slotOf(phones[i]);
+        phones[i].classList.remove(was); phones[i].classList.add('is-c');
+        phones[c].classList.remove('is-c'); phones[c].classList.add(was);
+        paint();
+      };
       btns.forEach((b, i) => b.addEventListener('click', () => {
+        if (fanned()) { bring(i); return; }
         const target = phones[i];
         f.scrollTo({ left: target.offsetLeft - (f.clientWidth - target.clientWidth) / 2, behavior: calm.matches ? 'auto' : 'smooth' });
       }));
-      const paint = () => {
-        const mid = f.scrollLeft + f.clientWidth / 2;
-        let best = 0, d = Infinity;
-        phones.forEach((p, i) => { const c = p.offsetLeft + p.clientWidth / 2; const dd = Math.abs(c - mid); if (dd < d) { d = dd; best = i; } });
-        btns.forEach((b, i) => b.setAttribute('aria-pressed', String(i === best)));
-      };
+      phones.forEach((p, i) => p.addEventListener('click', () => { if (fanned() && !p.classList.contains('is-c')) bring(i); }));
       f.addEventListener('scroll', () => requestAnimationFrame(paint), { passive: true });
-      ordered();
+      window.addEventListener('resize', paint, { passive: true });
       paint();
     };
 
@@ -431,8 +457,7 @@
             const v = parseInt(n.dataset.start, 10) - parseInt(n.dataset.take, 10);
             n.textContent = String(v);
             n.classList.add('is-down');
-            const unit = n.closest('.shelf-row')?.querySelector('.shelf-t span')?.textContent || '';
-            parts.push(`−${n.dataset.take} ${unit} ${n.closest('.shelf-row')?.querySelector('.shelf-t b')?.textContent.toLowerCase() || ''}`.trim());
+            parts.push(`−${n.dataset.take} ${n.dataset.unit || ''} ${n.dataset.name || n.dataset.shelf || ''}`.replace(/\s+/g, ' ').trim());
           });
           $('span', btn).textContent = 'Completed';
           btn.setAttribute('aria-disabled', 'true');

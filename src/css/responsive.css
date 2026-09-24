@@ -406,6 +406,9 @@
   .fold-s { min-height: 56px; padding-block: var(--sp-2); }
   .fold-s *:where(.fold-h) { line-height: 1.24; }
   .fold-s *:where(.fold-g) { line-height: 1.35; }
+  .js [data-phone="fold"][data-open] > .fold-s { min-height: 44px; }
+  .js [data-phone="fold"][data-open] > .fold-s *:where(.fold-h) { font-size: var(--fs-label); letter-spacing: var(--track-label); text-transform: uppercase; opacity: .62; font-family: var(--font-mono, inherit); }
+  .js [data-phone="fold"][data-open] > .fold-s *:where(.fold-g) { display: none; }
 
   /* ── the bars, made solid.
      Every face gives its sticky header and its bottom dock a translucent

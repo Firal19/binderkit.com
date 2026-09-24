@@ -33,7 +33,7 @@ const steps = () => sec('providers', 'steps', `<div class="wrap">
 
 function board() {
   const s = find('screen');
-  return fold('One row per shift: a name, or open. The desktop board at true size.', sec('board', 'boardsec', `<div class="wrap">
+  return fold('One row per shift: a name, or open. Then build the week yourself.', sec('board', 'boardsec', `<div class="wrap">
     <div class="head head-r"><div>${h2('board', s.heading, s.sub)}</div><button class="btn sm" type="button" data-print>${ic('print', 18, { pin: false })}Print this week</button></div>
     ${annotatedBoard()}
     ${rosterToy()}

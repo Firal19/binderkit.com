@@ -82,7 +82,6 @@ h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em
 .head { margin-bottom: clamp(28px, 4vw, 48px); }
 .head-r { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
 .head-r > div { flex: 1 1 520px; }
-.boundary { margin-top: 36px; font-family: var(--font-display); font-weight: 600; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.2; letter-spacing: -0.02em; max-width: 36ch; }
 .ic-aidepost { flex: none; }
 .ic-aidepost .ic-pin { fill: currentColor; }
 .ic-aidepost[data-pin="open"] .ic-pin { fill: var(--orchid); }
@@ -312,9 +311,8 @@ html[data-side="provider"] .bar-pin .mk { transform: translateX(-6px); }
 .boardsec .wrap { --max: 1480px; }
 .shell { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; border-radius: 18px; scroll-behavior: smooth; }
 .shell .browser { box-shadow: 0 40px 80px -48px rgba(23, 32, 31, .5); }
-.shell-cap { display: none; margin-top: 10px; text-align: right; font-size: var(--fs-label); letter-spacing: var(--track-label); color: var(--soft); }
-.shell .is-spot { position: relative; outline: 3px solid var(--orchid); outline-offset: 4px; border-radius: 8px; z-index: 1; }
-.shell .is-spot::after { content: attr(data-spot-n); position: absolute; top: -14px; right: -14px; width: 26px; height: 26px; border-radius: 50%; background: var(--orchid); color: #1C1620; font-family: var(--font-display); font-weight: 800; font-size: 13px; display: grid; place-items: center; box-shadow: 0 0 0 3px var(--card); z-index: 2; }
+.shell .is-spot, .board-phone .is-spot { position: relative; outline: 3px solid var(--orchid); outline-offset: 4px; border-radius: 8px; z-index: 1; }
+.shell .is-spot::after, .board-phone .is-spot::after { content: attr(data-spot-n); position: absolute; top: -14px; right: -14px; width: 26px; height: 26px; border-radius: 50%; background: var(--orchid); color: #1C1620; font-family: var(--font-display); font-weight: 800; font-size: 13px; display: grid; place-items: center; box-shadow: 0 0 0 3px var(--card); z-index: 2; }
 .annot { margin-top: 28px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .annot li { display: grid; align-content: start; gap: 8px; }
 .an-b { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; width: 100%; min-height: 44px; padding: 10px 12px 10px 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); text-align: left; transition: border-color 160ms, background 160ms; }
@@ -530,17 +528,16 @@ input[type="range"]:focus-visible { outline: 2px solid var(--focus); outline-off
 /* ── questions ─────────────────────────────────────────────────────────── */
 .q-g { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.5fr); gap: 40px; align-items: start; }
 .q-g .head { margin-bottom: 0; }
-.faq-i summary, .mach-i summary { display: grid; grid-template-columns: minmax(0, 1fr) 24px; gap: 20px; align-items: center; padding: 22px 0; cursor: pointer; list-style: none; border-top: 1px solid var(--line); min-height: 44px; }
-.faq-i:last-child, .mach-i:last-child { border-bottom: 1px solid var(--line); }
-.faq-i summary::-webkit-details-marker, .mach-i summary::-webkit-details-marker { display: none; }
-.faq-i h3, .mach-i h3 { font-size: clamp(20px, 2.2vw, 26px); }
+.faq-i summary { display: grid; grid-template-columns: minmax(0, 1fr) 24px; gap: 20px; align-items: center; padding: 22px 0; cursor: pointer; list-style: none; border-top: 1px solid var(--line); min-height: 44px; }
+.faq-i:last-child { border-bottom: 1px solid var(--line); }
+.faq-i summary::-webkit-details-marker { display: none; }
+.faq-i h3 { font-size: clamp(20px, 2.2vw, 26px); }
 .faq-x { position: relative; width: 24px; height: 24px; }
 .faq-x::before, .faq-x::after { content: ""; position: absolute; left: 50%; top: 50%; background: var(--ink); transform: translate(-50%, -50%); }
 .faq-x::before { width: 14px; height: 2px; } .faq-x::after { width: 2px; height: 14px; transition: transform 180ms; }
-.faq-i[open] .faq-x::after, .mach-i[open] .faq-x::after { transform: translate(-50%, -50%) scaleY(0); }
+.faq-i[open] .faq-x::after { transform: translate(-50%, -50%) scaleY(0); }
 .faq-a { padding: 0 0 24px; max-width: 70ch; }
-.faq-a p, .mach-i > p { font-size: 17px; color: var(--muted); line-height: 1.6; }
-.mach-i > p { padding: 0 0 24px; max-width: 78ch; }
+.faq-a p { font-size: 17px; color: var(--muted); line-height: 1.6; }
 
 /* ── pricing ───────────────────────────────────────────────────────────── */
 .pr-sw { display: inline-grid; grid-template-columns: 1fr 1fr; padding: 4px; margin-bottom: 20px; border-radius: 999px; background: var(--wash); border: 1px solid var(--line); }
@@ -696,13 +693,14 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
 .ch { border-bottom: 1px solid var(--line); }
 .ch-head { margin-bottom: clamp(24px, 3vw, 40px); }
 .ch-g { margin-top: clamp(28px, 3vw, 44px); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
-.ch-g.is-phone { grid-template-columns: minmax(0, .55fr) minmax(0, 1.45fr); margin-top: 0; }
+/* the phone is 312px at --mock-z .8; a column narrower than that spills it
+   into the gutter, and 4px past the left edge at 901 */
+.ch-g.is-phone { grid-template-columns: minmax(min(312px, 100%), .55fr) minmax(0, 1.45fr); margin-top: 0; }
 .ch-dev { display: flex; justify-content: center; position: sticky; top: calc(var(--hd-h) + 64px); }
 .ch-dev .phone { --mock-z: .8; }
 .ch-side { display: grid; gap: 22px; }
 .ch-side .pull { margin-top: 0; }
-.flow h3, .trans h3 { font-size: 20px; margin-bottom: 14px; }
-.flow + .trans, .trans + .flow { margin-top: 32px; }
+.flow h3 { font-size: 20px; margin-bottom: 14px; }
 .flow-l { display: grid; counter-reset: fl; }
 .flow-l li { counter-increment: fl; display: grid; grid-template-columns: 30px 1fr; gap: 6px 14px; padding: 14px 0; border-top: 1px solid var(--line); font-size: 15px; }
 .flow-l li::before { content: counter(fl); grid-row: 1 / 3; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--wash); font-family: var(--font-display); font-weight: 700; font-size: 13.5px; }
@@ -711,19 +709,20 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
 .flow-l b { font-family: var(--font-display); font-size: 17px; letter-spacing: -0.015em; }
 .flow-l span { grid-column: 2; color: var(--muted); line-height: 1.5; font-size: 14.5px; }
 .flow .fine { margin-top: 14px; }
-.trans-h, .trans-r { display: grid; grid-template-columns: 110px 1fr 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; align-items: baseline; }
-.trans-h { border-top: 0; font-size: 12.5px; font-weight: 700; color: var(--soft); padding-bottom: 6px; }
-.trans-r b { font-weight: 700; }
-.trans-r b.is-open { color: var(--orchid-ink); }
-.trans-r b.is-covered { color: var(--teal); }
 .gates { padding: 22px 24px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
 .gates h3 { font-size: 18px; margin-bottom: 12px; }
 .gates ul { display: grid; gap: 8px; margin-bottom: 12px; }
 .gates li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; font-size: 14.5px; font-weight: 600; }
-.mach-g { display: grid; }
+/* the four machines: a name and one line each, as a definition list */
+.mach-l { display: grid; margin: 0; }
+.mach-i { display: grid; grid-template-columns: minmax(160px, .3fr) minmax(0, 1fr); gap: 6px 28px; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--line); }
+.mach-i:last-child { border-bottom: 1px solid var(--line); }
+.mach-i dt { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 1.7vw, 24px); letter-spacing: -0.02em; }
+.mach-i dd { margin: 0; font-size: 17px; color: var(--muted); line-height: 1.55; max-width: 70ch; }
+/* if a payment fails: one sentence, beside its heading */
 .pay-g { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
-.ch .hrs-toys { margin-top: 28px; }
-.ch .hrs-toys .ck, .ch .hrs-toys .ts, .ch .ros { background: var(--card); }
+.pay-one { margin: 0; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.5; color: var(--ink); max-width: 44ch; }
+.ch .ros { background: var(--card); }
 .ch .pull { margin-top: 28px; max-width: 40ch; font-size: clamp(20px, 2.2vw, 28px); }
 
 /* /caregivers */
@@ -1079,7 +1078,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .bar { display: grid; }
   .page { padding-bottom: calc(var(--bar-h) + var(--sab)); }
   .ft { padding-bottom: 32px; }
-  .ntf { top: 70px; }
   .step-g, .cred-g, .hrs-g, .care-g, .q-g, .join-g, .subs, .hrs-toys, .wallet-g, .free-g, .pay-g, .post-g, .two-g, .write-g, .contact-g, .hero-cg { grid-template-columns: minmax(0, 1fr); }
   .tl { position: static; }
   .hrs-v { order: 2; }
@@ -1119,10 +1117,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
      affordance that anything was there. The markup stays: above 900 it is
      the best navigation on the page. */
   .chap { display: none; }
-  /* below 900 the board mock is the product at its own 768 breakpoint and is
-     fitted to 118vw, so roughly a fifth of it is a swipe away inside the
-     strip it already lives in. Say so to an eye as well as to a reader. */
-  .shell-cap { display: block; }
 
   /* the week goes; the footer written for a phone arrives */
   .ft-wk { display: none; }
@@ -1133,15 +1127,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
      reservation cannot do for it: .page ends before <footer> begins. */
   .ft { padding-top: 32px; padding-bottom: calc(var(--bar-h) + var(--sab) + 20px); }
 
-  /* the toast belongs at the bottom of a phone. At top: 70px it landed on
-     the h1 for the first nine seconds of every first visit — and because it
-     is position: fixed it then sat on whatever you scrolled to. */
-  /* The shared .fab is keyed to this same bottom edge, so a 44px link landed
-     inside this 62px toast and elementFromPoint returned the fab over the
-     toast’s own X. Sit above the fab: its tap height plus air. */
-  .ntf { top: auto; bottom: calc(var(--bar-h) + var(--sab) + 10px + var(--tap, 44px) + 12px);
-         transform: translate(-50%, 24px); }
-  .ntf.is-on { transform: translate(-50%, 0); }
 
   /* the counterweight to the fold: the split sheet gains the page's own
      sections, each with the gist the fold already reads, plus one button
@@ -1267,7 +1252,10 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .ros .fine { padding: 0 6px; }
   .ros-g { grid-template-columns: 36px repeat(7, minmax(40px, 1fr)); gap: 4px 2px; min-width: 0; }
   .ros-l { font-size: 13px; }
-  .ros-c { padding: 0; min-height: 44px; font-size: 12.5px; }
+  /* min-width: 0, or the base tier's 44px cell overflows its 40px track and
+     the grid runs 6px past the strip at 390 for nothing; at 320 the strip
+     scrolls, and reports its edges the way the desktop shell does */
+  .ros-c { padding: 0; min-width: 0; min-height: 44px; font-size: 12.5px; }
   .ros-t { display: none; }
   .ros-i { display: inline; }
   /* ── two labels that sit under the 12px absolute floor ────────────────
@@ -1330,26 +1318,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
     counter-increment: apstep; content: counter(apstep) "."; color: var(--orchid-ink);
     font-weight: 800; font-variant-numeric: tabular-nums; }
 
-  /* ── the swipe strip tells you its edges ──────────────────────────────
-     Measured at 390px: 350px of client against 460px of scroll, so 110px —
-     24% — of the board is past the right edge, and it was cut there at the
-     exact pixel of the viewport with no fade, no snap and no peek. A caption
-     was doing the whole job on its own, which asks a reader to trust a
-     sentence over their eyes; the spec's own law about a silent 16px scroll
-     applies at 110px too. The fade lifts on the side you have already
-     reached, so it is a report on where you are, not decoration.
-     data-sx only — with scripting off there is no class and no fade, because
-     a fade drawn over a strip that does not scroll is a worse lie than none. */
-  .shell[data-sx] { --shell-fade: 44px; }
-  .shell[data-sx="start"] {
-    -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - var(--shell-fade)), transparent 100%);
-            mask-image: linear-gradient(90deg, #000 0 calc(100% - var(--shell-fade)), transparent 100%); }
-  .shell[data-sx="mid"] {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade), #000 calc(100% - var(--shell-fade)), transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade), #000 calc(100% - var(--shell-fade)), transparent 100%); }
-  .shell[data-sx="end"] {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade));
-            mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade)); }
   .tier-care { padding: 26px 22px; }
   /* ── the roles, one up ────────────────────────────────────────────────
      Two 170px columns gave a 138px measure to a card whose back carries up
@@ -1369,9 +1337,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .ft-top { flex-direction: column; align-items: flex-start; }
   .ft-legal { flex-direction: column; align-items: flex-start; }
   .proof { grid-template-columns: minmax(0, 1fr); }
-  .trans-h, .trans-r { grid-template-columns: 90px 1fr; }
-  .trans-r b { grid-column: 2; }
-  .trans-h span:last-child { display: none; }
   .sheet-g { grid-template-columns: 1fr 1fr; }
   .sheet-half { padding: 18px 12px 22px; }
   .sheet-n a { font-size: 15px; }
@@ -1550,7 +1515,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .fine { line-height: 1.5; }
   .pull { margin-top: 26px; }
   .head { margin-bottom: 20px; }
-  .boundary { margin-top: 26px; }
   .lede { margin-top: 16px; }
   .ctas { margin-top: 22px; gap: 10px; }
 
@@ -1604,7 +1568,6 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .ros { margin-top: 26px; padding: 14px 10px 15px; }
   .ros-h { margin-bottom: 12px; }
   .ros .fine { margin-top: 10px; }
-  .shell-cap { margin-top: 7px; }
 
   /* ── credentials ───────────────────────────────────────────────────── */
   .ladder { margin-top: 22px; }
@@ -1664,10 +1627,13 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .flip-hint { left: 15px; bottom: 11px; }
 
   /* ── questions ─────────────────────────────────────────────────────── */
-  .faq-i summary, .mach-i summary { padding: 14px 0; gap: 14px; }
+  .faq-i summary { padding: 14px 0; gap: 14px; }
   .faq-a { padding: 0 0 18px; }
-  .faq-a p, .mach-i > p { font-size: 16px; line-height: 1.55; }
-  .mach-i > p { padding: 0 0 18px; }
+  .faq-a p { font-size: 16px; line-height: 1.55; }
+  .mach-i { grid-template-columns: minmax(0, 1fr); gap: 3px; padding: 14px 0; }
+  .mach-i dt { font-size: 19px; }
+  .mach-i dd { font-size: 16px; line-height: 1.5; }
+  .pay-one { font-size: 18px; }
 
   /* ── pricing ───────────────────────────────────────────────────────── */
   .tiers { gap: 10px; }
@@ -1704,13 +1670,10 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
   .ch-head { margin-bottom: 18px; }
   .ch-g { margin-top: 20px; row-gap: 22px; }
   .ch-side { gap: 16px; }
-  .flow h3, .trans h3 { margin-bottom: 10px; font-size: 18px; }
-  .flow + .trans, .trans + .flow { margin-top: 24px; }
-  .trans-h, .trans-r { padding: 8px 0; }
+  .flow h3 { margin-bottom: 10px; font-size: 18px; }
   .gates { padding: 16px 18px; }
   .gates h3 { margin-bottom: 10px; }
   .gates ul { gap: 6px; margin-bottom: 10px; }
-  .ch .hrs-toys { margin-top: 20px; }
   .ch .pull { margin-top: 20px; }
   .care-side { gap: 12px; }
   .care-card { padding: 17px 18px; }
@@ -1809,7 +1772,8 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
 /* ── the nav wears its glyphs ─────────────────────────────────────────── */
 .nav-set a { gap: 7px; }
 .nav-ic { opacity: .55; transition: opacity 160ms; }
-.nav-set a[aria-current="true"] .nav-ic, .nav-set a:hover .nav-ic { opacity: 1; }
+.nav-set a[aria-current="true"] .nav-ic { opacity: 1; }
+@media (hover: hover) { .nav-set a:hover .nav-ic { opacity: 1; } }
 .sheet-n a { gap: 10px; }
 
 /* ── the hero device and the section phones travel with the reader ────── */
@@ -1829,7 +1793,8 @@ html[data-side="caregiver"] .soc-pills .soc-i::after { background: var(--orchid)
 .cell-go { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(28, 22, 32, .16); }
 .cell.is-open::after { display: none; }
 .cell[data-tip]::after { top: auto; bottom: calc(100% + 6px); font-weight: 600; }
-.cell[data-tip]:hover::after, .cell[data-tip]:focus-visible::after { transform: translate(-50%, 0); }
+.cell[data-tip]:focus-visible::after { transform: translate(-50%, 0); }
+@media (hover: hover) { .cell[data-tip]:hover::after { transform: translate(-50%, 0); } }
 .wkc { display: none; }
 
 /* ── the notification arrives from the side, on the side you are on ───── */
@@ -1907,7 +1872,7 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
 .fq-where { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; }
 .fq-hours { font-size: 13.5px; color: var(--muted); }
 .fq-out { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--card); font-weight: 600; font-size: 15px; line-height: 1.45; }
-.fq-note { margin-top: 8px; font-size: 12.5px; color: var(--soft); line-height: 1.45; }
+.fq-note { margin-top: 8px; font-size: 15px; color: var(--soft); line-height: 1.45; }
 .fq-card[data-fit="yes"] { border-color: var(--teal); }
 .fq-card[data-fit="yes"] .fq-out { color: var(--teal); }
 .fq-card[data-fit="near"] { border-color: var(--orchid); }
@@ -1927,7 +1892,7 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
 .tiers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .tier { position: relative; gap: 10px; padding: 26px 26px 24px; border-radius: 22px; }
 .tier.is-main { box-shadow: 0 24px 50px -36px rgba(23, 32, 31, .5); }
-.tier-flag { position: absolute; top: -12px; left: 22px; padding: 4px 10px; border-radius: 999px; background: var(--orchid); color: #1C1620; font-size: 11.5px; font-weight: 800; letter-spacing: .02em; }
+.tier-flag { position: absolute; top: -12px; left: 22px; padding: 4px 10px; border-radius: 999px; background: var(--orchid); color: #1C1620; font-size: 12px; font-weight: 800; letter-spacing: .02em; }
 .tier-p { font-size: clamp(38px, 4vw, 52px); letter-spacing: -0.04em; }
 .tier-p small { font-family: var(--font-body); font-size: 13.5px; font-weight: 600; letter-spacing: 0; color: var(--soft); margin-left: 6px; }
 .tier-f { display: grid; gap: 8px; margin: 6px 0 14px; }
@@ -1983,7 +1948,12 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
   .crail-s b { font-size: 13.5px; }
   .fq-g { grid-template-columns: minmax(0, 1fr); }
   .tiers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ntf { top: calc(var(--hd-h) + 10px); right: 12px; width: min(360px, calc(100vw - 24px)); transform: translateX(calc(100% + 24px)); }
+  /* the push belongs at the bottom of a phone. At the top it sat on the h1
+     whenever a reader scrolled back up inside its nine seconds — and, being
+     fixed, on whatever else they scrolled to. It sits above the dock: the
+     split bar, the fab's tap height, and air; it still arrives from the
+     right edge, on the side you are on. */
+  .ntf { top: auto; bottom: calc(var(--bar-h) + var(--sab) + 10px + var(--tap, 44px) + 12px); right: 12px; left: auto; width: min(360px, calc(100vw - 24px)); transform: translateX(calc(100% + 24px)); }
   .ntf.is-on { transform: none; }
 }
 @media (max-width: 640px) {
@@ -1995,11 +1965,13 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
   .wkc-d.has-open { border-color: var(--orchid); }
   .wkc-d[data-today] { background: var(--orchid-soft); }
   .wkc-n { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 13px; color: var(--ink); }
-  .wkc-tn { display: none; font-style: normal; font-size: 10.5px; padding: 2px 7px; border-radius: 999px; background: var(--ink); color: var(--bg); }
+  .wkc-tn { display: none; font-style: normal; font-size: 12px; padding: 2px 7px; border-radius: 999px; background: var(--ink); color: var(--bg); }
   .wkc-d[data-today] .wkc-tn { display: inline-block; }
   .wkc-r { display: grid; gap: 1px; padding: 8px 10px; border-radius: 12px; background: var(--wash); text-align: left; min-height: 48px; }
-  .wkc-r i { font-style: normal; font-size: 11px; font-weight: 700; color: var(--soft); text-transform: uppercase; letter-spacing: .04em; }
-  .wkc-r b { font-size: 14px; font-weight: 700; }
+  /* 12px is the label floor and 15px the reading floor: Day / Night is a
+     label, the name under it is the thing you read */
+  .wkc-r i { font-style: normal; font-size: 12px; font-weight: 700; color: var(--soft); text-transform: uppercase; letter-spacing: .04em; }
+  .wkc-r b { font-size: 15px; font-weight: 700; }
   .wkc-r.is-open { position: relative; background: var(--orchid); color: #1C1620; }
   .wkc-r.is-open i { color: rgba(28, 22, 32, .7); }
   .wkc-r.is-open svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }
@@ -2048,3 +2020,120 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
 
 /* the split bar exists only on a phone, so its height does too */
 @media (max-width: 900px) { :root { --bar-h: 64px; } }
+
+/* ── the board on a phone ─────────────────────────────────────────────
+   Below 640 the desktop shell was a 768px picture at zoom .6 with 110px of
+   its right side past the edge of a 350px strip — a squeezed desktop with
+   6pt text, not a phone board. The shell goes and phoneBoard() shows: the
+   week as a grid that fits inside the gutter at 320, the open shift in the
+   accent, the shift card, the eligibility list. Between 641 and 900 the
+   shell stays, scrolls, and reports its own edges (below). */
+@media (max-width: 640px) {
+  #board .board-desk { display: none; }
+  #board .board-phone { display: block; }
+}
+@media (min-width: 641px) { #board .board-phone { display: none; } }
+/* ── the desktop board, at the width the page gives it ────────────────
+   Above 900 the shell holds the 1280px build. The wrap is 90vw, so from 901
+   to 1421 the shell is narrower than the mock — 922px at 1024 — and the
+   right 28% of the board, Saturday included, was past an edge that had no
+   fade and no scrollbar until hovered. The kit's own contract, canvas.css:
+   --mock-room is the room, --mock-fit the multiplier that fits --dw into
+   it, never above 1. The room is measured on the holder with container
+   units, which is the shell's real width — 100vw minus gutters would
+   overshoot by the scrollbar on an engine that draws one. At 1440 and up
+   the multiplier is 1 and nothing changes. */
+.board-desk { container-type: inline-size; }
+@media (min-width: 901px) {
+  .shell .browser { --mock-room: 100cqw; --mock-z: var(--mock-fit); }
+}
+/* ── on a phone, each thing once ──────────────────────────────────────
+   Stacked at 390, three sections showed the same instrument twice:
+   / #hours — the phone timesheet and then the week-bars toy of the same
+   week; /providers #credentials — the rail, the phone, the flow and the
+   slider, 2888px for one idea; /providers #board — the 7x2 week as the
+   phone board and again as the roster toy. The phone keeps the rail and
+   the flow, the mock and the clock ring, the board; the rest is a desktop
+   telling. `screen`, because print keeps the roster. */
+@media screen and (max-width: 640px) {
+  main[data-page="home"] #hours .ts { display: none; }
+  main[data-page="providers"] #credentials .ch-dev,
+  main[data-page="providers"] #credentials .tl { display: none; }
+  main[data-page="providers"] #board .ros { display: none; }
+}
+.pb { padding: 16px 14px 14px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); }
+.pb-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "k n" "s n"; align-items: center; column-gap: 12px; margin-bottom: 12px; }
+.pb-k { grid-area: k; font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.02em; line-height: 1.1; }
+.pb-s { grid-area: s; font-size: 13px; font-weight: 600; color: var(--soft); margin-top: 3px; }
+.pb-n { grid-area: n; font-family: var(--font-display); font-weight: 700; font-size: 15px; padding: 6px 12px; border-radius: 999px; background: var(--orchid); color: #1C1620; white-space: nowrap; }
+/* a real table: the row and column headers read, and table-layout: fixed
+   hands the seven days equal widths — 42px at 390, 34px at 320, no scroll */
+.pb-g { width: calc(100% + 4px); margin: 0 -2px; table-layout: fixed; border-collapse: separate; border-spacing: 2px 3px; }
+.pb-g col.pb-c0 { width: 38px; }
+.pb-g th { font-weight: 700; font-size: 12px; color: var(--soft); text-align: center; padding: 0 0 1px; }
+.pb-g th[scope="row"] { font-family: var(--font-display); font-size: 12px; color: var(--ink); text-align: left; }
+.pb-g th.is-today { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.pb-g td { padding: 0; }
+.pb-c { display: grid; place-items: center; height: 44px; border-radius: 10px; background: var(--wash); color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .02em; }
+.pb-c i { font-style: normal; }
+.pb-c.is-open { background: var(--orchid); color: #1C1620; font-size: 11.5px; letter-spacing: 0; }
+.pb-card { margin-top: 12px; padding: 14px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); display: grid; gap: 4px; }
+.pb-when { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.02em; line-height: 1.2; }
+.pb-work, .pb-none { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.pb-card .needs { margin-top: 8px; gap: 6px; }
+.pb-act { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pb-act .btn { flex: 1 1 auto; justify-content: center; }
+.pb-next { margin-top: 8px; font-size: 15px; color: var(--muted); }
+.pb-next b { color: var(--ink); }
+.pb-el { margin-top: 12px; display: grid; gap: 8px; }
+.pb-el-k { font-size: 13px; font-weight: 700; color: var(--soft); }
+.pb .elig { display: grid; margin-top: 0; }
+.pb-el-c { font-size: 13.5px; color: var(--soft); line-height: 1.45; }
+@media (max-width: 640px) {
+  /* /providers: the chapter's seven steps and the pull quote are the wide
+     telling; on a phone the board, the two gates and the roster are the fold */
+  main[data-page="providers"] #board .flow,
+  main[data-page="providers"] #board .ch-side .pull { display: none; }
+}
+/* the step cards crop their phones on purpose. A fade at the cut, so a row
+   that lands on the edge reads as a fade rather than a slice through text. */
+.step .crop { -webkit-mask-image: linear-gradient(#000 calc(100% - 64px), transparent); mask-image: linear-gradient(#000 calc(100% - 64px), transparent); }
+@media (max-width: 900px) {
+  /* ── the swipe strip tells you its edges, where it still is one ──────
+     Between 641 and 900 the shell holds the 768px board in a gutter narrower
+     than it and scrolls. The fade lifts on the side you have already
+     reached, so it is a report on where you are, not decoration. data-sx
+     only — with scripting off there is no attribute and no fade, because a
+     fade drawn over a strip that does not scroll is a worse lie than none. */
+  .shell[data-sx], .ros-w[data-sx] { --shell-fade: 44px; }
+  .shell[data-sx="start"], .ros-w[data-sx="start"] {
+    -webkit-mask-image: linear-gradient(90deg, #000 0 calc(100% - var(--shell-fade)), transparent 100%);
+            mask-image: linear-gradient(90deg, #000 0 calc(100% - var(--shell-fade)), transparent 100%); }
+  .shell[data-sx="mid"], .ros-w[data-sx="mid"] {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade), #000 calc(100% - var(--shell-fade)), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade), #000 calc(100% - var(--shell-fade)), transparent 100%); }
+  .shell[data-sx="end"], .ros-w[data-sx="end"] {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade));
+            mask-image: linear-gradient(90deg, transparent 0, #000 var(--shell-fade)); }
+}
+/* at 320 the seven day cells fall to 28px and "Open" touches both edges;
+   a narrower card padding and label column give them 30px and the word air */
+@media (max-width: 360px) {
+  .pb { padding: 14px 10px 12px; }
+  .pb-g col.pb-c0 { width: 34px; }
+  .pb-g th[scope="row"] { font-size: 11.5px; }
+  .pb-c.is-open { font-size: 11px; }
+}
+
+/* ── round 3 landing (2026-09-23) ──────────────────────────────────────
+   901–1100: the desktop board is shown at TRUE SIZE and panned, never
+   zoomed to 7px type (the kit's own rule for a desktop shell). The shell is
+   already overflow-x: auto; stripEdges() now paints the edge fade to 1100.
+   ≤640 the home board showed the week grid twice (phone board + the
+   build-the-week toy); the toy stays on /providers and goes here. */
+@media (max-width: 1100px) and (min-width: 641px) {
+  .board-desk .browser, .board-desk .shell > .browser { --mock-z: 1; }
+}
+@media (max-width: 640px) {
+  #board .ros { display: none; }
+}

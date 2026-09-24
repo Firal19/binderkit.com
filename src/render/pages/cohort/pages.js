@@ -7,7 +7,7 @@ import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../dat
 import { ic } from '../../icons/cohort.js';
 import CONFIGS from '../../../configs.js';
 import { header, footer } from './chrome.js';
-import { find, MODULES, REFUSALS, TOPICS, APP, SCREEN_ORDER, SCREEN_NOTES, SITE, STRIP, PASS } from './data.js';
+import { find, MODULES, REFUSALS, TOPICS, APP, SCREEN_ORDER, SCREEN_NOTES, SITE, STRIP, PASS, neutral } from './data.js';
 
 /* The page descriptions below are plain strings handed to build.mjs's head(),
    so they cannot call hello(cfg) at render time; they read the same source. */
@@ -50,9 +50,9 @@ function features(cfg, p) {
       <p class="cap">Seven states, and exactly two of them stop a caregiver. No module may add a third.</p>
       <p class="more"><a href="/#stops">${ic('gate', 16)}<span>See the two stops on the front page</span>${ic('right', 16)}</a></p>
     </div>`))}
-    ${fold('Eleven things it will not do, with the reason', sec('never', 'fnever', `<div class="wrap">
-      <div class="head ref-head"><div>${h2('never', 'Refused on principle.', 'Eleven refusals, each with its reason. They are positions, not missing features.')}</div><button class="printb" type="button" data-print data-print-only="refuses">${ic('print', 18)}<span>Print this list</span></button></div>
-      <ol class="ref-l" id="refuses">${REFUSALS.map(([t, why], i) => `<li><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><div><b>${esc(t)}</b><span>${esc(why)}</span></div></li>`).join('')}</ol>
+    ${fold('Four things it will not do, with the reason', sec('never', 'fnever', `<div class="wrap">
+      <div class="head">${h2('never', 'Refused on principle.', 'Four things Cohort will not do. They are positions, not missing features.')}</div>
+      <ul class="ref-g">${REFUSALS.map(([t, why], i) => `<li class="ref-c"><span class="ref-n">${String(i + 1).padStart(2, '0')}</span><b>${esc(t)}</b><p>${esc(why)}</p></li>`).join('')}</ul>
     </div>`))}
     ${sec('fjoin', 'fjoin', `<div class="wrap">
       <div class="head">${eyebrow('Early access')}${h2('fjoin', 'That is the whole product.', `${total} capabilities, two stops, one record that cannot be quietly changed.`)}</div>
@@ -65,14 +65,14 @@ function features(cfg, p) {
 const NOTES = Object.fromEntries(SCREEN_ORDER.map((k) => [k, SCREEN_NOTES[k]]));
 
 function screens(cfg, p) {
-  const strip = filmStrip('cohort', {
+  const strip = neutral(filmStrip('cohort', {
     id: STRIP,
     only: SCREEN_ORDER,
     notes: NOTES,
     label: 'Every screen in Cohort, at the size it ships',
     hint: 'Drag it, scroll it, or use the arrow keys.',
     jumpLabel: 'Jump to a screen',
-  });
+  }));
   const pass = callouts(iosShell('cohort', { key: 'marpass', present: 'sheet' }), [
     { n: 1, text: 'Six Rights, six boxes, all required. The sixth is the record itself: signing writes who and when.', sel: '.sheet-h' },
     { n: 2, text: 'The first stop. The allergy is named before the dose is signed, with its severity and its reaction.', sel: '.notice-a' },

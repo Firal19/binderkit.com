@@ -1,6 +1,6 @@
 // /pricing, /about and /contact.
 
-import { esc, sec, h2, eyebrow, faq, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, find, shell, tierBlock, joinBlock, BOUNDARY, ixNav, stateLegend } from './bits.js';
+import { esc, sec, h2, eyebrow, faq, ic, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, find, shell, tierBlock, joinBlock, ixNav, stateLegend } from './bits.js';
 import { contact, mailto, hello, byline, reach } from '../../shared.js';
 
 /* ── pricing ──────────────────────────────────────────────────────────── */
@@ -37,15 +37,14 @@ export const aboutPage = {
   render(cfg, p) {
     const ev = find('evidence');
     const closing = ev.closingBlocks;
-    return shell(cfg, p, { page: 'about', ids: new Set(['top', 'two', 'boundary', 'words', 'write']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('About')}<h1 id="h1">The workforce record, and nothing else.</h1><p class="lede">${esc(p.lede)}</p></div></section>
+    return shell(cfg, p, { page: 'about', ids: new Set(['top', 'two', 'words', 'write']) }, `<section class="hero hero-s" id="top" aria-labelledby="h1"><div class="wrap">${eyebrow('About')}<h1 id="h1">The workforce record, and nothing else.</h1><p class="lede">${esc(p.lede)}</p></div></section>
 ${sec('two', 'two-s', `<div class="wrap two-g">${closing.map((b, i) => `<div class="two-b"><h2 id="${i === 0 ? 'h-two' : `h-two-${i}`}">${esc(b.heading)}</h2><p>${esc(b.text)}</p></div>`).join('')}<div class="two-b"><h2 id="h-two-b">Made in Oregon, for Oregon houses.</h2><p>Four licence tracks on one data model. The vocabulary is the rule’s own: relief care, substitute caregiver, competency-based training. Nothing is translated from another state.</p></div></div>`)}
-${sec('boundary', 'bound', `<div class="wrap"><div class="head">${h2('boundary', 'What Aidepost will not do.')}</div><p class="boundary">${esc(BOUNDARY)}</p></div>`)}
 ${sec('words', 'words', `<div class="wrap words-g">
   <div>${eyebrow('The state words')}${h2('words', 'Four words, and no fifth.', 'Every state in Aidepost is one of these four. Coral means exactly two things: a shift nobody is on, and a credential that has run out.')}
     </div>
   ${stateLegend()}
 </div>`)}
-${ixNav([['two', 'Two sides', 'both'], ['boundary', 'What we will not do', 'both'], ['words', 'The four words', 'both'], ['write', 'Write to a person', 'both']])}
+${ixNav([['two', 'Two sides', 'both'], ['words', 'The four words', 'both'], ['write', 'Write to a person', 'both']])}
 ${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Write to the person who built it.')}<p class="sub">One inbox, read by a person. Made in Oregon.</p>${byline(false)}</div><div class="write-a"><a class="btn pri lg" href="/contact">${ic('mail', 18, { pin: false })}Contact</a><a class="btn lg" href="${mailto(cfg)}">${esc(hello(cfg))}</a></div></div>`)}`);
   },
 };
