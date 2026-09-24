@@ -130,7 +130,7 @@
       } else if (k === 'confirm') {
         say(3, 'R. Alemu claimed it · Fri 18:02 — confirmed · Fri 18:05. She is told, and can now clock in.');
         btn('confirm').hidden = true; btn('reset').hidden = false; steps.dataset.step = '4';
-        if (cell) { cell.classList.remove('is-open'); cell.classList.add('is-covered', 'is-just'); cellT.textContent = 'R. Alemu'; cellI.textContent = 'RA'; cell.setAttribute('aria-label', 'Sat night: R. Alemu — covered'); }
+        if (cell) { cell.classList.remove('is-open'); cell.classList.add('is-covered', 'is-just'); cellT.textContent = 'R. Alemu'; if (cellI) cellI.textContent = 'RA'; cell.setAttribute('aria-label', 'Sat night: R. Alemu — covered'); }
         rec.textContent = '';
         const b = document.createElement('b'); b.textContent = 'The record: '; rec.appendChild(b);
         rec.appendChild(document.createTextNode('offered inward first · Fri 09:12 → posted outward · Fri 17:40 → claimed by R. Alemu · Fri 18:02 → confirmed · Fri 18:05. On Sunday the manager records that she showed — the employer’s own fact, never another employer’s.'));
@@ -139,7 +139,7 @@
       } else if (k === 'reset') {
         setStep(0); ['1', '2', '3'].forEach((n) => say(n, '')); rec.textContent = '';
         btn('offer').disabled = false; btn('post').disabled = true; btn('confirm').hidden = true; btn('reset').hidden = true;
-        if (cell) { cell.classList.add('is-open'); cell.classList.remove('is-covered', 'is-just'); cellT.textContent = 'Open'; cellI.textContent = 'Open'; cell.setAttribute('aria-label', 'Sat night is open — see how it gets covered'); }
+        if (cell) { cell.classList.add('is-open'); cell.classList.remove('is-covered', 'is-just'); cellT.textContent = 'Open'; if (cellI) cellI.textContent = 'Open'; cell.setAttribute('aria-label', 'Sat night is open — see how it gets covered'); }
         tonight();
       }
     };
@@ -390,17 +390,6 @@
     d.addEventListener('pointerleave', () => { target = 50; kick(); });
   });
 
-  /* ── a scroll-spy rail keeps the lit destination in view ────────────
-     Two rails now: the desktop chapter strip on /providers and the page
-     index on every route. site.js sets aria-current on both — this is the
-     half that makes it useful on a phone, where the rail is 350px wide and
-     the destination you are inside is often off the right edge. */
-  const chapters = () => $$('[data-chap],[data-ix]').forEach((strip) => {
-    if (!('MutationObserver' in window)) return;
-    const ul = $('ul, ol', strip); if (!ul) return;
-    const mo = new MutationObserver(() => { const a = $('a[aria-current="true"]', strip); if (!a) return; ul.scrollTo({ left: a.offsetLeft - (ul.clientWidth - a.offsetWidth) / 2, behavior: smooth() }); });
-    mo.observe(strip, { attributes: true, subtree: true, attributeFilter: ['aria-current'] });
-  });
 
   /* ── the hero device takes the side the page is on ──────────────────
      The switch flips the whole site; on /screens it flips the device too,
@@ -522,6 +511,6 @@
     all();
   };
 
-  const boot = () => { sides(); keys(); realDay(); palette(); notify(); proxies(); fit(); roster(); timeline(); wallet(); timesheet(); clock(); distance(); spots(); doors(); chapters(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
+  const boot = () => { sides(); keys(); realDay(); palette(); notify(); proxies(); fit(); roster(); timeline(); wallet(); timesheet(); clock(); distance(); spots(); doors(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
   boot();
 })();

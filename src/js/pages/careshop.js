@@ -46,7 +46,7 @@
          the nine routes that carry no aisle signs of their own. addStop
          skips an element already named, so a folded section's own data-stop
          still wins — this only fills the gaps. */
-      $$('.dir-i').forEach((a) => addStop(document.getElementById(a.getAttribute('href').slice(1)), (a.querySelector('b') || {}).textContent || ''));
+      $$('.crl-a').forEach((a) => addStop(document.getElementById(a.getAttribute('href').slice(1)), a.getAttribute('data-label') || ''));
       stops2.sort((a, b) => top(a.el) - top(b.el));
       const spy = (links) => {
         const line = window.scrollY + window.innerHeight * 0.32;
@@ -501,46 +501,7 @@
       btn.addEventListener('click', () => { if (!pal.hidden) { inp.value = ''; filter(); } });
     };
 
-    /* ── the receipt's groups: open everywhere, closed on a phone ─────────
-       The markup ships <details open>, so with scripting off, on a printer
-       and above 640px the whole fifteen-line list is present — nothing is
-       ever removed at a width. Below 640 it closes what the reader has not
-       opened themselves, which turns 688px of duplicated navigation into
-       two subtotal lines. A reader who opens one keeps it open across a
-       rotation; beforeprint opens them all and never takes that back,
-       because a printed receipt with a collapsed section is a bad receipt. */
-    const rcGroups = () => {
-      const ds = $$('.rc-d');
-      if (!ds.length) return;
-      const mq = window.matchMedia('(max-width: 640px)');
-      let printing = false;
-      const sync = () => ds.forEach((d) => { d.open = printing || !mq.matches || d.dataset.kept === '1'; });
-      ds.forEach((d) => d.addEventListener('toggle', () => {
-        if (printing || !mq.matches) return;
-        d.dataset.kept = d.open ? '1' : '';
-      }));
-      mq.addEventListener('change', sync);
-      window.addEventListener('beforeprint', () => { printing = true; sync(); });
-      window.addEventListener('afterprint', () => { printing = false; sync(); });
-      sync();
-    };
 
-    /* ── the receipt prints itself as it enters view ─────────────────────── */
-    const receipt = () => {
-      const rc = $('[data-receipt]');
-      if (!rc) return;
-      const lines = $$('.rc-top, .rc-h, .rc-l, .rc-tear, .rc-block, .rc-mail, .rc-thanks, .rc-tearlink, .rc-by, .rc-fine', rc).filter((el) => !el.closest('.rc-l') || el.classList.contains('rc-l'));
-      const finish = () => { rc.classList.add('is-done'); lines.forEach((l) => l.classList.add('is-printed')); };
-      if (!io || calm.matches) { finish(); return; }
-      const obs = new IntersectionObserver((es) => {
-        if (!es.some((e) => e.isIntersecting)) return;
-        obs.disconnect();
-        lines.forEach((l, i) => setTimeout(() => l.classList.add('is-printed'), 60 * i));
-        setTimeout(() => rc.classList.add('is-done'), 60 * lines.length + 400);
-      }, { threshold: .08 });
-      obs.observe(rc);
-      setTimeout(finish, 9000);
-    };
 
     /* ── "show me": light the row on the phone beside the text ───────────── */
     const showMe = () => {
@@ -593,12 +554,13 @@
        press — hands over the exact address of the aisle on screen.
        Nothing here runs on a page with neither. */
     const board = () => {
-      const links = $$('.dir-i');
+      /* Round 4: the entrance board is the shared chapter rail, which marks
+         and centres its own chip (site.js chapters). This half only keeps
+         the dock's "You are in" address in step with the stop on screen. */
+      const links = $$('.crl-a');
       const cp = $('[data-here-copy]');
-      if (!links.length && !cp) return;
-      const base = cp ? cp.getAttribute('data-copy') : '';
-      const box = links.length ? links[0].closest('.dir-l-o') : null;
-      let last = null;
+      if (!cp) return;
+      const base = cp.getAttribute('data-copy');
       const paint = () => {
         const line = window.scrollY + window.innerHeight * 0.32;
         let on = null;
@@ -606,21 +568,10 @@
           const t = document.getElementById(a.getAttribute('href').slice(1));
           if (t && t.getBoundingClientRect().top + window.scrollY <= line) on = a;
         });
-        if (on !== last) {
-          if (last) last.removeAttribute('aria-current');
-          if (on) on.setAttribute('aria-current', 'true');
-          last = on;
-          if (on && box) {
-            const max = box.scrollWidth - box.clientWidth;
-            if (max > 4) box.scrollTo({ left: Math.max(0, Math.min(max, on.offsetLeft - (box.clientWidth - on.offsetWidth) / 2)), behavior: calm.matches ? 'auto' : 'smooth' });
-          }
-        }
-        if (cp) cp.setAttribute('data-copy', on ? base + on.getAttribute('href') : base);
+        cp.setAttribute('data-copy', on ? base + on.getAttribute('href') : base);
       };
       let t = false;
-      const tick = () => { if (!t) { t = true; requestAnimationFrame(() => { t = false; paint(); }); } };
-      window.addEventListener('scroll', tick, { passive: true });
-      document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.fold-s')) requestAnimationFrame(paint); });
+      addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(() => { t = false; paint(); }); } }, { passive: true });
       paint();
     };
 
@@ -643,7 +594,7 @@
       }
     };
 
-    where(); ring(); fan(); scan(); counters(); par(); approve(); allergen(); reserve(); prices(); stores(); ladder(); cook(); palette(); rcGroups(); receipt(); showMe(); legend(); stickers(); board(); callouts();
+    where(); ring(); fan(); scan(); counters(); par(); approve(); allergen(); reserve(); prices(); stores(); ladder(); cook(); palette(); showMe(); legend(); stickers(); board(); callouts();
   };
   if (window.PHO) init(); else document.addEventListener('pho:ready', init, { once: true });
 })();

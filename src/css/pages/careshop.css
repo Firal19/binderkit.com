@@ -3119,3 +3119,17 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .cs-sheet-a { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
 .cs-sheet-a .btn { justify-content: center; min-height: calc(var(--tap) + 1px); }
 .cs-sheet-a .btn.pri { background: var(--sage); color: var(--on-sage); }
+
+/* ── /write: what to expect, as a plain list (was a receipt) ─────────── */
+.expect { display: grid; gap: 10px; padding: 20px 22px; border-radius: var(--r2); background: var(--card); box-shadow: var(--e2); }
+.expect-h { margin: 0; font-family: var(--font-display); font-size: var(--cs-lg); font-weight: 600; letter-spacing: -0.015em; }
+.expect-l { display: grid; margin: 0; }
+.expect-l > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.expect-l dt { color: var(--muted); font-size: var(--cs-sm); }
+.expect-l dd { margin: 0; font-weight: 600; font-size: var(--cs-sm); text-align: right; overflow-wrap: anywhere; }
+.expect-f { margin: 0; color: var(--muted); font-size: var(--cs-sm); }
+/* the used barcode leaves once the item is found — ghosted at .4 it ran its
+   bars through the rows under it (review, round 4) */
+.scan.is-found .scan-card { opacity: 0; }
+/* round 4 review: the ask-a-person block is a band between rules, not a card */
+.reach, .dark-half .reach { background: none; box-shadow: none; border-radius: 0; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }

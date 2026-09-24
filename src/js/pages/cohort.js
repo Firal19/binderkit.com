@@ -589,29 +589,6 @@
     });
   };
 
-  /* ── how many houses: the tier line, the card, and the waitlist field ── */
-  const houses = () => $$('.hs').forEach((hs) => {
-    const line = hs.parentElement.querySelector('.hs-line');
-    const btns = $$('button', hs);
-    const tiers = $$('.tier');
-    const sel = $('#joinform select[name="houses"]');
-    const LINES = {
-      '1': ['One house — Pro, $39 a month. Every plan sees every screen.', 1],
-      '2–3': ['Two or three houses — Pro, $39 per house a month.', 1],
-      '4–9': ['Four to nine houses — Scale, $79 per house a month, with roll-ups and agency roles.', 2],
-      '10+': ['Ten houses and up — Scale, and worth a conversation about the roll-ups you need.', 2],
-    };
-    const pick = (h) => {
-      const [t, i] = LINES[h] || LINES['1'];
-      btns.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.h === h)));
-      if (line) line.textContent = t;
-      tiers.forEach((el, k) => el.classList.toggle('is-pick', k === i));
-      if (sel && [...sel.options].some((o) => o.value === h)) sel.value = h;
-    };
-    btns.forEach((b) => b.addEventListener('click', () => pick(b.dataset.h)));
-    tiers.forEach((el, k) => el.classList.toggle('is-pick', k === 1));
-  });
-
   /* ── every heading copies its own link ───────────────────────────────── */
   const LINK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a3.75 3.75 0 0 0 5.3 0l2.95-2.95a3.75 3.75 0 0 0-5.3-5.3l-1.2 1.2M14 10a3.75 3.75 0 0 0-5.3 0l-2.95 2.95a3.75 3.75 0 0 0 5.3 5.3l1.2-1.2"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>';
   const headingLinks = () => $$('main h2[id]').forEach((h) => {
@@ -778,7 +755,7 @@
 
   const boot = () => {
     clock(); signOut(); rail(); tabs(); textSize(); phoneMode(); palette(); keys(); tapHours(); caption(); phoneScan();
-    simulator(); airplane(); compose(); flips(); roles(); compare(); faqs(); houses();
+    simulator(); airplane(); compose(); flips(); roles(); compare(); faqs();
     headingLinks(); totop(); footer(); shiftTip(); stages(); pins(); sheetEdge();
   };
   if (window.PHO) boot(); else document.addEventListener('pho:ready', boot);

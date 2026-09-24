@@ -553,3 +553,14 @@
   .hero { padding-block: 16px; }
   .toast { bottom: max(12px, var(--sab)); }
 }
+
+/* ═══ ROUND 4 review · the open fold row stops repeating the headline ═══
+   Round 3 shrank it to a small marker; a fresh reviewer still read it as
+   the heading twice ("TWO STOPS. NOTHING ELSE." over "Two stops. Nothing
+   else."). Open, the row is a Close control: the headline stays its
+   accessible name, and what a sighted reader sees is "Close" and the
+   chevron. */
+@media (max-width: 640px) {
+  .js [data-phone="fold"][data-open] > .fold-s *:where(.fold-h) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .js [data-phone="fold"][data-open] > .fold-s::before { content: "Close" / ""; font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; letter-spacing: var(--track-label); text-transform: uppercase; opacity: .62; }
+}

@@ -1604,3 +1604,28 @@ dialog::backdrop { background: rgba(23, 32, 31, .45); }
 @media (max-width: 900px) {
   .fb-p > [data-page-n], .fb-p > [data-page-total], .fb-p > .fb-sep { flex: none; white-space: nowrap; }
 }
+
+/* ═══ ROUND 4 · the facilities stepper, in the binder's own rule ═══════ */
+.tiers-q { margin-top: 18px; }
+.tiers-w .pc-step { border-radius: 0; border-color: var(--rule); }
+.tiers-w .pc-b { border-radius: 0; }
+.tiers-w .pc-n { font-family: var(--font-display); }
+.tiers-w:not([data-js]) .pc-b { visibility: hidden; }
+.tier-m { font-size: 15px; color: var(--muted); }
+.tier-m b { font-family: var(--font-display); font-size: 20px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tier-fit { display: none; align-self: start; margin-top: 4px; padding: 3px 8px; border: 1px solid var(--ink); font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+.tier[data-fits] .tier-fit { display: inline-block; }
+.tier[data-fits] { box-shadow: inset 0 3px 0 var(--ink); }
+.tier-m[hidden], .tiers-q[hidden] { display: none; }
+/* round 4 review: the ask-a-person block is a band between rules, not a card */
+.reach, .dark-half .reach { background: none; box-shadow: none; border-radius: 0; border: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+/* the chapter you are in is the tab pulled out and inked */
+.dtab[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--bg); transform: translateX(-6px); }
+.dtab[aria-current="page"] .dtab-n { color: var(--bg); }
+/* the chapter rail, in the binder's rule: square, inked, no glass */
+.crl { border-radius: 2px; border-color: var(--rule); background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.crl[data-stuck] { box-shadow: 0 1px 0 var(--rule); }
+.crl-a { border-radius: 1px; }
+.crl-a[aria-current] { background: var(--ink); color: var(--bg); }
+.crl-p::before { background: var(--ink); }
+@media (min-width: 641px) { .crl-a { font-family: var(--font-mono); font-size: 13px; letter-spacing: .02em; } }

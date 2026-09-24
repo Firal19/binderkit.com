@@ -1140,7 +1140,7 @@ export function filmStrip(productId, opts = {}) {
   const hintId = `${id}-hint`;
   const label = opts.label || `Every screen in ${p.name}, at the size it ships`;
   const hint = opts.hint || 'Drag it, scroll it, or use the arrow keys. Every screen here is the product itself.';
-  const cards = rows.map((r, i) => `<li class="fs-i" id="${E(id)}-${E(r.key)}" data-kind="${E(r.kind)}" data-t="${E(r.title)}"${i === 0 ? ' data-on' : ''}>
+  const cards = rows.map((r, i) => `<li class="fs-i" id="${E(id)}-${E(r.key)}" data-kind="${E(r.kind)}" data-t="${E(r.title)}" data-tab="${E(r.tab || r.title)}"${i === 0 ? ' data-on' : ''}>
       <figure class="fs-fig">
         <div class="fs-stage">${r.html}</div>
         <figcaption class="fs-cap">
@@ -1157,7 +1157,7 @@ export function filmStrip(productId, opts = {}) {
      buttons only appear once site.js is running (.fstrip[data-js]). */
   const chev = (d) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
   const bar = `<div class="fs-bar">
-      <div class="fs-now" aria-hidden="true"><b class="fs-now-n">01</b><span class="fs-now-c">/ ${pad2(rows.length)}</span><span class="fs-now-t">${E(rows[0] ? rows[0].title : '')}</span></div>
+      <div class="fs-now" aria-hidden="true"><b class="fs-now-n">01</b><span class="fs-now-c">/ ${pad2(rows.length)}</span><span class="fs-now-t">${E(rows[0] ? (rows[0].tab || rows[0].title) : '')}</span></div>
       <span class="fs-step"><button class="fs-b" type="button" data-fs-step="-1" aria-controls="${E(id)}-rail" aria-label="Previous screen" disabled>${chev('M15 6l-6 6 6 6')}</button><button class="fs-b" type="button" data-fs-step="1" aria-controls="${E(id)}-rail" aria-label="Next screen">${chev('M9 6l6 6-6 6')}</button></span>
     </div>`;
   return `<div class="fstrip${opts.bleed === false ? '' : ' is-bleed'}" id="${E(id)}" data-strip="${E(p.id)}">

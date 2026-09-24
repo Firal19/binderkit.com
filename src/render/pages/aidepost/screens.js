@@ -99,7 +99,6 @@ export const screensPage = {
     }))}</div>
   </div>
 </section>
-${ixNav(IX)}
 ${sec('strip', 'strp', `<div class="wrap">
   <div class="head head-r"><div>${eyebrow('All five')}${h2('strip', 'The product, at the size it ships.', 'Drag it, flick it, or press the arrow keys. Each card is addressable on its own — copy the link and it opens on that screen.')}</div>${deepLink('/screens#strip', 'the screen strip')}</div>
   ${sx(filmStrip('aidepost', {

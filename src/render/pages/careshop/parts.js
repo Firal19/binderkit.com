@@ -119,7 +119,7 @@ export function header(cfg, p, opts = {}) {
       <a class="signin" href="${esc(cfg.signIn.href)}">${esc(cfg.signIn.label)}</a>
       <button class="cord" type="button" data-mode-toggle aria-pressed="false" aria-label="Lights: switch between light and dark" data-theme-light="${esc(cfg.og.bg)}" data-theme-dark="#1b1613">${ic('cord', 18)}<span class="cord-pull" aria-hidden="true"></span></button>
       <a class="btn pri tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="nav"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.nav)}</a>
-      <button class="tally" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Aisles — open the menu" data-lock data-focus=".drawer-close" data-label-open="Aisles — open the menu" data-label-close="Aisles — close the menu">${ic('receipt', 22)}<span class="tally-l">Aisles</span><span class="tally-n" aria-hidden="true">${AISLES.length + PAGES_NAV.length}</span></button>
+      <button class="tally" type="button" aria-controls="drawer" aria-expanded="false" aria-label="Aisles — open the menu" data-lock data-focus=".drawer-close" data-label-open="Aisles — open the menu" data-label-close="Aisles — close the menu">${ic('basket', 22)}<span class="tally-l">Aisles</span><span class="tally-n" aria-hidden="true">${AISLES.length + PAGES_NAV.length}</span></button>
     </div>
   </div>
 </header>

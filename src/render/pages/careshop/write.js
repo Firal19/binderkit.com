@@ -11,16 +11,15 @@ export function writePage(cfg, p) {
 ${sec('form', 'write-s', `<div class="wrap write-g">
   <div class="write-f">${contact(cfg, p, { topics: TOPICS, placeholder: 'Which house, which shelf, what happened — as much or as little as you like.', button: 'Send it', done: 'Sent. A receipt is on its way to you, and a person will answer from the same inbox.' })}</div>
   <aside class="write-a">
-    <div class="rc rc-aside">
-      <div class="rc-top"><b class="rc-store">WHAT TO EXPECT</b></div>
-      <div class="rc-lines">
-        <span class="rc-l"><span>WRITE TO</span><i aria-hidden="true"></i><b>${esc(hello(cfg).toUpperCase())}</b></span>
-        <span class="rc-l"><span>READ BY</span><i aria-hidden="true"></i><b>A PERSON</b></span>
-        <span class="rc-l"><span>TICKET NUMBER</span><i aria-hidden="true"></i><b>NONE</b></span>
-        <span class="rc-l"><span>NEWSLETTER</span><i aria-hidden="true"></i><b>NONE</b></span>
-      </div>
-      <div class="rc-tear" aria-hidden="true"></div>
-      <p class="rc-thanks">${esc(CONTACT.fine.toUpperCase())}</p>
+    <div class="expect">
+      <p class="expect-h">What to expect</p>
+      <dl class="expect-l">
+        <div><dt>Write to</dt><dd>${esc(hello(cfg))}</dd></div>
+        <div><dt>Read by</dt><dd>A person</dd></div>
+        <div><dt>Ticket number</dt><dd>None</dd></div>
+        <div><dt>Newsletter</dt><dd>None</dd></div>
+      </dl>
+      <p class="expect-f">${esc(CONTACT.fine)}</p>
     </div>
     <div class="write-alt">
       ${sticker('mail', 'Or write straight to')}

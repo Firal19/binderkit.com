@@ -72,8 +72,8 @@ function caregivers() {
         ${distanceToy('dist-home')}
       </div>
       <div class="care-v" data-scroll-p><div class="dev">${iosShell('aidepost', { key: 'caregiver', mode: 'dark' })}</div></div>
+      <div class="care-q">${fitQuiz()}</div>
     </div>
-    <div class="wrap">${fitQuiz()}</div>
   </section>
   <section class="sec care wallet-s" id="wallet" aria-labelledby="h-wallet" data-reveal data-phone="fold" data-gist="Your credential dates in your pocket, carried from one employer to the next.">
     <div class="wrap wallet-g">
@@ -130,19 +130,14 @@ function pricing(cfg, p) {
 const join = (cfg, p) => sec('join', 'join', joinBlock(cfg, p));
 
 export const HOME_IX = [
-  ['top', 'Saturday night', 'prov'],
   ['providers', 'Inward, then outward', 'prov'],
   ['board', 'The board', 'prov'],
   ['credentials', 'Credentials', 'prov'],
   ['hours', 'Hours', 'prov'],
   ['caregivers', 'Shifts near you', 'care'],
   ['wallet', 'Your wallet', 'care'],
-  ['free', 'Free, for ever', 'care'],
-  ['rules', 'The rules', 'both'],
-  ['roles', 'Who does what', 'both'],
   ['questions', 'Questions', 'both'],
   ['pricing', 'Pricing', 'both'],
-  ['join', 'Join', 'both'],
 ];
 
 export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'hours', 'caregivers', 'wallet', 'free', 'rules', 'roles', 'questions', 'pricing', 'join', 'claim', 'reach']);

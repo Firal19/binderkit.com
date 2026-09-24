@@ -61,13 +61,8 @@ export const HOME_STOPS = [
   ['shop', 'In the shop'],
   ['stock', 'Stock'],
   ['loop', 'The loop'],
-  ['reserve', 'Reserves'],
-  ['record', 'Residents'],
-  ['roles', 'Who uses it'],
-  ['kitchen', 'Sign in'],
   ['questions', 'Questions'],
   ['pricing', 'Pricing'],
-  ['start', 'First ten minutes'],
 ];
 
 const TILES = {

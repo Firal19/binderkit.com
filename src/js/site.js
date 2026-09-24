@@ -180,7 +180,16 @@
     clearTimeout(hereT);
     hereT = setTimeout(() => hereEl.classList.remove('is-on'), 2400);
   };
-  const landAt = (el) => () => { const docY = el.getBoundingClientRect().top + window.scrollY; return docY - coverTop(docY) - 14; };
+  /* A section whose heading sits well down its own box (a phone layout that
+     puts the instrument first) lands on the heading, so the thing that says
+     where you are is on screen when you arrive. */
+  const landAt = (el) => () => {
+    let target = el;
+    const head = el.matches('section, [data-chapter]') ? $('h2, h3', el) : null;
+    if (head && head.getBoundingClientRect().top - el.getBoundingClientRect().top > window.innerHeight * 0.4) target = head;
+    const docY = target.getBoundingClientRect().top + window.scrollY;
+    return docY - coverTop(docY) - 14;
+  };
   const jumpTo = (t, opts = {}) => scrollToY(landAt(t), () => arrive(t, opts));
 
   /* ── the chapter rail: one on-page nav, and it follows you ────────────
@@ -197,9 +206,12 @@
     const targets = links.map((a) => document.getElementById(a.getAttribute('href').slice(1)));
     const nEl = $('[data-crl-n]', nav);
     let on = -2, ticking = false;
+    /* measured by rects, not offsetLeft: the sticky .crl is the chips'
+       offsetParent, so offsetLeft counted the phone counter too and the lit
+       chip was pushed under the fade ("o stops") */
     const centre = (a) => {
       if (!list || !a || list.scrollWidth <= list.clientWidth + 1) return;
-      const left = a.offsetLeft + a.offsetWidth / 2 - list.clientWidth / 2;
+      const left = list.scrollLeft + (a.getBoundingClientRect().left - list.getBoundingClientRect().left) + a.offsetWidth / 2 - list.clientWidth / 2;
       list.scrollTo({ left: Math.max(0, left), behavior: calm.matches ? 'auto' : 'smooth' });
     };
     const paint = () => {
@@ -951,12 +963,12 @@
     $$('.fs-jump a', box).forEach((a, j) => { if (j === i) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
     /* keep the lit tab in view on a strip of tabs wider than the page */
     const lit = jump && $$('a', jump)[i];
-    if (lit && jump.scrollWidth > jump.clientWidth + 1) jump.scrollTo({ left: Math.max(0, lit.offsetLeft + lit.offsetWidth / 2 - jump.clientWidth / 2), behavior: ease() });
+    if (lit && jump.scrollWidth > jump.clientWidth + 1) jump.scrollTo({ left: Math.max(0, jump.scrollLeft + (lit.getBoundingClientRect().left - jump.getBoundingClientRect().left) + lit.offsetWidth / 2 - jump.clientWidth / 2), behavior: ease() });
     const now = $('.fs-now', box);
     if (now && el[i]) {
       const n = $('.fs-now-n', now), t = $('.fs-now-t', now);
       if (n) n.textContent = String(i + 1).padStart(2, '0');
-      if (t) t.textContent = el[i].getAttribute('data-t') || '';
+      if (t) t.textContent = el[i].getAttribute('data-tab') || el[i].getAttribute('data-t') || '';
       now.classList.remove('is-tick'); void now.offsetWidth; now.classList.add('is-tick');
     }
     $$('[data-fs-step]', box).forEach((b) => { const d = Number(b.getAttribute('data-fs-step')); b.disabled = d < 0 ? i <= 0 : i >= el.length - 1; });

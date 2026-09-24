@@ -1568,3 +1568,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
 .pc-co .pc-fit, .pc-co .pc-name em { color: var(--teal); }
 .crl-a[data-try]::after, .crl-p::before { background: var(--teal); }
 .fsh .eos-so { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+/* round 4 review: the ask-a-person block is a band between rules, not a card */
+.reach, .dark-half .reach { background: none; box-shadow: none; border-radius: 0; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+/* the rail's last link wears the house teal too (review: rust read as red) */
+.crl-x { color: var(--teal); }

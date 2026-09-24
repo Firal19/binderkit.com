@@ -321,7 +321,7 @@ export function chapterRail(rows, opts = {}) {
   /* r.icon is markup from the site's own icon set; it stands in for the
      number, which is what ties a chapter to the screen it is about */
   const items = list.map((r, i) => `<li><a class="crl-a" href="#${esc(r.id)}" data-n="${p2(i + 1)}" data-label="${esc(r.label)}"${r.live ? ' data-try' : ''}>${r.icon ? `<span class="crl-i" aria-hidden="true">${r.icon}</span>` : `<span class="crl-n" aria-hidden="true">${p2(i + 1)}</span>`}<span class="crl-t">${esc(r.label)}</span></a></li>`).join('');
-  const tail = opts.tail ? `<a class="crl-x" href="${esc(opts.tail.href)}">${esc(opts.tail.label)}${ICON.arrow}</a>` : '';
+  const tail = opts.tail ? `<a class="crl-x" href="${esc(opts.tail.href)}" aria-label="${esc(opts.tail.label)}"><span class="crl-xt">${esc(opts.tail.label)}</span>${ICON.arrow}</a>` : '';
   return `<span class="crl-at" aria-hidden="true"></span><nav class="crl${opts.cls ? ` ${esc(opts.cls)}` : ''}" aria-label="${esc(opts.label || 'On this page')}" data-crl>
     <span class="crl-now" aria-hidden="true"><b data-crl-n>01</b><span>/${p2(list.length)}</span></span>
     <ol class="crl-l" data-scrollx>${items}</ol>${tail}

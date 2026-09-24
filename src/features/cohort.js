@@ -102,7 +102,7 @@ export const FEATURES = [
       { js: "pin.style.setProperty('--x', pct(q.left + q.width / 2 - b.left, b.width));" }] },
   { id: 'ch-32', name: 'One chapter rail', kind: 'navigation',
     what: 'One rail under the header, following the reader: each stop with its stamp glyph, a dot where there is something to try, a hairline that fills as you read, the five screens as its last link — and every jump ends on “You are here”.',
-    probe: [{ home: '<nav class="crl" aria-label="On this page" data-crl>' }, { home: 'class="crl-x" href="/screens"' }, { re: '(class="crl-a"[\\s\\S]*?){9}' }] },
+    probe: [{ home: '<nav class="crl" aria-label="On this page" data-crl>' }, { home: 'class="crl-x" href="/screens"' }, { re: '(class="crl-a"[\\s\\S]*?){7}' }] },
   { id: 'ch-33', name: 'Jump to a screen by name', kind: 'navigation',
     what: 'The command palette lists the five product screens beside the verbs and the pages.',
     probe: [{ home: 'data-kind="screen"' }, { home: '/screens#strip-cohort-handoff' }, { css: '.pal-r[data-kind="screen"]' }] },

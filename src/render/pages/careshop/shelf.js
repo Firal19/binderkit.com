@@ -115,7 +115,6 @@ export function shelfPage(cfg, p) {
   });
 
   const inner = `${pageHead('Aisle 4 · the shelf', 'Eight screens. All of them, full size.', 'The whole of CareShop, in the order a house meets it.', `<div class="ctas"><a class="btn pri lg tagcta" href="${esc(cfg.cta.primaryHref)}" data-cta="shelf"><span class="tagcta-hole" aria-hidden="true"></span>${esc(cfg.cta.primary)}${ic('arrow', 18)}</a><a class="btn lg" href="#strip">${ic('down', 18)}Start at the queue</a></div>`)}
-${directory([['strip', 'All eight screens', '8 labels'], ['till', 'The till, annotated', '6 pins'], ['labels', 'The four labels', '4 words'], ['keys', 'The keyboard map', '6 keys'], ['addresses', 'Every screen has an address', '8 links']], { title: 'On this shelf' })}
 ${sec('strip', 'shelf-s', `<div class="wrap">
   <div class="head">${sticker('shelf', 'The shelf · ' + screens.length + ' screens')}${h2('strip', 'Pick one up.', 'Each one is captioned with what it is, and the one thing it proves.')}</div>
   ${strip}

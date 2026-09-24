@@ -2299,3 +2299,56 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
   .pc-ap .pc-plans { grid-template-columns: minmax(0, 1fr); }
   .ft-day { min-width: 36px; }
 }
+
+/* ── round 4, family-wide: no double box, and the wide screen used ───────
+   The three steps drew each phone inside a painted card; the phone stands on
+   its own under its words now. #hours and #caregivers stacked their toys
+   under the phone (1283 and 1412px at 1440); at a desktop width they read
+   across in three columns — the words, the phone, the things to try. */
+.step { background: none; border: 0; border-radius: 0; padding: 0; overflow: visible; }
+.step .crop { margin: 14px 0 0; border-radius: 40px 40px 0 0; }
+@media (min-width: 1100px) {
+  .hours .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0 clamp(28px, 3.4vw, 56px); align-items: center; }
+  .hours .hrs-g { display: contents; }
+  .hours .hrs-t { grid-column: 1; }
+  .hours .hrs-t h2 { font-size: clamp(30px, 2.8vw, 44px); }
+  .hours .hrs-v { grid-column: 2; }
+  .hours .hrs-toys { grid-column: 3; margin-top: 0; grid-template-columns: minmax(0, 1fr); }
+  .hours .ck { grid-template-columns: 96px minmax(0, 1fr); gap: 16px; }
+  .hours .ck-v { width: 96px; height: 96px; }
+  .care-g { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0 clamp(28px, 3.4vw, 56px); align-items: start; }
+  .care-g .care-v { grid-column: 2; }
+  .care-g .care-q { grid-column: 3; }
+  .care-q .fq { margin: 0; }
+  .care-q .fq-g { grid-template-columns: minmax(0, 1fr); }
+  #caregivers.care h2 { font-size: clamp(34px, 3.4vw, 52px); }
+}
+@media (max-width: 1099px) { .care-g .care-q { grid-column: 1 / -1; } }
+/* the footer's week is seven chips; at 320 they needed 316px of a 280px
+   column and pushed the whole identity column to the glass. They share
+   the width instead. */
+.fsh-id { min-width: 0; }
+@media (max-width: 400px) {
+  .ft-week { gap: 4px; width: 100%; justify-self: stretch; }
+  .ft-day { flex: 1 1 0; min-width: 0; padding: 0; }
+}
+
+/* the card you chose stays on top: a hover lift on the card behind it must
+   never cover the one that just came forward (review, round 4) */
+.wcard[data-front] { z-index: 7; }
+/* round 4 review: the ask-a-person block is a band between rules, not a card */
+.reach, .dark-half .reach { background: none; box-shadow: none; border-radius: 0; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+/* the claim on a phone (review: 350x791, a full-screen sheet, the bar over
+   "Post outward"): only the step you are on explains itself, the two
+   actions share a row, and the card clears the bar when it opens */
+.claim { scroll-margin-bottom: calc(var(--bar-h, 64px) + 16px + var(--sab)); scroll-margin-top: calc(var(--top-h, 60px) + 12px); }
+@media (max-width: 640px) {
+  .claim-c { padding: 16px 16px 18px; }
+  .cs { padding: 8px 0; }
+  .cs .cs-w { display: none; }
+  .cs.is-now .cs-w, .claim-steps[data-step="0"] .cs[data-s="1"] .cs-w { display: block; }
+  .claim-a { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .claim-a .btn { width: 100%; justify-content: center; padding-inline: 10px; }
+  .claim-a .btn.ghost { grid-column: 1 / -1; }
+  .claim-a .btn[hidden] { display: none; }
+}

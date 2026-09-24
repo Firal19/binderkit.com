@@ -44,7 +44,6 @@ ${sec('words', 'words', `<div class="wrap words-g">
     </div>
   ${stateLegend()}
 </div>`)}
-${ixNav([['two', 'Two sides', 'both'], ['words', 'The four words', 'both'], ['write', 'Write to a person', 'both']])}
 ${sec('write', 'write', `<div class="wrap write-g"><div>${h2('write', 'Write to the person who built it.')}<p class="sub">One inbox, read by a person. Made in Oregon.</p>${byline(false)}</div><div class="write-a"><a class="btn pri lg" href="/contact">${ic('mail', 18, { pin: false })}Contact</a><a class="btn lg" href="${mailto(cfg)}">${esc(hello(cfg))}</a></div></div>`)}`);
   },
 };

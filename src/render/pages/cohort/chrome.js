@@ -74,9 +74,11 @@ function sheet(cfg, p, opts) {
 function tabs(cfg, p, opts) {
   const home = isHome(opts);
   const items = home
-    ? [['#top', 'clock', 'Today'], ['#shift', 'handoff', 'Shift'], ['#house', null, 'Your house'], ['#record', 'record', 'Record'], ['#join', 'mail', 'Join']]
+    /* Round 4: the page's sections are the chapter rail's job; the phone bar
+       goes to pages, the way it already does everywhere but home */
+    ? [['/screens', 'screens', 'Screens'], ['/features', 'note', 'Features'], ['#house', null, 'Your house'], ['/pricing', 'tag', 'Pricing'], ['/contact', 'mail', 'Contact']]
     : [['/', 'clock', 'Home'], ['/features', 'note', 'Features'], ['/#house', null, 'Your house'], ['/pricing', 'tag', 'Pricing'], ['/contact', 'mail', 'Contact']];
-  return `<nav class="tabs" aria-label="Sections, phone" ${home ? 'data-tabs' : ''}>
+  return `<nav class="tabs" aria-label="Pages, phone">
     ${items.map(([href, icon, label]) => (icon
     ? `<a class="tab-s" href="${href}" ${!home && opts.page === href.slice(1) ? 'aria-current="page"' : ''}>${ic(icon, 22)}<span>${esc(label)}</span></a>`
     : `<a class="tab-s tab-m" href="${href}" aria-label="${esc(label)}"><span class="tab-mk">${mark('cohort', 30, { label: false })}</span></a>`)).join('')}

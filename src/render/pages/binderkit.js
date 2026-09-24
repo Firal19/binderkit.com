@@ -25,7 +25,7 @@
 import { waitlist, reach } from '../shared.js';
 import { webShell, screenSwitch, SURFACES } from '../instruments.js';
 import { SIGNUP_FIVE, EVERY_PLAN, JOIN } from '../../data/page.js';
-import { header, footer, section, title, sheet, dividers, planner, libTable, cite, ev, eyebrow, h2, HOME, atChapter, find, esc, ic, sellSwitch, tierGrid, WORDS, wordsList } from './binderkit/chrome.js';
+import { header, footer, section, title, sheet, dividers, planner, libTable, cite, ev, eyebrow, h2, HOME, atChapter, find, esc, ic, sellSwitch, tierGrid, WORDS, wordsList, onThisPage } from './binderkit/chrome.js';
 import { planPage } from './binderkit/plan.js';
 import { libraryPage } from './binderkit/library.js';
 import { pricingPage } from './binderkit/pricing.js';
@@ -234,6 +234,7 @@ export function render(cfg, p) {
 ${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="binderkit" data-mode="light" data-printing="sheet">
 ${hero(cfg, p)}
+${onThisPage(HOME.filter((x) => ['why', 'screens', 'plan', 'library', 'editor', 'versions', 'questions', 'pricing'].includes(x.id)))}
 ${why()}
 ${screens()}
 ${plan()}

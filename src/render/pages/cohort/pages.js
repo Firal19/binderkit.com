@@ -1,7 +1,7 @@
 // The marketing pages: screens, features, pricing, security, about, contact.
 // Each is a full body in the same chrome as the front page.
 
-import { esc, skip, sec, h2, eyebrow, tiers, contact, CONTACT, byline, hello, mailto, social, reach, priceCalc } from '../../shared.js';
+import { esc, skip, sec, h2, eyebrow, tiers, contact, CONTACT, byline, hello, mailto, social, reach, priceCalc, chapterRail } from '../../shared.js';
 import { webShell, iosShell, filmStrip, callouts } from '../../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../data/page.js';
 import { ic } from '../../icons/cohort.js';
@@ -134,6 +134,7 @@ function security(cfg, p) {
   const loop = find('loop');
   return shell(cfg, p, 'security', `
     ${phead('Security and privacy', esc(ev.heading), ev.sub)}
+    ${chapterRail([{ id: 'holds', label: 'What it holds' }, { id: 'mechanism', label: 'How it is held' }, { id: 'left', label: 'What left the house' }, { id: 'sgates', label: 'The two stops' }])}
     ${fold('Three kinds of record', sec('holds', 'sholds', `<div class="wrap">
       <div class="head">${h2('holds', 'What it holds.', 'Three kinds of record, in the same words as the product.')}</div>
       <div class="pv-g">${cfg.privacy.holds.map(([label, text]) => `<div class="pv-c"><span class="strip-l">${esc(label)}</span><p>${esc(text)}</p></div>`).join('')}</div>

@@ -10,9 +10,9 @@
 // rule in css/pages/binderkit.css and every `js` probe is a line in
 // js/pages/binderkit.js.
 export const FEATURES = [
-  { id: 'bk-01', name: 'Index-tab navigation', kind: 'navigation',
-    what: 'The sections are a column of binder index tabs fixed to the right edge, each printed with its word and its number; the tab for the section in view is pulled out and inked.',
-    probe: [{ home: 'class="tabs" aria-label="Sections" data-spy' }, { css: '.dtab[aria-current="true"]' }, { home: 'class="dtab-l">Plan</span><span class="dtab-n">' }, { css: '.dtab{display:grid;grid-template-rows' }] },
+  { id: 'bk-01', name: 'Index tabs for the chapters, a rail for the sections', kind: 'navigation',
+    what: 'Round 4: the binder’s chapters are a column of index tabs fixed to the right edge, each printed with its word and its number, the chapter you are in pulled out and inked; the sections of the page are one chapter rail under the title page that follows the reader.',
+    probe: [{ home: 'class="tabs" aria-label="Chapters"' }, { css: '.dtab[aria-current' }, { home: 'class="dtab-l">The plan</span><span class="dtab-n">' }, { home: '<nav class="crl" aria-label="On this page" data-crl>' }, { css: '.dtab{display:grid;grid-template-rows' }] },
   { id: 'bk-02', name: 'Running control number', kind: 'header',
     what: 'The top rule carries BK-LP-nn, the control number of the section you are reading, and it changes as you scroll.',
     probe: [{ home: 'id="run-ctl"' }, { js: "$('#run-ctl')" }, { home: 'data-ctl="BK-LP-02"' }] },

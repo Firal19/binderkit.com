@@ -5,7 +5,7 @@
 // planner itself. Everything here is the site's — nothing is the product's
 // except the rows it quotes from the instruments.
 
-import { esc, mark, social, byline, hello, mailto, nextFloat, priceParts, footShell } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, nextFloat, priceParts, footShell, chapterRail } from '../../shared.js';
 import { SURFACES } from '../../instruments.js';
 import { PAGES } from '../../../data/page.js';
 import { ic, lampIcon } from '../../icons/binderkit.js';
@@ -190,12 +190,9 @@ export const ctlStamp = (s) => `<button class="ctl" type="button" data-copy="${e
    rule, the contents sheet the header opens, and the folded index the
    page itself becomes. A fourth would be the longest of the four. */
 export function onThisPage(list, opts = {}) {
-  const rows = list.filter((s) => s.tab !== '');
+  const rows = list.filter((x) => x.tab !== '' && x.id !== 'top').slice(0, opts.max || 8);
   if (!rows.length) return '';
-  return `<nav class="here-w" aria-label="${esc(opts.label || 'What is on this page')}">
-    <span class="strip-l">${esc(opts.title || 'On this page')}</span>
-    <ol class="toc here" data-spy>${rows.map((s, i) => `<li><a href="#${esc(s.id)}"><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(s.label)}</span><span class="toc-l here-l" aria-hidden="true"></span><span class="toc-n here-n">${esc(s.ctl)}</span></a></li>`).join('')}</ol>
-  </nav>`;
+  return chapterRail(rows.map((x) => ({ id: x.id, label: x.tab && x.tab !== 'FAQ' ? x.tab : (x.tab === 'FAQ' ? 'Questions' : x.label) })), { label: opts.label || 'On this page' });
 }
 
 /* ── leaf back, leaf forward ──────────────────────────────────────────
@@ -221,9 +218,8 @@ export function title(s, { eyebrow: eb, h1, lede, ctas = '', fine = '', aside = 
       <div class="hero-t">${eb ? eyebrow(eb) : ''}<h1 id="h1">${esc(h1)}</h1>${lede ? `<p class="lede">${esc(lede)}</p>` : ''}${ctas ? `<div class="ctas">${ctas}</div>` : ''}${fine ? `<p class="fine">${esc(fine)}</p>` : ''}</div>
       ${aside ? `<div class="hero-v">${aside}</div>` : ''}
     </div>
-    ${index}
   </div>
-</section>`;
+</section>${index}`;
 }
 
 /* ── citations: the rules on this site, in plain words ────────────────
@@ -275,14 +271,29 @@ export const sellSwitch = () => `<div class="ptog" role="group" aria-label="How 
   <p class="sell-note" data-sell-note data-sub="Per facility, renewing monthly. Three-day trial, cancel in one tap." data-once="Per facility, once. For a binder you revise twice a year.">Per facility, renewing monthly. Three-day trial, cancel in one tap.</p>`;
 
 /** The three tiers, with the Pro price switching between the two ways it is sold. */
-export const tierGrid = (p) => `<div class="tiers">${p.pricing.rows.map(([name, price, d], i) => {
-  const main = i === 1;
-  const desc = main ? d.replace(/\s*Or \$\d+ once\.?$/, '') : d;
-  const priceHtml = main && p.pricing.once
-    ? `<span data-sell-p="sub">${priceParts(price)}</span><span data-sell-p="once" hidden>${esc(p.pricing.once)}<small> once</small></span>`
-    : priceParts(price);
-  return `<div class="tier ${main ? 'is-main' : ''}">${main ? '<span class="tier-flag">Most facilities</span>' : ''}<span class="tier-n">${esc(name)}</span><span class="tier-p">${priceHtml}</span><span class="tier-d">${esc(desc)}</span></div>`;
-}).join('')}</div>`;
+/* Round 4: set your facilities and each plan prints your month; the plan
+   that costs less for that many is marked (Pro at $29 a facility, Scale a
+   flat $69 — so Scale from three facilities up). The per-facility price
+   stays printed as it was; the month is a line under it, subscription only. */
+export const tierGrid = (p) => {
+  const per = (price) => { const m = String(price).match(/^\$(\d+) \/ facility \/ mo$/); return m ? Number(m[1]) : null; };
+  const flat = (price) => { const m = String(price).match(/^\$(\d+) \/ mo$/); return m ? Number(m[1]) : null; };
+  const fits = { Pro: '1-2', Scale: '3-' };
+  const tiers = p.pricing.rows.map(([name, price, d], i) => {
+    const main = i === 1;
+    const desc = main ? d.replace(/\s*Or \$\d+ once\.?$/, '') : d;
+    const priceHtml = main && p.pricing.once
+      ? `<span data-sell-p="sub">${priceParts(price)}</span><span data-sell-p="once" hidden>${esc(p.pricing.once)}<small> once</small></span>`
+      : priceParts(price);
+    const pf = per(price), fl = flat(price);
+    const month = pf != null ? `<span class="tier-m" data-sell-p="sub">Your month <b data-per="${pf}">$${pf}</b></span>` : fl != null ? `<span class="tier-m" data-sell-p="sub">Your month <b>$${fl}</b></span>` : '';
+    return `<div class="tier ${main ? 'is-main' : ''}"${fits[name] ? ` data-fit="${fits[name]}"` : ''}>${main ? '<span class="tier-flag">Most facilities</span>' : ''}<span class="tier-n">${esc(name)}</span><span class="tier-p">${priceHtml}</span>${month}<span class="tier-d">${esc(desc)}</span>${fits[name] ? '<span class="tier-fit" aria-hidden="true">Fits your count</span>' : ''}</div>`;
+  }).join('');
+  return `<div class="tiers-w" data-houses data-start="1" data-min="1" data-max="12">
+    <div class="pc-top tiers-q" data-sell-p="sub"><p class="pc-q" id="bk-fac-q">How many facilities?</p><div class="pc-step" role="group" aria-labelledby="bk-fac-q"><button class="pc-b" type="button" data-houses-step="-1" aria-label="One fewer facility">−</button><output class="pc-n" data-houses-n aria-live="polite">1</output><button class="pc-b" type="button" data-houses-step="1" aria-label="One more facility">+</button></div><span class="pc-w" data-houses-w data-one="facility" data-many="facilities">facility</span></div>
+    <div class="tiers">${tiers}</div>
+  </div>`;
+};
 
 /* ── the four libraries, as one table ──────────────────────────────────
    Shared by the front page and /library. A library is defined by the rule
@@ -434,12 +445,17 @@ export function dividers() {
 /* ── the header: the top rule and the index tabs ──────────────────────── */
 export function header(cfg, p, opts = {}) {
   const page = opts.page || 'home';
+  /* Round 4: the index tabs down the right edge are the binder's chapters
+     on every page — a binder's tabs are its chapters — and the sections of
+     the page you are on are the chapter rail under the hero. Two navs that
+     listed the same sections at one point is what the review named. */
   const tabs = opts.tabs || (page === 'home' ? HOME.filter((s) => s.tab) : []);
+  const tabsEdge = [];
   const chapter = CHAPTERS.find((c) => (page === 'home' ? c.path === '/' : c.path === `/${page}`)) || CHAPTERS[0];
   const ctl0 = opts.ctl || (page === 'home' ? HOME[0].ctl : `${chapter.ctl}-01`);
   const primary = '/#join';
-  const tabList = tabs.length
-    ? tabs.map((s, i) => `<li><a class="dtab" href="#${esc(s.id)}"><span class="dtab-l">${esc(s.tab || s.label)}</span><span class="dtab-n">${i + 1}</span></a></li>`).join('')
+  const tabList = tabsEdge.length
+    ? tabsEdge.map((s, i) => `<li><a class="dtab" href="#${esc(s.id)}"><span class="dtab-l">${esc(s.tab || s.label)}</span><span class="dtab-n">${i + 1}</span></a></li>`).join('')
     : CHAPTERS.filter((c) => c.path !== '/privacy').map((c, i) => `<li><a class="dtab" href="${esc(c.path)}" ${c === chapter ? 'aria-current="page"' : ''}><span class="dtab-l">${esc(c.title)}</span><span class="dtab-n">${i + 1}</span></a></li>`).join('');
   const toc = `<div class="toc-sheet" id="contents" hidden>
     <div class="wrap toc-in">
@@ -469,7 +485,7 @@ export function header(cfg, p, opts = {}) {
       <a class="btn pri sm rule-cta" href="${primary}" data-cta="rule">${esc(cfg.cta.nav)}</a>
     </div>
   </div>
-  <nav class="tabs" aria-label="${tabs.length ? 'Sections' : 'Chapters'}" ${tabs.length ? 'data-spy' : ''}>
+  <nav class="tabs" aria-label="Chapters">
     <ol class="tabs-l" data-scrollx>${tabList}<li class="tabs-cta"><a class="dtab is-cta" href="${primary}" data-cta="strip">${esc(cfg.cta.nav)}</a></li></ol>
   </nav>
   ${toc}

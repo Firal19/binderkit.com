@@ -872,7 +872,7 @@ body.is-locked .fabs { opacity: 0; pointer-events: none; }
 /* ── the footer ──────────────────────────────────────────────────────── */
 .fsh { position: relative; overflow: hidden; padding-top: clamp(56px, 7vw, 104px); border-top: 1px solid var(--line); background: var(--fsh-bg, var(--bg)); color: var(--ink); }
 .fsh-in { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(0, 2.1fr); gap: 48px clamp(32px, 6vw, 120px); }
-.fsh-id { display: grid; align-content: start; justify-items: start; gap: 10px; max-width: 400px; }
+.fsh-id { display: grid; align-content: start; justify-items: start; gap: 10px; min-width: 0; max-width: 400px; }
 .fsh-brand { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: var(--ink); text-decoration: none; }
 .fsh-n { font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
 /* the footer sits outside <main>, where the faces tokens live, so the mark
@@ -887,7 +887,7 @@ body.is-locked .fabs { opacity: 0; pointer-events: none; }
 /* the shell's own reading text holds the 15px prose floor whatever a site's
    older footer rules said about p */
 .fsh .fsh-d, .fsh .fsh-note, .fsh .fsh-legal, .fsh .fsh-mail { font-size: var(--fs-read, 15px); }
-.fsh-motif { margin-top: 14px; }
+.fsh-motif { margin-top: 14px; justify-self: stretch; }
 .fsh-gs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 36px 28px; align-content: start; }
 .fsh-k { margin: 0 0 12px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
 .fsh-g ul { display: grid; margin: 0; padding: 0; list-style: none; }
@@ -944,3 +944,39 @@ body.is-locked .fabs { opacity: 0; pointer-events: none; }
 .crl-i { display: inline-grid; place-items: center; width: 16px; height: 16px; color: var(--soft); }
 .crl-i svg { width: 16px; height: 16px; }
 .crl-a[aria-current] .crl-i { color: color-mix(in srgb, var(--bg) 80%, transparent); }
+
+/* ── ask a person, round 4 review: a band between two rules, no box ──────
+   The reviewer measured 242–270px and a painted card on three sites; the
+   brief is a slim band. The steps keep their titles on a phone and drop
+   the second line, which is what made the block 540px tall at 390. */
+.reach { background: none; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+@media (min-width: 901px) {
+  .reach { padding: 20px 0 16px; }
+  .reach-s { margin-top: 12px; padding-top: 12px; }
+}
+@media (max-width: 640px) {
+  .reach { padding: 20px 0; gap: 14px; }
+  .reach-t h3 { font-size: 26px; }
+  .reach-s { gap: 8px; }
+  .reach-s li { grid-template-columns: 26px minmax(0, 1fr); align-items: center; }
+  .reach-s li::before { width: 26px; height: 26px; grid-row: auto; }
+  .reach-s span { display: none; }
+}
+
+/* keyboard shortcuts mean nothing under a thumb: the Keys control docked
+   beside the fab stays off touch phones, one less thing over the text */
+@media (hover: none) and (pointer: coarse) { .fabs .fab-side { display: none; } }
+/* a rail whose chips all fit is not a scroller (desaudit scroll.dead) */
+.crl-l[data-fits] { overflow-x: visible; }
+@media (min-width: 901px) {
+  .reach-t .eyebrow, .reach-t h3 { margin: 0; }
+  .reach { row-gap: 4px; }
+}
+/* the last chip can reach the rail's end without clipping under the edge */
+.crl-l { padding-inline-end: 6px; }
+/* on a phone the rail's last link is its arrow alone (the label stays its
+   accessible name), so a long chapter name is never wider than the rail */
+@media (max-width: 640px) {
+  .crl-xt { display: none; }
+  .crl-x { justify-content: center; min-width: calc(var(--tap, 44px) + 1px); padding: 0 12px; }
+}
