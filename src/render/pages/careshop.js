@@ -56,18 +56,18 @@ export const RING = [
    name. Real anchors, so it works with no script; careshop.js marks the
    one you are standing in as you scroll. */
 export const HOME_STOPS = [
-  ['loop', 'The loop', '7 stations'],
-  ['today', 'Today', '2 briefings'],
-  ['stock', 'Stock', '4 zones'],
-  ['queue', 'The queue', '5 origins'],
-  ['cook', 'Cook mode', '1 warning'],
-  ['reserve', 'Reserves', 'days × beds'],
-  ['record', 'Residents', 'a label, never a name'],
-  ['roles', 'Who is in the store', '6 people'],
-  ['kitchen', 'Your kitchen', '1 door'],
-  ['questions', 'Questions', '4 answers'],
-  ['pricing', 'Pricing', '3 plans'],
-  ['start', 'The first ten minutes', '4 steps'],
+  ['today', 'What to cook'],
+  ['queue', 'Buying'],
+  ['shop', 'In the shop'],
+  ['stock', 'Stock'],
+  ['loop', 'The loop'],
+  ['reserve', 'Reserves'],
+  ['record', 'Residents'],
+  ['roles', 'Who uses it'],
+  ['kitchen', 'Sign in'],
+  ['questions', 'Questions'],
+  ['pricing', 'Pricing'],
+  ['start', 'First ten minutes'],
 ];
 
 const TILES = {
@@ -173,83 +173,82 @@ function loop() {
   </div>`);
 }
 
-/* ── Today · the device you can switch ──────────────────────────────── */
+/* ── ROUND 4 · the story, told by the product itself ─────────────────────
+   Firaol: "the pain of the caregiver not knowing what to cook, and a hands
+   off provider sending his caregiver do the shopping, the shopping mode,
+   price and also the 4 domain should be integrated well" — and of #queue and
+   #cook: "they take huge amount of the space … the screen usage is not
+   good, should be a vast screen". So the front page tells it in four beats,
+   each one product screen standing on its own in the middle of the wide
+   screen, with the demos that used to stack under it as small live cards on
+   either side: what to cook, buying without being there, the shop, and the
+   four domains on the shelf. */
+const story = (id, cls, head, stage, left, right, foot = '') => sec(id, `${cls} cs4`, `<div class="wrap">
+    <div class="cs4-h">${sticker(head.icon, head.tag)}${h2(id, head.title, head.lede)}</div>
+    <div class="cs4-g">
+      <div class="cs4-l">${left}</div>
+      <div class="cs4-stage stage">${stage}</div>
+      <div class="cs4-r">${right}</div>
+    </div>${foot}
+  </div>`);
+
+/* 1 · what to cook tonight — the caregiver */
 function today() {
-  const t = TILES.today;
   const sw = screenSwitch('careshop', {
     id: 'sw-today', only: ['today', 'today-mgr'], on: 0,
     label: 'Which briefing',
     notes: {
-      today: { tab: 'A caregiver', cap: 'Willow House, one shift. Cook today, what is short, what is dated.' },
-      'today-mgr': { tab: 'A manager', cap: 'Every house, rolled up: restock across houses and the cost of the next run.' },
+      today: { tab: 'A caregiver', cap: 'One house, one shift: what to cook, what is short, what is dated.' },
+      'today-mgr': { tab: 'A manager', cap: 'Every house, rolled up: restock across houses and the next run.' },
     },
   });
-  return sec('today', 'briefing', `<div class="wrap">
-    <div class="head">${sticker('clock', t.tag)}${h2('today', t.t + '.', t.d)}</div>
-    <div class="aisle-g is-wide">
-      <div class="aisle-ph is-sw">${sw}</div>
-      <div class="aisle-d">
-        <ul class="brief-roles">
-          <li><b>A caregiver sees their shift.</b><span>Cook today, what is short, what is dated. One house.</span></li>
-          <li><b>A manager sees every house.</b><span>The same briefing, rolled up: restock across houses and the next run.</span></li>
-          <li><b>Restock, expiry, dinner.</b><span>Cook from it. A shortfall files into the queue from it, carrying its origin.</span></li>
-        </ul>
-        <a class="more" href="/loop">${ic('arrow', 16)}Then the loop: seven stations, six screens</a>
-      </div>
-    </div>
-  </div>`);
+  return story('today', 'briefing', {
+    icon: 'clock', tag: 'Home · Today', title: 'What to cook tonight.',
+    lede: 'No guessing at the fridge. Today tells her: Thursday dinner, chicken and rice, five trays — with the steps, the timers and the allergen check one tap away.',
+  }, `<div class="is-sw">${sw}</div>`,
+  `<div class="cs4-sat" id="cook">${cookDemo()}</div>`,
+  `<div class="cs4-sat">${allergenDemo()}</div><a class="more" href="/shelf#shelf-menu">${ic('arrow', 16)}The week’s menu, full size</a>`);
 }
 
-/* ── Aisle 2 · stock ──────────────────────────────────────────────────── */
-function stock() {
-  const t = TILES.stock;
-  return sec('stock', 'stock', `<div class="wrap">
-    <div class="head">${sticker('shelf', 'Aisle 2 · ' + t.tag)}${h2('stock', t.t + '.', t.d)}</div>
-    <div class="aisle-g">
-      <div class="aisle-ph"><div class="crop">${phone('stock')}</div></div>
-      <div class="aisle-d">${parDemo()}${ladderDemo()}<a class="more" href="/stock">${ic('arrow', 16)}Stock in depth: zones, reserves, the calculator</a></div>
-    </div>
-  </div>`);
-}
-
-/* ── Aisle 3 · the queue ──────────────────────────────────────────────── */
+/* 2 · buying, without being there — the provider */
 function queue() {
   const s = find('screen');
-  const t = TILES.queue;
-  return sec('queue', 'queue', `<div class="wrap">
-    <div class="head">${sticker('cart', 'Aisle 3 · ' + t.tag)}${h2('queue', s.heading, s.sub)}</div>
-    <div class="aisle-g is-rev">
-      <div class="aisle-ph"><div class="crop">${phone('buy')}</div><p class="ph-cap">${esc(s.caption)}</p></div>
-      <div class="aisle-d">${approveDemo()}${priceDemo()}</div>
-    </div>
-    <div class="doors"><span class="strip-l">${esc(s.strip.label)}</span><div class="doors-r" data-scrollx>${s.strip.cells.map((c, i) => `<span class="door-c"><span class="door-n">${i + 1}</span>${esc(c)}</span>`).join('')}</div><p class="doors-f">${esc(s.strip.foot)}</p></div>
-    <div class="aisle-g shopq is-rev">
-      <div class="aisle-ph">${storeDemo()}</div>
-      <div class="aisle-d">
-        <div class="shopq-t">${sticker('store', TILES.shop.tag)}<h3>${esc(TILES.shop.t)}</h3><p>${esc(TILES.shop.d)}</p>
-          <div class="ctas is-row"><button type="button" class="btn" data-print>${ic('print', 18)}Print the list</button><a class="btn" href="/shelf#shelf-shop">${ic('shelf', 18)}See the shop screen</a></div></div>
-      </div>
-    </div>
-  </div>`);
+  const rule = `<div class="sat cs4-rule"><span class="sat-k">${ic('check', 16)}Your purchasing rules</span><b class="sat-v">Approve from anywhere.</b><span class="sat-t">Under your limit a rule approves the line; above it, you or a manager do. Assign a buyer, and when she is in the shop her phone opens on the list.</span></div>`;
+  const doors = `<div class="sat cs4-doors"><span class="sat-k">${ic('cart', 16)}${esc(s.strip.label)}</span><ul class="cs4-chips">${s.strip.cells.map((c) => `<li>${esc(c)}</li>`).join('')}</ul><span class="sat-t">${esc(s.strip.foot)}</span></div>`;
+  return story('queue', 'queue', {
+    icon: 'cart', tag: 'Aisle 3 · The buy queue', title: 'You don’t have to be there.',
+    lede: 'The list writes itself from the menu, the expiry dates and the pars. Staff add the rest. You approve from anywhere, and every line says where it came from and who asked.',
+  }, `<div class="crop">${phone('buy')}</div>`,
+  `<div class="cs4-sat">${approveDemo()}</div>`,
+  `${rule}${doors}`);
 }
 
-/* ── the kitchen: cook mode and the menu ──────────────────────────────── */
-function cook() {
-  const t = TILES.cook;
-  const m = screen('menu');
-  return sec('cook', 'cook', `<div class="wrap">
-    <div class="head">${sticker('pot', t.tag)}${h2('cook', t.t + '.', t.d)}</div>
-    <div class="aisle-g">
-      <div class="aisle-ph"><div class="crop">${phone('cook')}</div></div>
-      <div class="aisle-d">${cookDemo()}</div>
-    </div>
-    <div class="menu-g" data-menu-phone>
-      <div class="menu-t"><h3>${esc(m.title)} — ${esc(m.sub)}</h3><p>${esc(m.desktopSub)}</p></div>
-      <div class="menu-d">${allergenDemo()}
-        <div class="menu-side"><p class="ph-cap is-left">${esc(m.foot)}</p><a class="more" href="/shelf#shelf-menu">${ic('arrow', 16)}The menu screen, full size</a></div>
-      </div>
-    </div>
-  </div>`);
+/* 3 · in the shop — shopping mode and the price */
+function shop() {
+  const t = TILES.shop;
+  return story('shop', 'shopsec', {
+    icon: 'store', tag: t.tag, title: 'In the shop, aisle by aisle.',
+    lede: 'The list sorts itself into that shop’s aisles — one hand, no signal needed. Pick the shop and the total changes. Every purchase remembers what you paid.',
+  }, `<div class="crop">${phone('shop')}</div>`,
+  `<div class="cs4-sat">${storeDemo()}</div>`,
+  `<div class="cs4-sat">${priceDemo()}</div><div class="ctas is-row"><button type="button" class="btn" data-print>${ic('print', 18)}Print the list</button></div>`);
+}
+
+/* 4 · the four domains, on the shelf */
+const DOMAINS = [
+  ['leaf', 'Food', 'What goes on the menu, from the pantry to the freezer.'],
+  ['plus', 'Care', 'Briefs, wipes, gloves, over-the-counter first aid.'],
+  ['house', 'Household', 'Cleaning, paper, laundry.'],
+  ['wrench', 'Operations', 'What the house runs on, beyond the kitchen.'],
+];
+function stock() {
+  const dom = `<div class="sat cs4-dom"><span class="sat-k">${ic('shelf', 16)}Four domains, one list</span><ul class="cs4-dl">${DOMAINS.map(([icon, t, d]) => `<li><span class="cs4-di">${ic(icon, 18)}</span><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ul></div>`;
+  return story('stock', 'stock', {
+    icon: 'shelf', tag: 'Aisle 2 · Stock', title: 'Everything the house buys.',
+    lede: 'Food, care, household and operations — counted by zone, in the order you walk the house. On hand is never typed; every change is a movement.',
+  }, `<div class="crop">${phone('stock')}</div>`,
+  `${dom}<div class="cs4-sat">${ladderDemo()}</div>`,
+  `<div class="cs4-sat">${parDemo()}</div><a class="more" href="/stock">${ic('arrow', 16)}Stock in depth: zones, reserves, the calculator</a>`);
 }
 
 /* ── reserves and the rule ────────────────────────────────────────────── */
@@ -351,12 +350,12 @@ ${header(cfg, p, { page: 'home' })}
 <main id="main" class="page face canvas" data-product="careshop" data-mode="light">
 ${hero(cfg, p)}
 ${named(stats(), 'The store in numbers')}
-${directory(HOME_STOPS)}
+${directory(HOME_STOPS, { tail: { href: '/shelf', label: 'All eight screens' } })}
+${fold(today(), 'Tonight’s dinner, the steps, and the allergen check.', 'Home · Today')}
+${fold(queue(), 'The list writes itself; you approve from anywhere.', 'Aisle 3 · The queue')}
+${fold(shop(), 'Aisle by aisle, priced by store, with no signal.', 'In the shop')}
+${fold(stock(), 'Food, care, household and operations, by zone.', 'Aisle 2 · Stock')}
 ${loop()}
-${fold(today(), 'The first screen after sign-in: a shift, or every house.', 'Home · Today')}
-${fold(stock(), 'Pantry, fridge, freezer, reserve, in the house’s walk order.', 'Aisle 2 · Stock')}
-${fold(queue(), 'What to buy and nothing else, each line carrying its origin.', 'Aisle 3 · The queue')}
-${fold(cook(), 'Today’s prep, timers in the steps, the allergen check.', 'Cook mode')}
 ${fold(reserve(), 'Days × beds × the quantity per bed, and the rule behind it.', 'Reserves')}
 ${fold(record(), 'Diet tags, allergens, one texture level. Never a name.', 'Residents')}
 ${fold(roles(), 'Who is in the store, what they do, on what device.', 'Who is in the store')}

@@ -46,10 +46,19 @@
     });
     const bars = $$('[data-progress]');
     let ticking = false;
+    /* --top-h: how far down the viewport the header reaches right now. The
+       chapter rail sticks under it and every jump lands under both, so it is
+       measured (headers condense when stuck, and hide on some phones), never
+       assumed. */
+    let stuckable = false, topH = -1;
+    const pos = () => { stuckable = Boolean(top) && /sticky|fixed/.test(getComputedStyle(top).position); };
+    pos();
     const paint = () => {
       ticking = false;
       const y = window.scrollY;
       if (top) top.toggleAttribute('data-stuck', y > 8);
+      const h = stuckable ? Math.max(0, Math.round(top.getBoundingClientRect().bottom)) : 0;
+      if (h !== topH) { topH = h; root.style.setProperty('--top-h', h + 'px'); }
       root.toggleAttribute('data-scrolled', y > 120);
       const line = y + window.innerHeight * 0.32;
       let section = '';
@@ -68,8 +77,209 @@
     };
     const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('resize', () => { pos(); onScroll(); }, { passive: true });
     paint();
+  };
+
+  /* ── how much of the top of the viewport the sticky chrome covers ─────
+     The header, plus the chapter rail once it is stuck under it. A jump
+     lands below both, and the "you are here" tag hangs just under them. */
+  const coverTop = (atY) => {
+    let b = 0;
+    const top = $('#top-bar');
+    if (top && /sticky|fixed/.test(getComputedStyle(top).position)) b = Math.max(0, top.getBoundingClientRect().bottom);
+    const crl = $('[data-crl]');
+    if (crl && crl.offsetHeight) {
+      /* the rail only covers anything where it is stuck, which is anywhere
+         below the point it sits in the flow */
+      const at = crl.previousElementSibling && crl.previousElementSibling.matches('.crl-at') ? crl.previousElementSibling.getBoundingClientRect().top + window.scrollY : 0;
+      if (atY === undefined || atY >= at - 1) b += crl.offsetHeight + 8;
+    }
+    return b;
+  };
+
+  /* Scroll the page to where(), and call after() once it has come to rest.
+     where() is asked again at the end: a sticky header that condenses on the
+     way down moves every target under it, and WebKit abandons a smooth scroll
+     when that happens (measured: it stopped at 527 of 856 on /shelf). So a
+     scroll that stops short is finished with one instant correction instead
+     of being trusted. WebKit also fires its last scroll event before it
+     stops, and older engines have no scrollend, so a frame watch backs the
+     event up. */
+  const scrollToY = (where, after, tries = 0) => {
+    const aim = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return Math.max(0, Math.min(max, Math.round(typeof where === 'function' ? where() : where)));
+    };
+    let y = aim();
+    if (Math.abs(window.scrollY - y) < 2) { after(); return; }
+    window.scrollTo({ top: y, behavior: calm.matches || tries ? 'auto' : 'smooth' });
+    let last = window.scrollY, still = 0, n = 0, done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      removeEventListener('scrollend', onEnd);
+      y = aim();
+      if (Math.abs(window.scrollY - y) > 3 && tries < 2) { scrollToY(where, after, tries + 1); return; }
+      after();
+    };
+    const onEnd = () => { if (Math.abs(window.scrollY - aim()) < 3) finish(); };
+    addEventListener('scrollend', onEnd);
+    const watch = () => {
+      if (done) return;
+      const now = window.scrollY;
+      if (Math.abs(now - y) < 2) { finish(); return; }
+      if (Math.abs(now - last) > 0.5) { still = 0; last = now; } else still += 1;
+      if (still >= 12 || n++ > 180) finish(); else requestAnimationFrame(watch);
+    };
+    requestAnimationFrame(watch);
+  };
+
+  /* ── "you are here" ───────────────────────────────────────────────────
+     Firaol: "i click on one thing i dont see which screen it is, it just move
+     a bit". So a jump never ends in silence: once the page has settled, the
+     heading it landed on is underlined for a moment, focus moves to it, and
+     a small tag under the chrome names where you are — with its number when
+     the page has a chapter rail. The tag is a status region, so a screen
+     reader hears the same thing a sighted reader sees. */
+  let hereEl = null, hereT = 0;
+  const chapterOf = (t) => {
+    const sec = t.closest('section[id], [data-chapter]') || t;
+    const chip = sec.id ? $(`[data-crl] a[href="#${sec.id}"]`) : null;
+    const head = sec.matches('h1, h2, h3') ? sec : $('h2, h3, h1', sec);
+    const name = (chip && chip.getAttribute('data-label')) || sec.getAttribute('data-chapter') || sec.getAttribute('data-stop')
+      || (head && head.textContent.replace(/\s+/g, ' ').trim()) || sec.getAttribute('aria-label') || '';
+    return { sec, head, name: name.length > 48 ? name.slice(0, 46).replace(/\s+\S*$/, '') + '…' : name, n: chip ? chip.getAttribute('data-n') : '' };
+  };
+  const arrive = (t, opts = {}) => {
+    const { sec, head, name, n } = chapterOf(t);
+    const f = head || t;
+    if (!f.matches('a, button, input, select, textarea, [tabindex]')) f.setAttribute('tabindex', '-1');
+    f.focus({ preventScroll: true });
+    if (head) {
+      head.removeAttribute('data-here-h');
+      void head.offsetWidth;
+      head.setAttribute('data-here-h', '');
+      setTimeout(() => head.removeAttribute('data-here-h'), 2200);
+    }
+    sec.setAttribute('data-arrived', '');
+    setTimeout(() => sec.removeAttribute('data-arrived'), 2200);
+    if (opts.quiet || !name) return;
+    if (!hereEl) {
+      hereEl = document.createElement('div');
+      hereEl.className = 'here';
+      hereEl.setAttribute('role', 'status');
+      hereEl.setAttribute('aria-live', 'polite');
+      document.body.appendChild(hereEl);
+    }
+    hereEl.innerHTML = `<span class="here-k">You are here</span>${n ? `<b class="here-n">${esc(n)}</b>` : ''}<span class="here-t">${esc(name)}</span>`;
+    hereEl.style.setProperty('--here-y', Math.round(coverTop()) + 10 + 'px');
+    hereEl.classList.remove('is-on');
+    void hereEl.offsetWidth;
+    hereEl.classList.add('is-on');
+    clearTimeout(hereT);
+    hereT = setTimeout(() => hereEl.classList.remove('is-on'), 2400);
+  };
+  const landAt = (el) => () => { const docY = el.getBoundingClientRect().top + window.scrollY; return docY - coverTop(docY) - 14; };
+  const jumpTo = (t, opts = {}) => scrollToY(landAt(t), () => arrive(t, opts));
+
+  /* ── the chapter rail: one on-page nav, and it follows you ────────────
+     chapterRail() in render/shared.js. The chip for the section you are
+     reading is lit and kept centred by scrolling the rail, never the page;
+     a hairline fills as you read; a phone shows 03 / 07 beside it. Each
+     change is announced on document as pho:chapter { id, index, count }, the
+     hook a page uses to wake the instrument that chapter is about. */
+  const chapters = () => {
+    const nav = $('[data-crl]');
+    if (!nav) return;
+    const list = $('.crl-l', nav);
+    const links = $$('a.crl-a', nav);
+    const targets = links.map((a) => document.getElementById(a.getAttribute('href').slice(1)));
+    const nEl = $('[data-crl-n]', nav);
+    let on = -2, ticking = false;
+    const centre = (a) => {
+      if (!list || !a || list.scrollWidth <= list.clientWidth + 1) return;
+      const left = a.offsetLeft + a.offsetWidth / 2 - list.clientWidth / 2;
+      list.scrollTo({ left: Math.max(0, left), behavior: calm.matches ? 'auto' : 'smooth' });
+    };
+    const paint = () => {
+      ticking = false;
+      const line = coverTop() + Math.min(window.innerHeight * 0.3, 260);
+      let i = -1;
+      targets.forEach((t, j) => { if (t && t.getBoundingClientRect().top <= line) i = j; });
+      const first = targets.find(Boolean), last = targets.filter(Boolean).pop();
+      if (first && last) {
+        const a = first.getBoundingClientRect().top + window.scrollY - line;
+        const b = last.getBoundingClientRect().bottom + window.scrollY - window.innerHeight;
+        const p = b > a ? Math.min(1, Math.max(0, (window.scrollY - a) / (b - a))) : 0;
+        nav.style.setProperty('--crl-p', p.toFixed(4));
+      }
+      const r = nav.getBoundingClientRect();
+      const at = nav.previousElementSibling && nav.previousElementSibling.matches('.crl-at') ? nav.previousElementSibling.getBoundingClientRect().top : r.top;
+      nav.toggleAttribute('data-stuck', at < r.top - 1);
+      if (i === on) return;
+      on = i;
+      links.forEach((a, j) => { if (j === i) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+      if (nEl) nEl.textContent = i >= 0 ? links[i].getAttribute('data-n') : '—';
+      if (i >= 0) {
+        centre(links[i]);
+        document.dispatchEvent(new CustomEvent('pho:chapter', { detail: { id: targets[i] ? targets[i].id : '', index: i, count: links.length } }));
+      }
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    paint();
+  };
+
+  /* ── a horizontal list says where it is ───────────────────────────────
+     Any [data-scrollx] gets data-scroll-start / data-scroll-end / data-fits,
+     which the sheets use to fade only the edge that has more behind it. */
+  const edges = () => {
+    const els = $$('[data-scrollx], .fs-rail');
+    if (!els.length) return;
+    const mark = (el) => {
+      const max = el.scrollWidth - el.clientWidth;
+      el.toggleAttribute('data-fits', max <= 1);
+      el.toggleAttribute('data-scroll-start', el.scrollLeft <= 2);
+      el.toggleAttribute('data-scroll-end', max <= 1 || el.scrollLeft >= max - 2);
+    };
+    els.forEach(mark);
+    document.addEventListener('scroll', (e) => { const t = e.target; if (t && t.nodeType === 1 && (t.hasAttribute('data-scrollx') || t.classList.contains('fs-rail'))) mark(t); }, { capture: true, passive: true });
+    addEventListener('resize', () => els.forEach(mark), { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => els.forEach(mark));
+  };
+
+  /* ── the price for your houses ────────────────────────────────────────
+     priceCalc() in render/shared.js: a −/+ stepper and every plan's monthly
+     total for that many houses. A plan's number is data-per × houses +
+     data-flat; a plan whose price does not move with houses has neither and
+     is left as printed. data-fit="1-3" marks the plan that fits the count. */
+  const houses = () => {
+    for (const box of $$('[data-houses]')) {
+      const min = Number(box.getAttribute('data-min')) || 1;
+      const max = Number(box.getAttribute('data-max')) || 12;
+      let n = Math.max(min, Math.min(max, Number(box.getAttribute('data-start')) || min));
+      const money = (v) => '$' + (Math.round(v * 100) % 100 ? v.toFixed(2) : String(Math.round(v))).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      const paint = () => {
+        $$('[data-houses-n]', box).forEach((el) => { el.textContent = String(n); });
+        $$('[data-houses-w]', box).forEach((el) => { el.textContent = n === 1 ? el.getAttribute('data-one') : el.getAttribute('data-many'); });
+        $$('[data-per]', box).forEach((el) => { el.textContent = money(Number(el.getAttribute('data-per')) * n + (Number(el.getAttribute('data-flat')) || 0)); });
+        $$('[data-fit]', box).forEach((el) => {
+          const [a, b] = el.getAttribute('data-fit').split('-').map(Number);
+          el.toggleAttribute('data-fits', n >= a && (!b || n <= b));
+        });
+        $$('[data-houses-step]', box).forEach((b) => { const d = Number(b.getAttribute('data-houses-step')); b.disabled = d < 0 ? n <= min : n >= max; });
+      };
+      box.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-houses-step]');
+        if (!b || !box.contains(b)) return;
+        n = Math.max(min, Math.min(max, n + Number(b.getAttribute('data-houses-step'))));
+        paint();
+      });
+      box.setAttribute('data-js', '');
+      paint();
+    }
   };
 
   /* ── disclosures: any button with aria-controls toggles its panel ──── */
@@ -306,23 +516,29 @@
     });
   };
 
-  /* ── an in-page jump lands under the sticky header and moves focus ─── */
+  /* ── an in-page jump lands under the sticky chrome, and says so ────────
+     Every a[href^="#"] on every page: the page scrolls until the target's
+     heading sits just below the header (and the chapter rail), and once it
+     has settled arrive() names the place. A card in a film strip is reached
+     sideways: stripTo() brings the strip into view, centres that screen and
+     marks it current — this is what makes /#strip-cohort-marpass a link to
+     one screen. The skip link only moves focus; a jump to the hero only
+     scrolls. */
   const anchors = () => {
     document.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = e.target.closest('a[href^="#"]');
       if (!a) return;
-      const id = a.getAttribute('href').slice(1);
+      const id = decodeURIComponent(a.getAttribute('href').slice(1));
       const t = id && document.getElementById(id);
       if (!t) return;
       e.preventDefault();
-      /* A card in a film strip is reached sideways, not from the top: pull
-         it to the start of its own rail and leave the page where it is.
-         This is what makes /#strip-cohort-marpass a link to one screen. */
-      const rail = t.closest('[data-rail]');
-      t.scrollIntoView(rail ? { behavior: calm.matches ? 'auto' : 'smooth', inline: 'start', block: 'nearest' } : { behavior: calm.matches ? 'auto' : 'smooth', block: 'start' });
-      t.setAttribute('tabindex', '-1');
-      t.focus({ preventScroll: true });
       history.replaceState(null, '', `#${id}`);
+      if (a.classList.contains('skip')) { t.setAttribute('tabindex', '-1'); t.focus(); return; }
+      const card = t.closest(RAIL) ? t : null;
+      if (card) { stripTo(card); return; }
+      const hero = t.id === 'top' || t.matches('main > section:first-of-type, .hero');
+      jumpTo(t, { quiet: hero });
     });
   };
 
@@ -656,20 +872,51 @@
   const pct = (a, b) => ((a / b) * 100).toFixed(2) + '%';
   const ease = () => (calm.matches ? 'auto' : 'smooth');
   /* The rail is position:relative, so a card's offsetLeft is measured from
-     the same origin as scrollLeft and the snapped card is simply the one
-     whose left edge sits nearest the left edge of the visible strip. */
+     the same origin as scrollLeft. Round 4: the current screen is the one
+     in the MIDDLE of the strip — it is centred, lit, and its neighbours step
+     back — so "which screen am I on" has one answer you can see. */
   const nearest = (r) => {
     const el = kids(r);
     if (!el.length) return 0;
-    const x = r.scrollLeft + el[0].offsetLeft;
+    const x = r.scrollLeft + r.clientWidth / 2;
     let b = 0, d = Infinity;
-    for (let i = 0; i < el.length; i++) { const v = Math.abs(el[i].offsetLeft - x); if (v < d) { d = v; b = i; } }
+    for (let i = 0; i < el.length; i++) { const v = Math.abs(el[i].offsetLeft + el[i].offsetWidth / 2 - x); if (v < d) { d = v; b = i; } }
     return b;
   };
-  const goTo = (r, i) => {
+  const centreLeft = (r, n) => Math.max(0, Math.min(r.scrollWidth - r.clientWidth, n.offsetLeft + n.offsetWidth / 2 - r.clientWidth / 2));
+  /* While a programmatic slide is under way the asked-for card is current:
+     the smooth scroll passes over the cards between, and the tab, counter
+     and lit card must not flicker through them. Released when the rail
+     comes to rest. */
+  const hold = (r, i) => {
+    r._want = i;
+    clearTimeout(r._wantT);
+    const done = () => { r._want = undefined; clearTimeout(r._wantT); r.removeEventListener('scrollend', done); railSync(r); };
+    r.addEventListener('scrollend', done);
+    r._wantT = setTimeout(done, 1200);
+  };
+  const goTo = (r, i, instant) => {
     const el = kids(r);
-    const n = el[Math.max(0, Math.min(el.length - 1, i))];
-    if (n) n.scrollIntoView({ behavior: ease(), inline: 'start', block: 'nearest' });
+    i = Math.max(0, Math.min(el.length - 1, i));
+    const n = el[i];
+    if (!n) return;
+    hold(r, i);
+    r.scrollTo({ left: centreLeft(r, n), behavior: instant ? 'auto' : ease() });
+    railSync(r);
+  };
+  /* A jump to one screen: bring the strip itself into view if it is not,
+     then centre the card; railSync() says which one it is. */
+  const stripTo = (card, instant) => {
+    const r = card.closest(RAIL);
+    if (!r) return;
+    const box = r.closest('.fstrip') || r;
+    const i = kids(r).indexOf(card);
+    const b = box.getBoundingClientRect();
+    const inView = b.top >= coverTop() - 4 && b.top < window.innerHeight * 0.45;
+    if (inView || instant) { goTo(r, i, instant); return; }
+    hold(r, i);
+    railSync(r);
+    scrollToY(landAt(box), () => goTo(r, i));
   };
   const swSet = (box, i, move) => {
     const tabs = $$('[role="tab"]', box);
@@ -687,16 +934,32 @@
     const rail = strip ? $(RAIL, strip) : null;
     if (rail) goTo(rail, i);
   };
+  /* target: when a jump asked for a card, that card is current the moment
+     it is asked for — not only once the smooth scroll reaches it — so the
+     tab, the counter and the lit card all agree with the click. */
   const railSync = (r) => {
-    const i = nearest(r);
+    const el = kids(r);
+    const i = r._want !== undefined ? r._want : nearest(r);
     if (r.dataset.at === String(i)) return;
     const first = r.dataset.at === undefined;
     r.dataset.at = i;
-    const el = kids(r);
     el.forEach((x, j) => x.toggleAttribute('data-on', j === i));
     const box = r.closest('.fstrip');
     if (!box) return;
+    box.setAttribute('data-js', '');
+    const jump = $('.fs-jump', box);
     $$('.fs-jump a', box).forEach((a, j) => { if (j === i) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    /* keep the lit tab in view on a strip of tabs wider than the page */
+    const lit = jump && $$('a', jump)[i];
+    if (lit && jump.scrollWidth > jump.clientWidth + 1) jump.scrollTo({ left: Math.max(0, lit.offsetLeft + lit.offsetWidth / 2 - jump.clientWidth / 2), behavior: ease() });
+    const now = $('.fs-now', box);
+    if (now && el[i]) {
+      const n = $('.fs-now-n', now), t = $('.fs-now-t', now);
+      if (n) n.textContent = String(i + 1).padStart(2, '0');
+      if (t) t.textContent = el[i].getAttribute('data-t') || '';
+      now.classList.remove('is-tick'); void now.offsetWidth; now.classList.add('is-tick');
+    }
+    $$('[data-fs-step]', box).forEach((b) => { const d = Number(b.getAttribute('data-fs-step')); b.disabled = d < 0 ? i <= 0 : i >= el.length - 1; });
     const sw = box.id ? $('[data-sw-rail="' + box.id + '"]') : null;
     if (sw) swSet(sw, i, false);
     /* Say it once the strip has come to rest. Announcing every card a fast
@@ -784,6 +1047,16 @@
          drag that happens to end on a link does not follow it. */
       document.addEventListener('click', (e) => {
         if (slid) { slid = false; e.preventDefault(); e.stopPropagation(); return; }
+        /* the strip's own previous / next */
+        const st = e.target.closest ? e.target.closest('[data-fs-step]') : null;
+        const sbox = st ? st.closest('.fstrip') : null;
+        const sr = sbox ? $(RAIL, sbox) : null;
+        if (sr) { e.preventDefault(); goTo(sr, (sr._want !== undefined ? sr._want : nearest(sr)) + Number(st.getAttribute('data-fs-step'))); return; }
+        /* a screen that has stepped back comes forward on the first click;
+           the click is spent on that, not on a control inside the mock */
+        const side = e.target.closest ? e.target.closest('.fs-i:not([data-on])') : null;
+        const sideR = side ? side.closest(RAIL) : null;
+        if (sideR && side.closest('.fstrip[data-js]')) { e.preventDefault(); e.stopPropagation(); goTo(sideR, kids(sideR).indexOf(side)); return; }
         const b = e.target.closest ? e.target.closest('[data-sw-to]') : null;
         const box = b ? b.closest('[data-switch]') : null;
         if (box) { e.preventDefault(); swSet(box, Number(b.getAttribute('data-sw-to')), true); }
@@ -820,11 +1093,11 @@
       rails.forEach((r) => railSync(r));
       /* A link someone pasted. The browser's own fragment scroll only brings
          a card far enough in to be visible, which for a rail means it lands
-         wherever it happens to land; align it to the start so the screen
+         wherever it happens to land; centre it and mark it, so the screen
          that was shared is the screen you arrive on. */
       const land = () => {
-        const t = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
-        if (t && t.closest(RAIL)) t.scrollIntoView({ inline: 'start', block: 'nearest' });
+        const t = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        if (t && t.closest(RAIL)) stripTo(t, true);
       };
       land();
       addEventListener('hashchange', land);
@@ -854,8 +1127,8 @@
     }
   };
 
-  window.PHO = { $, $$, calm, toast, root, EMAIL };
-  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); demos(); consent(); drafts(); emailCheck(); sendByMail(); fab(); nxt(); scrollDrive(); tips(); document.dispatchEvent(new CustomEvent('pho:ready')); };
+  window.PHO = { $, $$, calm, toast, root, EMAIL, jumpTo, arrive, coverTop };
+  const boot = () => { reveal(); header(); menus(); mode(); tour(); forms(); anchors(); verbs(); clocks(); pageIndex(); folds(); demos(); consent(); drafts(); emailCheck(); sendByMail(); fab(); nxt(); scrollDrive(); tips(); chapters(); edges(); houses(); document.dispatchEvent(new CustomEvent('pho:ready')); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

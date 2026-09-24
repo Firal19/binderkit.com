@@ -6,7 +6,7 @@
 // bottom split bar carries the mark as the pin between the halves. The
 // footer keeps the week as a rail with tonight lit, over four clean columns.
 
-import { esc, mark, social, byline, hello, mailto, boxAt, nextFloat } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, boxAt, nextFloat, footShell } from '../../shared.js';
 import { ic } from '../../icons/aidepost.js';
 
 /* each nav item carries a small glyph from the badge set */
@@ -168,62 +168,36 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const routeOfPage = (page) => (!page || page === 'home' ? '/' : `/${page}`);
 const writeKey = (cfg, opts) => opts.box || boxAt(cfg, routeOfPage(opts.page));
 
-function writeCol(cfg, key) {
-  const to = hello(cfg, key);
-  const other = key === 'caregivers' ? hello(cfg) : hello(cfg, 'caregivers');
-  const alt = key === 'caregivers' ? `Running a house? ${other}` : `Caregivers: ${other}`;
-  return {
-    line: `<p class="ft-w"><a href="${mailto(cfg, '', key)}">${esc(to)}</a></p>`,
-    copy: `<button class="ft-copy" type="button" data-copy="${esc(to)}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(to)} and open your mail app">${ic('mail', 18)}Write to us</button>`,
-    note: `<p class="ft-note">One inbox. A person answers.</p><p class="ft-note ft-alt">${esc(alt)} — same inbox.</p>`,
-  };
-}
 
 /* the footer a phone gets: identity, the address, three groups, social */
-function phoneFoot(cfg, p, at, li, w) {
-  const group = (title, rows) => `<details class="ft-ph-d"><summary><b>${esc(title)}</b><span class="faq-x" aria-hidden="true"></span></summary>${li(rows)}</details>`;
-  return `<div class="ft-ph">
-    <div class="ft-ph-id">${mark(p.id, 40, { label: false })}<b class="ft-sun-n">${esc(p.name)}</b><span class="ft-sun-d">${esc(p.descriptor)}</span></div>
-    ${w.line}
-    <div class="ft-ph-act">
-      ${w.copy}
-      ${w.note}
-    </div>
-    ${group('Product', [['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']])}
-    ${group('Caregivers', [['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])}
-    ${group('Company', [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']])}
-    ${social(p.id, { cls: 'soc-pills', size: 16, label: 'Aidepost on social, again' })}
-  </div>`;
-}
 
 export function footer(cfg, p, opts = {}) {
+  /* Round 4 (Firaol: "bit cramped, and make it state of the art footer").
+     The shared footer shell: identity and the page's own address on the
+     left, three link groups with room to breathe, the product's name across
+     the foot. Aidepost keeps one quiet thing of its own — tonight, lit on
+     the week, and the roster you can print. */
   const at = linker(opts.ids);
-  const w = writeCol(cfg, writeKey(cfg, opts));
-  const li = (rows) => `<ul class="ft-l">${rows.map(([h, t]) => `<li><a href="${esc(h)}">${esc(t)}</a></li>`).join('')}</ul>`;
-  const cols = [
-    ['Product', li([['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']])],
-    ['Caregivers', li([['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']])],
-    ['Company', li([['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']])],
-    ['Write', `${w.line}${w.copy}${w.note}${social(p.id, { cls: 'soc-pills', size: 16, text: true, label: 'Aidepost on social' })}`],
-  ];
+  const key = writeKey(cfg, opts);
+  const other = key === 'caregivers' ? hello(cfg) : hello(cfg, 'caregivers');
   const next = nextOf(routeOfPage(opts.page));
-  return `<footer class="ft" id="foot">
-    <div class="wrap">
-      <div class="ft-top">
-        <p class="ft-line">${ic('board', 20)}<span>Tonight is <b data-clock="day">the day</b>.</span></p>
-        <ol class="ft-week" aria-label="This week, with tonight lit">${DAYS.map((d) => `<li class="ft-day" data-day="${d}"><span>${d}</span><i class="ft-tonight" aria-hidden="true">tonight</i></li>`).join('')}</ol>
-        <button class="btn sm ft-print" type="button" data-print>${ic('print', 18, { pin: false })}Print the roster</button>
-      </div>
-      <div class="ft-g">
-        ${cols.map(([title, body]) => `<div class="ft-c"><b class="ft-dt">${esc(title)}</b>${body}</div>`).join('')}
-      </div>
-      ${phoneFoot(cfg, p, at, li, w)}
-      <div class="ft-sign">
-        <div class="ft-sun">${mark(p.id, 44, { label: false })}<span><span class="ft-sun-n">${esc(p.name)}</span><span class="ft-sun-d">${esc(p.descriptor)}</span></span></div>
-        <div class="ft-by">${byline(true)}<p class="ft-legal">${esc(opts.fine || '')} ${esc(cfg.legalLine)}</p></div>
-      </div>
-    </div>
-    <button class="ft-keys" type="button" aria-controls="keys" aria-expanded="false" aria-label="Keyboard shortcuts" data-fab-side>${ic('keyboard', 18, { pin: false })}<span>Keys</span></button>
-    ${next ? nextFloat(next) : ''}
-  </footer>`;
+  const motif = `<div class="ftw">
+      <p class="ftw-l">${ic('board', 18)}<span>Tonight is <b data-clock="day">the day</b>.</span></p>
+      <ol class="ft-week" aria-label="This week, with tonight lit">${DAYS.map((d) => `<li class="ft-day" data-day="${d}"><span>${d}</span></li>`).join('')}</ol>
+      <button class="btn sm ft-print" type="button" data-print>${ic('print', 16, { pin: false })}Print the roster</button>
+    </div>`;
+  return footShell(cfg, p, {
+    cls: 'ft',
+    box: key,
+    note: `One inbox. A person answers. ${key === 'caregivers' ? 'Running a house?' : 'Caregivers:'} ${other}.`,
+    motif,
+    fine: opts.fine || '',
+    groups: [
+      { title: 'Product', links: [['/providers#board', 'The board'], ['/providers#credentials', 'Credentials'], ['/providers#hours', 'Hours'], ['/providers#hiring', 'Hiring'], ['/screens', 'All five screens'], ['/pricing', 'Pricing']] },
+      { title: 'Caregivers', links: [['/caregivers#caregivers', 'Shifts near you'], ['/caregivers#wallet', 'Your wallet'], ['/caregivers#free', 'Free, for ever'], [at('join'), 'Join as a caregiver']] },
+      { title: 'Company', links: [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy']] },
+    ],
+    after: `<button class="ft-keys" type="button" aria-controls="keys" aria-expanded="false" aria-label="Keyboard shortcuts" data-fab-side>${ic('keyboard', 18, { pin: false })}<span>Keys</span></button>
+    ${next ? nextFloat(next) : ''}`,
+  });
 }

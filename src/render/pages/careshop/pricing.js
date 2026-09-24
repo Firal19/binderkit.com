@@ -26,19 +26,14 @@ const TERMS = [
 export function pricingPage(cfg, p) {
   const s = find('pricing');
   const inner = `${pageHead('Price tags', s.heading, s.sub)}
-${directory([['plans', 'The three plans', 'Free · $19 · $37'], ['terms', 'The terms of the till', '6 lines'], ['counts', 'What a plan counts', '4 answers'], ['questions', 'Questions', '4 answers']], { title: 'On this page' })}
+${directory([['plans', 'The plans'], ['terms', 'How it is sold'], ['counts', 'What a plan counts'], ['questions', 'Questions']])}
 ${sec('plans', 'plans-s', `<div class="wrap">
   ${tierCards(cfg, p, { cta: 'pricing-page' })}
   <p class="fine">${esc(s.note)}</p>
 </div>`, { label: 'Plans' })}
 ${sec('terms', 'terms-s', `<div class="wrap">
-  <div class="head">${sticker('receipt', 'Before you reach for a card')}${h2('terms', 'The terms of the till.', 'Free, nineteen and thirty-seven are the real prices, and you can pay them today.')}</div>
-  <div class="rc rc-terms">
-    <div class="rc-top"><b class="rc-store">TERMS OF THE TILL</b><span class="rc-meta">${esc(p.pricing.rows.map(([n, price]) => `${n} ${price.replace(/ \/ .*$/, '')}`).join(' · ').toUpperCase())}</span></div>
-    <div class="rc-lines">${TERMS.map(([k, v]) => `<span class="rc-l"><span>${esc(k)}</span><i aria-hidden="true"></i><b>${esc(v)}</b></span>`).join('')}</div>
-    <div class="rc-tear" aria-hidden="true"></div>
-    <p class="rc-thanks">NO CARD TO BEGIN. CANCEL IN ONE TAP.</p>
-  </div>
+  <div class="head">${sticker('tag', 'Before you reach for a card')}${h2('terms', 'How it is sold.', 'Free, nineteen and thirty-seven are the real prices, and you can pay them today.')}</div>
+  <dl class="terms">${TERMS.map(([k, v]) => `<div class="terms-r"><dt>${esc(k.charAt(0) + k.slice(1).toLowerCase())}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
 </div>`)}
 ${sec('counts', 'counts-s', `<div class="wrap">
   <div class="head">${sticker('tag', 'What a plan counts')}${h2('counts', 'The unit is the house.', 'Not the seat, not the resident, not the item. A plan covers however many people work in a house.')}</div>

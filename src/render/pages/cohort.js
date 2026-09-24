@@ -7,7 +7,7 @@
 // at”, and nothing is red. Rewritten 2026-09-23 to Firaol's review: shorter,
 // plainer, no build status, no sample-data confession, no sibling product.
 
-import { esc, skip, waitlist, faq, tiers, sec, h2, eyebrow, reach } from '../shared.js';
+import { esc, skip, waitlist, faq, tiers, sec, h2, eyebrow, reach , chapterRail, priceCalc } from '../shared.js';
 import { iosShell, SURFACES, screenSwitch } from '../instruments.js';
 import { EVERY_PLAN, JOIN } from '../../data/page.js';
 import { STATE_SETS } from '../../data/states.js';
@@ -61,11 +61,12 @@ const INDEX = [
   ['pricing', 'Pricing'],
   ['join', 'Join'],
 ];
-const pageIndex = () => `<nav class="pidx" aria-label="On this page" data-spy>
-    <span class="pidx-k">On this page</span>
-    <div class="pidx-r" data-scrollx>${INDEX.map(([id, label]) => `<a class="pidx-a" href="#${id}"><span class="pidx-l">${esc(label)}</span></a>`).join('')}</div>
-    <a class="pidx-all" href="/screens"><span>All five screens</span>${ic('right', 15)}</a>
-  </nav>`;
+/* Round 4: one rail, following the reader, each stop with its stamp glyph
+   (Firaol, family-wide: "make one of those list horizontal and interactive
+   on scroll and connected to the interactive"). */
+const IDX_ICON = { shift: 'clock', stops: 'gate', record: 'record', grammar: 'addendum', roles: 'people', house: 'house', questions: 'info', pricing: 'tag', join: 'pen' };
+const IDX_LIVE = new Set(['shift', 'stops', 'grammar', 'pricing']);
+const pageIndex = () => chapterRail(INDEX.map(([id, label]) => ({ id, label, live: IDX_LIVE.has(id), icon: ic(IDX_ICON[id] || 'stamp', 16) })), { tail: { href: '/screens', label: 'All five screens' } });
 
 /* ── the hero ──────────────────────────────────────────────────────────── */
 function hero(cfg, p) {
@@ -300,10 +301,14 @@ export function houseStepper() {
 
 function pricing(cfg, p) {
   const s = find('pricing');
+  const trial = p.pricing.rows.find(([n]) => /trial/i.test(n));
+  const cta = { href: '#join', label: 'Get early access' };
+  /* Round 4: the houses you set price the month (Firaol: "these need
+     enhancement. they are big and no characters to it"). Pro fits one to
+     three houses, Scale the rest; every price is brand.js's. */
   return sec('pricing', 'pricing', `<div class="wrap">
     <div class="head">${eyebrow('One price per house')}${h2('pricing', s.heading, EVERY_PLAN)}</div>
-    ${houseStepper()}
-    ${tiers(p, 1)}
+    ${priceCalc(p, { id: 'pc-co', cls: 'pc-co', start: 1, max: 12, fit: { Pro: '1-3', Scale: '4-' }, main: 'Pro', mainLabel: 'Most houses', skip: trial ? [trial[0]] : [], cta: { Pro: cta, Scale: cta }, aside: trial ? `${trial[0]} · ${trial[1].toLowerCase()} · cancel in one tap` : '' })}
     <p class="fine">${esc(s.note)}</p>
     <p class="signup-line">${ic('stamp', 16)}<span><b>Signing up takes five minutes:</b> email, licence track, your first house, the agreements, card. <a href="/pricing">The trial and billing, in full</a></span></p>
   </div>`);

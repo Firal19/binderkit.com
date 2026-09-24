@@ -7,7 +7,7 @@
 // copy, no sibling product, no "sample data" confession, a designed phone
 // board, a fit quiz for caregivers, prices that exist.
 
-import { esc, skip, sec, h2, eyebrow, waitlist, faq, openNote } from '../../shared.js';
+import { esc, skip, sec, h2, eyebrow, waitlist, faq, openNote, chapterRail, priceCalc } from '../../shared.js';
 import { iosShell, webShell, SURFACES } from '../../instruments.js';
 import { PAGES, SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, JOIN } from '../../../data/page.js';
 import { ic } from '../../icons/aidepost.js';
@@ -137,31 +137,39 @@ const eligList = (label) => `<ul class="elig" aria-label="${esc(label)}">${ELIGI
 export function claimSheet(opts = {}) {
   const d = S.shift;
   const share = `https://${esc(opts.domain || 'aidepost.com')}/#board`;
+  /* Round 4 (Firaol: "very big and not best design"). The sheet was one
+     1269x570 panel; it is a ticket and a run now, side by side: the shift on
+     the left as the card a caregiver would see, the three steps on the right
+     with the actions under them. Same hooks, same script, half the height. */
   return `<div class="claim" id="claim" hidden data-claim>
     <div class="claim-c">
-      <div class="claim-h">
-        <span class="claim-k">${ic('shift', 18, { pin: 'open' })}<span>Open shift</span></span>
-        <b class="claim-t">${esc(d.when)}</b>
-        <span class="claim-s">${esc(d.work)}</span>
-        <button class="claim-x" type="button" data-close aria-label="Close">${ic('x', 18, { pin: false })}</button>
+      <div class="claim-tk">
+        <div class="claim-h">
+          <span class="claim-k"><i class="claim-dot" aria-hidden="true"></i><span>Open shift</span></span>
+          <b class="claim-t">${esc(d.when)}</b>
+          <span class="claim-s">${esc(d.work)}</span>
+          <button class="claim-x" type="button" data-close aria-label="Close">${ic('x', 18, { pin: false })}</button>
+        </div>
+        <ul class="needs" aria-label="What the shift asks for">${d.needs.map(([n, k]) => `<li class="need" data-kind="${esc(k)}">${esc(n)}<i>${esc(k)}</i></li>`).join('')}</ul>
+        <p class="claim-cap">Shown, not required. Nobody is removed from the list.</p>
       </div>
-      <ul class="needs" aria-label="What the shift asks for">${d.needs.map(([n, k]) => `<li class="need" data-kind="${esc(k)}">${esc(n)}<i>${esc(k)}</i></li>`).join('')}</ul>
-      <p class="claim-cap">Shown, not required. Nobody is removed from the list.</p>
-      <ol class="claim-steps" data-step="0">
-        <li class="cs" data-s="1"><span class="cs-n">1</span><div><b>${esc(d.actions[0])}</b><span class="cs-w">Everyone on staff at WH-1. Two carry a marker; both stay on the list.</span>
-          ${eligList('Everyone on staff at WH-1')}
-          <span class="cs-r" data-cs-r="1"></span></div></li>
-        <li class="cs" data-s="2"><span class="cs-n">2</span><div><b>${esc(d.actions[1])}</b><span class="cs-w">Nobody took it by Friday evening. Relief caregivers near the house see it, with the distance.</span><span class="cs-r" data-cs-r="2"></span></div></li>
-        <li class="cs" data-s="3"><span class="cs-n">3</span><div><b>Claimed, then confirmed</b><span class="cs-w">The first claim stands. You decide who enters your house.</span><span class="cs-r" data-cs-r="3"></span></div></li>
-      </ol>
-      <div class="claim-a">
-        <button class="btn pri" type="button" data-claim-act="offer">${esc(d.actions[0])}</button>
-        <button class="btn" type="button" data-claim-act="post" disabled>${esc(d.actions[1])}</button>
-        <button class="btn pri" type="button" data-claim-act="confirm" hidden>Confirm ${esc(RELIEF)}</button>
-        <button class="btn" type="button" data-claim-act="reset" hidden>${ic('reset', 16, { pin: false })}Reset the board</button>
-        <button class="btn ghost" type="button" data-share="${share}" data-share-title="Sat night at WH-1 is open — Aidepost">${ic('share', 16, { pin: false })}Share this shift</button>
+      <div class="claim-run">
+        <ol class="claim-steps" data-step="0">
+          <li class="cs" data-s="1"><span class="cs-n">1</span><div><b>${esc(d.actions[0])}</b><span class="cs-w">Everyone on staff at WH-1. Two carry a marker; both stay on the list.</span>
+            ${eligList('Everyone on staff at WH-1')}
+            <span class="cs-r" data-cs-r="1"></span></div></li>
+          <li class="cs" data-s="2"><span class="cs-n">2</span><div><b>${esc(d.actions[1])}</b><span class="cs-w">Nobody took it by Friday evening. Relief caregivers near the house see it, with the distance.</span><span class="cs-r" data-cs-r="2"></span></div></li>
+          <li class="cs" data-s="3"><span class="cs-n">3</span><div><b>Claimed, then confirmed</b><span class="cs-w">The first claim stands. You decide who enters your house.</span><span class="cs-r" data-cs-r="3"></span></div></li>
+        </ol>
+        <div class="claim-a">
+          <button class="btn pri" type="button" data-claim-act="offer">${esc(d.actions[0])}</button>
+          <button class="btn" type="button" data-claim-act="post" disabled>${esc(d.actions[1])}</button>
+          <button class="btn pri" type="button" data-claim-act="confirm" hidden>Confirm ${esc(RELIEF)}</button>
+          <button class="btn" type="button" data-claim-act="reset" hidden>${ic('reset', 16, { pin: false })}Reset the board</button>
+          <button class="btn ghost" type="button" data-share="${share}" data-share-title="Sat night at WH-1 is open — Aidepost">${ic('share', 16, { pin: false })}Share this shift</button>
+        </div>
+        <p class="claim-rec" data-claim-rec aria-live="polite"></p>
       </div>
-      <p class="claim-rec" data-claim-rec aria-live="polite"></p>
     </div>
   </div>`;
 }
@@ -190,35 +198,50 @@ export function rosterToy() {
   </div>`;
 }
 
-/* ── credentials: the rail, then the slider ───────────────────────────
-   The rail is the whole idea in five stations you can read in one glance:
-   recorded, thirty days, seven days, expired, renewed. The slider below
-   lets a reader move one card through the same stations. */
+/* ── credentials: the life of one card ─────────────────────────────────
+   Round 4. Firaol, on the rail: "need more identity and richness, so it
+   wont be giving a vibe coded vibe"; on the slider panel: "So big...fix it".
+   They are one instrument now. J. Ruiz's First Aid card sits beside a track
+   of the five stations; drag the days and the station it has reached
+   lights, the card wears the state — current, told at thirty, told again at
+   seven, expired and still assignable — and past the day a renewal can be
+   recorded, which is the fifth station. The stations sit evenly on the
+   track; the days they stand for are printed under each. */
 export const CRED_RAIL = [
-  ['badge', 'Recorded', 'With its dates. Marked self-attested.', ''],
-  ['bell', '30 days', 'The holder is told by name. You see a count.', 'pending'],
-  ['bell', '7 days', 'Both, again. And on the day.', 'open'],
-  ['flag', 'Expired', 'Marked on the roster. Still assignable. Your call.', 'expired'],
-  ['check', 'Renewed', 'A new row. The old one stays as history.', 'covered'],
+  ['badge', 'Recorded', 'With its dates. Marked self-attested.', '', '90 days out'],
+  ['bell', '30 days', 'The holder is told, by name. You see a count.', 'pending', '30 days'],
+  ['bell', '7 days', 'Both of you, again. And on the day.', 'open', '7 days'],
+  ['flag', 'Expired', 'Marked on the roster. Still assignable. Your call.', 'expired', 'the day'],
+  ['check', 'Renewed', 'A new row. The old one stays as history.', 'covered', 'renewal'],
 ];
-export const credRail = () => `<ol class="crail" aria-label="What happens to a credential, in order">${CRED_RAIL.map(([icon, t, d, k]) => `<li class="crail-s${k ? ` is-${k}` : ''}"><span class="crail-i">${ic(icon, 18, { pin: k === 'expired' || k === 'open' ? 'open' : 'ink' })}</span><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ol>`;
-
-export function credTimeline() {
-  return `<div class="tl" data-tl>
-    <div class="tl-card" data-tl-card data-state="current">
-      <span class="tl-k">${ic('badge', 18)}<span data-tl-k>Current</span></span>
-      <b class="tl-who">${esc(NAMES[1])} · First Aid</b>
-      <span class="tl-when" data-tl-when>Expires in 90 days</span>
-      <p class="tl-n" data-tl-n>Recorded with its dates. Nothing to say yet.</p>
+export function credLife() {
+  /* the stations are labels on a track, not reading matter: a role="list"
+     of divs, so a 12px day label is a label and not a sentence under the
+     15px prose floor */
+  const st = CRED_RAIL.map(([icon, t, d, k, when], i) => `<div class="cl-s${k ? ` is-${k}` : ''}" role="listitem" data-cl-s="${i}"${i === 0 ? ' data-on' : ''}><span class="cl-dot">${ic(icon, 16, { pin: false })}</span><b>${esc(t)}</b><span class="cl-at">${esc(when)}</span><span class="cl-d">${esc(d)}</span></div>`).join('');
+  return `<div class="cl" data-tl data-state="current">
+    <div class="cl-card" data-tl-card data-state="current">
+      <div class="cl-top">
+        <span class="cl-av" aria-hidden="true">${esc(initials(NAMES[1]))}</span>
+        <span class="cl-who"><b>${esc(NAMES[1])}</b><span>First Aid · American Red Cross</span></span>
+        <span class="cl-ic" aria-hidden="true">${ic('firstaid', 22, { pin: false })}</span>
+      </div>
+      <div class="cl-mid"><span class="cl-chip" data-tl-k>Current</span><span class="cl-when" data-tl-when>Expires in 90 days</span></div>
+      <p class="cl-n" data-tl-n>Recorded with its dates and marked self-attested. Nothing to say yet.</p>
+      <button class="btn sm cl-renew" type="button" data-cl-renew hidden>${ic('check', 16, { pin: false })}Record the renewal</button>
     </div>
-    <div class="tl-r">
-      <label class="tl-lab" for="tl-in">Move through the days: <output data-tl-out>90 days out</output></label>
-      <input class="tl-in" id="tl-in" type="range" min="0" max="95" value="0" step="1" data-tl-in aria-valuetext="90 days before expiry">
-      <ol class="tl-rail" aria-hidden="true"><li style="--at:0%">Recorded</li><li style="--at:63.2%">30 days</li><li style="--at:87.4%">7 days</li><li style="--at:94.7%" class="is-open">Expires</li></ol>
+    <div class="cl-track">
+      <div class="cl-lab"><label for="tl-in">Drag the days</label><output data-tl-out>90 days out</output></div>
+      <div class="cl-in-w"><input class="tl-in cl-in" id="tl-in" type="range" min="0" max="100" value="0" step="1" data-tl-in aria-valuetext="Expires in 90 days"></div>
+      <div class="cl-rail" role="list" aria-label="What happens to a credential, in order">${st}</div>
     </div>
-    <p class="fine">Nothing on this line blocks an assignment. The decision stays yours.</p>
+    <p class="cl-f">${ic('check', 14, { pin: false })}Nothing on this track blocks an assignment. The decision stays yours.</p>
   </div>`;
 }
+/* the two pieces the chapters used to place separately; both now render
+   the one instrument, once */
+export const credRail = () => '';
+export const credTimeline = () => credLife();
 
 /* ── the timesheet toy: seven bars, one weekly flag ───────────────────── */
 export function timesheetToy() {
@@ -288,8 +311,16 @@ export function fitQuiz() {
   </div>`;
 }
 
-/* ── the wallet ───────────────────────────────────────────────────────── */
-export const walletCards = () => `<div class="wallet" role="list" aria-label="A caregiver’s credentials, as cards">${WALLET.map(([kind, t, issuer, when, st, label, seen]) => `<div class="wcard is-${esc(st)}" role="listitem" data-kind="${esc(kind)}"><span class="wcard-i">${ic(kind, 22, { pin: false })}</span><span class="wcard-k">${esc(label)}</span><b>${esc(t)}</b><span class="wcard-by">${esc(issuer)} · ${esc(seen)}</span><span class="wcard-w">${esc(when)}</span></div>`).join('')}</div>`;
+/* ── the wallet ─────────────────────────────────────────────────────────
+   Round 4 (Firaol: "big and no character to it, make it cleaner, and
+   enhanced design"). Four panels 534px tall became a deck of cards the size
+   of the cards in her purse: each shows its edge — the credential's own
+   glyph, its name, its date — and the one that needs her comes forward.
+   Tap a card and it comes to the front with the issuer and who saw it. */
+export const walletCards = () => `<div class="wallet" role="list" aria-label="A caregiver’s credentials, as cards" data-wallet>${WALLET.map(([kind, t, issuer, when, st, label, seen]) => `<div class="wcard is-${esc(st)}" role="listitem" data-kind="${esc(kind)}"${st === 'open' ? ' data-front' : ''}>
+    <button class="wcard-h" type="button" aria-pressed="${st === 'open' ? 'true' : 'false'}"><span class="wcard-i">${ic(kind, 20, { pin: false })}</span><span class="wcard-t"><b>${esc(t)}</b><span class="wcard-k">${esc(label)}</span></span><span class="wcard-w">${esc(when)}</span></button>
+    <div class="wcard-b"><span class="wcard-by">${esc(issuer)}</span><span class="wcard-seen">${esc(seen)}</span><span class="wcard-chip" aria-hidden="true"></span></div>
+  </div>`).join('')}</div>`;
 
 /* ── roles as flip cards ──────────────────────────────────────────────── */
 const ROLE_ICON = { provider: 'house', manager: 'clipboard', caregiver: 'person', applicant: 'phone', 'relief worker': 'distance' };
@@ -298,34 +329,32 @@ export function flipRoles() {
   return `<div class="role-g">${s.rows.map(([r, who, does, dev, wash]) => `<details class="flip ${wash ? 'is-free' : ''}"><summary class="flip-f"><span class="role-n">${ic(ROLE_ICON[r] || 'person', 18, { pin: wash ? 'open' : 'ink' })}${esc(r)}</span><span class="role-w">${esc(who)}</span><span class="flip-hint">${ic('reset', 14, { pin: false })}Turn over</span></summary><div class="flip-b"><span class="role-n">${esc(r)}</span><p class="role-d">${esc(does)}</p><span class="role-r">${ic('phone', 14, { pin: false })}${esc(dev)}</span></div></details>`).join('')}</div>`;
 }
 
-/* ── pricing: two tiers, one post, and the caregiver exception ────────── */
-const priceOf = (price) => {
-  const i = String(price).indexOf(' / ');
-  return i < 0 ? `<span class="tier-p">${esc(price)}</span>` : `<span class="tier-p">${esc(price.slice(0, i))}<small>${esc(price.slice(i))}</small></span>`;
-};
+/* ── pricing: set your houses, see your month ──────────────────────────
+   Round 4 (Firaol: "these need enhancement. they are big and no characters
+   to it"). The two plans are priced for the number of houses you set; the
+   one that fits is marked. The post, the trial and the caregiver exception
+   stay, each one line. Prices come only from brand.js. */
 export function tierBlock(p) {
   const rows = p.pricing.rows;
   const trial = rows.find(([n]) => /trial/i.test(n));
   const post = rows.find(([n]) => /^Job post/i.test(n));
-  const plans = rows.filter((r) => r !== trial && r !== post);
-  const FEATS = {
-    Pro: ['Up to three houses', 'Staff and credential dates', 'The roster and the open-shift board', 'Clock-in and timesheets'],
-    Scale: ['Unlimited houses', 'Agency roles', 'Training-plan items', 'Everything in Pro'],
-  };
+  const cta = { href: '#join', label: 'Get early access' };
   return `<div class="pr">
     <div class="pr-sw" role="group" aria-label="Who pays">
       <button class="pr-b is-prov" type="button" data-side-set="provider" aria-pressed="true">Providers</button>
       <button class="pr-b is-care" type="button" data-side-set="caregiver" aria-pressed="false">Caregivers</button>
     </div>
     <div class="s-prov">
-      <div class="tiers">${plans.map(([name, price, d], i) => `<div class="tier ${i === 0 ? 'is-main' : ''}">${i === 0 ? '<span class="tier-flag">Most houses</span>' : ''}<span class="tier-n">${esc(name)}</span>${priceOf(price)}<span class="tier-d">${esc(d)}</span><ul class="tier-f">${(FEATS[name] || []).map((t) => `<li>${ic('check', 14, { pin: false })}${esc(t)}</li>`).join('')}</ul><a class="btn ${i === 0 ? 'pri' : ''}" href="#join" data-cta="tier">Get early access</a></div>`).join('')}</div>
-      ${post ? `<div class="tier-post"><span class="tier-post-i">${ic('post', 22)}</span><div><span class="tier-n">${esc(post[0])}</span><span class="tier-d">${esc(post[2])} On every plan, the trial included.</span></div>${priceOf(post[1])}</div>` : ''}
-      ${trial ? `<p class="tier-trial">${ic('clock', 15, { pin: false })}${esc(trial[0])}: ${esc(trial[2])}</p>` : ''}
+      ${priceCalc(p, { id: 'pc-ap', cls: 'pc-ap', start: 2, max: 12, fit: { Pro: '1-3', Scale: '4-' }, main: 'Pro', mainLabel: 'Most houses', skip: [trial && trial[0]].filter(Boolean), cta: { Pro: cta, Scale: cta }, unitNote: post ? { [post[0]]: 'On every plan, the trial included' } : {}, aside: trial ? `${trial[0]} · ${trial[1].toLowerCase()} · cancel in one tap` : '' })}
       ${openNote(p)}
     </div>
     <div class="tier-care s-care"><span class="tier-n">${ic('free', 18, { pin: 'open' })}Caregiver</span><span class="tier-p">$0<small> for ever</small></span><span class="tier-d">No organisation, no card. Your credential dates are yours and travel with you.</span><a class="btn pri" href="#join" data-cta="tier-care">Join as a caregiver</a></div>
   </div>`;
 }
+const priceOf = (price) => {
+  const i = String(price).indexOf(' / ');
+  return i < 0 ? `<span class="tier-p">${esc(price)}</span>` : `<span class="tier-p">${esc(price.slice(0, i))}<small>${esc(price.slice(i))}</small></span>`;
+};
 
 /* ── the board figure: the desktop mock, the phone board, five pins ────
    Above 640 the desktop shell at true size, with a row of five numbered
@@ -408,13 +437,19 @@ export function joinBlock(cfg, p) {
 /* ── the ring of routes ──────────────────────────────────────────────── */
 export { ROUTES, routeIx, nextOf } from './chrome.js';
 
-/* ── "what is on this page", and which side each part belongs to ─────── */
+/* ── "what is on this page": the chapter rail ──────────────────────────
+   Round 4. Firaol: "so many items at one point, get creative and make one
+   of those list horizontal and interactive on scroll and connected to the
+   interactive". One rail (render/shared.js chapterRail) replaces the page
+   index AND the five-screens jump that stacked above it; each chapter wears
+   its badge-set glyph, the ones with something to try carry the dot, and
+   the screens are the rail's last link. */
+const IX_ICON = { providers: 'sides', board: 'board', credentials: 'badge', hours: 'timesheet', hiring: 'post', caregivers: 'distance', wallet: 'wallet', free: 'free', rules: 'clipboard', roles: 'people', questions: 'question', pricing: 'tag', post: 'post', signup: 'pen', join: 'pen', machines: 'bell', payment: 'shield', two: 'sides', words: 'flag', write: 'mail', fit: 'sparkle', clock: 'clockin', strip: 'phone', states: 'flag', schema: 'clipboard', messages: 'mail', first: 'clock', map: 'board' };
+const IX_LIVE = new Set(['board', 'credentials', 'hours', 'caregivers', 'wallet', 'roles', 'pricing', 'fit', 'clock', 'strip']);
 export function ixNav(rows, opts = {}) {
   if (!rows || !rows.length) return '';
-  return `<nav class="ix" aria-label="${esc(opts.label || 'What is on this page')}" data-spy data-ix>
-    <span class="ix-k">${ic('board', 16)}On this page</span>
-    <ol class="ix-l" data-scrollx>${rows.map(([id, label, side]) => `<li><a href="#${esc(id)}" data-side-hint="${esc(side || 'both')}">${esc(label)}</a></li>`).join('')}</ol>
-  </nav>`;
+  const list = rows.filter(([id]) => id !== 'top').map(([id, label]) => ({ id, label, live: IX_LIVE.has(id), icon: ic(IX_ICON[id] || 'board', 16, { pin: false }) }));
+  return chapterRail(list, { label: opts.label || 'On this page', tail: opts.tail });
 }
 
 /* ── a section heading you can copy the address of ────────────────────── */

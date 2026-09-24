@@ -2137,3 +2137,165 @@ html[data-side="caregiver"] .ntf .ic-pin { fill: #1C1620; }
 @media (max-width: 640px) {
   #board .ros { display: none; }
 }
+
+/* phone type floors (desaudit mobile-gate, 2026-09-23): the legal line is a
+   <p>, and the phone board's markers sit inside <li>/<th>, so they take the
+   prose and label floors the kit holds everywhere else */
+@media (max-width: 640px) {
+  .ft-legal, p.ft-legal { font-size: 15px; }
+  .board-phone .pb-g th, .board-phone .pb-c, .board-phone .pb-c.is-open { font-size: 12px; }
+  .board-phone .need, .board-phone .need i, .board-phone .elig-i, .board-phone .elig-i span, .board-phone .elig-m { font-size: 15px; letter-spacing: 0; }
+}
+
+/* ═══ ROUND 4 · 2026-09-23 · Firaol's review, direction A ════════════════
+   Appended last on purpose: equal-specificity rules here win over the older
+   blocks above, and the narrow tiers at the end win over these. */
+
+/* ── the claim: a ticket and a run, side by side ─────────────────────── */
+.claim-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--orchid); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orchid) 24%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .claim-dot { animation: claim-pulse 1.8s ease-in-out infinite; }
+  @keyframes claim-pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--orchid) 0%, transparent); } }
+}
+.claim-c { padding: 22px 24px; }
+.claim-x { position: absolute; top: 14px; right: 14px; }
+.claim-h { grid-template-columns: minmax(0, 1fr); padding-right: 48px; }
+.claim-tk .needs { margin-top: 14px; }
+.claim-cap { font-size: 15px; }
+.cs-w { font-size: 15px; }
+@media (min-width: 901px) {
+  .claim-c { display: grid; grid-template-columns: minmax(250px, 330px) minmax(0, 1fr); gap: 0 30px; align-items: start; }
+  .claim-tk { padding-right: 30px; border-right: 1.5px dashed color-mix(in srgb, var(--ink) 16%, transparent); align-self: stretch; }
+  .claim-run { padding-right: 40px; }
+  .claim-steps { margin-top: 0; gap: 0; }
+  .cs { padding: 10px 0; }
+  .cs:first-child { border-top: 0; padding-top: 2px; }
+  .cs b { font-size: 16px; }
+  .cs-w { margin-top: 2px; }
+  .elig { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 10px; }
+  .elig-i { padding: 8px 10px; }
+  .claim-a { margin-top: 12px; }
+}
+
+/* ── credentials: the life of one card ───────────────────────────────── */
+.cl {
+  display: grid; grid-template-columns: minmax(270px, 340px) minmax(0, 1fr);
+  grid-template-areas: "card track" "card foot";
+  gap: 14px clamp(32px, 5vw, 80px); align-items: center;
+  margin-top: clamp(20px, 3vw, 36px);
+}
+.cl-card {
+  grid-area: card; position: relative; display: grid; gap: 12px;
+  padding: 26px 20px 20px; border-radius: 20px; border: 1px solid var(--line); background: var(--card);
+  box-shadow: 0 30px 60px -42px rgba(23, 32, 31, .6);
+}
+/* the slot a badge hangs from */
+.cl-card::before { content: ""; position: absolute; top: 11px; left: 50%; width: 38px; height: 6px; margin-left: -19px; border-radius: 6px; background: color-mix(in srgb, var(--ink) 11%, transparent); }
+.cl-top { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.cl-av { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: -0.02em; }
+.cl-who { display: grid; gap: 2px; min-width: 0; }
+.cl-who b { font-family: var(--font-display); font-size: 19px; letter-spacing: -0.02em; line-height: 1.15; }
+.cl-who span { font-size: 13.5px; color: var(--muted); }
+.cl-ic { color: var(--teal); }
+.cl-mid { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1.5px dashed var(--line); }
+.cl-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 11px; border-radius: 999px; font-size: 13px; font-weight: 700; background: var(--teal-soft); color: var(--teal); white-space: nowrap; }
+.cl-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.cl-when { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; text-align: right; }
+.cl-n { font-size: 15px; line-height: 1.5; color: var(--muted); min-height: 4.5em; }
+.cl-renew { justify-self: start; }
+.cl-renew[hidden] { display: none; }
+.cl-card[data-state="notice30"] .cl-chip { background: var(--wash); color: var(--muted); }
+.cl-card[data-state="notice7"] { border-color: color-mix(in srgb, var(--orchid) 50%, var(--line)); }
+.cl-card[data-state="notice7"] .cl-chip { background: var(--orchid-soft); color: var(--orchid-ink); }
+.cl-card[data-state="expired"] { border-color: var(--orchid); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orchid) 16%, transparent), 0 30px 60px -42px rgba(23, 32, 31, .6); }
+.cl-card[data-state="expired"] .cl-chip { background: var(--orchid); color: #1C1620; }
+.cl-card[data-state="renewed"] .cl-chip { background: var(--teal); color: var(--bg); }
+.cl-track { grid-area: track; display: grid; gap: 6px; }
+.cl-lab { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-inline: 10%; font-weight: 700; font-size: 14px; }
+.cl-lab output { font-family: var(--font-display); font-size: 22px; letter-spacing: -0.02em; color: var(--orchid-ink); font-variant-numeric: tabular-nums; }
+.cl-in-w { padding-inline: calc(10% - 14px); }
+.cl input[type="range"] { --p: inherit; }
+.cl input[type="range"]::-webkit-slider-runnable-track { background: linear-gradient(90deg, var(--orchid) var(--p), var(--line) var(--p)); }
+.cl-rail { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.cl-s { display: grid; justify-items: center; align-content: start; gap: 4px; text-align: center; }
+.cl-dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 4px; background: var(--bg); border: 1.5px solid var(--line); color: var(--soft); }
+.cl-s b { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--muted); }
+.cl-at { font-size: 12.5px; color: var(--soft); }
+.cl-d { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cl-s[data-past] .cl-dot { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.cl-s[data-on] .cl-dot { background: var(--orchid); border-color: var(--orchid); color: #1C1620; box-shadow: 0 0 0 5px var(--orchid-soft); }
+.cl-s.is-covered[data-on] .cl-dot { background: var(--teal); border-color: var(--teal); color: var(--bg); box-shadow: 0 0 0 5px var(--teal-soft); }
+.cl-s[data-on] b { color: var(--ink); }
+.cl-f { grid-area: foot; display: flex; align-items: center; gap: 8px; padding-inline: 10%; font-size: 15px; color: var(--muted); }
+.cl-f svg { color: var(--teal); flex: none; }
+.cred-note { margin-top: clamp(18px, 2.4vw, 28px); max-width: 72ch; font-size: 15px; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .cl-card, .cl-chip, .cl-dot { transition: background-color 220ms ease, border-color 220ms ease, box-shadow 260ms ease, color 200ms ease; }
+}
+
+/* ── the wallet: a deck of cards ─────────────────────────────────────── */
+.wallet { display: grid; width: 100%; max-width: 440px; justify-self: end; gap: 0; }
+.wcard {
+  --wc: var(--teal);
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: none; padding: 0; margin: 0 0 -78px; gap: 0;
+  border-radius: 20px; border: 1px solid color-mix(in srgb, #fff 9%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--wc) 34%, var(--night-2)), color-mix(in srgb, var(--wc) 10%, var(--night)));
+  color: #F7F3EC; box-shadow: 0 -10px 30px -22px rgba(0, 0, 0, .8); overflow: hidden;
+}
+.wcard[data-kind="cpr"] { --wc: #E07A6B; }
+.wcard[data-kind="firstaid"] { --wc: var(--orchid); }
+.wcard[data-kind="meds"] { --wc: #3FA79E; }
+.wcard[data-kind="shield"] { --wc: #8C8FE0; }
+.wcard[data-front] { order: 9; margin-bottom: 0; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .8); }
+.wcard-h {
+  display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  width: 100%; min-height: 64px; padding: 12px 16px; border: 0; background: transparent; color: inherit;
+  font: inherit; text-align: left; cursor: pointer;
+}
+.wcard-i { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, #fff 12%, transparent); color: #fff; }
+.wcard-t { display: grid; gap: 1px; min-width: 0; }
+.wcard .wcard-i, .wcard .wcard-t, .wcard .wcard-w, .wcard .wcard-k, .wcard b, .wcard .wcard-by, .wcard .wcard-seen { grid-area: auto; }
+.wcard-t b { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+.wcard-k { font-size: 12.5px; font-weight: 600; color: rgba(247, 243, 236, .72); }
+.wcard-w { justify-self: end; padding: 6px 10px; border-radius: 9px; font-size: 13.5px; font-weight: 700; background: color-mix(in srgb, #fff 12%, transparent); white-space: nowrap; }
+.wcard.is-open .wcard-w { background: var(--orchid); color: #1C1620; }
+.wcard-b { position: relative; display: grid; gap: 3px; min-height: 86px; padding: 4px 16px 18px 66px; font-size: 13.5px; color: rgba(247, 243, 236, .75); }
+.wcard-by { font-weight: 600; color: #F7F3EC; }
+.wcard-chip { position: absolute; right: 18px; bottom: 18px; width: 34px; height: 26px; border-radius: 6px; background: linear-gradient(135deg, rgba(255, 236, 200, .55), rgba(255, 236, 200, .18)); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18); }
+.wcard:not([data-front]) .wcard-b { visibility: hidden; }
+.wcard-h:focus-visible { outline: 2px solid #F7F3EC; outline-offset: -4px; border-radius: 18px; }
+@media (hover: hover) { .wcard:not([data-front]):hover { z-index: 5; transform: translateY(-6px); } }
+@media (prefers-reduced-motion: no-preference) { .wcard { transition: transform 260ms cubic-bezier(.25, 1, .5, 1), box-shadow 260ms ease; } }
+
+/* ── pricing: set your houses ────────────────────────────────────────── */
+.pc-ap .pc-plans { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pc-ap .pc-plan { border-radius: 20px; }
+.pc-ap .pc-plan[data-fits] { border-color: var(--orchid); }
+.pc-ap .pc-fit, .pc-ap .pc-name em { color: var(--orchid-ink); }
+
+/* ── the footer's own quiet thing: tonight, on the week ──────────────── */
+.fsh.ft { padding: clamp(56px, 7vw, 96px) 0 0; background: var(--wash); }
+.ftw { display: grid; gap: 12px; justify-items: start; }
+.ftw-l { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--muted); }
+.ftw-l b { font-family: var(--font-display); font-size: 18px; color: var(--ink); }
+.ft-week { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.ft-day { display: grid; place-items: center; min-width: 40px; height: 32px; padding: 0 6px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.ft-day[data-today] { border-color: var(--orchid); background: var(--orchid); color: #1C1620; }
+
+/* ── narrow tiers, after every rule above ────────────────────────────── */
+@media (max-width: 900px) {
+  .cl { grid-template-columns: minmax(0, 1fr); grid-template-areas: "card" "track" "foot"; }
+  .cl-card { max-width: 420px; }
+  .cl-lab, .cl-f { padding-inline: 0; }
+  .cl-in-w { padding-inline: calc(10% - 14px); }
+  .wallet { justify-self: start; }
+}
+@media (max-width: 640px) {
+  .claim-c { padding: 18px 16px; }
+  .cl-s b { font-size: 13px; }
+  .cl-at { display: none; }
+  .cl-dot { width: 30px; height: 30px; }
+  .cl-lab { padding-inline: 0; }
+  .pc-ap .pc-plans { grid-template-columns: minmax(0, 1fr); }
+  .ft-day { min-width: 36px; }
+}

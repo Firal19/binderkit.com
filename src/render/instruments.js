@@ -1150,10 +1150,20 @@ export function filmStrip(productId, opts = {}) {
         </figcaption>
       </figure>
     </li>`).join('');
-  const jump = opts.jump === false ? '' : `<nav class="fs-jump" aria-label="${E(opts.jumpLabel || 'Jump to a screen')}">${rows.map((r, i) => `<a href="#${E(id)}-${E(r.key)}"${i === 0 ? ' aria-current="true"' : ''}><span class="fs-jn">${pad2(i + 1)}</span>${E(r.tab || r.title)}</a>`).join('')}</nav>`;
+  const jump = opts.jump === false ? '' : `<nav class="fs-jump" aria-label="${E(opts.jumpLabel || 'Jump to a screen')}" data-scrollx>${rows.map((r, i) => `<a href="#${E(id)}-${E(r.key)}"${i === 0 ? ' aria-current="true"' : ''}><span class="fs-jn">${pad2(i + 1)}</span>${E(r.tab || r.title)}</a>`).join('')}</nav>`;
+  /* Round 4: which screen you are on, in words, bound to the tabs and the
+     strip — "03 / 08 · Expiry Watch" — with the strip's own previous/next.
+     The counter is aria-hidden because .fs-live already speaks it; the two
+     buttons only appear once site.js is running (.fstrip[data-js]). */
+  const chev = (d) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  const bar = `<div class="fs-bar">
+      <div class="fs-now" aria-hidden="true"><b class="fs-now-n">01</b><span class="fs-now-c">/ ${pad2(rows.length)}</span><span class="fs-now-t">${E(rows[0] ? rows[0].title : '')}</span></div>
+      <span class="fs-step"><button class="fs-b" type="button" data-fs-step="-1" aria-controls="${E(id)}-rail" aria-label="Previous screen" disabled>${chev('M15 6l-6 6 6 6')}</button><button class="fs-b" type="button" data-fs-step="1" aria-controls="${E(id)}-rail" aria-label="Next screen">${chev('M9 6l6 6-6 6')}</button></span>
+    </div>`;
   return `<div class="fstrip${opts.bleed === false ? '' : ' is-bleed'}" id="${E(id)}" data-strip="${E(p.id)}">
     ${opts.title ? `<div class="fs-head"><h3 class="fs-h">${E(opts.title)}</h3>${opts.sub ? `<p class="fs-s">${E(opts.sub)}</p>` : ''}</div>` : ''}
     ${jump}
+    ${bar}
     <ol class="fs-rail" id="${E(id)}-rail" role="list" tabindex="0" aria-label="${E(label)}" aria-describedby="${E(hintId)}" data-rail>${cards}</ol>
     <p class="fs-hint" id="${E(hintId)}">${E(hint)}</p>
     <p class="fs-live sr-only" role="status" aria-live="polite"></p>

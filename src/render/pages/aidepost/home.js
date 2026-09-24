@@ -1,6 +1,6 @@
 // aidepost.com — the front page. The light half, then the page turns over.
 
-import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, EVERY_PLAN, find, S, STEPS, NEVER, shell, boardTable, doors, rosterToy, credRail, credTimeline, timesheetToy, clockToy, distanceToy, fitQuiz, walletCards, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav, screensOf } from './bits.js';
+import { esc, sec, fold, h2, eyebrow, faq, iosShell, ic, EVERY_PLAN, find, S, STEPS, NEVER, shell, boardTable, doors, rosterToy, credLife, timesheetToy, clockToy, distanceToy, fitQuiz, walletCards, flipRoles, tierBlock, annotatedBoard, joinBlock, ixNav } from './bits.js';
 import { reach } from '../../shared.js';
 
 function hero(cfg, p) {
@@ -44,11 +44,7 @@ function credentials() {
   const s = find('screen');
   return fold('Thirty days out, seven, then expired. Shown on the roster, never blocking.', sec('credentials', 'creds', `<div class="wrap">
     <div class="head">${eyebrow('Credentials')}${h2('credentials', 'Surfaced, never enforced.', 'You are told at thirty days, at seven, and on the day. Then it is marked on the roster. Nothing is blocked, because the decision is yours.')}</div>
-    ${credRail()}
-    <div class="cred-g">
-      <div class="cred-t"><p class="side-note"><b>${esc(s.side.label)}</b> ${esc(s.side.text)}</p></div>
-      ${credTimeline()}
-    </div>
+    ${credLife()}
   </div>`));
 }
 
@@ -133,15 +129,6 @@ function pricing(cfg, p) {
 
 const join = (cfg, p) => sec('join', 'join', joinBlock(cfg, p));
 
-/* ── the five screens, one tap from the top of the page ─────────────── */
-const SCREEN_WORDS = { board: ['The board', 'prov'], credentials: ['Credentials', 'prov'], caregiver: ['Her side', 'care'], hours: ['Timesheets', 'prov'], hire: ['Posts', 'prov'] };
-const SCREEN_LINKS = screensOf('aidepost').map((s) => [s.key, ...(SCREEN_WORDS[s.key] || [s.title, 'both'])]);
-const stripJump = () => `<nav class="sj" aria-label="Jump straight to one screen">
-  <span class="sj-k">${ic('board', 16)}All five screens</span>
-  <ol class="sj-l" data-scrollx>${SCREEN_LINKS.map(([k, t, side], i) => `<li><a href="/screens#strip-${k}" data-side-hint="${side}"><span class="sj-n">${String(i + 1).padStart(2, '0')}</span>${esc(t)}</a></li>`).join('')}</ol>
-  <a class="sj-all" href="/screens">Open the strip ${ic('arrow', 16, { pin: false })}</a>
-</nav>`;
-
 export const HOME_IX = [
   ['top', 'Saturday night', 'prov'],
   ['providers', 'Inward, then outward', 'prov'],
@@ -162,8 +149,7 @@ export const HOME_IDS = new Set(['top', 'providers', 'board', 'credentials', 'ho
 
 export function home(cfg, p) {
   return shell(cfg, p, { page: 'home', ids: HOME_IDS }, `${hero(cfg, p)}
-${stripJump()}
-${ixNav(HOME_IX)}
+${ixNav(HOME_IX, { tail: { href: '/screens', label: 'All five screens' } })}
 ${steps()}
 ${board()}
 ${credentials()}

@@ -2992,3 +2992,130 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .reach-a a { display: inline-flex; align-items: center; min-height: 44px; }
 .reach-a .copyb { width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--card); color: var(--ink); box-shadow: var(--e2); cursor: pointer; transition: transform 160ms var(--ease), box-shadow 200ms ease, color 160ms ease; }
 @media (hover: hover) { .reach-a .copyb:hover { transform: translateY(-2px); box-shadow: var(--e2-hover); color: var(--sage-700); } }
+
+/* ═══ ROUND 4 · 2026-09-23 · Firaol's review, direction A ════════════════
+   Appended last: equal-specificity rules here win over the blocks above,
+   and the narrow tiers at the end win over these. */
+
+/* ── the fan: a hovered phone comes to the front; the scan stays sharp ──
+   Firaol: "its getting under something when hovering, fix that, and the
+   scanning animation becomes blurry, fix that". Measured: the side phones
+   sat at z 2 and 1 under the centre's 3 however they were hovered, and the
+   centre phone was centred by translateX(-50%) of a 249.59px box — a
+   -124.797px offset that put the animated scan layer between pixels. The
+   centre is centred by layout now (auto margins, no transform), a phone
+   under the pointer or holding focus rises above the other two, and the
+   scanned card retires by opacity alone — no scale, no filter on type. */
+.hero { overflow-x: clip; overflow-y: visible; }
+.fan-p.is-c { left: 0; right: 0; width: max-content; margin-inline: auto; transform: none; }
+.hero-v:focus-within .fan-p.is-c { transform: translateY(-14px); }
+@media (hover: hover) { .hero-v:hover .fan-p.is-c { transform: translateY(-14px); } }
+.fan-p:focus-within { z-index: 5; }
+@media (hover: hover) {
+  .fan-p:hover { z-index: 5; }
+  .hero-v:hover .fan-p.is-l:hover { transform: translateX(-50%) rotate(-6deg) translateY(-6px); }
+  .hero-v:hover .fan-p.is-r:hover { transform: translateX(-50%) rotate(6deg) translateY(-6px); }
+}
+@media (min-width: 901px) { .scan { left: 0; right: 0; width: var(--scan-w); margin-inline: auto; transform: none; } }
+.scan.is-found .scan-card { transform: translateY(-6px); filter: none; }
+.scan-line { will-change: auto; }
+
+/* ── no double box: a device stands on its own ───────────────────────── */
+.is-sw .swx-stage, .aisle-ph.is-sw .swx-stage { padding: 0; background: none; box-shadow: none; border-radius: 0; }
+.fs-stage, .fs-i[data-on] .fs-stage { padding: 0; background: none; box-shadow: none; border-radius: 0; }
+.fs-stage *:is(.phone) { box-shadow: var(--e3), inset 0 0 0 2px #2A3130; }
+
+/* ── the story: one screen in the middle, live cards either side ─────── */
+.sec.cs4 { padding-block: clamp(56px, 6.4vw, 96px); }
+.cs4 .wrap { display: grid; gap: clamp(26px, 3vw, 44px); }
+/* the headline and its one line side by side: a wide screen reads across */
+.cs4-h { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); grid-template-areas: "tag ." "h sub"; column-gap: clamp(28px, 4vw, 72px); align-items: end; }
+.cs4-h .sticker { grid-area: tag; justify-self: start; margin-bottom: 14px; }
+.cs4-h h2 { grid-area: h; font-size: clamp(34px, 3.7vw, 56px); }
+.cs4-h .sub { grid-area: sub; margin: 0; padding-bottom: 6px; max-width: 52ch; }
+.cs4-stage .is-sw .swx-stage { height: 600px; overflow: hidden; border-radius: 44px 44px 0 0; }
+.cs4-stage .is-sw .swx-stage::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 80px; background: linear-gradient(transparent, var(--bg)); pointer-events: none; z-index: 2; }
+.cs4-stage .is-sw .swx-stage { position: relative; }
+.cs4-g {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 22px clamp(28px, 3.4vw, 56px); align-items: start;
+}
+.cs4-l, .cs4-r { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.cs4-l { padding-top: clamp(24px, 4vw, 72px); }
+.cs4-stage { justify-items: center; }
+.cs4-stage .crop { max-width: 318px; }
+.cs4-stage .is-sw { display: grid; gap: 12px; justify-items: center; }
+.cs4-stage .is-sw .swx { width: 330px; }
+.cs4-sat .demo { margin: 0; }
+.cs4-sat .demo-f { font-size: var(--cs-sm); }
+.cs4 .sat { width: 100%; background: var(--card); border: 0; box-shadow: var(--e2); border-radius: var(--r2); padding: 18px 20px; gap: 8px; }
+.cs4 .sat-k { font-family: var(--font-mono); font-size: var(--cs-11); font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+.cs4 .sat-k .ic-cs { color: var(--terra); }
+.cs4 .sat-v { font-family: var(--font-display); font-weight: 600; font-size: clamp(20px, 1.7vw, 24px); letter-spacing: -0.02em; }
+.cs4 .sat-t { font-size: var(--cs-sm); line-height: 1.55; }
+.cs4-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 0; padding: 0; list-style: none; }
+.cs4-chips li { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border-radius: 999px; background: var(--sage-50); color: var(--sage-700); font-size: var(--cs-sm); font-weight: 600; }
+.cs4-dl { display: grid; gap: 0; margin: 4px 0 0; padding: 0; list-style: none; }
+.cs4-dl li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 2px 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.cs4-dl li:first-child { border-top: 0; }
+.cs4-di { grid-row: 1 / span 2; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--sage-50); color: var(--sage-700); }
+.cs4-dl b { font-family: var(--font-display); font-size: var(--cs-lg); font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
+.cs4-dl span:not(.cs4-di) { font-size: var(--cs-sm); color: var(--muted); line-height: 1.45; }
+.cs4 .more { justify-self: start; }
+.cs4 .ctas.is-row { margin: 0; }
+
+/* ── pricing: set your houses ────────────────────────────────────────── */
+.pc-cs .pc-plan { border: 0; box-shadow: var(--e2); border-radius: var(--r2); background: var(--card); }
+.pc-cs .pc-plan.is-main { box-shadow: var(--e2), inset 0 3px 0 var(--sage); }
+.pc-cs .pc-plan[data-fits] { box-shadow: var(--e3), inset 0 0 0 2px var(--sage); }
+.pc-cs .pc-plan.is-main[data-fits] { box-shadow: var(--e3), inset 0 3px 0 var(--sage), inset 0 0 0 2px var(--sage); }
+.pc-cs .pc-price { font-family: var(--font-display); font-weight: 600; font-variation-settings: 'opsz' 96, 'SOFT' 30; }
+.pc-cs .pc-fit, .pc-cs .pc-name em { color: var(--sage-700); }
+.pc-cs .pc-step { border: 0; box-shadow: var(--e2); }
+.pc-cs .btn.pri { background: var(--sage); color: var(--on-sage); }
+
+/* ── how it is sold (was a receipt) ──────────────────────────────────── */
+.terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 0 32px; margin: 0; }
+.terms-r { display: grid; gap: 4px; padding: 16px 0; border-top: 1px solid var(--line); }
+.terms dt { font-weight: 650; font-size: var(--cs-sm); }
+.terms dd { margin: 0; color: var(--muted); font-size: var(--cs-sm); line-height: 1.55; }
+
+/* ── the footer, in the store's paper ────────────────────────────────── */
+.fsh.cs-foot { --fsh-bg: var(--bg-2, var(--bg)); }
+.cs-live { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 16px 0 14px; border-radius: 999px; background: var(--card); box-shadow: var(--e2); color: var(--ink); text-decoration: none; font-size: var(--cs-sm); }
+.cs-live i { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sage) 22%, transparent); }
+.cs-live b { color: var(--sage-700); font-weight: 650; }
+.fsh.cs-foot .fsh-wm text { font-family: var(--font-display); font-weight: 600; }
+
+/* ── the rail, in sage ───────────────────────────────────────────────── */
+.crl-a[aria-current] { background: var(--sage); color: var(--on-sage); }
+.crl-a[aria-current] .crl-i, .crl-a[aria-current] .crl-n { color: color-mix(in srgb, var(--on-sage) 78%, transparent); }
+.crl-p::before { background: var(--sage); }
+
+/* ── narrow tiers, after every rule above ────────────────────────────── */
+@media (max-width: 1100px) {
+  .cs4-g { grid-template-columns: auto minmax(0, 1fr); }
+  .cs4-stage { grid-column: 1; grid-row: 1 / span 2; }
+  .cs4-l, .cs4-r { grid-column: 2; padding-top: 0; }
+}
+@media (max-width: 900px) {
+  .cs4-h { grid-template-columns: minmax(0, 1fr); grid-template-areas: "tag" "h" "sub"; }
+  .cs4-h .sub { margin-top: 12px; }
+}
+@media (max-width: 760px) {
+  .cs4-g { grid-template-columns: minmax(0, 1fr); }
+  .cs4-stage, .cs4-l, .cs4-r { grid-column: 1; grid-row: auto; }
+  .cs4-stage .is-sw .swx { width: min(100%, 330px); }
+}
+
+/* ── the phone menu: a plain sheet, not a till slip ─────────────────── */
+.drawer-sheet.cs-sheet { background: var(--card); color: var(--ink); }
+.cs-sheet-h { display: flex; align-items: center; gap: 12px; margin: 0 52px 18px 0; }
+.cs-sheet-h .mk { --c-tile: var(--sage); --c-glyph: var(--card); flex: none; }
+.cs-sheet-h span { display: grid; gap: 2px; }
+.cs-sheet-h b { font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: -0.015em; }
+.cs-sheet-h small { font-size: var(--cs-sm); color: var(--muted); }
+.cs-sheet .drawer-close { color: var(--ink); background: color-mix(in srgb, var(--ink) 7%, transparent); box-shadow: none; }
+.cs-sheet-a { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+.cs-sheet-a .btn { justify-content: center; min-height: calc(var(--tap) + 1px); }
+.cs-sheet-a .btn.pri { background: var(--sage); color: var(--on-sage); }

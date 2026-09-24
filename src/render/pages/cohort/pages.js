@@ -1,7 +1,7 @@
 // The marketing pages: screens, features, pricing, security, about, contact.
 // Each is a full body in the same chrome as the front page.
 
-import { esc, skip, sec, h2, eyebrow, tiers, contact, CONTACT, byline, hello, mailto, social, reach } from '../../shared.js';
+import { esc, skip, sec, h2, eyebrow, tiers, contact, CONTACT, byline, hello, mailto, social, reach, priceCalc } from '../../shared.js';
 import { webShell, iosShell, filmStrip, callouts } from '../../instruments.js';
 import { SIGNUP_SIX, BILLING_STATES, EVERY_PLAN, TRIAL_FINE } from '../../../data/page.js';
 import { ic } from '../../icons/cohort.js';
@@ -110,15 +110,11 @@ function screens(cfg, p) {
 /* ── /pricing ──────────────────────────────────────────────────────────── */
 function pricingPage(cfg, p) {
   const s = find('pricing');
-  const stepper = `<div class="hs-w"><span class="strip-l">How many houses?</span>
-    <div class="hs" role="group" aria-label="How many houses?">${['1', '2–3', '4–9', '10+'].map((h, i) => `<button type="button" data-h="${esc(h)}" aria-pressed="${i === 0}">${esc(h)}</button>`).join('')}</div>
-    <p class="hs-line" role="status" aria-live="polite">One house — Pro covers it, and every plan sees every screen.</p>
-  </div>`;
+  const cta = { href: '/#join', label: 'Get early access' };
   return shell(cfg, p, 'pricing', `
     ${phead('Pricing', esc(s.heading), EVERY_PLAN)}
     ${sec('plans', 'pplans', `<div class="wrap">
-      ${stepper}
-      ${tiers(p, 1)}
+      ${priceCalc(p, { id: 'pc-cop', cls: 'pc-co', start: 1, max: 12, fit: { Pro: '1-3', Scale: '4-' }, main: 'Pro', mainLabel: 'Most houses', skip: ['3-day trial'], cta: { Pro: cta, Scale: cta } })}
       <p class="fine">${esc(s.note)}</p>
       <div class="trial"><span class="trial-i">${ic('stamp', 22)}</span><div><span class="strip-l">The trial</span><p>${esc(TRIAL_FINE)}</p></div></div>
     </div>`, { label: 'Plans' })}

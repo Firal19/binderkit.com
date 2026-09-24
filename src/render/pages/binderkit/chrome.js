@@ -5,7 +5,7 @@
 // planner itself. Everything here is the site's — nothing is the product's
 // except the rows it quotes from the instruments.
 
-import { esc, mark, social, byline, hello, mailto, nextFloat, priceParts } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, nextFloat, priceParts, footShell } from '../../shared.js';
 import { SURFACES } from '../../instruments.js';
 import { PAGES } from '../../../data/page.js';
 import { ic, lampIcon } from '../../icons/binderkit.js';
@@ -489,33 +489,18 @@ export function footer(cfg, p, opts = {}) {
   const after = CHAPTERS[at + 1];
   const next = after && after.path !== '/privacy' ? { href: after.path, label: after.title, gist: after.sub } : (page === 'privacy' || page === '404' ? { href: '/', label: 'The front page' } : null);
   const line = (c, i) => `<li><a href="${esc(c.path)}" ${c === chapter ? 'aria-current="page"' : ''}><span class="toc-no">${i + 1}</span><span class="toc-t">${esc(c.title)}<small>${esc(c.sub)}</small></span><span class="toc-l" aria-hidden="true"></span><span class="toc-n">${esc(c.ctl)}</span></a></li>`;
-  return `<footer class="foot" id="foot">
-  <div class="wrap doc"><span class="ctl" aria-hidden="true">Chapters</span>
-    <div class="doc-b">
-      <div class="foot-top">
-        <div class="foot-lede"><h2 class="foot-h">The chapters.</h2><p class="foot-sub">Eight pages, one binder. You are on <b>${esc(chapter.title)}</b>.</p></div>
-        <ol class="toc toc-ch foot-toc">${CHAPTERS.map(line).join('')}</ol>
-      </div>
-      <div class="foot-mid">
-        <div class="colophon">
-          <span class="colo-mark">${mark(p.id, 64, { label: false, mono: true, tile: 'var(--ink)', glyph: 'var(--bg)' })}</span>
-          <p class="colo-t"><span class="colo-ctl">Binderkit</span> · ${esc(p.descriptor.toLowerCase())} · printed <span data-clock="date">today</span></p>
-        </div>
-        <div class="foot-write">
-          <span class="strip-l">Write to a person</span>
-          <div class="stamps-row">
-            <a class="stamp is-mail" href="${mailto(cfg)}">${ic('mail', 18)}<span>${esc(hello(cfg))}</span></a>
-            <button class="stamp" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(hello(cfg))} and open your mail app">${ic('copy', 18)}<span>Copy</span></button>
-            <button class="stamp" type="button" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}" aria-label="Share this page">${ic('share', 18)}<span>Share</span></button>
-          </div>
-          <p class="foot-note">One inbox. A person answers within a working day.</p>
-          ${social(p.id, { size: 16, cls: 'stamps', label: 'Binderkit elsewhere' })}
-        </div>
-      </div>
-      <div class="foot-b">${byline()}<p class="foot-fine">${opts.fine ? `${esc(opts.fine)} ` : ''}${esc(cfg.legalLine)}</p></div>
-    </div>
-  </div>
-</footer>
+  /* Round 4: the shared footer shell (Firaol, family-wide: "make it state of
+     the art footer"), in the binder's own ink and rule. The chapters are
+     the two groups, current one marked; the colophon is the quiet thing it
+     keeps — the control number and the day it was printed. */
+  const group = (title, list) => ({ title, links: list.map((c) => [c.path, c.title]) });
+  return `${footShell(cfg, p, {
+    cls: 'foot',
+    note: 'One inbox. A person answers within a working day.',
+    fine: opts.fine || '',
+    motif: `<p class="colo-t"><span class="colo-ctl">${esc(chapter.ctl)}</span> · you are on ${esc(chapter.title)} · printed <span data-clock="date">today</span></p>`,
+    groups: [group('The binder', CHAPTERS.slice(0, 4)), group('The company', CHAPTERS.slice(4))],
+  })}
 <div class="footbar" aria-label="Page controls">
   <button class="fb-b" type="button" data-print aria-label="Print the contents page">${ic('print', 18)}<span>Print</span></button>
   <span class="fb-p" data-progress aria-live="off"><span data-page-n>p. 1</span><span class="fb-sep">/</span><span data-page-total>${here.length || 1}</span><span class="fb-w" data-page-name>${esc((here[0] || chapter).label || chapter.title)}</span></span>

@@ -363,3 +363,49 @@
 @media (prefers-reduced-motion: reduce) {
   .fs-jump, .ix-l, .dir-l-o, .sj-l, .pidx-r, .fs-rail { scroll-behavior: auto; }
 }
+
+/* ═══ ROUND 4 · the strip says which screen you are on ═══════════════════
+   Firaol, on /shelf: "i click on one thing i dont see which screen it is, it
+   just move a bit". The current screen is now the one in the MIDDLE: a tab
+   centres its card (site.js goTo), the neighbours step back, a counter reads
+   "03 / 08 · Expiry Watch", and the strip has its own previous / next. The
+   padding lets the first and last screens reach the centre. */
+.fs-i { scroll-snap-align: center; scroll-snap-stop: normal; }
+.fs-rail { padding-inline: max(var(--gutter, 20px), calc(50% - var(--fs-card, 420px) / 2)); scroll-padding-inline: 0; }
+.is-bleed .fs-rail {
+  padding-inline:
+    max(calc(var(--gutter) + var(--sal)), calc(50% + var(--gutter) - var(--fs-card, 420px) / 2))
+    max(calc(var(--gutter) + var(--sar)), calc(50% + var(--gutter) - var(--fs-card, 420px) / 2));
+  scroll-padding-inline: 0;
+}
+.fstrip[data-js] .fs-i { transition: opacity 320ms ease; }
+.fstrip[data-js] .fs-i:not([data-on]) { opacity: .36; cursor: pointer; }
+@media (hover: hover) { .fstrip[data-js] .fs-i:not([data-on]):hover { opacity: .68; } }
+.fstrip[data-js] .fs-hint { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.fs-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; min-height: 44px; }
+/* the strip is one grid column; without this its track grows to the
+   counter bar's min-content and the edge-to-edge rail follows it out past
+   the glass — measured 16px on aidepost /screens and 52px on binderkit at
+   320 */
+.fstrip { grid-template-columns: minmax(0, 1fr); }
+.fs-now { display: flex; align-items: baseline; gap: 9px; min-width: 0; overflow: hidden; font-size: 15px; color: var(--muted); }
+.fs-now-n { font-family: var(--font-display); font-size: 28px; line-height: 1; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.fs-now-c { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; }
+.fs-now-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--ink); }
+.fs-step { display: inline-flex; gap: 6px; flex: none; visibility: hidden; }
+.fstrip[data-js] .fs-step { visibility: visible; }
+.fs-b {
+  display: grid; place-items: center; width: var(--tap, 44px); height: var(--tap, 44px); padding: 0;
+  border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--ink); cursor: pointer;
+}
+.fs-b:disabled { opacity: .32; cursor: default; }
+@media (hover: hover) { .fs-b:not(:disabled):hover { border-color: var(--ink); } }
+@media (prefers-reduced-motion: no-preference) {
+  .fs-b { transition: border-color 140ms ease, opacity 140ms ease; }
+  .fs-now.is-tick .fs-now-n, .fs-now.is-tick .fs-now-t { animation: fs-tick 380ms cubic-bezier(.25, 1, .5, 1); }
+  @keyframes fs-tick { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+}
+@media (max-width: 640px) {
+  .fs-now-n { font-size: 22px; }
+}

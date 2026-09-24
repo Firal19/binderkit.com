@@ -1,7 +1,7 @@
 // The chrome every Cohort page wears: the rail, the shift sheet, the phone
 // tab bar, the command palette, and the end-of-shift footer.
 
-import { esc, mark, social, byline, hello, mailto, nextFloat } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, nextFloat, footShell } from '../../shared.js';
 import { ic } from '../../icons/cohort.js';
 import { APP, STOPS, PAGE_LINKS, VERBS, DAY, hid, SCREEN_ORDER, SCREEN_NOTES, screenHref, ROUTES } from './data.js';
 import { screensOf } from '../../instruments.js';
@@ -130,39 +130,25 @@ const nextOf = (opts) => {
 };
 
 export function footer(cfg, p, opts = {}) {
+  /* Round 4: the shared footer shell, in Cohort's own paper (Firaol, of the
+     family's footers: "make it state of the art footer"). Cohort keeps one
+     quiet thing of its own — the Oregon time, live, where a shift ends. */
   const home = isHome(opts);
-  const col = (id, title, inner) => `<details class="eos-d" id="eos-${id}" open><summary><span class="eos-k">${esc(title)}</span>${ic('down', 18, { cls: 'eos-chev' })}</summary><div class="eos-b">${inner}</div></details>`;
-  const link = (href, t, ext = false) => `<li><a href="${esc(href)}" ${ext ? 'rel="noopener"' : ''}>${esc(t)}${ext ? ic('ext', 13, { cls: 'eos-ext' }) : ''}</a></li>`;
-  return `<footer class="eos" id="foot" aria-labelledby="h-foot">
-    <div class="wrap">
-      <div class="eos-head">
-        <h2 class="eos-h" id="h-foot">End of shift.</h2>
-        <p class="eos-sub">Everything on this site, and a person to write to.</p>
-      </div>
-      <div class="eos-g">
-        ${col('product', 'Product', `<ul class="eos-l">${STOPS.map((s) => link(at(opts, s.id), s.label)).join('')}${link('/screens', 'The five screens')}${link('/features', 'Everything Cohort does')}${link('/security', 'Security and privacy')}</ul>`)}
-        ${col('company', 'Company', `<ul class="eos-l">${link('/about', 'About')}${link('/contact', 'Contact')}${link('/privacy', 'Privacy')}${link(APP, 'Sign in to your house', true)}</ul>`)}
-        ${col('write', 'Write to us', `<p class="eos-mail"><a href="${mailto(cfg)}">${esc(hello(cfg))}</a><button class="copyb" type="button" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app" aria-label="Copy the address and open your mail app">${ic('copy', 16)}</button></p><p class="eos-fine">One inbox. A person answers within a working day.</p>${social(p.id, { text: true, cls: 'stamps', size: 18, label: 'Cohort on social' })}`)}
-      </div>
-      <div class="eos-sign">
-        <div class="eos-out">
-          <span class="eos-so">Oregon · <b data-clock>--:--</b></span>
-          <p class="eos-fine">Daily operations for care homes. Made in Oregon.</p>
-        </div>
-        ${stampLogo(p)}
-        <div class="eos-by">
-          ${byline(false)}
-          <p class="eos-legal">${esc(cfg.legalLine)}</p>
-          <div class="eos-act"><button class="textb" type="button" data-share data-share-title="Cohort — ${esc(p.descriptor)}">${ic('share', 16)}<span>Share this page</span></button>${home ? `<a class="textb" href="/privacy">${ic('shield', 16)}<span>Privacy</span></a>` : `<a class="textb" href="/">${ic('clock', 16)}<span>Back to the shift</span></a>`}</div>
-        </div>
-      </div>
-    </div>
-    ${sheet(cfg, p, opts)}
+  const motif = `<div class="eos-so">${ic('clock', 16)}<span>Oregon · <b data-clock>--:--</b></span></div>`;
+  return footShell(cfg, p, {
+    cls: 'eos',
+    note: 'One inbox. A person answers within a working day.',
+    motif,
+    groups: [
+      { title: 'The product', links: [...STOPS.map((x) => [at(opts, x.id), x.label]), ['/screens', 'The five screens'], ['/features', 'Everything Cohort does'], ['/security', 'Security and privacy']] },
+      { title: 'The company', links: [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], [APP, 'Sign in to your house']] },
+    ],
+    after: `${sheet(cfg, p, opts)}
     ${palette(cfg, p, opts)}
     ${tabs(cfg, p, opts)}
     <a class="totop" href="${home ? '#top' : '#main'}" aria-label="Back to the top">${ic('totop', 18)}<span>Top</span></a>
-    ${nextFloat(nextOf(opts))}
-  </footer>`;
+    ${nextFloat(nextOf(opts))}`,
+  });
 }
 
 export { DAY, hid };

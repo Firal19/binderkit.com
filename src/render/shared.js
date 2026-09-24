@@ -297,3 +297,139 @@ export function nextFloat(next, opts = {}) {
   const arrow = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   return `<a class="nxt ${esc(opts.cls || '')}" href="${esc(next.href)}" data-next aria-label="Next page: ${esc(next.label)}${next.gist ? ` — ${esc(next.gist)}` : ''}"><span class="nxt-k">${esc(opts.key || 'Next')}</span><b>${esc(next.label)}</b>${arrow}</a>`;
 }
+
+/* ═══ ROUND 4 · 2026-09-23 · direction A, "Stage & satellites" ══════════
+   Three shared pieces Firaol's review asked for on every site: ONE on-page
+   nav that follows the reader, a price you can set to your own number of
+   houses, and a calm footer. Markup and shape only; every colour comes from
+   the site's own faces tokens. Behaviour is js/site.js chapters(), houses()
+   and anchors(). */
+const p2 = (n) => String(n).padStart(2, '0');
+
+/* ── the chapter rail ────────────────────────────────────────────────────
+   chapterRail([{ id: 'board', label: 'The board', live: true, icon: ic('board', 16) }, …], {
+     label: 'On this page', tail: { href: '/screens', label: 'All screens' }, cls: '' })
+   Replaces every stacked index list ("so many items at one point"). A label
+   is one to three words and nothing else — no counts, no gists ("so
+   telling"). live marks a chapter whose section holds an instrument. Mount it
+   as a DIRECT CHILD OF <main>, right after the hero: it is sticky, and a
+   sticky element only travels as far as its parent does. The .crl-at before
+   it marks where it sits in the flow, so a jump can tell whether the rail
+   will be stuck (and covering) at the place it lands. */
+export function chapterRail(rows, opts = {}) {
+  const list = rows.filter((r) => r && r.id && r.label);
+  /* r.icon is markup from the site's own icon set; it stands in for the
+     number, which is what ties a chapter to the screen it is about */
+  const items = list.map((r, i) => `<li><a class="crl-a" href="#${esc(r.id)}" data-n="${p2(i + 1)}" data-label="${esc(r.label)}"${r.live ? ' data-try' : ''}>${r.icon ? `<span class="crl-i" aria-hidden="true">${r.icon}</span>` : `<span class="crl-n" aria-hidden="true">${p2(i + 1)}</span>`}<span class="crl-t">${esc(r.label)}</span></a></li>`).join('');
+  const tail = opts.tail ? `<a class="crl-x" href="${esc(opts.tail.href)}">${esc(opts.tail.label)}${ICON.arrow}</a>` : '';
+  return `<span class="crl-at" aria-hidden="true"></span><nav class="crl${opts.cls ? ` ${esc(opts.cls)}` : ''}" aria-label="${esc(opts.label || 'On this page')}" data-crl>
+    <span class="crl-now" aria-hidden="true"><b data-crl-n>01</b><span>/${p2(list.length)}</span></span>
+    <ol class="crl-l" data-scrollx>${items}</ol>${tail}
+    <i class="crl-p" aria-hidden="true"></i>
+  </nav>`;
+}
+
+/* ── the price for your houses ───────────────────────────────────────────
+   priceCalc(p, {
+     start: 2, max: 12,
+     noun: ['house', 'houses'],                 // binderkit: facility
+     fit: { Free: '1-1', Pro: '2-5', Scale: '6-' },
+     main: 'Pro',                               // the plan most homes pick
+     lines: { Pro: ['…', '…'] },                // at most three, optional
+     cta: { Pro: { href, label } },             // optional per plan
+     skip: ['Job post'],                        // printed in the note, not a card
+     note: 'Caregivers pay nothing.',
+   })
+   Every row of brand.js p.pricing becomes a plan. A price of the shape
+   "$39 / house / mo" moves with the stepper (data-per); anything else prints
+   as written. The number shown with scripting off is the one for `start`,
+   so the page never prints a total it did not compute. */
+export function priceCalc(p, o = {}) {
+  const [one, many] = o.noun || ['house', 'houses'];
+  const start = o.start || 1;
+  const max = o.max || 12;
+  const per = /^\$(\d+(?:\.\d+)?) \/ (house|facility) \/ mo$/;
+  const skip = new Set(o.skip || []);
+  const rows = p.pricing.rows.filter(([name]) => !skip.has(name));
+  const money = (v) => '$' + (Math.round(v * 100) % 100 ? v.toFixed(2) : String(Math.round(v)));
+  const plans = rows.map(([name, price, d]) => {
+    const m = String(price).match(per);
+    const lines = (o.lines && o.lines[name]) || [];
+    const cta = o.cta && o.cta[name];
+    const fit = o.fit && o.fit[name];
+    const big = m
+      ? `<b data-per="${m[1]}">${money(Number(m[1]) * start)}</b><small>/ mo</small>`
+      : `<b>${esc(String(price).replace(/ \/ .*$/, ''))}</b>${/ \/ /.test(price) ? `<small>${esc(String(price).replace(/^[^/]*/, ''))}</small>` : ''}`;
+    return `<div class="pc-plan${name === o.main ? ' is-main' : ''}" role="listitem"${fit ? ` data-fit="${esc(fit)}"` : ''}>
+      <span class="pc-name">${esc(name)}${name === o.main && o.mainLabel ? `<em>${esc(o.mainLabel)}</em>` : ''}</span>
+      <span class="pc-price">${big}</span>
+      <span class="pc-unit">${m ? `${esc('$' + m[1])} per ${esc(m[2])} a month` : esc(o.unitNote && o.unitNote[name] ? o.unitNote[name] : ' ')}</span>
+      <span class="pc-d">${esc(d)}</span>
+      ${lines.length ? `<ul class="pc-l">${lines.slice(0, 3).map((l) => `<li>${ICON.check}<span>${esc(l)}</span></li>`).join('')}</ul>` : ''}
+      ${fit ? `<span class="pc-fit" aria-hidden="true">${ICON.check}Fits your count</span>` : ''}
+      ${cta ? `<a class="btn${name === o.main ? ' pri' : ''}" href="${esc(cta.href)}" data-cta="price-${esc(name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}">${esc(cta.label)}</a>` : ''}
+    </div>`;
+  }).join('');
+  const skipped = o.listSkipped ? p.pricing.rows.filter(([name]) => skip.has(name)).map(([name, price, d]) => `${esc(name)} · ${esc(price)} — ${esc(d)}`).join(' ') : '';
+  return `<div class="pc${o.cls ? ` ${esc(o.cls)}` : ''}" data-houses data-start="${start}" data-min="1" data-max="${max}">
+    <div class="pc-top">
+      <p class="pc-q" id="${esc(o.id || 'pc')}-q">${esc(o.question || `How many ${many}?`)}</p>
+      <div class="pc-step" role="group" aria-labelledby="${esc(o.id || 'pc')}-q">
+        <button class="pc-b" type="button" data-houses-step="-1" aria-label="One fewer ${esc(one)}">−</button>
+        <output class="pc-n" data-houses-n aria-live="polite">${start}</output>
+        <button class="pc-b" type="button" data-houses-step="1" aria-label="One more ${esc(one)}">+</button>
+      </div>
+      <span class="pc-w" data-houses-w data-one="${esc(one)}" data-many="${esc(many)}">${esc(start === 1 ? one : many)}</span>
+      ${o.aside ? `<span class="pc-aside">${esc(o.aside)}</span>` : ''}
+    </div>
+    <div class="pc-plans" role="list">${plans}</div>
+    ${o.note || skipped ? `<p class="pc-note">${skipped ? `<span>${skipped}</span>` : ''}${o.note ? `<span>${esc(o.note)}</span>` : ''}</p>` : ''}
+  </div>`;
+}
+
+/* ── the footer ───────────────────────────────────────────────────────────
+   footShell(cfg, p, {
+     groups: [{ title: 'Product', links: [['#board', 'The board'], …] }, …],
+     box: 'caregivers',          // which address the footer prints
+     note: 'One inbox. A person answers.',
+     motif: '<one quiet live element>',   // aidepost's tonight, cohort's clock
+     cls: 'ft-aidepost', dark: false,
+     wordmark: 'Aidepost',       // the brand line across the foot, false for none
+   })
+   Firaol: "bit cramped, and make it state of the art footer" / the receipt is
+   "too cheesey". So: the identity and one address on the left, the link
+   groups with room to breathe on the right, one quiet motif, a bottom bar
+   with the byline, the legal line and the social row, and the product's
+   name drawn across the foot as the brand moment. The wordmark is an SVG
+   text fitted to the width with textLength, so it spans the page at every
+   width without a media query and never overflows. */
+export function footShell(cfg, p, o = {}) {
+  const to = hello(cfg, o.box);
+  const groups = (o.groups || []).map((g) => `<nav class="fsh-g" aria-label="${esc(g.title)}"><h3 class="fsh-k">${esc(g.title)}</h3><ul>${g.links.map(([h, t]) => `<li><a href="${esc(h)}">${esc(t)}</a></li>`).join('')}</ul></nav>`).join('');
+  const word = o.wordmark === false ? '' : (o.wordmark || p.name);
+  /* a display face runs ~0.6em a letter, so this font size fills ~1000
+     units; lengthAdjust="spacing" absorbs the rest without stretching a
+     glyph. The viewBox stops just under the baseline: a descender is cut by
+     the foot of the page, on purpose. */
+  const wfs = word ? Math.round(1000 / (word.length * (o.wmRatio || 0.5))) : 0;
+  const wh = Math.round(wfs * 0.74);
+  const wm = word ? `<svg class="fsh-wm" viewBox="0 0 1000 ${wh}" aria-hidden="true" focusable="false"><text x="0" y="${wh - 2}" font-size="${wfs}" textLength="1000" lengthAdjust="spacing">${esc(word)}</text></svg>` : '';
+  return `<footer class="fsh${o.cls ? ` ${esc(o.cls)}` : ''}" id="foot">
+  <div class="wrap fsh-in">
+    <div class="fsh-id">
+      <a class="fsh-brand" href="/" aria-label="${esc(p.name)} — home">${o.brand || `${mark(p.id, 34, { label: false })}<span class="fsh-n">${esc(p.name)}</span>`}</a>
+      <p class="fsh-d">${esc(o.descriptor || p.descriptor)}</p>
+      <p class="fsh-mail"><a href="${mailto(cfg, '', o.box)}">${esc(to)}</a><button class="copyb" type="button" data-copy="${esc(to)}" data-copied="Address copied — opening your mail app" aria-label="Copy ${esc(to)} and open your mail app">${ICON.mail}</button></p>
+      ${o.note ? `<p class="fsh-note">${esc(o.note)}</p>` : ''}
+      ${o.motif ? `<div class="fsh-motif">${o.motif}</div>` : ''}
+    </div>
+    <div class="fsh-gs">${groups}</div>
+    <div class="fsh-bot">
+      ${byline(Boolean(o.dark))}
+      <p class="fsh-legal">${o.fine ? `${esc(o.fine)} ` : ''}${esc(cfg.legalLine)}</p>
+      ${social(p.id, { cls: 'fsh-soc', size: 17 })}
+    </div>
+  </div>
+  ${wm}${o.after || ''}
+</footer>`;
+}

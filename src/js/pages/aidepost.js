@@ -252,25 +252,49 @@
     paint();
   });
 
-  /* ── the credential timeline ───────────────────────────────────────── */
+  /* ── the credential's life: one card, one track, five stations ─────────
+     Round 4. The stations sit evenly on the track, so the slider is read in
+     pieces: 0–25 is ninety days out to thirty, 25–50 thirty to seven, 50–75
+     seven to the day, 75–100 up to fifteen days past it. Past the day the
+     card offers "Record the renewal", the fifth station — a new row, and the
+     old one kept as history. */
   const timeline = () => $$('[data-tl]').forEach((tl) => {
     const inp = $('[data-tl-in]', tl); const card = $('[data-tl-card]', tl); const k = $('[data-tl-k]', tl); const when = $('[data-tl-when]', tl); const n = $('[data-tl-n]', tl); const out = $('[data-tl-out]', tl);
+    const renew = $('[data-cl-renew]', tl); const stations = $$('[data-cl-s]', tl);
     const STATES = {
       current: ['Current', 'Recorded with its dates and marked self-attested, because that is what it is. Nothing to say yet.'],
       notice30: ['Thirty-day notice', 'The holder is told, by name. The manager sees a count — never a name in the message. She is still on every list.'],
       notice7: ['Seven-day notice', 'Both again. On the day itself, once more. Nothing changes on the roster yet.'],
       expired: ['Expired', 'Marked on the roster and in the eligible list, naming the credential. Still assignable — permitted, marked, recorded. Nothing is blocked.'],
+      renewed: ['Renewed', 'A new row with the new dates. The expired one stays underneath, as history.'],
     };
+    const AT = { current: 0, notice30: 1, notice7: 2, expired: 3, renewed: 4 };
+    let renewed = false;
+    const daysOf = (v) => (v <= 25 ? 90 - (v / 25) * 60 : v <= 50 ? 30 - ((v - 25) / 25) * 23 : v <= 75 ? 7 - ((v - 50) / 25) * 7 : -((v - 75) / 25) * 15);
     const paint = () => {
-      const days = 90 - Number(inp.value);
-      const st = days < 0 ? 'expired' : days <= 7 ? 'notice7' : days <= 30 ? 'notice30' : 'current';
-      card.dataset.state = st; k.textContent = STATES[st][0]; n.textContent = STATES[st][1];
-      when.textContent = days < 0 ? `Expired ${-days} day${days === -1 ? '' : 's'} ago` : days === 0 ? 'Expires today' : `Expires in ${days} day${days === 1 ? '' : 's'}`;
-      out.textContent = days < 0 ? `${-days} day${days === -1 ? '' : 's'} past` : `${days} days out`;
+      const v = Number(inp.value);
+      const days = Math.round(daysOf(v));
+      const st = renewed ? 'renewed' : days < 0 ? 'expired' : days <= 7 ? 'notice7' : days <= 30 ? 'notice30' : 'current';
+      card.dataset.state = st; tl.dataset.state = st; k.textContent = STATES[st][0]; n.textContent = STATES[st][1];
+      when.textContent = st === 'renewed' ? 'Expires in 2 years' : days < 0 ? `Expired ${-days} day${days === -1 ? '' : 's'} ago` : days === 0 ? 'Expires today' : `Expires in ${days} day${days === 1 ? '' : 's'}`;
+      out.textContent = st === 'renewed' ? 'renewed' : days < 0 ? `${-days} day${days === -1 ? '' : 's'} past` : days === 0 ? 'the day' : `${days} days out`;
       inp.setAttribute('aria-valuetext', when.textContent);
-      inp.style.setProperty('--p', `${((Number(inp.value) / 95) * 100).toFixed(1)}%`);
+      inp.style.setProperty('--p', `${v}%`); tl.style.setProperty('--p', `${v}%`);
+      stations.forEach((li, i) => { li.toggleAttribute('data-on', i === AT[st]); li.toggleAttribute('data-past', i < AT[st]); });
+      if (renew) renew.hidden = st !== 'expired';
     };
-    inp.addEventListener('input', paint); paint();
+    inp.addEventListener('input', () => { renewed = false; paint(); });
+    if (renew) renew.addEventListener('click', () => { renewed = true; inp.value = '100'; paint(); toast('Renewed · the old row stays as history'); });
+    paint();
+  });
+
+  /* ── the wallet: tap a card and it comes to the front ───────────────── */
+  const wallet = () => $$('[data-wallet]').forEach((w) => {
+    w.addEventListener('click', (e) => {
+      const b = e.target.closest('.wcard-h'); if (!b || !w.contains(b)) return;
+      const card = b.closest('.wcard');
+      $$('.wcard', w).forEach((c) => { const on = c === card; c.toggleAttribute('data-front', on); $('.wcard-h', c).setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    });
   });
 
   /* ── the timesheet toy ─────────────────────────────────────────────── */
@@ -498,6 +522,6 @@
     all();
   };
 
-  const boot = () => { sides(); keys(); realDay(); palette(); notify(); proxies(); fit(); roster(); timeline(); timesheet(); clock(); distance(); spots(); doors(); chapters(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
+  const boot = () => { sides(); keys(); realDay(); palette(); notify(); proxies(); fit(); roster(); timeline(); wallet(); timesheet(); clock(); distance(); spots(); doors(); chapters(); heroSides(); topicSide(); topicBox(); openAllCloses(); stripEdges(); };
   boot();
 })();

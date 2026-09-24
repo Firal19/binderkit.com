@@ -3,7 +3,7 @@
 // Every number a demo shows is the instrument's own (SURFACES.careshop) or
 // the vault's (brand.js); nothing here invents a price, a rule or a claim.
 
-import { esc, mark, social, byline, hello, mailto, skip, nextFloat, priceParts } from '../../shared.js';
+import { esc, mark, social, byline, hello, mailto, skip, nextFloat, priceParts, chapterRail, footShell, priceCalc } from '../../shared.js';
 import { SURFACES } from '../../instruments.js';
 import { ic } from '../../icons/careshop.js';
 
@@ -67,12 +67,16 @@ export function nextOf(here) {
    anchors, so it works with no script; careshop.js marks the one you are
    standing in as you scroll, which is the whole reason it is here and not
    just in the drawer. */
+/* Round 4. Firaol, on this board: "dont seem state of the art. so crowded,
+   and so telling and doesnt follow the clean design". Every page's directory
+   is now the shared chapter rail — one row, no counts or gists, a sticker
+   glyph per stop, following the reader. The third column of `stops` (the
+   aisle's "price") is no longer printed. */
+const DIR_ICON = { loop: 'pot', today: 'clock', cook: 'pot', stock: 'shelf', queue: 'cart', shop: 'store', reserve: 'water', record: 'person', roles: 'person', kitchen: 'house', questions: 'mail', pricing: 'tag', start: 'clock', plans: 'tag', terms: 'book', counts: 'calc', shelf: 'shelf' };
+const DIR_LIVE = new Set(['loop', 'today', 'stock', 'queue', 'shop', 'reserve', 'pricing']);
 export function directory(stops, opts = {}) {
   if (!stops || !stops.length) return '';
-  return `<nav class="dir" aria-label="${esc(opts.label || 'What is on this page')}" data-dir data-scrollx>
-    <span class="dir-l">${esc(opts.title || 'On this page')}</span>
-    <ol class="dir-l-o">${stops.map(([id, name, qty], i) => `<li><a class="dir-i" href="#${esc(id)}"><span class="dir-n">${String(i + 1).padStart(2, '0')}</span><b>${esc(name)}</b>${qty ? `<span class="dir-q">${esc(qty)}</span>` : ''}</a></li>`).join('')}</ol>
-  </nav>`;
+  return chapterRail(stops.map(([id, name]) => ({ id, label: name, live: DIR_LIVE.has(id), icon: ic(DIR_ICON[id] || 'tag', 16) })), { label: opts.label || 'On this page', tail: opts.tail });
 }
 
 const prefix = (page) => (page === 'home' ? '' : '/');
@@ -124,94 +128,45 @@ ${drawer(cfg, p, page)}`;
 
 /* the receipt drawer — the phone's menu, printed as a till slip */
 function drawer(cfg, p, page) {
-  const pre = prefix(page);
-  const line = (href, t, qty, cur = false) => `<a class="rc-l" href="${esc(href)}" ${cur ? 'aria-current="page"' : ''}><span>${esc(t)}</span><i aria-hidden="true"></i><b>${esc(qty)}</b></a>`;
+  /* Round 4 (Firaol: "dont need the reciept thing"): the phone menu is a
+     plain sheet now — the store's mark and name, this page's sections (filled
+     by site.js pageIndex from the fold gists), the pages, and the two doors
+     in. Same #drawer, same tally button, same close. */
+  const row = (href, label, gist = '', cur = false) => `<a class="msheet-r" href="${esc(href)}"${cur ? ' aria-current="page"' : ''}><span><b>${esc(label)}</b>${gist ? `<small>${esc(gist)}</small>` : ''}</span></a>`;
   return `<div class="drawer" id="drawer" hidden>
     <div class="drawer-scrim" data-close aria-hidden="true"></div>
-    <div class="drawer-sheet rc" role="dialog" aria-label="Menu">
+    <div class="drawer-sheet cs-sheet" role="dialog" aria-label="Menu">
       <button class="drawer-close" type="button" data-close aria-label="Close the menu">${ic('close', 22)}</button>
-      <div class="rc-top">${mark(p.id, 34, { label: false })}<b class="rc-store">${esc(p.name.toUpperCase())}</b><span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span><span class="rc-meta"><span data-clock="date">today</span></span></div>
-      <nav class="rc-lines" aria-label="Sections">
-        <div class="rc-idx" data-page-index data-open-all="Open every aisle"></div>
-        <div class="rc-g-page">
-          <span class="rc-h">${page === 'home' ? 'THIS PAGE' : 'FRONT OF STORE'}</span>
-          ${AISLES.map((a) => line(`${pre}#${a.id}`, a.t.toUpperCase(), a.qty)).join('')}
-        </div>
-        <span class="rc-h">AISLES</span>
-        ${PAGES_NAV.map((a) => line(`/${a.path}`, a.t.toUpperCase(), a.qty, a.path === page)).join('')}
-        ${line('/privacy', 'PRIVACY', '1 page', page === 'privacy')}
+      <div class="cs-sheet-h">${mark(p.id, 34, { label: false })}<span><b>${esc(p.name)}</b><small>${esc(p.descriptor)}</small></span></div>
+      <nav aria-label="Sections">
+        <div class="msheet-g" data-page-index data-open-all="Open every section"><p class="msheet-k">On this page</p></div>
+        <div class="msheet-g"><p class="msheet-k">Pages</p>${PAGES_NAV.map((a) => row(`/${a.path}`, a.t, '', a.path === page)).join('')}${row('/privacy', 'Privacy', '', page === 'privacy')}</div>
       </nav>
-      <div class="rc-tear" aria-hidden="true"></div>
-      <div class="rc-sum">
-        <a class="rc-l" href="${esc(cfg.signIn.href)}"><span>SIGN IN</span><i aria-hidden="true"></i><b>${esc(cfg.domain)}</b></a>
-        <div class="rc-l is-total"><span>TOTAL</span><i aria-hidden="true"></i><a class="btn pri" href="${esc(cfg.cta.primaryHref)}" data-cta="drawer">${esc(cfg.cta.primary)}</a></div>
-      </div>
-      <p class="rc-thanks">FREE TO START · NO CARD TO BEGIN</p>
+      <div class="cs-sheet-a"><a class="btn pri" href="${esc(cfg.cta.primaryHref)}" data-cta="drawer">${esc(cfg.cta.primary)}</a><a class="btn" href="${esc(cfg.signIn.href)}">Sign in</a></div>
     </div>
   </div>`;
 }
 
-/* ── the receipt's own subtotal line: a group you can total up ──────────
-   It ships `open`: with scripting off, on a printer, and above 640px the
-   whole list is there. careshop.js closes it below 640 only. */
-const rcGroup = (title, count, rows, cls = '') => `<details class="rc-d${cls ? ` ${cls}` : ''}" open>
-        <summary class="rc-l rc-ds"><span>${esc(title)}</span><i aria-hidden="true"></i><b>${esc(count)}</b></summary>
-        <div class="rc-dg">${rows}</div>
-      </details>`;
-
-/* the lines on the slip: every room of the store, once */
-const STORE_LINES = [
-  ['/loop', 'THE LOOP', '7 stations'],
-  ['/stock', 'STOCK', '4 zones'],
-  ['/rules', 'THE RULES', '10 citations'],
-  ['/shelf', 'THE SHELF', '8 screens'],
-  ['/features', 'FEATURES', 'everything'],
-  ['/pricing', 'PRICING', '3 plans'],
-  ['/about', 'ABOUT', 'the store'],
-  ['/write', 'WRITE', '1 inbox'],
-  ['/privacy', 'PRIVACY', 'what it holds'],
-];
-
-/* ── the footer: a till receipt ───────────────────────────────────────── */
+/* ── the footer ─────────────────────────────────────────────────────────
+   Round 4. Firaol, on the till receipt: "change the design. too cheesey,
+   dont need the reciept thing." The shared footer shell, in the store's own
+   paper and sage: the address that copies and opens mail, three groups
+   with room to breathe, one quiet live line, the byline and the legal
+   line, and the name across the foot. */
 export function footer(cfg, p, opts = {}) {
   const page = opts.page || 'home';
-  const rows = p.pricing.rows.filter(([n]) => n !== '3-day trial').map(([n, price]) => `${n} ${price.replace(/ \/ .*$/, '')}`).join(' · ');
-  const line = (href, t, qty, cur = false) => `<a class="rc-l" href="${esc(href)}" ${cur ? 'aria-current="page"' : ''}><span>${esc(t)}</span><i aria-hidden="true"></i><b>${esc(qty)}</b></a>`;
   const next = nextOf(page);
-  return `<footer class="till" id="foot">
-  <div class="wrap till-in">
-    <div class="rc rc-foot" data-receipt>
-      <div class="rc-top">
-        <span class="rc-logo">${mark(p.id, 64, { label: false })}</span>
-        <b class="rc-store">${esc(p.name.toUpperCase())}</b>
-        <span class="rc-sub">${esc(p.descriptor.toUpperCase())}</span>
-        <span class="rc-meta"><span data-clock="date">today</span> · ${esc(cfg.domain.toUpperCase())}</span>
-      </div>
-      <nav class="rc-lines" aria-label="Footer">
-        ${rcGroup('THE STORE', `${STORE_LINES.length} LINES`, STORE_LINES.map(([href, t, qty]) => line(href, t, qty, href === `/${page}`)).join(''))}
-      </nav>
-      <div class="rc-tear" aria-hidden="true"></div>
-      <div class="rc-sum">
-        <div class="rc-l"><span>PLANS</span><i aria-hidden="true"></i><b>${esc(rows)}</b></div>
-        <div class="rc-l"><span>TO BEGIN</span><i aria-hidden="true"></i><b>NO CARD</b></div>
-        <div class="rc-l is-total"><span>TOTAL</span><i aria-hidden="true"></i><a class="btn pri" href="${esc(cfg.cta.primaryHref)}" data-cta="receipt">${esc(cfg.cta.primary)}</a></div>
-      </div>
-      <div class="rc-mail">
-        <span class="rc-h">WRITE TO A PERSON</span>
-        <a class="rc-addr" href="${mailto(cfg)}">${ic('mail', 18)}${esc(hello(cfg))}</a>
-        <span class="rc-verbs"><button type="button" class="rc-b" data-copy="${esc(hello(cfg))}" data-copied="Address copied — opening your mail app">${ic('copy', 16)}Copy</button><button type="button" class="rc-b" data-share data-share-title="${esc(p.name)} — ${esc(p.descriptor)}">${ic('share', 16)}Share</button><a class="rc-b" href="/write">${ic('receipt', 16)}Write</a></span>
-      </div>
-      <div class="rc-block">
-        <span class="rc-h">STICKERS</span>
-        ${social(p.id, { cls: 'rc-soc', size: 16, text: true, label: 'CareShop on social' })}
-      </div>
-      <p class="rc-thanks">Thank you.</p>
-      <a class="rc-tearlink" href="#main"><span aria-hidden="true">– – – – – </span>tear here · back to the top<span aria-hidden="true"> – – – – –</span></a>
-      <div class="rc-by">${byline()}</div>
-      <p class="rc-fine is-legal">${esc(cfg.legalLine)}</p>
-    </div>
-  </div>
-</footer>
+  const motif = `<a class="cs-live" href="${esc(cfg.signIn.href)}"><i aria-hidden="true"></i><span>Live at careshop.app</span><b>Sign in</b></a>`;
+  return `${footShell(cfg, p, {
+    cls: 'cs-foot',
+    note: 'One inbox. A person answers, usually the same day.',
+    motif,
+    groups: [
+      { title: 'The product', links: [['/loop', 'The loop'], ['/stock', 'Stock'], ['/shelf', 'All eight screens'], ['/features', 'Features'], ['/pricing', 'Pricing']] },
+      { title: 'The company', links: [['/about', 'About'], ['/rules', 'The rules'], ['/write', 'Write to a person'], ['/privacy', 'Privacy']] },
+      { title: 'Get started', links: [[cfg.cta.primaryHref, 'Start free'], [cfg.signIn.href, 'Sign in'], ['/#today', 'See Today']] },
+    ],
+  })}
 ${tallyBar(cfg, p, page)}
 ${palette(cfg, page)}
 ${next ? nextFloat(next) : ''}`;
@@ -473,8 +428,18 @@ const PLAN_LINES = {
   Pro: ['Up to five houses', 'Unlimited people', 'Every screen, every plan'],
   Scale: ['Unlimited houses', 'Spend across houses', 'Catalogue import and copying'],
 };
+/* Round 4. Firaol, on the three equal price tags: "change." One stepper
+   sets your houses; each plan prints its month for that many, and the one
+   that fits your count is marked — Free for one house, Pro up to five,
+   Scale beyond. Every price is brand.js's. */
 export function tierCards(cfg, p, opts = {}) {
-  const rows = p.pricing.rows.filter(([n]) => PLAN_LINES[n]);
-  return `<div class="tiers">${rows.map(([n, price], i) => `<div class="tier ${n === 'Pro' ? 'is-main' : ''}">${n === 'Pro' ? '<span class="tier-flag">Most houses</span>' : ''}<span class="tier-n">${esc(n)}</span><span class="tier-p">${priceParts(price)}</span><ul class="tier-f">${PLAN_LINES[n].map((t) => `<li><span class="tier-tick" aria-hidden="true"></span>${esc(t)}</li>`).join('')}</ul><a class="btn ${n === 'Pro' ? 'pri' : ''}" href="${esc(cfg.cta.primaryHref)}" data-cta="${esc(opts.cta || 'pricing')}">${n === 'Free' ? 'Start free' : 'Start with ' + esc(n)}</a></div>`).join('')}</div>`;
+  const cta = { href: cfg.cta.primaryHref, label: 'Start free' };
+  return priceCalc(p, {
+    id: opts.id || 'pc-cs', cls: 'pc-cs', start: 1, max: 12,
+    fit: { Free: '1-1', Pro: '2-5', Scale: '6-' },
+    main: 'Pro', mainLabel: 'Most houses',
+    unitNote: { Free: 'One house · three people · no card' },
+    cta: { Free: cta, Pro: { href: cfg.cta.primaryHref, label: 'Start with Pro' }, Scale: { href: cfg.cta.primaryHref, label: 'Start with Scale' } },
+  });
 }
 

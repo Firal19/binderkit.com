@@ -5,13 +5,8 @@
 
 import { esc, sec, fold, h2, eyebrow, iosShell, ic, find, screen, shell, rosterToy, credRail, credTimeline, annotatedBoard, joinBlock, ixNav, deepLink } from './bits.js';
 
-const CHAPTERS = [['board', 'The board'], ['credentials', 'Credentials'], ['hours', 'Hours'], ['hiring', 'Hiring']];
-
 const flow = (title, steps, note) => `<div class="flow"><h3>${esc(title)}</h3><ol class="flow-l">${steps.map(([t, d, k]) => `<li class="${k ? `is-${k}` : ''}"><b>${esc(t)}</b>${d ? `<span>${esc(d)}</span>` : ''}</li>`).join('')}</ol>${note ? `<p class="fine">${esc(note)}</p>` : ''}</div>`;
 
-function strip() {
-  return `<nav class="chap" aria-label="Chapters" data-spy data-chap><ul data-scrollx>${CHAPTERS.map(([id, t], i) => `<li><a href="#${id}"><span class="chap-n">${i + 1}</span>${esc(t)}</a></li>`).join('')}</ul></nav>`;
-}
 
 function top(cfg, p) {
   const proof = find('proof');
@@ -150,8 +145,7 @@ export const providersPage = {
   description: 'The provider side at depth: the open-shift board, credentials surfaced and never enforced, hours exported and never computed into pay, and hiring end to end.',
   render(cfg, p) {
     return shell(cfg, p, { page: 'providers', ids: PROVIDERS_IDS }, `${top(cfg, p)}
-${strip()}
-${ixNav(PROV_IX)}
+${ixNav(PROV_IX, { tail: { href: '/screens', label: 'All five screens' } })}
 ${chBoard()}
 ${chCredentials()}
 ${chHours()}

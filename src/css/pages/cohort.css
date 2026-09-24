@@ -1508,7 +1508,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .tour-stick .dev { animation: none; }
   /* the pinned phone's height, stated once so the crop, the caption and the
      scroll margin below cannot drift apart. The 640 tier restates --crop-h. */
-  .tl-g { --crop-h: 300px; --cap-h: 36px; --tour-h: calc(var(--crop-h) + var(--cap-h)); }
+  .tl-g { --crop-h: min(300px, 32vh); --cap-h: 36px; --tour-h: calc(var(--crop-h) + var(--cap-h)); }
   .crop { height: var(--crop-h); }
   .crop::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 56px; background: linear-gradient(to bottom, transparent, var(--bg)); pointer-events: none; }
   .tour .phone { --mock-z: min(.9, var(--mock-fit)); margin-top: -60px; }
@@ -1527,7 +1527,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      --scroll-pad, so the margin is the rest of the way — header + phone +
      8px of air, less what the padding covers. Measured after: the hour lands
      at 372 under a phone that ends at 364, at 390 and 320. */
-  .tl-i { scroll-margin-top: calc(var(--hdr) + var(--tour-h) + 8px - var(--scroll-pad)); }
+  .tl-i, .tl-i .tl-at, .tl-i .tl-h { scroll-margin-top: calc(var(--hdr) + var(--tour-h) + 8px - var(--scroll-pad)); }
   .role-ic { width: 40px; height: 40px; }
   .corr { grid-template-columns: minmax(0, 1fr); }
   .stleg-i { grid-template-columns: minmax(0, 1fr); }
@@ -1541,7 +1541,7 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
   .adden { padding: 16px; }
   .stleg { padding: 16px; }
   .role { padding: 16px 18px; gap: 6px; }
-  .tl-g { --crop-h: 276px; }
+  .tl-g { --crop-h: min(276px, 32vh); }
   .tour .phone { --mock-z: min(.86, var(--mock-fit)); margin-top: -58px; }
   .tl-i { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 16px 0; }
   .tl-at { margin-left: 0; padding: 0 12px 0 8px; }
@@ -1558,3 +1558,13 @@ html[data-mode="dark"] .record { background: #08100F; --card: #142523; --wash: #
      scroll-padding already pays that. Here, after the 640 tier, on order. */
   .tl-i { scroll-margin-top: 0; }
 }
+
+/* ═══ ROUND 4 · Cohort's skin on the shared pieces ═══════════════════════
+   Nothing red on Cohort: the price that fits, the chapter rail's dots and
+   its hairline wear the house teal, never the coral accent. */
+.pc-co .pc-plan.is-main { box-shadow: inset 0 3px 0 var(--teal); }
+.pc-co .pc-plan[data-fits] { border-color: var(--teal); }
+.pc-co .pc-plan.is-main[data-fits] { box-shadow: inset 0 3px 0 var(--teal), 0 20px 44px -30px rgba(0, 0, 0, .5); }
+.pc-co .pc-fit, .pc-co .pc-name em { color: var(--teal); }
+.crl-a[data-try]::after, .crl-p::before { background: var(--teal); }
+.fsh .eos-so { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
